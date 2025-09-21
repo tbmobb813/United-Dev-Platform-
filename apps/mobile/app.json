@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "UDP Mobile",
+    "slug": "udp-mobile",
+    "scheme": "udp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "sdkVersion": "51.0.0"
+  }
+}
