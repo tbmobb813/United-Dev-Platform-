@@ -32,19 +32,30 @@ export default function Home() {
   const router = useRouter();
   const [userName, setUserName] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const room = (router.query.room as string) || "room-demo";
+  const room = (router.query.room as string) || "default-room";
+  const docName = (router.query.doc as string) || "main-document";
   const [file, setFile] = useState("/README.md");
+  const [roomInput, setRoomInput] = useState(room);
+  const [docInput, setDocInput] = useState(docName);
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
-  )}&cursor=1,1&room=${encodeURIComponent(room)}`;
+  )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
 
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
   const ytextRef = useRef<Y.Text | null>(null);
   const awarenessRef = useRef<Awareness | null>(null);
+  const editorRef = useRef<
+    import("monaco-editor").editor.IStandaloneCodeEditor | null
+  >(null);
   const ignoreRef = useRef(false);
   const [users, setUsers] = useState<
-    { id: string; name: string; color: string }[]
+    {
+      id: string;
+      name: string;
+      color: string;
+      cursor?: { line: number; column: number };
+    }[]
   >([]);
 
   useEffect(() => {
@@ -62,10 +73,12 @@ export default function Home() {
     if (!userName) return;
 
     try {
+      const docId = `${room}-${docName}`;
       const doc = new Y.Doc();
+
       const provider = new WebsocketProvider(
         process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3030",
-        room,
+        docId,
         doc
       );
 
@@ -78,14 +91,17 @@ export default function Home() {
         console.error("WebSocket connection error:", error);
       });
 
-      const ytext = doc.getText("main");
+      const ytext = doc.getText(docName);
       const awareness = provider.awareness;
+
+      // Set initial content if document is empty
       if (ytext.length === 0) {
         ytext.insert(
           0,
-          "# Collaborative Doc\n\nType here and open the mobile app to test handoff."
+          `# ${docName}\n\nCollaborative document for room: ${room}\nDocument: ${docName}\n\nType here and open the mobile app to test handoff.`
         );
       }
+
       const userId = uuidv4().substring(0, 5);
 
       const handleChange = () => {
@@ -94,19 +110,37 @@ export default function Home() {
           const userStates = awarenessRef.current.getStates();
           const userList = Array.from(userStates.values())
             .map(
-              (state: { user?: { id: string; name: string; color: string } }) =>
-                state.user
+              (state: {
+                user?: {
+                  id: string;
+                  name: string;
+                  color: string;
+                  cursor?: { line: number; column: number };
+                };
+              }) => state.user
             )
             .filter(
-              (user): user is { id: string; name: string; color: string } =>
-                Boolean(user && user.id && user.name && user.color)
+              (
+                user
+              ): user is {
+                id: string;
+                name: string;
+                color: string;
+                cursor?: { line: number; column: number };
+              } => Boolean(user && user.id && user.name && user.color)
             )
             .map((user) => ({
               id: String(user.id),
               name: String(user.name),
               color: String(user.color),
+              cursor: user.cursor,
             }));
           setUsers(userList);
+
+          // Update cursor decorations in editor
+          if (editorRef.current) {
+            updateCursorDecorations(userList.filter((u) => u.cursor));
+          }
         } catch (error) {
           console.error("Error updating user list:", error);
           setUsers([]);
@@ -135,11 +169,76 @@ export default function Home() {
     } catch (error) {
       console.error("Error setting up Yjs:", error);
     }
-  }, [room, userName]);
+  }, [room, docName, userName]);
+
+  const updateCursorDecorations = (
+    usersWithCursors: {
+      id: string;
+      name: string;
+      color: string;
+      cursor: { line: number; column: number };
+    }[]
+  ) => {
+    if (!editorRef.current || typeof window === "undefined") return;
+
+    try {
+      const decorations = usersWithCursors.map((user) => ({
+        range: {
+          startLineNumber: user.cursor.line,
+          startColumn: user.cursor.column,
+          endLineNumber: user.cursor.line,
+          endColumn: user.cursor.column + 1,
+        },
+        options: {
+          className: `cursor-${user.id}`,
+          beforeContentClassName: `cursor-label-${user.id}`,
+          stickiness: 1,
+        },
+      }));
+
+      editorRef.current.deltaDecorations([], decorations);
+
+      // Add dynamic styles for cursors
+      const styleId = "user-cursor-styles";
+      let styleElement = document.getElementById(styleId) as HTMLStyleElement;
+      if (!styleElement) {
+        styleElement = document.createElement("style");
+        styleElement.id = styleId;
+        document.head.appendChild(styleElement);
+      }
+
+      const styles = usersWithCursors
+        .map(
+          (user) => `
+        .cursor-${user.id} {
+          border-left: 2px solid ${user.color} !important;
+        }
+        .cursor-label-${user.id}::before {
+          content: "${user.name}";
+          background: ${user.color};
+          color: white;
+          padding: 2px 4px;
+          border-radius: 3px;
+          font-size: 11px;
+          position: absolute;
+          top: -20px;
+          white-space: nowrap;
+          z-index: 1000;
+        }
+      `
+        )
+        .join("\n");
+
+      styleElement.textContent = styles;
+    } catch (error) {
+      console.warn("Failed to update cursor decorations:", error);
+    }
+  };
 
   const handleEditorDidMount = (
     editor: import("monaco-editor").editor.IStandaloneCodeEditor
   ) => {
+    editorRef.current = editor;
     const model = editor.getModel();
     if (!model || !ytextRef.current) return;
     editor.updateOptions({ wordWrap: "on", minimap: { enabled: false } });
@@ -164,9 +263,24 @@ export default function Home() {
       ignoreRef.current = false;
     });
 
+    // Track cursor position changes
+    const cursorDisposable = editor.onDidChangeCursorPosition((e) => {
+      if (!awarenessRef.current || ignoreRef.current) return;
+
+      const position = e.position;
+      awarenessRef.current.setLocalStateField("user", {
+        ...awarenessRef.current.getLocalState()?.user,
+        cursor: {
+          line: position.lineNumber,
+          column: position.column,
+        },
+      });
+    });
+
     editor.onDidDispose(() => {
       if (ytextRef.current) ytextRef.current.unobserve(yObserver);
       disposable.dispose();
+      cursorDisposable.dispose();
     });
   };
 
@@ -186,7 +300,63 @@ export default function Home() {
       <p>Logged in as: {userName ? String(userName) : "Unknown"}</p>
       <Button onClick={handleSignOut}>Sign out</Button>
 
-      <h2>Collaborative editor powered by Yjs. Room: {room}</h2>
+      <div
+        style={{
+          margin: "20px 0",
+          padding: "15px",
+          border: "1px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        <h3>Document Navigation</h3>
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
+        >
+          <label>Room:</label>
+          <input
+            value={roomInput}
+            onChange={(e) => setRoomInput(e.target.value)}
+            placeholder="Enter room name"
+            style={{
+              padding: "6px",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+            }}
+          />
+          <label>Document:</label>
+          <input
+            value={docInput}
+            onChange={(e) => setDocInput(e.target.value)}
+            placeholder="Enter document name"
+            style={{
+              padding: "6px",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+            }}
+          />
+          <Button
+            onClick={() => {
+              const newUrl = `/?room=${encodeURIComponent(roomInput)}&doc=${encodeURIComponent(docInput)}`;
+              router.push(newUrl);
+            }}
+          >
+            Switch Document
+          </Button>
+        </div>
+        <p style={{ fontSize: "14px", color: "#666" }}>
+          Current: <strong>{room}</strong> / <strong>{docName}</strong>
+        </p>
+      </div>
+
+      <h2>
+        Collaborative editor powered by Yjs. Room: {room}, Document: {docName}
+      </h2>
       {isClient && (
         <MonacoEditor
           height="40vh"
@@ -205,10 +375,14 @@ export default function Home() {
               const id = u.id ? String(u.id) : `user-${index}`;
               const name = u.name ? String(u.name) : "Unknown User";
               const color = u.color ? String(u.color) : "#000000";
+              const cursorInfo = u.cursor
+                ? ` (Line ${u.cursor.line}, Col ${u.cursor.column})`
+                : "";
 
               return (
                 <li key={`${id}-${index}`} style={{ color: color }}>
                   {name}
+                  {cursorInfo}
                 </li>
               );
             })

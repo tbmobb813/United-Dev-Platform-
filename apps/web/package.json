@@ -7,7 +7,9 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
@@ -20,6 +22,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.2.0",
     "uuid": "^9.0.0",
+    "y-indexeddb": "^9.0.12",
     "y-protocols": "^1.0.6",
     "y-websocket": "^1.5.0",
     "yjs": "^13.6.27"

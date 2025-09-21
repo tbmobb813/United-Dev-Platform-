@@ -1,9 +1,9 @@
 export type AITool =
-  | 'explainFile'
-  | 'suggestRefactor'
-  | 'createScreen'
-  | 'mapParity'
-  | 'writeTest';
+  | "explainFile"
+  | "suggestRefactor"
+  | "createScreen"
+  | "mapParity"
+  | "writeTest";
 
 export type AIRequest = {
   tool: AITool;

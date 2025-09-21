@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require("electron");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -9,13 +9,13 @@ function createWindow() {
       contextIsolation: true,
     },
   });
-  win.loadURL('http://localhost:3000');
+  win.loadURL("http://localhost:3000");
 }
 
 app.whenReady().then(createWindow);
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });

@@ -1,6 +1,6 @@
 # Unified Dev Platform (Improved Starter)
 
-This starter implements the next iteration of the unified web + mobile + API workspace.  It includes error handling, minimal authentication, AI stubs, and an Electron wrapper, on top of the original collaborative editing features.
+This starter implements the next iteration of the unified web + mobile + API workspace. It includes error handling, minimal authentication, AI stubs, and an Electron wrapper, on top of the original collaborative editing features.
 
 ## What's inside
 

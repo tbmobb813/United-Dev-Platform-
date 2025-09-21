@@ -23,6 +23,9 @@ importers:
       eslint:
         specifier: ^9.36.0
         version: 9.36.0
+      prettier:
+        specifier: ^3.3.3
+        version: 3.6.2
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@24.5.2)(typescript@5.9.2)
@@ -108,6 +111,9 @@ importers:
       uuid:
         specifier: ^9.0.0
         version: 9.0.1
+      y-indexeddb:
+        specifier: ^9.0.12
+        version: 9.0.12(yjs@13.6.27)
       y-protocols:
         specifier: ^1.0.6
         version: 1.0.6(yjs@13.6.27)
@@ -4250,6 +4256,11 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+
   pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -5310,6 +5321,12 @@ packages:
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
+
+  y-indexeddb@9.0.12:
+    resolution: {integrity: sha512-9oCFRSPPzBK7/w5vOkJBaVCQZKHXB/v6SIT+WYhnJxlEC61juqG0hBrAf+y3gmSMLFLwICNH9nQ53uscuse6Hg==}
+    engines: {node: '>=16.0.0', npm: '>=8.0.0'}
+    peerDependencies:
+      yjs: ^13.0.0
 
   y-leveldb@0.1.2:
     resolution: {integrity: sha512-6ulEn5AXfXJYi89rXPEg2mMHAyyw8+ZfeMMdOtBbV8FJpQ1NOrcgi6DTAcXof0dap84NjHPT2+9d0rb6cFsjEg==}
@@ -10543,6 +10560,8 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
+  prettier@3.6.2: {}
+
   pretty-bytes@5.6.0: {}
 
   pretty-format@24.9.0:
@@ -11741,6 +11760,11 @@ snapshots:
   xmlbuilder@15.1.1: {}
 
   xtend@4.0.2: {}
+
+  y-indexeddb@9.0.12(yjs@13.6.27):
+    dependencies:
+      lib0: 0.2.114
+      yjs: 13.6.27
 
   y-leveldb@0.1.2(yjs@13.6.27):
     dependencies:

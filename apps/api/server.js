@@ -6,17 +6,17 @@ import { WebSocketServer } from "ws";
 
 // Simple WebSocket connection handler
 function setupWSConnection(conn) {
-  console.log('WebSocket connection established');
+  console.log("WebSocket connection established");
 
-  conn.on('message', (message) => {
+  conn.on("message", (message) => {
     // Echo the message to all connected clients
-    console.log('Received message:', message.toString());
+    console.log("Received message:", message.toString());
     // For now, just echo back
     conn.send(message);
   });
 
-  conn.on('close', () => {
-    console.log('WebSocket connection closed');
+  conn.on("close", () => {
+    console.log("WebSocket connection closed");
   });
 }
 
@@ -32,7 +32,9 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 // AI stub endpoint
 app.post("/ai/run", (req, res) => {
   const { tool, filePath, prompt } = req.body || {};
-  res.json({ result: `AI tool '${tool}' executed on ${filePath || 'project'}: ${prompt || ''}` });
+  res.json({
+    result: `AI tool '${tool}' executed on ${filePath || "project"}: ${prompt || ""}`,
+  });
 });
 
 const server = http.createServer(app);
@@ -51,5 +53,7 @@ app.use((err, _req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`[api] listening on http://localhost:${PORT} (WS upgrade enabled)`);
+  console.log(
+    `[api] listening on http://localhost:${PORT} (WS upgrade enabled)`
+  );
 });
