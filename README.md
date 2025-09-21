@@ -4,6 +4,7 @@ Opinionated starter for a unified web + mobile + API workspace with room for
 AI features and a mobile-extended workflow.
 
 ## What's inside
+
 - `apps/web` – Next.js starter (PWA-ready)
 - `apps/api` – Node WebSocket server for Yjs (real-time sync) + simple REST
 - `apps/mobile` – Expo (React Native) starter with deep-link placeholder
@@ -28,6 +29,7 @@ pnpm --filter @udp/mobile start
 ```
 
 ### Notes
+
 - This is a **minimal** boilerplate to unblock repo creation. You can swap `apps/api`
   to NestJS later and expand AI features in `packages/ai`.
 - The API includes a Yjs websocket endpoint for collaborative editing/sync.
