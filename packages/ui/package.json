@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "main": "index.ts",
   "private": true,
-  "dependencies": {
-    "@types/react": "18.2.79",
-    "react": "^19.1.1"
+  "peerDependencies": {
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.79"
   }
 }

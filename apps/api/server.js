@@ -3,7 +3,22 @@ import http from "http";
 import cors from "cors";
 import morgan from "morgan";
 import { WebSocketServer } from "ws";
-import { setupWSConnection } from "y-websocket/bin/utils.js";
+
+// Simple WebSocket connection handler
+function setupWSConnection(conn) {
+  console.log('WebSocket connection established');
+
+  conn.on('message', (message) => {
+    // Echo the message to all connected clients
+    console.log('Received message:', message.toString());
+    // For now, just echo back
+    conn.send(message);
+  });
+
+  conn.on('close', () => {
+    console.log('WebSocket connection closed');
+  });
+}
 
 const PORT = process.env.PORT || 3030;
 const app = express();
@@ -25,7 +40,7 @@ const wss = new WebSocketServer({ noServer: true });
 
 server.on("upgrade", (request, socket, head) => {
   wss.handleUpgrade(request, socket, head, (ws) => {
-    setupWSConnection(ws, request);
+    setupWSConnection(ws);
   });
 });
 

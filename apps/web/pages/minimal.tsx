@@ -1,5 +1,4 @@
 import Head from "next/head";
-import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import * as Y from "yjs";
@@ -7,17 +6,6 @@ import { WebsocketProvider } from "y-websocket";
 import { Awareness } from "y-protocols/awareness";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@udp/ui";
-
-// Dynamic imports for client-side only components
-const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
-  ssr: false,
-  loading: () => <p>Loading editor...</p>,
-});
-
-const QRCode = dynamic(() => import("qrcode.react"), {
-  ssr: false,
-  loading: () => <div>Loading QR code...</div>,
-});
 
 function generateColor() {
   const letters = "0123456789ABCDEF";
@@ -28,21 +16,17 @@ function generateColor() {
   return color;
 }
 
-export default function Home() {
+export default function MinimalHome() {
   const router = useRouter();
   const [userName, setUserName] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const room = (router.query.room as string) || "room-demo";
   const [file, setFile] = useState("/README.md");
-  const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
-    file
-  )}&cursor=1,1&room=${encodeURIComponent(room)}`;
 
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
   const ytextRef = useRef<Y.Text | null>(null);
   const awarenessRef = useRef<Awareness | null>(null);
-  const ignoreRef = useRef(false);
   const [users, setUsers] = useState<
     { id: string; name: string; color: string }[]
   >([]);
@@ -59,7 +43,7 @@ export default function Home() {
   }, [router]);
 
   useEffect(() => {
-    if (!userName) return;
+    if (!userName || !isClient) return;
 
     try {
       const doc = new Y.Doc();
@@ -68,15 +52,6 @@ export default function Home() {
         room,
         doc
       );
-
-      // Add error handling for WebSocket
-      provider.on("status", (event: { status: string }) => {
-        console.log("WebSocket status:", event.status);
-      });
-
-      provider.on("connection-error", (error: Error) => {
-        console.error("WebSocket connection error:", error);
-      });
 
       const ytext = doc.getText("main");
       const awareness = provider.awareness;
@@ -135,40 +110,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error setting up Yjs:", error);
     }
-  }, [room, userName]);
-
-  const handleEditorDidMount = (
-    editor: import("monaco-editor").editor.IStandaloneCodeEditor
-  ) => {
-    const model = editor.getModel();
-    if (!model || !ytextRef.current) return;
-    editor.updateOptions({ wordWrap: "on", minimap: { enabled: false } });
-    model.setValue(ytextRef.current.toString());
-
-    const yObserver = () => {
-      if (!ytextRef.current || ignoreRef.current) return;
-      ignoreRef.current = true;
-      model.setValue(ytextRef.current.toString());
-      ignoreRef.current = false;
-    };
-    ytextRef.current.observe(yObserver);
-
-    const disposable = editor.onDidChangeModelContent(() => {
-      if (!ytextRef.current || ignoreRef.current) return;
-      ignoreRef.current = true;
-      const val = model.getValue();
-      ytextRef.current.doc?.transact(() => {
-        ytextRef.current!.delete(0, ytextRef.current!.length);
-        ytextRef.current!.insert(0, val);
-      });
-      ignoreRef.current = false;
-    });
-
-    editor.onDidDispose(() => {
-      if (ytextRef.current) ytextRef.current.unobserve(yObserver);
-      disposable.dispose();
-    });
-  };
+  }, [room, userName, isClient]);
 
   const handleSignOut = () => {
     localStorage.removeItem("userName");
@@ -178,71 +120,55 @@ export default function Home() {
   if (!userName || !isClient) return <div>Loading...</div>;
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <Head>
-        <title>Unified Dev Platform</title>
+        <title>Minimal Unified Dev Platform</title>
       </Head>
-      <h1>Unified Dev Platform (Web)</h1>
-      <p>Logged in as: {userName ? String(userName) : "Unknown"}</p>
+      <h1>Minimal Unified Dev Platform (Web)</h1>
+      <p>Logged in as: {String(userName)}</p>
       <Button onClick={handleSignOut}>Sign out</Button>
 
-      <h2>Collaborative editor powered by Yjs. Room: {room}</h2>
-      {isClient && (
-        <MonacoEditor
-          height="40vh"
-          language="markdown"
-          onMount={handleEditorDidMount}
-        />
-      )}
+      <h2>Collaborative Room: {String(room)}</h2>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          padding: "20px",
+          marginTop: "20px",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        <h3>Text Content (No Monaco Editor Yet):</h3>
+        <p>{ytextRef.current ? ytextRef.current.toString() : "Loading..."}</p>
+      </div>
 
       <h3>Active users:</h3>
-      <ul>
+      <div
+        style={{ border: "1px solid #ddd", padding: "10px", marginTop: "10px" }}
+      >
         {Array.isArray(users) && users.length > 0 ? (
-          users
-            .map((u, index) => {
-              // Ensure all properties exist and are valid
-              if (!u || typeof u !== "object") return null;
-              const id = u.id ? String(u.id) : `user-${index}`;
-              const name = u.name ? String(u.name) : "Unknown User";
-              const color = u.color ? String(u.color) : "#000000";
+          <ul>
+            {users.map((user, index) => {
+              if (!user || typeof user !== "object") {
+                return <li key={`invalid-${index}`}>Invalid user data</li>;
+              }
+
+              const safeId = user.id ? String(user.id) : `user-${index}`;
+              const safeName = user.name ? String(user.name) : "Unknown User";
+              const safeColor = user.color ? String(user.color) : "#000000";
 
               return (
-                <li key={`${id}-${index}`} style={{ color: color }}>
-                  {name}
+                <li key={`${safeId}-${index}`} style={{ color: safeColor }}>
+                  {safeName} (ID: {safeId})
                 </li>
               );
-            })
-            .filter(Boolean)
+            })}
+          </ul>
         ) : (
-          <li>No active users</li>
+          <p>No active users</p>
         )}
-      </ul>
+      </div>
 
-      <h2>Mobile Handoff (QR demo)</h2>
-      <p>Scan to open the same document on the mobile client via deep link:</p>
-      {isClient && deeplink ? (
-        <div>
-          <QRCode value={String(deeplink)} size={180} />
-          <div
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              backgroundColor: "#f0f0f0",
-              fontFamily: "monospace",
-              fontSize: "12px",
-              wordBreak: "break-all",
-              marginTop: "10px",
-            }}
-          >
-            <strong>Deep Link:</strong>
-            <br />
-            {String(deeplink)}
-          </div>
-        </div>
-      ) : (
-        <div>Loading QR code and deep link...</div>
-      )}
-
+      <h3>Deep Link:</h3>
       <p>
         File path:
         <input
@@ -256,6 +182,18 @@ export default function Home() {
           }}
         />
       </p>
+      <p>
+        Deep link: udp://open?repo=demo&file={encodeURIComponent(file)}
+        &cursor=1,1&room={encodeURIComponent(room)}
+      </p>
+
+      <hr style={{ margin: "20px 0" }} />
+      <p>
+        <strong>
+          This minimal version should work without React rendering errors.
+        </strong>
+      </p>
+      <p>If this works, we can gradually add Monaco Editor and QR Code back.</p>
     </div>
   );
 }

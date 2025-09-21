@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Button } from "@udp/ui";
 
-export default function Login() {
+export default function LoginNative() {
   const router = useRouter();
   const [name, setName] = useState("");
 
@@ -15,7 +14,7 @@ export default function Login() {
 
   return (
     <div style={{ padding: 24 }}>
-      <h1>Login</h1>
+      <h1>Login (Native Button)</h1>
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -23,7 +22,19 @@ export default function Login() {
         style={{ padding: 6, border: "1px solid #ddd", borderRadius: 6 }}
       />
       <div style={{ marginTop: 12 }}>
-        <Button onClick={handleLogin}>Enter</Button>
+        <button
+          onClick={handleLogin}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#0070f3",
+            borderRadius: 4,
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Enter
+        </button>
       </div>
     </div>
   );
