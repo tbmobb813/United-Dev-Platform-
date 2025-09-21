@@ -6,6 +6,7 @@ import QRCode from 'qrcode.react';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { Awareness } from 'y-protocols/awareness';
+import { listUsers } from '@udp/editor-core/awareness';
 import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@udp/ui/Button';
 
@@ -57,10 +58,9 @@ export default function Home() {
       id: userId,
       name: userName,
       color: generateColor(),
-    });
     const handleChange = () => {
-      const states = Array.from(awareness.getStates().values()) as any[];
-      setUsers(states.map((s) => s.user));
+      setUsers(listUsers(awareness));
+    };
     };
     awareness.on('change', handleChange);
     handleChange();
