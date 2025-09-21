@@ -37,15 +37,16 @@ export default function App() {
   useEffect(() => {
     const docId = `${params.room}-${params.doc}`;
     const doc = new Y.Doc();
-    const provider = new WebsocketProvider("ws://localhost:3030", docId, doc);
+    const provider = new WebsocketProvider(
+      "ws://localhost:3030",
+      docId,
+      doc
+    );
     const ytext = doc.getText(params.doc);
 
     // Set initial content if document is empty
     if (ytext.length === 0) {
-      ytext.insert(
-        0,
-        `# ${params.doc}\n\nMobile editing in room: ${params.room}\nDocument: ${params.doc}`
-      );
+      ytext.insert(0, `# ${params.doc}\n\nMobile editing in room: ${params.room}\nDocument: ${params.doc}`);
     }
 
     ytext.observe(() => {
