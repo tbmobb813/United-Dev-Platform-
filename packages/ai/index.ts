@@ -1,6 +1,9 @@
 export type AITool =
-  | "explainFile" | "suggestRefactor" | "createScreen"
-  | "mapParity"   | "writeTest";
+  | 'explainFile'
+  | 'suggestRefactor'
+  | 'createScreen'
+  | 'mapParity'
+  | 'writeTest';
 
 export type AIRequest = {
   tool: AITool;
@@ -12,5 +15,5 @@ export type AIRequest = {
 
 export const prompts = {
   explainFile: `You are a senior engineer. Explain the file succinctly...`,
-  suggestRefactor: `Propose a safe refactor with a unified diff...`
+  suggestRefactor: `Propose a safe refactor with a unified diff...`,
 };

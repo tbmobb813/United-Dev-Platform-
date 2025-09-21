@@ -1,9 +1,14 @@
 import * as Linking from 'expo-linking';
-import { useEffect, useState } from 'react';
-import { SafeAreaView, Text, TextInput, View } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
+import { SafeAreaView, Text, TextInput } from 'react-native';
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
 
 export default function App() {
-  const [params, setParams] = useState({ repo: '', file: '', cursor: '' });
+  const [params, setParams] = useState({ repo: '', file: '', cursor: '', room: 'room-demo' });
+  const [content, setContent] = useState('');
+  const ydocRef = useRef();
+  const ytextRef = useRef();
 
   useEffect(() => {
     const handleDeepLink = ({ url }) => {
@@ -11,31 +16,56 @@ export default function App() {
       setParams({
         repo: queryParams.repo || '',
         file: queryParams.file || '',
-        cursor: queryParams.cursor || ''
+        cursor: queryParams.cursor || '',
+        room: queryParams.room || 'room-demo',
       });
     };
     const sub = Linking.addEventListener('url', handleDeepLink);
-    Linking.getInitialURL().then(url => { if (url) handleDeepLink({ url }); });
+    Linking.getInitialURL().then((url) => {
+      if (url) handleDeepLink({ url });
+    });
     return () => sub.remove();
   }, []);
 
+  useEffect(() => {
+    const doc = new Y.Doc();
+    const provider = new WebsocketProvider('ws://localhost:3030', params.room, doc);
+    const ytext = doc.getText('main');
+    if (ytext.length === 0) ytext.insert(0, '');
+    ytext.observe(() => {
+      setContent(ytext.toString());
+    });
+    ydocRef.current = doc;
+    ytextRef.current = ytext;
+    return () => {
+      provider.destroy();
+      doc.destroy();
+    };
+  }, [params.room]);
+
+  const handleChange = (value) => {
+    setContent(value);
+    const ytext = ytextRef.current;
+    if (ytext) {
+      ytext.doc?.transact(() => {
+        ytext.delete(0, ytext.length);
+        ytext.insert(0, value);
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, padding: 24 }}>
-      <Text style={{ fontSize: 20, fontWeight: '600' }}>UDP Mobile</Text>
-      <Text style={{ marginTop: 8 }}>Deep link parameters:</Text>
-      <View style={{ marginTop: 12 }}>
-        <Text>repo: {params.repo}</Text>
-        <Text>file: {params.file}</Text>
-        <Text>cursor: {params.cursor}</Text>
-      </View>
-      <View style={{ marginTop: 24 }}>
-        <Text>Editor placeholder (wire Yjs later)</Text>
-        <TextInput
-          placeholder="File contents..."
-          multiline
-          style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, minHeight: 180 }}
-        />
-      </View>
+      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>UDP Mobile</Text>
+      <Text>Repo: {params.repo}</Text>
+      <Text>File: {params.file}</Text>
+      <Text>Room: {params.room}</Text>
+      <TextInput
+        style={{ marginTop: 12, height: 200, borderColor: '#ccc', borderWidth: 1, padding: 8 }}
+        multiline
+        value={content}
+        onChangeText={handleChange}
+      />
     </SafeAreaView>
   );
 }

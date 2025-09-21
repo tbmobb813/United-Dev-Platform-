@@ -2,5 +2,5 @@
   "name": "@udp/types",
   "version": "0.0.1",
   "main": "index.ts",
-  "type": "module"
+  "private": true
 }

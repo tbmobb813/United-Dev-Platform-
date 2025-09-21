@@ -2,9 +2,10 @@
   "name": "@udp/editor-core",
   "version": "0.0.1",
   "main": "index.ts",
-  "type": "module",
+  "private": true,
   "dependencies": {
-    "yjs": "^13.6.15",
-    "y-websocket": "^1.5.0"
+    "yjs": "^13.6.27",
+    "y-websocket": "^1.5.0",
+    "y-protocols": "^1.0.6"
   }
 }

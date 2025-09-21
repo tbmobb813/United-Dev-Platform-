@@ -1,36 +1,16 @@
-# Unified Dev Platform (Starter Monorepo)
+# Unified Dev Platform (Improved Starter)
 
-Opinionated starter for a unified web + mobile + API workspace with room for
-AI features and a mobile-extended workflow.
+This starter implements the next iteration of the unified web + mobile + API workspace.  It includes error handling, minimal authentication, AI stubs, and an Electron wrapper, on top of the original collaborative editing features.
 
 ## What's inside
 
-- `apps/web` – Next.js starter (PWA-ready)
-- `apps/api` – Node WebSocket server for Yjs (real-time sync) + simple REST
-- `apps/mobile` – Expo (React Native) starter with deep-link placeholder
-- `packages/editor-core` – Yjs helper (createCollabDoc)
-- `packages/types` – Shared types
-- `packages/ai` – Prompt & tool placeholders
-- Turborepo + pnpm workspaces
+- `apps/web` – Next.js app with Monaco editor, Yjs sync (rooms and presence), simple login page, and QR deep‑link.
+- `apps/api` – Node server providing a Yjs WebSocket endpoint, AI stub endpoint, and basic error handling middleware.
+- `apps/mobile` – Expo app that joins the Yjs room and syncs text in real time.
+- `apps/desktop` – Electron wrapper that loads the web client.
+- `packages/editor-core` – Yjs helpers and awareness utilities.
+- `packages/types` – Shared types.
+- `packages/ai` – Placeholder prompt definitions.
+- `packages/ui` – Shared UI components (e.g. Button).
 
-## Quick start
-
-```bash
-pnpm install
-
-# in one terminal
-pnpm --filter @udp/api dev
-
-# in another terminal
-pnpm --filter @udp/web dev
-
-# (optional) mobile
-pnpm --filter @udp/mobile start
-```
-
-### Notes
-
-- This is a **minimal** boilerplate to unblock repo creation. You can swap `apps/api`
-  to NestJS later and expand AI features in `packages/ai`.
-- The API includes a Yjs websocket endpoint for collaborative editing/sync.
-- The web app includes a basic page and a placeholder for QR handoff.
+See the original README for quick start instructions.
