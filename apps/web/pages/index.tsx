@@ -1,20 +1,22 @@
-import Head from 'next/head';
-import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
-import QRCode from 'qrcode.react';
-import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
-import { Awareness } from 'y-protocols/awareness';
-import { listUsers } from '@udp/editor-core/awareness';
-import { v4 as uuidv4 } from 'uuid';
-import { Button } from '@udp/ui/Button';
+import Head from "next/head";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import QRCode from "qrcode.react";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+import { Awareness } from "y-protocols/awareness";
+import { getAllUserStates } from "@udp/editor-core";
+import { v4 as uuidv4 } from "uuid";
+import { Button } from "@udp/ui";
 
-const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
+const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
+  ssr: false,
+});
 
 function generateColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
+  const letters = "0123456789ABCDEF";
+  let color = "#";
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -24,21 +26,26 @@ function generateColor() {
 export default function Home() {
   const router = useRouter();
   const [userName, setUserName] = useState<string | null>(null);
-  const room = (router.query.room as string) || 'room-demo';
-  const [file, setFile] = useState('/README.md');
-  const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(file)}&cursor=1,1&room=${encodeURIComponent(room)}`;
+  const room = (router.query.room as string) || "room-demo";
+  const [file, setFile] = useState("/README.md");
+  const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
+    file
+  )}&cursor=1,1&room=${encodeURIComponent(room)}`;
 
-  const ydocRef = useRef<Y.Doc>();
-  const providerRef = useRef<WebsocketProvider>();
-  const ytextRef = useRef<Y.Text>();
-  const awarenessRef = useRef<Awareness>();
+  const ydocRef = useRef<Y.Doc | null>(null);
+  const providerRef = useRef<WebsocketProvider | null>(null);
+  const ytextRef = useRef<Y.Text | null>(null);
+  const awarenessRef = useRef<Awareness | null>(null);
   const ignoreRef = useRef(false);
-  const [users, setUsers] = useState<{ id: string; name: string; color: string }[]>([]);
+  const [users, setUsers] = useState<
+    { id: string; name: string; color: string }[]
+  >([]);
 
   useEffect(() => {
-    const storedName = typeof window !== 'undefined' ? localStorage.getItem('userName') : null;
+    const storedName =
+      typeof window !== "undefined" ? localStorage.getItem("userName") : null;
     if (!storedName) {
-      router.push('/login');
+      router.push("/login");
     } else {
       setUserName(storedName);
     }
@@ -47,22 +54,38 @@ export default function Home() {
   useEffect(() => {
     if (!userName) return;
     const doc = new Y.Doc();
-    const provider = new WebsocketProvider(process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3030', room, doc);
-    const ytext = doc.getText('main');
+    const provider = new WebsocketProvider(
+      process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3030",
+      room,
+      doc
+    );
+    const ytext = doc.getText("main");
     const awareness = provider.awareness;
     if (ytext.length === 0) {
-      ytext.insert(0, '# Collaborative Doc\n\nType here and open the mobile app to test handoff.');
+      ytext.insert(
+        0,
+        "# Collaborative Doc\n\nType here and open the mobile app to test handoff."
+      );
     }
     const userId = uuidv4().substring(0, 5);
-    awareness.setLocalStateField('user', {
+
+    const handleChange = () => {
+      const userStates = getAllUserStates();
+      const userList = Array.from(userStates.values()).map((state) => ({
+        id: state.id,
+        name: state.name,
+        color: state.color,
+      }));
+      setUsers(userList);
+    };
+
+    awareness.setLocalStateField("user", {
       id: userId,
       name: userName,
       color: generateColor(),
-    const handleChange = () => {
-      setUsers(listUsers(awareness));
-    };
-    };
-    awareness.on('change', handleChange);
+    });
+
+    awareness.on("change", handleChange);
     handleChange();
 
     ydocRef.current = doc;
@@ -71,16 +94,18 @@ export default function Home() {
     awarenessRef.current = awareness;
 
     return () => {
-      awareness.off('change', handleChange);
+      awareness.off("change", handleChange);
       provider.destroy();
       doc.destroy();
     };
   }, [room, userName]);
 
-  const handleEditorDidMount = (editor: any) => {
+  const handleEditorDidMount = (
+    editor: import("monaco-editor").editor.IStandaloneCodeEditor
+  ) => {
     const model = editor.getModel();
     if (!model || !ytextRef.current) return;
-    editor.updateOptions({ wordWrap: 'on', minimap: { enabled: false } });
+    editor.updateOptions({ wordWrap: "on", minimap: { enabled: false } });
     model.setValue(ytextRef.current.toString());
 
     const yObserver = () => {
@@ -109,8 +134,8 @@ export default function Home() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('userName');
-    router.push('/login');
+    localStorage.removeItem("userName");
+    router.push("/login");
   };
 
   if (!userName) return null;
@@ -124,11 +149,17 @@ export default function Home() {
       <p>Logged in as {userName}</p>
       <Button onClick={handleSignOut}>Sign out</Button>
       <h2>Collaborative editor powered by Yjs. Room: {room}</h2>
-      <MonacoEditor height="40vh" language="markdown" onMount={handleEditorDidMount} />
+      <MonacoEditor
+        height="40vh"
+        language="markdown"
+        onMount={handleEditorDidMount}
+      />
       <h3>Active users:</h3>
       <ul>
         {users.map((u) => (
-          <li key={u.id} style={{ color: u.color }}>{u.name}</li>
+          <li key={u.id} style={{ color: u.color }}>
+            {u.name}
+          </li>
         ))}
       </ul>
       <h2>Mobile Handoff (QR demo)</h2>
@@ -139,7 +170,7 @@ export default function Home() {
         <input
           value={file}
           onChange={(e) => setFile(e.target.value)}
-          style={{ padding: 6, border: '1px solid #ddd', borderRadius: 6 }}
+          style={{ padding: 6, border: "1px solid #ddd", borderRadius: 6 }}
         />
       </p>
     </>

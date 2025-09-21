@@ -30,8 +30,7 @@ server.on("upgrade", (request, socket, head) => {
 });
 
 // Error handling
-// eslint-disable-next-line no-unused-vars
-app.use((err, _req, res, _next) => {
+app.use((err, _req, res) => {
   console.error(err);
   res.status(500).json({ error: "Internal Server Error" });
 });

@@ -6,3 +6,6 @@ export function createCollabDoc(room: string, serverUrl: string) {
   const provider = new WebsocketProvider(serverUrl, room, doc);
   return { doc, provider };
 }
+
+// Export awareness functionality
+export * from "./awareness";
