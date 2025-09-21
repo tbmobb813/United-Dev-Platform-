@@ -1,0 +1,6 @@
+{
+  "name": "@udp/ui",
+  "version": "0.0.1",
+  "main": "Button.tsx",
+  "private": true
+}

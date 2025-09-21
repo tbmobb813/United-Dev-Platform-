@@ -1,7 +1,7 @@
 export type FileNode = {
   path: string;
-  kind: "page" | "component" | "hook" | "util" | "screen" | "style" | "test" | "unknown";
-  platform?: "web" | "native" | "shared";
+  kind: 'page' | 'component' | 'hook' | 'util' | 'screen' | 'style' | 'test' | 'unknown';
+  platform?: 'web' | 'native' | 'shared';
   imports: string[];
   exports: string[];
   size: number;
@@ -10,7 +10,7 @@ export type FileNode = {
 export type CrossPlatformLink = {
   shared: string[];
   platformPairs: { web?: string; native?: string }[];
-  gaps: { missingOn: "web" | "native"; counterpart: string }[];
+  gaps: { missingOn: 'web' | 'native'; counterpart: string }[];
 };
 
 export type ProjectGraph = {

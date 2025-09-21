@@ -1,0 +1,12 @@
+{
+  "name": "@udp/desktop",
+  "version": "0.0.1",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^29.3.0"
+  }
+}

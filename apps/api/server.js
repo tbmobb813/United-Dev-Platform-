@@ -9,8 +9,16 @@ const PORT = process.env.PORT || 3030;
 const app = express();
 app.use(cors());
 app.use(morgan("dev"));
+app.use(express.json());
 
+// Health check
 app.get("/health", (_req, res) => res.json({ ok: true }));
+
+// AI stub endpoint
+app.post("/ai/run", (req, res) => {
+  const { tool, filePath, prompt } = req.body || {};
+  res.json({ result: `AI tool '${tool}' executed on ${filePath || 'project'}: ${prompt || ''}` });
+});
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ noServer: true });
@@ -19,6 +27,13 @@ server.on("upgrade", (request, socket, head) => {
   wss.handleUpgrade(request, socket, head, (ws) => {
     setupWSConnection(ws, request);
   });
+});
+
+// Error handling
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ error: "Internal Server Error" });
 });
 
 server.listen(PORT, () => {

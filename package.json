@@ -3,13 +3,16 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint"
+    "build": "turbo build",
+    "lint": "turbo run lint"
   },
   "devDependencies": {
     "turbo": "^2.0.0",
     "typescript": "^5.4.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0"
   }
 }
