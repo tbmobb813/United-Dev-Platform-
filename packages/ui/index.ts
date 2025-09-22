@@ -12,3 +12,10 @@ export * from './Settings';
 export * from './ShortcutsHelp';
 export * from './useKeyboardShortcuts';
 export * from './UserAvatar';
+
+// New components
+export * from './Breadcrumb';
+export * from './DataTable';
+export * from './FormValidation';
+export * from './Notification';
+export * from './Tooltip';
