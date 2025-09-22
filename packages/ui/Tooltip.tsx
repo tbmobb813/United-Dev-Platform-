@@ -1,3 +1,4 @@
+/* global HTMLDivElement, clearTimeout */
 import React, { useEffect, useRef, useState } from 'react';
 
 export type TooltipPlacement = 

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@udp/db';
 import { requireAuth } from '../../../lib/auth';
 
 export default async function handler(
@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   // Require authentication for all project operations
   const session = await requireAuth(req, res);
-  if (!session) return;
+  if (!session) {return;}
 
   switch (req.method) {
     case 'GET':

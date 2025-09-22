@@ -1,3 +1,4 @@
+/* global setTimeout, clearTimeout */
 import React, { createContext, useCallback, useContext, useEffect, useReducer } from 'react';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';

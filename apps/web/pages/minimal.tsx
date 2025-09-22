@@ -43,7 +43,7 @@ export default function MinimalHome() {
   }, [router]);
 
   useEffect(() => {
-    if (!userName || !isClient) return;
+    if (!userName || !isClient) {return;}
 
     try {
       const doc = new Y.Doc();
@@ -64,7 +64,7 @@ export default function MinimalHome() {
       const userId = uuidv4().substring(0, 5);
 
       const handleChange = () => {
-        if (!awarenessRef.current) return;
+        if (!awarenessRef.current) {return;}
         try {
           const userStates = awarenessRef.current.getStates();
           const userList = Array.from(userStates.values())
@@ -117,7 +117,7 @@ export default function MinimalHome() {
     router.push('/login');
   };
 
-  if (!userName || !isClient) return <div>Loading...</div>;
+  if (!userName || !isClient) {return <div>Loading...</div>;}
 
   return (
     <div style={{ padding: '20px' }}>

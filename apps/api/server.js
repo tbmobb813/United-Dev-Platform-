@@ -4,7 +4,7 @@ import http from 'http';
 import morgan from 'morgan';
 import { WebSocketServer } from 'ws';
 import { setupWSConnection } from 'y-websocket/bin/utils.js';
-import { prisma } from './lib/prisma.js';
+import { prisma } from '@udp/db';
 
 // Store active collaboration sessions and documents
 const sessions = new Map();

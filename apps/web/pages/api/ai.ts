@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '@udp/db';
 
 export default async function handler(
   req: NextApiRequest,
@@ -106,7 +106,7 @@ export default async function handler(
     try {
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {break;}
 
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n');

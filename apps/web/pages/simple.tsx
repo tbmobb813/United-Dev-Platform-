@@ -24,7 +24,7 @@ export default function SimpleHome() {
     router.push('/login');
   };
 
-  if (!userName || !isClient) return <div>Loading...</div>;
+  if (!userName || !isClient) {return <div>Loading...</div>;}
 
   return (
     <div>

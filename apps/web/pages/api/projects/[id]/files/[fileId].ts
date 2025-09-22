@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../../../lib/prisma';
+import { prisma } from '@udp/db';
 
 export default async function handler(
   req: NextApiRequest,
@@ -87,8 +87,8 @@ async function updateFile(
 
     const updateData: any = {};
 
-    if (path) updateData.path = path;
-    if (name) updateData.name = name;
+    if (path) {updateData.path = path;}
+    if (name) {updateData.name = name;}
     if (content !== undefined) {
       updateData.content = content;
       updateData.size = content ? Buffer.byteLength(content, 'utf8') : 0;

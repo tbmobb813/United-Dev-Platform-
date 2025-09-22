@@ -24,8 +24,8 @@ export default function Debug() {
     router.push('/login');
   };
 
-  if (!isClient) return <div>Loading...</div>;
-  if (!userName) return <div>No user found, redirecting...</div>;
+  if (!isClient) {return <div>Loading...</div>;}
+  if (!userName) {return <div>No user found, redirecting...</div>;}
 
   return (
     <div style={{ padding: '20px' }}>

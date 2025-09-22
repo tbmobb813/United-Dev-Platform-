@@ -1,3 +1,5 @@
+/* global TextDecoder, TextEncoder */
+/* eslint-disable no-constant-condition */
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
 export class OpenAIService extends AIService {

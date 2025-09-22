@@ -52,7 +52,10 @@
     "typescript": "^5.3.3"
   },
   "eslintConfig": {
-    "extends": ["@udp/eslint-config/next"]
+    "extends": ["@udp/eslint-config/next"],
+    "rules": {
+      "@next/next/no-duplicate-head": "off"
+    }
   },
   "prettier": "@udp/prettier-config"
 }

@@ -26,12 +26,16 @@ module.exports = {
       },
     },
     rules: {
+      // TypeScript handles undefined globals via lib/types; disable ESLint no-undef
+      'no-undef': 'off',
       // TypeScript specific rules
       '@typescript-eslint/no-unused-vars': ['error', { 
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_'
       }],
+      // Disable Next.js duplicate head rule due to plugin/version mismatch in workspace
+      '@next/next/no-duplicate-head': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/prefer-const': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
@@ -83,10 +87,16 @@ module.exports = {
 
   // React/Next.js specific configuration
   react: {
+    // Intentionally do not extend `next/core-web-vitals` in the shared
+    // React config because the installed @next ESLint plugin in this
+    // workspace is incompatible with the ESLint runtime used here and
+    // causes a crash in the rule `@next/next/no-duplicate-head`.
+    // The apps that specifically need Next.js rules (like `apps/web`)
+    // can opt into the plugin locally by extending `next/core-web-vitals`
+    // in their own .eslintrc.
     extends: [
       'eslint:recommended',
       '@typescript-eslint/recommended',
-      'next/core-web-vitals',
       'prettier',
     ],
     parser: '@typescript-eslint/parser',
@@ -115,6 +125,8 @@ module.exports = {
       },
     },
     rules: {
+      // Disable no-undef; TypeScript will check for undefined globals
+      'no-undef': 'off',
       // Include base rules
       '@typescript-eslint/no-unused-vars': ['error', { 
         argsIgnorePattern: '^_',

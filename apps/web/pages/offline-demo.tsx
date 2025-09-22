@@ -72,8 +72,8 @@ const OfflineCollaborationDemo: React.FC = () => {
         </div>
         
         <OfflineEditor 
-          room="platform-demo" 
-          serverUrl="ws://localhost:1234"
+          room='platform-demo' 
+          serverUrl='ws://localhost:1234'
         >
           {(doc, status) => (
             <div style={{ padding: '16px' }}>

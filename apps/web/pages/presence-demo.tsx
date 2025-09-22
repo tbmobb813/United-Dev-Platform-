@@ -149,7 +149,7 @@ export default function PresenceDemo() {
               lineHeight: '1.6'
             }}>
               <div style={{ color: '#666', marginBottom: '12px' }}>
-                // Sample collaborative code editor
+                {/* Sample collaborative code editor */}
               </div>
               <div style={{ color: '#333' }}>
                 function calculateSum(a, b) {'{'}
@@ -162,7 +162,7 @@ export default function PresenceDemo() {
               </div>
               <br />
               <div style={{ color: '#666' }}>
-                // Users are collaborating on this code...
+                {/* Users are collaborating on this code... */}
               </div>
               <div style={{ color: '#333' }}>
                 const result = calculateSum(5, 3);
