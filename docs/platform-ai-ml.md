@@ -185,7 +185,7 @@ graph TD
 
 ### Project Structure
 
-```
+---
 ai-dev-platform/
 ├── apps/
 │   ├── web/                    # Next.js frontend + API
@@ -202,7 +202,6 @@ ai-dev-platform/
 │   └── scripts/                # Deployment scripts
 ├── docs/                       # Documentation
 └── .github/workflows/          # CI/CD pipelines
-```
 
 ### Environment Setup
 
@@ -775,5 +774,3 @@ jobs:
    - Audit logging
    - Advanced security policies
    - Multi-tenant architecture
-
----

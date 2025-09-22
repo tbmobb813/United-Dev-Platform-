@@ -11,9 +11,9 @@ export interface FileManagerProps {
   onClose: () => void;
   mode: "open" | "save" | "create";
   currentFile?: string;
-  onFileSelect?: (_filePath: string) => void;
-  onFileSave?: (_filePath: string, _content: string) => void;
-  onFileCreate?: (_filePath: string) => void;
+  onFileSelect?: (filePath: string) => void;
+  onFileSave?: (filePath: string, content: string) => void;
+  onFileCreate?: (filePath: string) => void;
 }
 
 export const FileManager: React.FC<FileManagerProps> = ({

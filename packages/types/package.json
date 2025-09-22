@@ -2,5 +2,10 @@
   "name": "@udp/types",
   "version": "0.0.1",
   "main": "index.ts",
-  "private": true
+  "private": true,
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit"
+  }
 }

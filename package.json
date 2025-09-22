@@ -2,24 +2,29 @@
   "name": "unified-dev-platform",
   "private": true,
   "packageManager": "pnpm@9.0.0",
+  "pnpm": {
+    "overrides": {
+      "react": "18.3.1",
+      "react-dom": "18.3.1"
+    }
+  },
   "scripts": {
-    "dev": "turbo dev",
     "build": "turbo build",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "typecheck": "turbo run typecheck"
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "turbo type-check",
+    "clean": "turbo clean && rm -rf node_modules",
+    "test": "turbo test"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.36.0",
-    "@typescript-eslint/eslint-plugin": "^8.44.0",
-    "@typescript-eslint/parser": "^8.44.0",
-    "eslint": "^9.36.0",
-    "prettier": "^3.3.3",
-    "ts-node": "^10.9.2",
-    "turbo": "^2.0.0",
-    "typescript": "^5.4.0"
+    "@udp/eslint-config": "workspace:*",
+    "@udp/prettier-config": "workspace:*",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.5",
+    "typescript": "^5.3.3"
   }
 }

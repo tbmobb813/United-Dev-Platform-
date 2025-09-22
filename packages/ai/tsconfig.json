@@ -21,6 +21,7 @@
         "declaration": true,
         "outDir": "./dist",
         "baseUrl": ".",
+        "noUnusedParameters": false,
         "paths": {
             "@udp/ui": [
                 "../ui/index.ts"

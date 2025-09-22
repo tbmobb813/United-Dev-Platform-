@@ -19,7 +19,7 @@ import {
   Settings,
   CollaborationPanel,
 } from "@udp/ui";
-import { AIAssistant } from "../components/AIAssistant";
+import { AIAssistant, AIManager } from "@udp/ai";
 import { codeCompletionService } from "../components/CodeCompletionProvider";
 
 // Dynamic imports for client-side only components
@@ -58,10 +58,34 @@ export default function Home() {
     "open" | "save" | "create"
   >("open");
   const [isShortcutsHelpOpen, setIsShortcutsHelpOpen] = useState(false);
+
+  // AI Manager for real AI integration
+  const [aiManager, setAiManager] = useState<AIManager | null>(null);
+
+  // Initialize AI Manager when component mounts
+  useEffect(() => {
+    // For now, create AI manager without API keys (will use fallback responses)
+    // In a real app, these would come from user settings/environment variables
+    try {
+      const manager = new AIManager({
+        defaultProvider: "openai",
+        apiKeys: {
+          // No API keys provided - will trigger fallback responses
+        },
+        enableStreaming: true,
+      });
+      setAiManager(manager);
+    } catch (error) {
+      console.warn("AI Manager initialization failed:", error);
+      // Component will work without AI manager (shows fallback responses)
+    }
+  }, []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  // Generate both mobile app deeplink and fallback web URL
+  const webUrl = `${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
-  )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
+  )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}&fallback=${encodeURIComponent(webUrl)}`;
 
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
@@ -256,7 +280,7 @@ export default function Home() {
     }
   };
 
-  const handleEditorDidMount = (
+  const handleEditorDidMount = async (
     editor: import("monaco-editor").editor.IStandaloneCodeEditor
   ) => {
     editorRef.current = editor;
@@ -271,15 +295,23 @@ export default function Home() {
       quickSuggestions: true,
       suggestSelection: "first",
       acceptSuggestionOnEnter: "on",
+      hover: {
+        enabled: true,
+        delay: 300,
+      },
+      selectionHighlight: true,
+      occurrencesHighlight: "singleFile",
+      renderLineHighlight: "gutter",
+      smoothScrolling: true,
+      cursorSmoothCaretAnimation: "on",
     });
 
     model.setValue(ytextRef.current.toString());
 
     // Initialize code completion providers
     try {
-      codeCompletionService.registerCompletionProviders();
-      codeCompletionService.registerHoverProvider();
-      codeCompletionService.registerCodeActionProvider();
+      await codeCompletionService.registerCompletionProviders();
+      await codeCompletionService.registerHoverProvider();
       console.log("✅ Code completion initialized");
     } catch (error) {
       console.warn("Failed to initialize code completion:", error);
@@ -497,11 +529,53 @@ export default function Home() {
       </h2>
       {isClient && (
         <Stack gap="small">
-          <MonacoEditor
-            height="40vh"
-            language="markdown"
-            onMount={handleEditorDidMount}
-          />
+          <div
+            style={{
+              border: "1px solid #e1e5e9",
+              borderRadius: "8px",
+              overflow: "hidden",
+            }}
+          >
+            <style jsx global>{`
+              .monaco-editor .selected-text {
+                background-color: rgba(0, 112, 243, 0.1) !important;
+              }
+              .monaco-editor .selectionHighlight {
+                background-color: rgba(0, 112, 243, 0.15) !important;
+              }
+              .monaco-editor .wordHighlight {
+                background-color: rgba(0, 112, 243, 0.1) !important;
+              }
+              .monaco-editor .wordHighlightStrong {
+                background-color: rgba(0, 112, 243, 0.2) !important;
+              }
+              .monaco-editor .hover-contents {
+                background-color: #ffffff !important;
+                border: 1px solid #e1e5e9 !important;
+                border-radius: 6px !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+              }
+              .monaco-editor .monaco-hover {
+                background-color: #ffffff !important;
+                border: 1px solid #e1e5e9 !important;
+                border-radius: 6px !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+              }
+            `}</style>
+            <MonacoEditor
+              height="40vh"
+              language="markdown"
+              onMount={handleEditorDidMount}
+              theme="vs-light"
+              options={{
+                selectOnLineNumbers: true,
+                roundedSelection: false,
+                readOnly: false,
+                cursorStyle: "line",
+                automaticLayout: true,
+              }}
+            />
+          </div>
           <Card padding="small">
             <Stack direction="row" gap="medium" align="center" wrap>
               <div
@@ -565,25 +639,55 @@ export default function Home() {
         )}
       </ul>
 
-      <h2>Mobile Handoff (QR demo)</h2>
-      <p>Scan to open the same document on the mobile client via deep link:</p>
+      <h2>Mobile Handoff</h2>
+      <p>Scan with your mobile device to join this collaboration session:</p>
       {isClient && deeplink ? (
         <Stack gap="medium" align="center">
-          <QRCode value={String(deeplink)} size={180} />
+          <Card padding="medium" style={{ textAlign: "center" }}>
+            <Stack gap="small" align="center">
+              <QRCode value={webUrl} size={180} />
+              <div style={{ fontSize: "12px", color: "#666" }}>
+                📱 Scan to open in mobile browser
+              </div>
+            </Stack>
+          </Card>
+
+          <Stack direction="row" gap="small" wrap>
+            <Button
+              variant="outline"
+              size="small"
+              onClick={() => navigator.clipboard.writeText(webUrl)}
+            >
+              📋 Copy Web Link
+            </Button>
+            <Button
+              variant="outline"
+              size="small"
+              onClick={() => navigator.clipboard.writeText(deeplink)}
+            >
+              📱 Copy App Link
+            </Button>
+          </Stack>
+
           <Card
-            title="Deep Link"
+            title="Connection Details"
             padding="medium"
             style={{ maxWidth: "400px" }}
           >
-            <div
-              style={{
-                fontFamily: "monospace",
-                fontSize: "12px",
-                wordBreak: "break-all",
-              }}
-            >
-              {deeplink}
-            </div>
+            <Stack gap="small">
+              <div>
+                <strong>Room:</strong> {room}
+              </div>
+              <div>
+                <strong>Document:</strong> {docName}
+              </div>
+              <div
+                style={{ fontSize: "10px", color: "#666", marginTop: "8px" }}
+              >
+                💡 Mobile app link will work when the UDP mobile app is
+                installed
+              </div>
+            </Stack>
           </Card>
         </Stack>
       ) : (
@@ -609,19 +713,33 @@ export default function Home() {
       <AIAssistant
         isOpen={isAIOpen}
         onClose={() => setIsAIOpen(false)}
+        currentFile={file}
         selectedCode={selectedCode}
-        fileName={file}
-        editorContent={ytextRef.current?.toString()}
-        cursorPosition={
-          editorRef.current
-            ? (() => {
-                const position = editorRef.current.getPosition();
-                return position
-                  ? { line: position.lineNumber, column: position.column }
-                  : undefined;
-              })()
-            : undefined
-        }
+        aiManager={aiManager}
+        onCodeInsert={(code: string) => {
+          // Insert code at cursor position in editor
+          if (editorRef.current && typeof window !== "undefined") {
+            const editor = editorRef.current;
+            const position = editor.getPosition();
+            if (position) {
+              // Import monaco dynamically to access the Range class
+              import("monaco-editor").then((monaco) => {
+                editor.executeEdits("ai-assistant", [
+                  {
+                    range: new monaco.Range(
+                      position.lineNumber,
+                      position.column,
+                      position.lineNumber,
+                      position.column
+                    ),
+                    text: code,
+                  },
+                ]);
+                editor.focus();
+              });
+            }
+          }
+        }}
       />
 
       {/* File Manager Modal */}

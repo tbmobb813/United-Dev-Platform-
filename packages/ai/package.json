@@ -4,16 +4,19 @@
   "main": "index.ts",
   "private": true,
   "scripts": {
-    "build": "echo 'Build not needed - using simple React.createElement'"
+    "build": "echo 'Build not needed - using simple React.createElement'",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@udp/ui": "workspace:*",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@udp/ui": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.79",
-    "@types/react-dom": "^18.3.7",
+    "@types/react-dom": "^18.2.25",
     "typescript": "^5.0.0"
   }
 }

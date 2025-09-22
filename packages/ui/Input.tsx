@@ -2,7 +2,7 @@ import React from "react";
 
 export type InputProps = {
   value: string;
-  onChange: (newValue: string) => void;
+  onChange: (value: string) => void;
   placeholder?: string;
   type?: "text" | "password" | "email" | "search";
   disabled?: boolean;

@@ -3,7 +3,7 @@ import { resolve } from 'path';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@udp/editor-core', '@udp/ui'],
+  transpilePackages: ['@udp/editor-core', '@udp/ui', '@udp/ai'],
   outputFileTracingRoot: resolve(process.cwd(), '../..'),
   eslint: {
     ignoreDuringBuilds: true,

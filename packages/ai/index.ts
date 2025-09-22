@@ -18,5 +18,22 @@ export const prompts = {
   suggestRefactor: `Propose a safe refactor with a unified diff...`,
 };
 
-export { default as AIAssistant } from "./AIAssistant";
-export type { ChatMessage, AIAssistantProps } from "./AIAssistant";
+// Main AI Assistant component (Class component to avoid React hooks issues)
+export { default as AIAssistant } from "./AIAssistantClass";
+export type { ChatMessage, AIAssistantProps } from "./AIAssistantClass";
+
+// AI Service layer
+export { AIManager } from "./AIManager";
+export type { CodeContext, AIManagerConfig } from "./AIManager";
+export { AIServiceFactory, DEFAULT_CONFIGS } from "./services/AIServiceFactory";
+export { AIService } from "./services/AIService";
+export type {
+  AIMessage,
+  AIResponse,
+  AIServiceConfig,
+  AIProvider,
+} from "./services/AIService";
+
+// Specific AI service implementations
+export { OpenAIService } from "./services/OpenAIService";
+export { AnthropicService } from "./services/AnthropicService";
