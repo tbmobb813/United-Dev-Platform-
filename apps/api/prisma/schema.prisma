@@ -11,34 +11,35 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  username    String   @unique
-  email       String   @unique
-  name        String
-  avatar      String?
-  password    String?
-  provider    String   @default("local")
-  providerId  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  projects    Project[] @relation("ProjectOwner")
-  memberships ProjectMember[]
+  id                  String               @id @default(uuid())
+  username            String               @unique
+  email               String               @unique
+  name                String
+  avatar              String?
+  password            String?
+  provider            String               @default("local")
+  providerId          String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  projects            Project[]            @relation("ProjectOwner")
+  memberships         ProjectMember[]
   sessionParticipants SessionParticipant[]
-  aiConversations AIConversation[]
-  fileActivities FileActivity[]
+  aiConversations     AIConversation[]
+  fileActivities      FileActivity[]
 }
 
 model Project {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  ownerId     String
-  owner       User     @relation("ProjectOwner", fields: [ownerId], references: [id])
-  members     ProjectMember[]
-  files       ProjectFile[]
-  sessions    CollaborationSession[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String                 @id @default(uuid())
+  name            String
+  description     String?
+  ownerId         String
+  owner           User                   @relation("ProjectOwner", fields: [ownerId], references: [id])
+  members         ProjectMember[]
+  files           ProjectFile[]
+  aiConversations AIConversation[]
+  sessions        CollaborationSession[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
 }
 
 model ProjectMember {
@@ -54,75 +55,75 @@ model ProjectMember {
 }
 
 model ProjectFile {
-  id        String   @id @default(uuid())
-  project   Project  @relation(fields: [projectId], references: [id])
-  projectId String
-  name      String
-  path      String
-  content   String
-  language  String?
-  size      Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String         @id @default(uuid())
+  project    Project        @relation(fields: [projectId], references: [id])
+  projectId  String
+  name       String
+  path       String
+  content    String
+  language   String?
+  size       Int            @default(0)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
   activities FileActivity[]
 
   @@unique([projectId, path])
 }
 
 model CollaborationSession {
-  id          String   @id @default(uuid())
-  project     Project  @relation(fields: [projectId], references: [id])
-  projectId   String
-  isActive    Boolean  @default(true)
-  startedAt   DateTime @default(now())
-  endedAt     DateTime?
+  id           String               @id @default(uuid())
+  project      Project              @relation(fields: [projectId], references: [id])
+  projectId    String
+  isActive     Boolean              @default(true)
+  startedAt    DateTime             @default(now())
+  endedAt      DateTime?
   participants SessionParticipant[]
 }
 
 model SessionParticipant {
-  id         String   @id @default(uuid())
-  session    CollaborationSession @relation(fields: [sessionId], references: [id])
-  sessionId  String
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  isActive   Boolean  @default(true)
-  joinedAt   DateTime @default(now())
-  leftAt     DateTime?
-  cursor     String?
+  id        String               @id @default(uuid())
+  session   CollaborationSession @relation(fields: [sessionId], references: [id])
+  sessionId String
+  user      User                 @relation(fields: [userId], references: [id])
+  userId    String
+  isActive  Boolean              @default(true)
+  joinedAt  DateTime             @default(now())
+  leftAt    DateTime?
+  cursor    String?
 
   @@unique([sessionId, userId])
 }
 
 model FileActivity {
-  id        String   @id @default(uuid())
+  id        String      @id @default(uuid())
   file      ProjectFile @relation(fields: [fileId], references: [id])
   fileId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
   userId    String
-  action    String   // CREATE, UPDATE, DELETE
+  action    String // CREATE, UPDATE, DELETE
   changes   Json?
-  timestamp DateTime @default(now())
+  timestamp DateTime    @default(now())
 }
 
 model AIConversation {
-  id          String   @id @default(uuid())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
-  project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
-  title       String?
-  model       String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  messages    AIMessage[]
+  id        String      @id @default(uuid())
+  user      User        @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project?    @relation(fields: [projectId], references: [id])
+  projectId String?
+  title     String?
+  model     String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  messages  AIMessage[]
 }
 
 model AIMessage {
-  id              String   @id @default(uuid())
-  conversation    AIConversation @relation(fields: [conversationId], references: [id])
-  conversationId  String
-  role            String   // user, assistant, system
-  content         String
-  metadata        Json?
-  createdAt       DateTime @default(now())
+  id             String         @id @default(uuid())
+  conversation   AIConversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  role           String // user, assistant, system
+  content        String
+  metadata       Json?
+  createdAt      DateTime       @default(now())
 }
