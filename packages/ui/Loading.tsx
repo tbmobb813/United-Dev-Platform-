@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
 export type LoadingProps = {
-  size?: "small" | "medium" | "large";
+  size?: 'small' | 'medium' | 'large';
   text?: string;
   color?: string;
   className?: string;
@@ -9,16 +9,16 @@ export type LoadingProps = {
 };
 
 export const Loading: React.FC<LoadingProps> = ({
-  size = "medium",
+  size = 'medium',
   text,
-  color = "#0070f3",
+  color = '#0070f3',
   className,
   style,
 }) => {
   const sizeMap = {
-    small: "16px",
-    medium: "24px",
-    large: "32px",
+    small: '16px',
+    medium: '24px',
+    large: '32px',
   };
 
   const spinnerSize = sizeMap[size];
@@ -27,10 +27,10 @@ export const Loading: React.FC<LoadingProps> = ({
     <div
       className={className}
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "8px",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '8px',
         ...style,
       }}
     >
@@ -40,16 +40,16 @@ export const Loading: React.FC<LoadingProps> = ({
           height: spinnerSize,
           border: `2px solid #f3f4f6`,
           borderTop: `2px solid ${color}`,
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite",
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
         }}
       />
       {text && (
         <span
           style={{
-            fontSize: "14px",
-            color: "#6b7280",
-            textAlign: "center",
+            fontSize: '14px',
+            color: '#6b7280',
+            textAlign: 'center',
           }}
         >
           {text}

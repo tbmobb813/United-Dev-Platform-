@@ -8,11 +8,12 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@udp/editor-core": "workspace:*",
     "@udp/ui-native": "workspace:*",
     "expo": "^51.0.0",
     "expo-linking": "~6.3.1",

@@ -1,15 +1,15 @@
-import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
-import { Awareness } from "y-protocols/awareness";
-import { v4 as uuidv4 } from "uuid";
-import { Button } from "@udp/ui";
+import Head from 'next/head';
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
+import { Awareness } from 'y-protocols/awareness';
+import { v4 as uuidv4 } from 'uuid';
+import { Button } from '@udp/ui';
 
 function generateColor() {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
+  const letters = '0123456789ABCDEF';
+  let color = '#';
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -20,8 +20,8 @@ export default function MinimalHome() {
   const router = useRouter();
   const [userName, setUserName] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const room = (router.query.room as string) || "room-demo";
-  const [file, setFile] = useState("/README.md");
+  const room = (router.query.room as string) || 'room-demo';
+  const [file, setFile] = useState('/README.md');
 
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
@@ -34,9 +34,9 @@ export default function MinimalHome() {
   useEffect(() => {
     setIsClient(true);
     const storedName =
-      typeof window !== "undefined" ? localStorage.getItem("userName") : null;
+      typeof window !== 'undefined' ? localStorage.getItem('userName') : null;
     if (!storedName) {
-      router.push("/login");
+      router.push('/login');
     } else {
       setUserName(storedName);
     }
@@ -48,17 +48,17 @@ export default function MinimalHome() {
     try {
       const doc = new Y.Doc();
       const provider = new WebsocketProvider(
-        process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3030",
+        process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3030',
         room,
         doc
       );
 
-      const ytext = doc.getText("main");
+      const ytext = doc.getText('main');
       const awareness = provider.awareness;
       if (ytext.length === 0) {
         ytext.insert(
           0,
-          "# Collaborative Doc\n\nType here and open the mobile app to test handoff."
+          '# Collaborative Doc\n\nType here and open the mobile app to test handoff.'
         );
       }
       const userId = uuidv4().substring(0, 5);
@@ -76,25 +76,25 @@ export default function MinimalHome() {
               (user): user is { id: string; name: string; color: string } =>
                 Boolean(user && user.id && user.name && user.color)
             )
-            .map((user) => ({
+            .map(user => ({
               id: String(user.id),
               name: String(user.name),
               color: String(user.color),
             }));
           setUsers(userList);
         } catch (error) {
-          console.error("Error updating user list:", error);
+          console.error('Error updating user list:', error);
           setUsers([]);
         }
       };
 
-      awareness.setLocalStateField("user", {
+      awareness.setLocalStateField('user', {
         id: userId,
         name: userName,
         color: generateColor(),
       });
 
-      awareness.on("change", handleChange);
+      awareness.on('change', handleChange);
       handleChange();
 
       ydocRef.current = doc;
@@ -103,24 +103,24 @@ export default function MinimalHome() {
       awarenessRef.current = awareness;
 
       return () => {
-        awareness.off("change", handleChange);
+        awareness.off('change', handleChange);
         provider.destroy();
         doc.destroy();
       };
     } catch (error) {
-      console.error("Error setting up Yjs:", error);
+      console.error('Error setting up Yjs:', error);
     }
   }, [room, userName, isClient]);
 
   const handleSignOut = () => {
-    localStorage.removeItem("userName");
-    router.push("/login");
+    localStorage.removeItem('userName');
+    router.push('/login');
   };
 
   if (!userName || !isClient) return <div>Loading...</div>;
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: '20px' }}>
       <Head>
         <title>Minimal Unified Dev Platform</title>
       </Head>
@@ -131,30 +131,30 @@ export default function MinimalHome() {
       <h2>Collaborative Room: {String(room)}</h2>
       <div
         style={{
-          border: "1px solid #ccc",
-          padding: "20px",
-          marginTop: "20px",
-          backgroundColor: "#f9f9f9",
+          border: '1px solid #ccc',
+          padding: '20px',
+          marginTop: '20px',
+          backgroundColor: '#f9f9f9',
         }}
       >
         <h3>Text Content (No Monaco Editor Yet):</h3>
-        <p>{ytextRef.current ? ytextRef.current.toString() : "Loading..."}</p>
+        <p>{ytextRef.current ? ytextRef.current.toString() : 'Loading...'}</p>
       </div>
 
       <h3>Active users:</h3>
       <div
-        style={{ border: "1px solid #ddd", padding: "10px", marginTop: "10px" }}
+        style={{ border: '1px solid #ddd', padding: '10px', marginTop: '10px' }}
       >
         {Array.isArray(users) && users.length > 0 ? (
           <ul>
             {users.map((user, index) => {
-              if (!user || typeof user !== "object") {
+              if (!user || typeof user !== 'object') {
                 return <li key={`invalid-${index}`}>Invalid user data</li>;
               }
 
               const safeId = user.id ? String(user.id) : `user-${index}`;
-              const safeName = user.name ? String(user.name) : "Unknown User";
-              const safeColor = user.color ? String(user.color) : "#000000";
+              const safeName = user.name ? String(user.name) : 'Unknown User';
+              const safeColor = user.color ? String(user.color) : '#000000';
 
               return (
                 <li key={`${safeId}-${index}`} style={{ color: safeColor }}>
@@ -173,10 +173,10 @@ export default function MinimalHome() {
         File path:
         <input
           value={file}
-          onChange={(e) => setFile(e.target.value)}
+          onChange={e => setFile(e.target.value)}
           style={{
             padding: 6,
-            border: "1px solid #ddd",
+            border: '1px solid #ddd',
             borderRadius: 6,
             marginLeft: 8,
           }}
@@ -187,7 +187,7 @@ export default function MinimalHome() {
         &cursor=1,1&room={encodeURIComponent(room)}
       </p>
 
-      <hr style={{ margin: "20px 0" }} />
+      <hr style={{ margin: '20px 0' }} />
       <p>
         <strong>
           This minimal version should work without React rendering errors.

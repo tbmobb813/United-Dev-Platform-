@@ -3,8 +3,8 @@ import {
   AIMessage,
   AIResponse,
   AIServiceConfig,
-} from "./services/AIService";
-import { AIServiceFactory, DEFAULT_CONFIGS } from "./services/AIServiceFactory";
+} from './services/AIService';
+import { AIServiceFactory, DEFAULT_CONFIGS } from './services/AIServiceFactory';
 
 export interface CodeContext {
   fileName?: string;
@@ -16,7 +16,7 @@ export interface CodeContext {
 }
 
 export interface AIManagerConfig {
-  defaultProvider: "openai" | "anthropic";
+  defaultProvider: 'openai' | 'anthropic';
   apiKeys: {
     openai?: string;
     anthropic?: string;
@@ -35,7 +35,9 @@ export class AIManager {
   }
 
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {
+      return;
+    }
 
     const apiKey = this.config.apiKeys[this.config.defaultProvider];
     if (!apiKey) {
@@ -47,9 +49,9 @@ export class AIManager {
       apiKey,
       model:
         this.config.defaultModel ||
-        (this.config.defaultProvider === "openai"
+        (this.config.defaultProvider === 'openai'
           ? DEFAULT_CONFIGS.development.model
-          : "claude-3-sonnet-20240229"),
+          : 'claude-3-sonnet-20240229'),
       stream: this.config.enableStreaming ?? true,
     };
 
@@ -70,22 +72,22 @@ export class AIManager {
     message: string,
     context?: CodeContext,
     intent:
-      | "explain"
-      | "generate"
-      | "debug"
-      | "optimize"
-      | "test"
-      | "chat" = "chat",
+      | 'explain'
+      | 'generate'
+      | 'debug'
+      | 'optimize'
+      | 'test'
+      | 'chat' = 'chat',
     onChunk?: (chunk: string) => void
   ): Promise<AIResponse> {
     if (!this.service) {
-      throw new Error("AI Manager not initialized. Call initialize() first.");
+      throw new Error('AI Manager not initialized. Call initialize() first.');
     }
 
     const systemPrompt = this.createSystemPrompt(intent, context);
     const messages: AIMessage[] = [
       {
-        role: "user",
+        role: 'user',
         content: this.formatUserMessage(message, context),
         timestamp: new Date(),
       },
@@ -104,13 +106,13 @@ export class AIManager {
 
   async explainCode(
     code: string,
-    context?: Omit<CodeContext, "selectedCode">
+    context?: Omit<CodeContext, 'selectedCode'>
   ): Promise<AIResponse> {
     const fullContext: CodeContext = { ...context, selectedCode: code };
     return this.chat(
       `Please explain this code in detail:`,
       fullContext,
-      "explain"
+      'explain'
     );
   }
 
@@ -122,7 +124,7 @@ export class AIManager {
     return this.chat(
       `Generate code for: ${prompt}`,
       context,
-      "generate",
+      'generate',
       onChunk
     );
   }
@@ -130,37 +132,37 @@ export class AIManager {
   async debugCode(
     code: string,
     errorMessage?: string,
-    context?: Omit<CodeContext, "selectedCode">
+    context?: Omit<CodeContext, 'selectedCode'>
   ): Promise<AIResponse> {
     const fullContext: CodeContext = { ...context, selectedCode: code };
     const message = errorMessage
       ? `Debug this code that's causing this error: "${errorMessage}"`
       : `Debug this code and identify potential issues:`;
 
-    return this.chat(message, fullContext, "debug");
+    return this.chat(message, fullContext, 'debug');
   }
 
   async optimizeCode(
     code: string,
-    context?: Omit<CodeContext, "selectedCode">
+    context?: Omit<CodeContext, 'selectedCode'>
   ): Promise<AIResponse> {
     const fullContext: CodeContext = { ...context, selectedCode: code };
     return this.chat(
       `Optimize this code for better performance and maintainability:`,
       fullContext,
-      "optimize"
+      'optimize'
     );
   }
 
   async generateTests(
     code: string,
-    context?: Omit<CodeContext, "selectedCode">
+    context?: Omit<CodeContext, 'selectedCode'>
   ): Promise<AIResponse> {
     const fullContext: CodeContext = { ...context, selectedCode: code };
     return this.chat(
       `Generate comprehensive unit tests for this code:`,
       fullContext,
-      "test"
+      'test'
     );
   }
 
@@ -236,11 +238,11 @@ Current context: You're working in a real-time collaborative editor where multip
 
     if (context) {
       if (context.selectedCode) {
-        formattedMessage += `\n\n**Selected Code:**\n\`\`\`${context.language || "text"}\n${context.selectedCode}\n\`\`\``;
+        formattedMessage += `\n\n**Selected Code:**\n\`\`\`${context.language || 'text'}\n${context.selectedCode}\n\`\`\``;
       }
 
       if (context.fullCode && context.fullCode !== context.selectedCode) {
-        formattedMessage += `\n\n**Full File Context:**\n\`\`\`${context.language || "text"}\n${context.fullCode}\n\`\`\``;
+        formattedMessage += `\n\n**Full File Context:**\n\`\`\`${context.language || 'text'}\n${context.fullCode}\n\`\`\``;
       }
 
       if (context.cursorPosition) {
@@ -252,7 +254,7 @@ Current context: You're working in a real-time collaborative editor where multip
   }
 
   async switchProvider(
-    provider: "openai" | "anthropic",
+    provider: 'openai' | 'anthropic',
     model?: string
   ): Promise<void> {
     const apiKey = this.config.apiKeys[provider];
@@ -264,7 +266,7 @@ Current context: You're working in a real-time collaborative editor where multip
       provider,
       apiKey,
       model:
-        model || (provider === "openai" ? "gpt-4" : "claude-3-sonnet-20240229"),
+        model || (provider === 'openai' ? 'gpt-4' : 'claude-3-sonnet-20240229'),
       stream: this.config.enableStreaming ?? true,
     };
 
@@ -288,7 +290,7 @@ Current context: You're working in a real-time collaborative editor where multip
 
   async getAvailableModels(): Promise<string[]> {
     if (!this.service) {
-      throw new Error("AI Manager not initialized");
+      throw new Error('AI Manager not initialized');
     }
     return await this.service.getAvailableModels();
   }

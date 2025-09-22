@@ -1,6 +1,6 @@
 // AI Service abstraction layer for multiple providers
 export interface AIMessage {
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp?: Date;
 }
@@ -24,7 +24,7 @@ export interface AIProvider {
 }
 
 export interface AIServiceConfig {
-  provider: "openai" | "anthropic" | "local" | "ollama";
+  provider: 'openai' | 'anthropic' | 'local' | 'ollama';
   apiKey?: string;
   baseUrl?: string;
   model: string;
@@ -62,7 +62,7 @@ export abstract class AIService {
     language?: string,
     cursorPosition?: { line: number; column: number }
   ): string {
-    let context = "";
+    let context = '';
 
     if (fileName) {
       context += `File: ${fileName}\n`;
@@ -76,14 +76,14 @@ export abstract class AIService {
       context += `Cursor Position: Line ${cursorPosition.line}, Column ${cursorPosition.column}\n`;
     }
 
-    context += `\nCode:\n\`\`\`${language || "text"}\n${code}\n\`\`\`\n`;
+    context += `\nCode:\n\`\`\`${language || 'text'}\n${code}\n\`\`\`\n`;
 
     return context;
   }
 
   // Helper method to create specialized prompts
   protected createSystemPrompt(
-    intent: "explain" | "generate" | "debug" | "optimize" | "test" | "chat"
+    intent: 'explain' | 'generate' | 'debug' | 'optimize' | 'test' | 'chat'
   ): string {
     const basePrompt = `You are an expert programming assistant integrated into a collaborative development platform. You help developers with code analysis, generation, debugging, and optimization.
 

@@ -1,6 +1,7 @@
 # # AI-Powered Developer Platform: Architecture & Implementation Guide
 
-> A comprehensive guide for building a modern, AI-integrated development platform with machine learning capabilities.
+> A comprehensive guide for building a modern, AI-integrated development
+> platform with machine learning capabilities.
 
 ## Table of Contents
 
@@ -17,10 +18,12 @@
 
 ## Overview
 
-This document outlines the strategy for building a custom AI-powered developer platform that combines:
+This document outlines the strategy for building a custom AI-powered developer
+platform that combines:
 
 - **Web-based IDE** with syntax highlighting and intelligent code completion
-- **AI-assisted development** through chat interfaces and inline code suggestions
+- **AI-assisted development** through chat interfaces and inline code
+  suggestions
 - **Machine learning workflows** for model training and experimentation
 - **Version control integration** with Git-based collaboration
 - **Cloud deployment** capabilities with CI/CD pipelines
@@ -40,14 +43,14 @@ This document outlines the strategy for building a custom AI-powered developer p
 
 ### Core Platform Foundation
 
-| Component | Primary Option | Alternative | Rationale |
-|-----------|---------------|-------------|-----------|
-| **Frontend** | React | Vue.js | Rich ecosystem, component reusability |
-| **Backend** | Node.js | Python (Flask/Django) | Fast API development, real-time features |
-| **Database** | PostgreSQL | MongoDB | ACID compliance, structured data |
-| **Editor** | Monaco Editor | CodeMirror | VS Code compatibility, feature-rich |
-| **Auth** | NextAuth.js | Clerk | GitHub OAuth integration |
-| **ORM** | Prisma | TypeORM | Type safety, developer experience |
+| Component    | Primary Option | Alternative           | Rationale                                |
+| ------------ | -------------- | --------------------- | ---------------------------------------- |
+| **Frontend** | React          | Vue.js                | Rich ecosystem, component reusability    |
+| **Backend**  | Node.js        | Python (Flask/Django) | Fast API development, real-time features |
+| **Database** | PostgreSQL     | MongoDB               | ACID compliance, structured data         |
+| **Editor**   | Monaco Editor  | CodeMirror            | VS Code compatibility, feature-rich      |
+| **Auth**     | NextAuth.js    | Clerk                 | GitHub OAuth integration                 |
+| **ORM**      | Prisma         | TypeORM               | Type safety, developer experience        |
 
 ### Development Infrastructure
 
@@ -63,12 +66,12 @@ Testing: Vitest + React Testing Library
 
 ### Deployment Stack
 
-| Environment | Technology | Purpose |
-|-------------|------------|---------|
-| **Development** | Docker Compose | Local development environment |
-| **Staging** | Vercel/Netlify | Quick preview deployments |
-| **Production** | AWS/GCP + Kubernetes | Scalable container orchestration |
-| **CI/CD** | GitHub Actions | Automated testing and deployment |
+| Environment     | Technology           | Purpose                          |
+| --------------- | -------------------- | -------------------------------- |
+| **Development** | Docker Compose       | Local development environment    |
+| **Staging**     | Vercel/Netlify       | Quick preview deployments        |
+| **Production**  | AWS/GCP + Kubernetes | Scalable container orchestration |
+| **CI/CD**       | GitHub Actions       | Automated testing and deployment |
 
 ---
 
@@ -98,10 +101,10 @@ const aiResponse = await fetch('/api/ai/completions', {
     model: 'gpt-4o-mini',
     messages: [
       { role: 'system', content: 'You are an expert code reviewer.' },
-      { role: 'user', content: `Explain this code: ${selectedCode}` }
+      { role: 'user', content: `Explain this code: ${selectedCode}` },
     ],
-    temperature: 0.2
-  })
+    temperature: 0.2,
+  }),
 });
 ```
 
@@ -186,22 +189,14 @@ graph TD
 ### Project Structure
 
 ---
-ai-dev-platform/
-├── apps/
-│   ├── web/                    # Next.js frontend + API
-│   ├── desktop/                # Electron wrapper (future)
-│   └── mobile/                 # React Native app (future)
-├── packages/
-│   ├── ui/                     # Shared UI components
-│   ├── ai/                     # AI integration utilities
-│   ├── editor-core/            # Editor functionality
-│   └── types/                  # Shared TypeScript types
-├── infra/
-│   ├── docker/                 # Container configurations
-│   ├── k8s/                    # Kubernetes manifests
-│   └── scripts/                # Deployment scripts
-├── docs/                       # Documentation
-└── .github/workflows/          # CI/CD pipelines
+
+ai-dev-platform/ ├── apps/ │ ├── web/ # Next.js frontend + API │ ├── desktop/ #
+Electron wrapper (future) │ └── mobile/ # React Native app (future) ├──
+packages/ │ ├── ui/ # Shared UI components │ ├── ai/ # AI integration utilities
+│ ├── editor-core/ # Editor functionality │ └── types/ # Shared TypeScript types
+├── infra/ │ ├── docker/ # Container configurations │ ├── k8s/ # Kubernetes
+manifests │ └── scripts/ # Deployment scripts ├── docs/ # Documentation └──
+.github/workflows/ # CI/CD pipelines
 
 ### Environment Setup
 
@@ -282,34 +277,41 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const requestSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(['system', 'user', 'assistant']),
-    content: z.string()
-  })),
+  messages: z.array(
+    z.object({
+      role: z.enum(['system', 'user', 'assistant']),
+      content: z.string(),
+    })
+  ),
   model: z.string().optional(),
-  temperature: z.number().min(0).max(2).optional()
+  temperature: z.number().min(0).max(2).optional(),
 });
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { messages, model = 'gpt-4o-mini', temperature = 0.2 } = requestSchema.parse(body);
+    const {
+      messages,
+      model = 'gpt-4o-mini',
+      temperature = 0.2,
+    } = requestSchema.parse(body);
 
-    const baseUrl = process.env.ALLOW_LOCAL_MODELS === 'true' 
-      ? process.env.LOCAL_OPENAI_BASE_URL ?? 'https://api.openai.com/v1'
-      : 'https://api.openai.com/v1';
+    const baseUrl =
+      process.env.ALLOW_LOCAL_MODELS === 'true'
+        ? (process.env.LOCAL_OPENAI_BASE_URL ?? 'https://api.openai.com/v1')
+        : 'https://api.openai.com/v1';
 
     const response = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model,
         messages,
         temperature,
-        max_tokens: 4000
+        max_tokens: 4000,
       }),
     });
 
@@ -319,7 +321,6 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json();
     return NextResponse.json(data);
-
   } catch (error) {
     console.error('AI API error:', error);
     return NextResponse.json(
@@ -340,9 +341,9 @@ export async function GET(
 ) {
   const files = await prisma.file.findMany({
     where: { projectId: params.id },
-    orderBy: { path: 'asc' }
+    orderBy: { path: 'asc' },
   });
-  
+
   return NextResponse.json(files);
 }
 
@@ -351,23 +352,23 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   const { path, content, language } = await req.json();
-  
+
   const file = await prisma.file.upsert({
-    where: { 
-      projectId_path: { 
-        projectId: params.id, 
-        path 
-      } 
+    where: {
+      projectId_path: {
+        projectId: params.id,
+        path,
+      },
     },
     update: { content, language },
-    create: { 
-      projectId: params.id, 
-      path, 
-      content, 
-      language 
-    }
+    create: {
+      projectId: params.id,
+      path,
+      content,
+      language,
+    },
   });
-  
+
   return NextResponse.json(file);
 }
 ```
@@ -385,11 +386,11 @@ graph TB
         MOBILE[Mobile App]
         DESKTOP[Desktop App]
     end
-    
+
     subgraph "API Gateway"
         GATEWAY[Next.js API Routes]
     end
-    
+
     subgraph "Core Services"
         AUTH[Authentication]
         PROJECT[Project Service]
@@ -397,37 +398,37 @@ graph TB
         GIT[Git Integration]
         EXEC[Code Execution]
     end
-    
+
     subgraph "Data Layer"
         DB[(PostgreSQL)]
         REDIS[(Redis Cache)]
         S3[(File Storage)]
     end
-    
+
     subgraph "AI Providers"
         OPENAI[OpenAI API]
         LOCAL[Local Models]
         ANTHROPIC[Anthropic]
     end
-    
+
     WEB --> GATEWAY
     MOBILE --> GATEWAY
     DESKTOP --> GATEWAY
-    
+
     GATEWAY --> AUTH
     GATEWAY --> PROJECT
     GATEWAY --> AI
     GATEWAY --> GIT
     GATEWAY --> EXEC
-    
+
     PROJECT --> DB
     AUTH --> DB
     AI --> REDIS
-    
+
     AI --> OPENAI
     AI --> LOCAL
     AI --> ANTHROPIC
-    
+
     PROJECT --> S3
 ```
 
@@ -469,7 +470,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
           }
         })
       });
-      
+
       const data = await response.json();
       setMessages(prev => [...prev, data.message]);
     } finally {
@@ -479,7 +480,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
   return (
     <div className="ai-assistant">
-      <ChatInterface 
+      <ChatInterface
         messages={messages}
         onSendMessage={sendMessage}
         isLoading={isLoading}
@@ -506,57 +507,66 @@ import { spawn } from 'child_process';
 import path from 'path';
 
 const DANGEROUS_COMMANDS = [
-  'rm', 'rmdir', 'del', 'format',
-  'net', 'netstat', 'ping', 'curl',
-  'sudo', 'su', 'chmod', 'chown'
+  'rm',
+  'rmdir',
+  'del',
+  'format',
+  'net',
+  'netstat',
+  'ping',
+  'curl',
+  'sudo',
+  'su',
+  'chmod',
+  'chown',
 ];
 
 export async function executeCode(
-  code: string, 
-  language: string, 
+  code: string,
+  language: string,
   projectPath: string
 ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
-  
   // Validate project path is within allowed directory
   const allowedPath = path.resolve('/var/projects');
   const resolvedPath = path.resolve(projectPath);
-  
+
   if (!resolvedPath.startsWith(allowedPath)) {
     throw new Error('Invalid project path');
   }
-  
+
   // Check for dangerous commands
   if (DANGEROUS_COMMANDS.some(cmd => code.toLowerCase().includes(cmd))) {
     throw new Error('Dangerous command detected');
   }
-  
+
   const command = getExecutionCommand(language);
   const process = spawn(command, [], {
     cwd: resolvedPath,
     timeout: 30000, // 30 second timeout
     env: {
       ...process.env,
-      PATH: '/usr/local/bin:/usr/bin:/bin' // Restricted PATH
-    }
+      PATH: '/usr/local/bin:/usr/bin:/bin', // Restricted PATH
+    },
   });
-  
-  return new Promise((resolve) => {
+
+  return new Promise(resolve => {
     let stdout = '';
     let stderr = '';
-    
-    process.stdout.on('data', (data) => {
+
+    process.stdout.on('data', data => {
       stdout += data.toString();
-      if (stdout.length > 10000) { // Limit output size
+      if (stdout.length > 10000) {
+        // Limit output size
         process.kill();
         stderr += 'Output limit exceeded';
       }
     });
-    
-    process.stderr.on('data', (data) => {
+
+    process.stderr.on('data', data => {
       stderr += data.toString();
     });
-    
-    process.on('close', (exitCode) => {
+
+    process.on('close', exitCode => {
       resolve({ stdout, stderr, exitCode: exitCode || 0 });
     });
   });
@@ -570,7 +580,7 @@ export async function executeCode(
 enum UserRole {
   VIEWER = 'viewer',
   EDITOR = 'editor',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
 }
 
 interface ProjectPermission {
@@ -580,18 +590,18 @@ interface ProjectPermission {
 }
 
 export function checkProjectAccess(
-  userId: string, 
-  projectId: string, 
+  userId: string,
+  projectId: string,
   requiredRole: UserRole = UserRole.VIEWER
 ): boolean {
   const permission = getProjectPermission(userId, projectId);
-  
+
   const roleHierarchy = {
     [UserRole.VIEWER]: 1,
     [UserRole.EDITOR]: 2,
-    [UserRole.ADMIN]: 3
+    [UserRole.ADMIN]: 3,
   };
-  
+
   return roleHierarchy[permission.role] >= roleHierarchy[requiredRole];
 }
 ```
@@ -650,28 +660,28 @@ spec:
         app: ai-dev-platform-web
     spec:
       containers:
-      - name: web
-        image: ai-dev-platform:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: url
-        - name: OPENAI_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: ai-secret
-              key: openai-key
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: web
+          image: ai-dev-platform:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: url
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ai-secret
+                  key: openai-key
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
 ```
 
 ### CI/CD Pipeline
@@ -693,7 +703,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
-      
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
       - run: pnpm run test
@@ -703,15 +713,15 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Build and push Docker image
         run: |
           docker build -t ${{ secrets.REGISTRY_URL }}/ai-dev-platform:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_URL }}/ai-dev-platform:${{ github.sha }}
-      
+
       - name: Deploy to Kubernetes
         run: |
           kubectl set image deployment/ai-dev-platform-web \
@@ -731,7 +741,7 @@ jobs:
 - [ ] Set up Prisma with PostgreSQL
 - [ ] Create basic project structure
 
-#### Saturday Afternoon (3-4 hours)  
+#### Saturday Afternoon (3-4 hours)
 
 - [ ] Implement Monaco Editor component
 - [ ] Create file tree UI with CRUD operations

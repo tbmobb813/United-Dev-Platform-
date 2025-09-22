@@ -1,11 +1,11 @@
-import { AIService, AIMessage, AIResponse, AIServiceConfig } from "./AIService";
+import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
 export class OpenAIService extends AIService {
   private baseUrl: string;
 
   constructor(config: AIServiceConfig) {
     super(config);
-    this.baseUrl = config.baseUrl || "https://api.openai.com/v1";
+    this.baseUrl = config.baseUrl || 'https://api.openai.com/v1';
   }
 
   async generateResponse(
@@ -13,14 +13,14 @@ export class OpenAIService extends AIService {
     systemPrompt?: string
   ): Promise<AIResponse> {
     if (!this.config.apiKey) {
-      throw new Error("OpenAI API key is required");
+      throw new Error('OpenAI API key is required');
     }
 
     const requestMessages = [
       ...(systemPrompt
-        ? [{ role: "system" as const, content: systemPrompt }]
+        ? [{ role: 'system' as const, content: systemPrompt }]
         : []),
-      ...messages.map((msg) => ({
+      ...messages.map(msg => ({
         role: msg.role,
         content: msg.content,
       })),
@@ -28,13 +28,13 @@ export class OpenAIService extends AIService {
 
     try {
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.config.apiKey}`,
         },
         body: JSON.stringify({
-          model: this.config.model || "gpt-4",
+          model: this.config.model || 'gpt-4',
           messages: requestMessages,
           max_tokens: this.config.maxTokens || 2000,
           temperature: this.config.temperature || 0.7,
@@ -45,20 +45,20 @@ export class OpenAIService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ""}`
+          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
         );
       }
 
       const data = await response.json();
 
       return {
-        content: data.choices[0]?.message?.content || "No response generated",
+        content: data.choices[0]?.message?.content || 'No response generated',
         usage: data.usage,
         model: data.model,
         finish_reason: data.choices[0]?.finish_reason,
       };
     } catch (error) {
-      console.error("OpenAI API error:", error);
+      console.error('OpenAI API error:', error);
       throw error;
     }
   }
@@ -69,14 +69,14 @@ export class OpenAIService extends AIService {
     onChunk?: (chunk: string) => void
   ): Promise<AIResponse> {
     if (!this.config.apiKey) {
-      throw new Error("OpenAI API key is required");
+      throw new Error('OpenAI API key is required');
     }
 
     const requestMessages = [
       ...(systemPrompt
-        ? [{ role: "system" as const, content: systemPrompt }]
+        ? [{ role: 'system' as const, content: systemPrompt }]
         : []),
-      ...messages.map((msg) => ({
+      ...messages.map(msg => ({
         role: msg.role,
         content: msg.content,
       })),
@@ -84,13 +84,13 @@ export class OpenAIService extends AIService {
 
     try {
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.config.apiKey}`,
         },
         body: JSON.stringify({
-          model: this.config.model || "gpt-4",
+          model: this.config.model || 'gpt-4',
           messages: requestMessages,
           max_tokens: this.config.maxTokens || 2000,
           temperature: this.config.temperature || 0.7,
@@ -101,33 +101,37 @@ export class OpenAIService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ""}`
+          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
         );
       }
 
-      let fullContent = "";
+      let fullContent = '';
       let usage = undefined;
       let model = undefined;
       let finishReason = undefined;
 
       const reader = response.body?.getReader();
       if (!reader) {
-        throw new Error("Failed to get response reader");
+        throw new Error('Failed to get response reader');
       }
 
       const decoder = new TextDecoder();
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          break;
+        }
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split("\n").filter((line) => line.trim());
+        const lines = chunk.split('\n').filter(line => line.trim());
 
         for (const line of lines) {
-          if (line.startsWith("data: ")) {
+          if (line.startsWith('data: ')) {
             const data = line.slice(6);
-            if (data === "[DONE]") continue;
+            if (data === '[DONE]') {
+              continue;
+            }
 
             try {
               const parsed = JSON.parse(data);
@@ -163,14 +167,14 @@ export class OpenAIService extends AIService {
         finish_reason: finishReason,
       };
     } catch (error) {
-      console.error("OpenAI Streaming API error:", error);
+      console.error('OpenAI Streaming API error:', error);
       throw error;
     }
   }
 
   async getAvailableModels(): Promise<string[]> {
     if (!this.config.apiKey) {
-      return ["gpt-4", "gpt-4-turbo-preview", "gpt-3.5-turbo"];
+      return ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo'];
     }
 
     try {
@@ -186,13 +190,13 @@ export class OpenAIService extends AIService {
 
       const data = await response.json();
       return data.data
-        .filter((model: any) => model.id.includes("gpt"))
+        .filter((model: any) => model.id.includes('gpt'))
         .map((model: any) => model.id)
         .sort();
     } catch (error) {
-      console.error("Error fetching OpenAI models:", error);
+      console.error('Error fetching OpenAI models:', error);
       // Return default models if API call fails
-      return ["gpt-4", "gpt-4-turbo-preview", "gpt-3.5-turbo"];
+      return ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo'];
     }
   }
 
@@ -210,7 +214,7 @@ export class OpenAIService extends AIService {
 
       return response.ok;
     } catch (error) {
-      console.error("OpenAI connection validation failed:", error);
+      console.error('OpenAI connection validation failed:', error);
       return false;
     }
   }

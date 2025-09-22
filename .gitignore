@@ -240,3 +240,24 @@ storybook-static/
 
 # Performance monitoring
 .clinic/
+
+# Development tools
+.vscode/settings.json
+.vscode/launch.json
+
+# AI development
+*.checkpoint
+checkpoint/
+*.tfevents.*
+
+# Load testing
+locust-report.html
+*.jmx.log
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Kubernetes
+k8s/secrets/
+*.kubeconfig

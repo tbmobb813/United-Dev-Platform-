@@ -1,4 +1,4 @@
-import { Awareness } from "y-protocols/awareness";
+import { Awareness } from 'y-protocols/awareness';
 
 export type UserState = {
   id: string;

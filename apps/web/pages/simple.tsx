@@ -1,7 +1,7 @@
-import Head from "next/head";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { Button } from "@udp/ui";
+import Head from 'next/head';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { Button } from '@udp/ui';
 
 export default function SimpleHome() {
   const router = useRouter();
@@ -11,17 +11,17 @@ export default function SimpleHome() {
   useEffect(() => {
     setIsClient(true);
     const storedName =
-      typeof window !== "undefined" ? localStorage.getItem("userName") : null;
+      typeof window !== 'undefined' ? localStorage.getItem('userName') : null;
     if (!storedName) {
-      router.push("/login");
+      router.push('/login');
     } else {
       setUserName(storedName);
     }
   }, [router]);
 
   const handleSignOut = () => {
-    localStorage.removeItem("userName");
-    router.push("/login");
+    localStorage.removeItem('userName');
+    router.push('/login');
   };
 
   if (!userName || !isClient) return <div>Loading...</div>;

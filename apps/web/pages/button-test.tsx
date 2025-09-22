@@ -1,8 +1,8 @@
-import { Button } from "@udp/ui";
+import { Button } from '@udp/ui';
 
 export default function ButtonTest() {
   const handleClick = () => {
-    console.log("Button clicked!");
+    console.log('Button clicked!');
   };
 
   return (
@@ -19,7 +19,7 @@ export default function ButtonTest() {
       </div>
 
       <div style={{ marginBottom: 10 }}>
-        <Button onClick={() => alert("Hello!")}>Alert Button</Button>
+        <Button onClick={() => alert('Hello!')}>Alert Button</Button>
       </div>
 
       <div style={{ marginBottom: 10 }}>

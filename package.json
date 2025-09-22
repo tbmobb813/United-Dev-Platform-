@@ -1,6 +1,7 @@
 {
   "name": "unified-dev-platform",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@9.0.0",
   "pnpm": {
     "overrides": {
@@ -17,7 +18,16 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "turbo type-check",
     "clean": "turbo clean && rm -rf node_modules",
-    "test": "turbo test"
+    "test": "turbo test",
+    "check": "pnpm lint && pnpm type-check && pnpm test",
+    "fix": "pnpm lint:fix && pnpm format",
+    "reset": "pnpm clean && pnpm install",
+    "dev:web": "cd apps/web && pnpm dev",
+    "dev:api": "cd apps/api && pnpm dev",
+    "dev:mobile": "cd apps/mobile && pnpm start",
+    "dev:all": "turbo dev --parallel",
+    "prebuild": "pnpm check",
+    "postinstall": "pnpm type-check"
   },
   "devDependencies": {
     "@udp/eslint-config": "workspace:*",

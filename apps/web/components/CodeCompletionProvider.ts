@@ -1,5 +1,5 @@
 // Import monaco types only for TypeScript, not runtime
-import type * as Monaco from "monaco-editor";
+import type * as Monaco from 'monaco-editor';
 
 export interface CodeSuggestion {
   label: string;
@@ -23,12 +23,12 @@ export class CodeCompletionProvider {
   }
 
   private async loadMonaco(): Promise<typeof Monaco> {
-    if (typeof window === "undefined") {
-      throw new Error("Monaco Editor can only be used in the browser");
+    if (typeof window === 'undefined') {
+      throw new Error('Monaco Editor can only be used in the browser');
     }
 
     if (!this.monaco) {
-      this.monaco = await import("monaco-editor");
+      this.monaco = await import('monaco-editor');
     }
     return this.monaco;
   }
@@ -40,42 +40,42 @@ export class CodeCompletionProvider {
       // Common completions with resolved enum values
       const commonCompletions = [
         {
-          label: "console.log",
+          label: 'console.log',
           kind: monaco.languages.CompletionItemKind.Function,
-          documentation: "Log a message to the console",
-          insertText: "console.log(${1:message});",
-          detail: "Console logging",
+          documentation: 'Log a message to the console',
+          insertText: 'console.log(${1:message});',
+          detail: 'Console logging',
         },
         {
-          label: "function",
+          label: 'function',
           kind: monaco.languages.CompletionItemKind.Keyword,
-          documentation: "Create a new function",
+          documentation: 'Create a new function',
           insertText:
-            "function ${1:functionName}(${2:params}) {\n\t${3:// function body}\n}",
-          detail: "Function declaration",
+            'function ${1:functionName}(${2:params}) {\n\t${3:// function body}\n}',
+          detail: 'Function declaration',
         },
         {
-          label: "const",
+          label: 'const',
           kind: monaco.languages.CompletionItemKind.Keyword,
-          documentation: "Create a constant variable",
-          insertText: "const ${1:variableName} = ${2:value};",
-          detail: "Constant declaration",
+          documentation: 'Create a constant variable',
+          insertText: 'const ${1:variableName} = ${2:value};',
+          detail: 'Constant declaration',
         },
         {
-          label: "useState",
+          label: 'useState',
           kind: monaco.languages.CompletionItemKind.Function,
-          documentation: "React hook for managing state",
+          documentation: 'React hook for managing state',
           insertText:
-            "const [${1:state}, set${1/(.*)/${1:/capitalize}/}] = useState(${2:initialValue});",
-          detail: "React useState hook",
+            'const [${1:state}, set${1/(.*)/${1:/capitalize}/}] = useState(${2:initialValue});',
+          detail: 'React useState hook',
         },
         {
-          label: "useEffect",
+          label: 'useEffect',
           kind: monaco.languages.CompletionItemKind.Function,
-          documentation: "React hook for side effects",
+          documentation: 'React hook for side effects',
           insertText:
-            "useEffect(() => {\n\t${1:// effect code}\n}, [${2:dependencies}]);",
-          detail: "React useEffect hook",
+            'useEffect(() => {\n\t${1:// effect code}\n}, [${2:dependencies}]);',
+          detail: 'React useEffect hook',
         },
       ];
 
@@ -93,7 +93,7 @@ export class CodeCompletionProvider {
         };
 
         return {
-          suggestions: commonCompletions.map((completion) => ({
+          suggestions: commonCompletions.map(completion => ({
             label: completion.label,
             kind: completion.kind,
             documentation: completion.documentation,
@@ -106,17 +106,17 @@ export class CodeCompletionProvider {
         };
       };
 
-      monaco.languages.registerCompletionItemProvider("javascript", {
+      monaco.languages.registerCompletionItemProvider('javascript', {
         provideCompletionItems,
       });
 
-      monaco.languages.registerCompletionItemProvider("typescript", {
+      monaco.languages.registerCompletionItemProvider('typescript', {
         provideCompletionItems,
       });
 
-      console.log("✅ Code completion providers registered");
+      console.log('✅ Code completion providers registered');
     } catch (error) {
-      console.warn("❌ Could not register code completion providers:", error);
+      console.warn('❌ Could not register code completion providers:', error);
     }
   }
 
@@ -150,12 +150,12 @@ export class CodeCompletionProvider {
         },
       };
 
-      monaco.languages.registerHoverProvider("javascript", jsHoverProvider);
-      monaco.languages.registerHoverProvider("typescript", jsHoverProvider);
+      monaco.languages.registerHoverProvider('javascript', jsHoverProvider);
+      monaco.languages.registerHoverProvider('typescript', jsHoverProvider);
 
-      console.log("✅ Hover providers registered");
+      console.log('✅ Hover providers registered');
     } catch (error) {
-      console.warn("❌ Could not register hover providers:", error);
+      console.warn('❌ Could not register hover providers:', error);
     }
   }
 
@@ -164,27 +164,27 @@ export class CodeCompletionProvider {
   ): { title: string; description: string } | null {
     const hoverMap: Record<string, { title: string; description: string }> = {
       console: {
-        title: "Console Object",
+        title: 'Console Object',
         description:
           "The console object provides access to the browser's debugging console. Use console.log(), console.error(), etc.",
       },
       useState: {
-        title: "React useState Hook",
+        title: 'React useState Hook',
         description:
-          "A Hook that lets you add React state to function components. Returns a stateful value and a function to update it.",
+          'A Hook that lets you add React state to function components. Returns a stateful value and a function to update it.',
       },
       useEffect: {
-        title: "React useEffect Hook",
+        title: 'React useEffect Hook',
         description:
-          "A Hook that lets you perform side effects in function components. Runs after every completed render.",
+          'A Hook that lets you perform side effects in function components. Runs after every completed render.',
       },
       function: {
-        title: "Function Declaration",
+        title: 'Function Declaration',
         description:
-          "Declares a function with the specified parameters. Functions are first-class objects in JavaScript.",
+          'Declares a function with the specified parameters. Functions are first-class objects in JavaScript.',
       },
       const: {
-        title: "Const Declaration",
+        title: 'Const Declaration',
         description:
           "Declares a read-only named constant. The value of a constant can't be changed through reassignment.",
       },

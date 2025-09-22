@@ -1,43 +1,28 @@
 {
-    "compilerOptions": {
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": false,
-        "noEmit": false,
-        "incremental": true,
-        "module": "esnext",
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "jsx": "react",
-        "target": "ES2020",
-        "declaration": true,
-        "outDir": "./dist",
-        "baseUrl": ".",
-        "noUnusedParameters": false,
-        "paths": {
-            "@udp/ui": [
-                "../ui/index.ts"
-            ]
-        },
-        "typeRoots": [
-            "../../node_modules/@types",
-            "node_modules/@types"
-        ]
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": false,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "target": "ES2020",
+    "declaration": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "noUnusedParameters": false,
+    "paths": {
+      "@udp/ui": ["../ui/index.ts"]
     },
-    "include": [
-        "index.ts",
-        "AIAssistant.tsx"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
+    "typeRoots": ["../../node_modules/@types", "node_modules/@types"]
+  },
+  "include": ["index.ts", "AIAssistant.tsx"],
+  "exclude": ["node_modules", "dist"]
 }

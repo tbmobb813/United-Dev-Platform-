@@ -1,11 +1,11 @@
 /** @jsxImportSource react */
-import React, { useState, useEffect, useRef } from "react";
-import { AIManager, CodeContext } from "./AIManager";
+import React, { useState, useEffect, useRef } from 'react';
+import { AIManager, CodeContext } from './AIManager';
 
 // Types for the AI Assistant
 export interface ChatMessage {
   id: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   isStreaming?: boolean;
@@ -31,13 +31,13 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   aiManager,
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [streamingContent, setStreamingContent] = useState("");
-  const messagesEndRef = useRef<React.ElementRef<"div">>(null);
+  const [streamingContent, setStreamingContent] = useState('');
+  const messagesEndRef = useRef<React.ElementRef<'div'>>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -45,19 +45,19 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   }, [messages, streamingContent]);
 
   const getCodeContext = (): CodeContext => {
-    const fileExtension = currentFile?.split(".").pop()?.toLowerCase();
+    const fileExtension = currentFile?.split('.').pop()?.toLowerCase();
     const languageMap: Record<string, string> = {
-      js: "javascript",
-      jsx: "javascript",
-      ts: "typescript",
-      tsx: "typescript",
-      py: "python",
-      css: "css",
-      html: "html",
-      json: "json",
-      md: "markdown",
-      yml: "yaml",
-      yaml: "yaml",
+      js: 'javascript',
+      jsx: 'javascript',
+      ts: 'typescript',
+      tsx: 'typescript',
+      py: 'python',
+      css: 'css',
+      html: 'html',
+      json: 'json',
+      md: 'markdown',
+      yml: 'yaml',
+      yaml: 'yaml',
     };
 
     return {
@@ -72,37 +72,39 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   const sendMessage = async (
     content: string,
     intent:
-      | "chat"
-      | "explain"
-      | "generate"
-      | "debug"
-      | "optimize"
-      | "test" = "chat"
+      | 'chat'
+      | 'explain'
+      | 'generate'
+      | 'debug'
+      | 'optimize'
+      | 'test' = 'chat'
   ) => {
-    if (!content.trim()) return;
+    if (!content.trim()) {
+      return;
+    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
-      role: "user",
+      role: 'user',
       content,
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
     setIsLoading(true);
-    setStreamingContent("");
+    setStreamingContent('');
 
     // Create a placeholder assistant message for streaming
     const assistantMessage: ChatMessage = {
       id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: "",
+      role: 'assistant',
+      content: '',
       timestamp: new Date(),
       isStreaming: true,
     };
 
-    setMessages((prev) => [...prev, assistantMessage]);
+    setMessages(prev => [...prev, assistantMessage]);
 
     try {
       if (aiManager && aiManager.isReady()) {
@@ -113,27 +115,27 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
           context,
           intent,
           (chunk: string) => {
-            setStreamingContent((prev) => prev + chunk);
+            setStreamingContent(prev => prev + chunk);
           }
         );
 
         // Update the final message
-        setMessages((prev) =>
-          prev.map((msg) =>
+        setMessages(prev =>
+          prev.map(msg =>
             msg.id === assistantMessage.id
               ? { ...msg, content: response.content, isStreaming: false }
               : msg
           )
         );
-        setStreamingContent("");
+        setStreamingContent('');
       } else {
         // Fallback to placeholder if no AI manager
         const fallbackResponse = await simulateFallbackResponse(
           content,
           intent
         );
-        setMessages((prev) =>
-          prev.map((msg) =>
+        setMessages(prev =>
+          prev.map(msg =>
             msg.id === assistantMessage.id
               ? { ...msg, content: fallbackResponse, isStreaming: false }
               : msg
@@ -141,12 +143,12 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
       }
     } catch (error) {
-      console.error("AI request failed:", error);
+      console.error('AI request failed:', error);
       const errorMessage =
-        error instanceof Error ? error.message : "AI request failed";
+        error instanceof Error ? error.message : 'AI request failed';
 
-      setMessages((prev) =>
-        prev.map((msg) =>
+      setMessages(prev =>
+        prev.map(msg =>
           msg.id === assistantMessage.id
             ? {
                 ...msg,
@@ -158,7 +160,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
       );
     } finally {
       setIsLoading(false);
-      setStreamingContent("");
+      setStreamingContent('');
     }
   };
 
@@ -166,7 +168,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
     content: string,
     intent: string
   ): Promise<string> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       window.setTimeout(() => {
         const responses = {
           explain: `I'd love to explain this code for you! However, I need to be connected to an AI service (like OpenAI or Anthropic) to provide detailed explanations.\n\n**What I would do:**\n- Analyze the code structure and logic\n- Explain each part in detail\n- Identify patterns and best practices\n- Suggest improvements\n\n**To enable AI features:**\n1. Add your API key in settings\n2. Select an AI provider (OpenAI/Anthropic)\n3. Try again!`,
@@ -189,86 +191,88 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
   const quickActions = [
     {
-      label: "Explain Code",
+      label: 'Explain Code',
       action: () =>
         selectedCode &&
-        sendMessage(`Explain this code: \n\n${selectedCode}`, "explain"),
+        sendMessage(`Explain this code: \n\n${selectedCode}`, 'explain'),
     },
     {
-      label: "Write Tests",
+      label: 'Write Tests',
       action: () =>
         selectedCode &&
-        sendMessage(`Write unit tests for: \n\n${selectedCode}`, "test"),
+        sendMessage(`Write unit tests for: \n\n${selectedCode}`, 'test'),
     },
     {
-      label: "Optimize",
+      label: 'Optimize',
       action: () =>
         selectedCode &&
-        sendMessage(`Optimize this code: \n\n${selectedCode}`, "optimize"),
+        sendMessage(`Optimize this code: \n\n${selectedCode}`, 'optimize'),
     },
     {
-      label: "Debug Issues",
+      label: 'Debug Issues',
       action: () =>
         selectedCode &&
-        sendMessage(`Debug and fix issues in: \n\n${selectedCode}`, "debug"),
+        sendMessage(`Debug and fix issues in: \n\n${selectedCode}`, 'debug'),
     },
     {
-      label: "Generate Code",
+      label: 'Generate Code',
       action: () =>
-        sendMessage(`Generate code based on the current context`, "generate"),
+        sendMessage(`Generate code based on the current context`, 'generate'),
     },
   ];
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div
       style={{
-        position: "fixed",
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         zIndex: 1000,
       }}
     >
       <div
         style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "24px",
-          width: "90%",
-          maxWidth: "800px",
-          maxHeight: "80%",
-          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
+          width: '90%',
+          maxWidth: '800px',
+          maxHeight: '80%',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
         }}
       >
         {/* Header */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "16px",
-            borderBottom: "1px solid #e1e5e9",
-            paddingBottom: "16px",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '16px',
+            borderBottom: '1px solid #e1e5e9',
+            paddingBottom: '16px',
           }}
         >
-          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "600" }}>
+          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>
             🤖 AI Assistant
           </h2>
           <button
             onClick={onClose}
             style={{
-              background: "none",
-              border: "none",
-              fontSize: "24px",
-              cursor: "pointer",
-              padding: "4px",
+              background: 'none',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              padding: '4px',
             }}
           >
             ×
@@ -276,26 +280,26 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         </div>
 
         <div
-          style={{ height: "600px", display: "flex", flexDirection: "column" }}
+          style={{ height: '600px', display: 'flex', flexDirection: 'column' }}
         >
           {/* Messages Area */}
           <div
             style={{
               flex: 1,
-              overflowY: "auto",
-              padding: "16px",
-              border: "1px solid #e1e5e9",
-              borderRadius: "8px",
-              marginBottom: "16px",
-              backgroundColor: "#f8f9fa",
+              overflowY: 'auto',
+              padding: '16px',
+              border: '1px solid #e1e5e9',
+              borderRadius: '8px',
+              marginBottom: '16px',
+              backgroundColor: '#f8f9fa',
             }}
           >
             {messages.length === 0 ? (
               <div
                 style={{
-                  textAlign: "center",
-                  color: "#6c757d",
-                  marginTop: "50px",
+                  textAlign: 'center',
+                  color: '#6c757d',
+                  marginTop: '50px',
                 }}
               >
                 <h3>AI Assistant Ready</h3>
@@ -310,57 +314,57 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
                 )}
               </div>
             ) : (
-              messages.map((message) => (
+              messages.map(message => (
                 <div
                   key={message.id}
                   style={{
-                    marginBottom: "12px",
-                    padding: "16px",
-                    borderRadius: "8px",
+                    marginBottom: '12px',
+                    padding: '16px',
+                    borderRadius: '8px',
                     backgroundColor:
-                      message.role === "user" ? "#e3f2fd" : "#f1f8e9",
+                      message.role === 'user' ? '#e3f2fd' : '#f1f8e9',
                   }}
                 >
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "8px",
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '8px',
                     }}
                   >
                     <strong>
-                      {message.role === "user" ? "You" : "AI Assistant"}
+                      {message.role === 'user' ? 'You' : 'AI Assistant'}
                     </strong>
-                    <small style={{ color: "#6c757d" }}>
+                    <small style={{ color: '#6c757d' }}>
                       {message.timestamp.toLocaleTimeString()}
                     </small>
                   </div>
                   <div
                     style={{
-                      whiteSpace: "pre-wrap",
-                      fontFamily: "monospace",
-                      fontSize: "14px",
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: 'monospace',
+                      fontSize: '14px',
                     }}
                   >
                     {message.content}
                     {message.isStreaming && streamingContent && (
-                      <span style={{ backgroundColor: "#fff3cd" }}>
+                      <span style={{ backgroundColor: '#fff3cd' }}>
                         {streamingContent}
                       </span>
                     )}
                   </div>
-                  {message.role === "assistant" && onCodeInsert && (
+                  {message.role === 'assistant' && onCodeInsert && (
                     <button
                       onClick={() => onCodeInsert(message.content)}
                       style={{
-                        marginTop: "8px",
-                        padding: "4px 8px",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        backgroundColor: "white",
-                        cursor: "pointer",
-                        fontSize: "12px",
+                        marginTop: '8px',
+                        padding: '4px 8px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        backgroundColor: 'white',
+                        cursor: 'pointer',
+                        fontSize: '12px',
                       }}
                     >
                       Insert Code
@@ -372,9 +376,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
             {isLoading && (
               <div
                 style={{
-                  padding: "16px",
-                  borderRadius: "8px",
-                  backgroundColor: "#f1f8e9",
+                  padding: '16px',
+                  borderRadius: '8px',
+                  backgroundColor: '#f1f8e9',
                 }}
               >
                 <div>🤔 AI Assistant is thinking...</div>
@@ -387,27 +391,27 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
           {selectedCode && (
             <div
               style={{
-                marginBottom: "16px",
-                padding: "16px",
-                border: "1px solid #e1e5e9",
-                borderRadius: "8px",
-                backgroundColor: "#f8f9fa",
+                marginBottom: '16px',
+                padding: '16px',
+                border: '1px solid #e1e5e9',
+                borderRadius: '8px',
+                backgroundColor: '#f8f9fa',
               }}
             >
-              <h4 style={{ margin: "0 0 8px 0" }}>Quick Actions</h4>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {quickActions.map((action) => (
+              <h4 style={{ margin: '0 0 8px 0' }}>Quick Actions</h4>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {quickActions.map(action => (
                   <button
                     key={action.label}
                     onClick={action.action}
                     disabled={isLoading}
                     style={{
-                      padding: "6px 12px",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      backgroundColor: "white",
-                      cursor: isLoading ? "not-allowed" : "pointer",
-                      fontSize: "12px",
+                      padding: '6px 12px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      backgroundColor: 'white',
+                      cursor: isLoading ? 'not-allowed' : 'pointer',
+                      fontSize: '12px',
                       opacity: isLoading ? 0.6 : 1,
                     }}
                   >
@@ -416,7 +420,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
                 ))}
               </div>
               <div
-                style={{ marginTop: "8px", fontSize: "12px", color: "#6c757d" }}
+                style={{ marginTop: '8px', fontSize: '12px', color: '#6c757d' }}
               >
                 Selected: {selectedCode.substring(0, 50)}...
               </div>
@@ -424,20 +428,20 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
           )}
 
           {/* Input Area */}
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
             <input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask me anything about your code..."
+              onChange={e => setInput(e.target.value)}
+              placeholder='Ask me anything about your code...'
               style={{
                 flex: 1,
-                padding: "8px 12px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                fontSize: "14px",
+                padding: '8px 12px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                fontSize: '14px',
               }}
-              onKeyPress={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+              onKeyPress={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   sendMessage(input);
                 }
@@ -447,14 +451,14 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
               onClick={() => sendMessage(input)}
               disabled={!input.trim() || isLoading}
               style={{
-                padding: "8px 16px",
-                border: "none",
-                borderRadius: "4px",
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: '4px',
                 backgroundColor:
-                  !input.trim() || isLoading ? "#ccc" : "#007bff",
-                color: "white",
-                cursor: !input.trim() || isLoading ? "not-allowed" : "pointer",
-                fontSize: "14px",
+                  !input.trim() || isLoading ? '#ccc' : '#007bff',
+                color: 'white',
+                cursor: !input.trim() || isLoading ? 'not-allowed' : 'pointer',
+                fontSize: '14px',
               }}
             >
               Send

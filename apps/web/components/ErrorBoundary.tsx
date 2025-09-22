@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -24,7 +24,7 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
   render() {
@@ -33,10 +33,10 @@ export class ErrorBoundary extends React.Component<
         this.props.fallback || (
           <div
             style={{
-              padding: "20px",
-              border: "1px solid red",
-              backgroundColor: "#ffe6e6",
-              color: "red",
+              padding: '20px',
+              border: '1px solid red',
+              backgroundColor: '#ffe6e6',
+              color: 'red',
             }}
           >
             <h2>Something went wrong.</h2>

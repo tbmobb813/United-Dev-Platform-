@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 export interface KeyboardShortcut {
   key: string;
@@ -33,22 +33,22 @@ export const useKeyboardShortcuts = (shortcuts: KeyboardShortcut[]) => {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [shortcuts]);
 };
 
 export const commonShortcuts = {
-  SAVE: { key: "s", ctrlKey: true, description: "Save current file" },
-  OPEN: { key: "o", ctrlKey: true, description: "Open file" },
-  NEW_FILE: { key: "n", ctrlKey: true, description: "Create new file" },
-  AI_ASSISTANT: { key: "k", ctrlKey: true, description: "Open AI Assistant" },
-  FIND: { key: "f", ctrlKey: true, description: "Find in file" },
+  SAVE: { key: 's', ctrlKey: true, description: 'Save current file' },
+  OPEN: { key: 'o', ctrlKey: true, description: 'Open file' },
+  NEW_FILE: { key: 'n', ctrlKey: true, description: 'Create new file' },
+  AI_ASSISTANT: { key: 'k', ctrlKey: true, description: 'Open AI Assistant' },
+  FIND: { key: 'f', ctrlKey: true, description: 'Find in file' },
   COMMAND_PALETTE: {
-    key: "p",
+    key: 'p',
     ctrlKey: true,
     shiftKey: true,
-    description: "Open command palette",
+    description: 'Open command palette',
   },
-  SETTINGS: { key: ",", ctrlKey: true, description: "Open settings" },
+  SETTINGS: { key: ',', ctrlKey: true, description: 'Open settings' },
 } as const;

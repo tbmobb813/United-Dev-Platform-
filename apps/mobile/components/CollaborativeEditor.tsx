@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { DocumentManager, UserPresence } from '@udp/editor-core';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  Alert,
+  View
 } from 'react-native';
-import { DocumentManager, UserPresence } from '@udp/collaboration';
 import * as Y from 'yjs';
+import { config } from '../config';
 
 interface CollaborativeEditorProps {
   roomId: string;
@@ -55,7 +55,7 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
 
       documentManager.current = new DocumentManager(
         user,
-        'ws://localhost:1234'
+        config.wsUrl
       );
 
       const doc = await documentManager.current.openDocument(
@@ -65,15 +65,17 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       yText.current = doc.content;
 
       // Set initial content
-      setContent(yText.current.toString());
+      setContent(yText.current ? yText.current.toString() : '');
       setIsConnected(true);
 
       // Listen for remote changes
-      yText.current.observe(() => {
-        const newContent = yText.current!.toString();
-        setContent(newContent);
-        onContentChange?.(newContent);
-      });
+      if (yText.current) {
+        yText.current.observe(() => {
+          const newContent = yText.current!.toString();
+          setContent(newContent);
+          onContentChange?.(newContent);
+        });
+      }
 
       // Listen for collaborator changes
       documentManager.current.onCollaboratorsChanged(setCollaborators);
@@ -86,7 +88,9 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   };
 
   const handleTextChange = (text: string) => {
-    if (!yText.current) return;
+    if (!yText.current) {
+      return;
+    }
 
     try {
       // Replace the entire content (simple approach for mobile)
@@ -94,14 +98,18 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       yText.current.insert(0, text);
       setContent(text);
       onContentChange?.(text);
-    } catch (err) {
-      console.error('Error updating text:', err);
+    } catch {
+      // Error updating text; optionally handle error here
     }
   };
 
   const getConnectionStatus = () => {
-    if (error) return `Error: ${error}`;
-    if (!isConnected) return 'Connecting...';
+    if (error) {
+      return `Error: ${error}`;
+    }
+    if (!isConnected) {
+      return 'Connecting...';
+    }
     return `Connected • ${collaborators.length} collaborator${collaborators.length !== 1 ? 's' : ''}`;
   };
 
@@ -146,10 +154,10 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
           style={styles.editor}
           value={content}
           onChangeText={handleTextChange}
-          placeholder="Type here and collaborate in real-time..."
-          placeholderTextColor="#9ca3af"
+          placeholder='Type here and collaborate in real-time...'
+          placeholderTextColor='#9ca3af'
           multiline
-          textAlignVertical="top"
+          textAlignVertical='top'
           editable={isConnected}
         />
       </View>
