@@ -1,6 +1,16 @@
 {
   "name": "@udp/prettier-config",
   "version": "0.0.1",
+  "description": "Shared Prettier configuration for UDP",
+  "main": "./index.js",
+  "files": [
+    "index.js"
+  ],
   "private": true,
-  "main": "index.js"
+  "dependencies": {
+    "prettier": "^3.0.0"
+  },
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  }
 }

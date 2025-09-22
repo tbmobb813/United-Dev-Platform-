@@ -4,9 +4,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@udp/*": [
-        "../../packages/*/index.ts"
-      ]
+      "@udp/ui-native": ["../../packages/ui-native/index.js"],
+      "@udp/editor-core": ["../../packages/editor-core/index.ts"]
     }
   },
   "include": [
@@ -14,6 +13,9 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../../packages/config/**/*",
+    "../../packages/filesystem/**/*",
+    "../../packages/git/**/*"
   ]
 }

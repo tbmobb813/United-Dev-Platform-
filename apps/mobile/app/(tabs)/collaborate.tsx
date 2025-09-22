@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { CollaborativeEditor } from '../../components/CollaborativeEditor';
-import { getConfig } from '@udp/config';
 
 export default function CollaborateScreen() {
   const [userId, setUserId] = useState<string>('');

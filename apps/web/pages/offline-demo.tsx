@@ -1,5 +1,23 @@
-import { OfflineEditor } from '@udp/ui';
 import React from 'react';
+
+// Mock OfflineEditor component for now
+interface OfflineEditorProps {
+  room: string;
+  serverUrl: string;
+  children: (doc: any, status: { isConnected: boolean; pendingChanges: number; lastSync?: Date }) => React.ReactNode;
+}
+
+const OfflineEditor: React.FC<OfflineEditorProps> = ({ room, serverUrl, children }) => {
+  // Mock document and status
+  const mockDoc = {};
+  const mockStatus = {
+    isConnected: false,
+    pendingChanges: 0,
+    lastSync: new Date(),
+  };
+
+  return <>{children(mockDoc, mockStatus)}</>;
+};
 
 /**
  * Complete demonstration of offline-enabled collaborative editing

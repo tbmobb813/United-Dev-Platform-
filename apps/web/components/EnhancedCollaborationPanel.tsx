@@ -1,7 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { CollaboratorPresence } from '@udp/ui';
-import { UserPresence } from '@udp/collaboration';
 import { getConfig } from '@udp/config';
+import { UserPresence } from '@udp/editor-core';
+import React, { useEffect, useState } from 'react';
+
+// Simple CollaboratorPresence component
+interface CollaboratorPresenceProps {
+  collaborators: UserPresence[];
+  maxVisible?: number;
+  showNames?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const CollaboratorPresence: React.FC<CollaboratorPresenceProps> = ({
+  collaborators,
+  maxVisible = 5,
+  showNames = true,
+  size = 'md',
+}) => {
+  const sizeMap = {
+    sm: '24px',
+    md: '32px',
+    lg: '40px',
+  };
+
+  const visibleCollaborators = collaborators.slice(0, maxVisible);
+  const remainingCount = collaborators.length - maxVisible;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {visibleCollaborators.map((collaborator) => (
+          <div
+            key={collaborator.id}
+            style={{
+              width: sizeMap[size],
+              height: sizeMap[size],
+              borderRadius: '50%',
+              backgroundColor: collaborator.color,
+              border: '2px solid white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: size === 'sm' ? '10px' : '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+            }}
+            title={collaborator.name}
+          >
+            {collaborator.name.charAt(0).toUpperCase()}
+          </div>
+        ))}
+        {remainingCount > 0 && (
+          <div
+            style={{
+              width: sizeMap[size],
+              height: sizeMap[size],
+              borderRadius: '50%',
+              backgroundColor: '#6b7280',
+              border: '2px solid white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: size === 'sm' ? '10px' : '12px',
+              fontWeight: '600',
+            }}
+            title={`+${remainingCount} more`}
+          >
+            +{remainingCount}
+          </div>
+        )}
+      </div>
+      {showNames && (
+        <div style={{ fontSize: '12px', color: '#6b7280' }}>
+          {visibleCollaborators.map((collaborator, index) => (
+            <span key={collaborator.id}>
+              {collaborator.name}
+              {index < visibleCollaborators.length - 1 && ', '}
+            </span>
+          ))}
+          {remainingCount > 0 && ` and ${remainingCount} more`}
+        </div>
+      )}
+    </div>
+  );
+};
 
 interface EnhancedCollaborationPanelProps {
   collaborators: UserPresence[];
@@ -20,7 +103,7 @@ export const EnhancedCollaborationPanel: React.FC<
 
   // Auto-collapse after 30 seconds if only 1 user and no activity
   useEffect(() => {
-    if (collaborators.length <= 1 && config.features.realTimeCollaboration) {
+    if (collaborators.length <= 1 && config.maxCollaborators > 1) {
       const timer = setTimeout(() => {
         if (Date.now() - lastActivity > 30000) {
           setIsCollapsed(true);
@@ -37,7 +120,7 @@ export const EnhancedCollaborationPanel: React.FC<
   }, [
     collaborators.length,
     lastActivity,
-    config.features.realTimeCollaboration,
+    config.maxCollaborators,
     onToggleCollapse,
   ]);
 
@@ -58,7 +141,7 @@ export const EnhancedCollaborationPanel: React.FC<
     handleActivity();
   };
 
-  if (!config.features.realTimeCollaboration) {
+  if (config.maxCollaborators <= 1) {
     return null;
   }
 
@@ -176,7 +259,7 @@ export const EnhancedCollaborationPanel: React.FC<
                 padding: '20px 0',
               }}
             >
-              {config.features.realTimeCollaboration
+              {config.maxCollaborators > 1
                 ? 'Share the QR code to invite collaborators'
                 : 'Real-time collaboration disabled'}
             </div>

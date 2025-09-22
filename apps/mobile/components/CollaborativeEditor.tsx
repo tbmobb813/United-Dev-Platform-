@@ -1,14 +1,14 @@
 import { DocumentManager, UserPresence } from '@udp/editor-core';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View
 } from 'react-native';
 import * as Y from 'yjs';
-import { config } from '../config';
+import { config } from '../config.js';
 
 interface CollaborativeEditorProps {
   roomId: string;

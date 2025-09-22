@@ -59,7 +59,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   const handleInputChange = (field: keyof LoginCredentials) => 
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setCredentials(prev => ({
+      setCredentials((prev: LoginCredentials) => ({
         ...prev,
         [field]: field === 'rememberMe' ? e.target.checked : e.target.value
       }));

@@ -96,7 +96,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
 
     const passwordErrors = validatePassword(newPassword);
     if (passwordErrors.length > 0) {
-      setFormError(passwordErrors[0]);
+      setFormError(passwordErrors[0] || 'Password validation failed');
       return;
     }
 

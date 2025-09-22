@@ -22,11 +22,13 @@
     "check": "pnpm lint && pnpm type-check && pnpm test",
     "fix": "pnpm lint:fix && pnpm format",
     "reset": "pnpm clean && pnpm install",
+    "validate-env": "node scripts/validate-env.js",
+    "validate-devops": "node scripts/validate-devops.js",
     "dev:web": "cd apps/web && pnpm dev",
     "dev:api": "cd apps/api && pnpm dev",
     "dev:mobile": "cd apps/mobile && pnpm start",
     "dev:all": "turbo dev --parallel",
-    "prebuild": "pnpm check",
+    "prebuild": "pnpm check && pnpm validate-env",
     "postinstall": "pnpm type-check"
   },
   "devDependencies": {
