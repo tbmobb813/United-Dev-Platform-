@@ -1,4 +1,4 @@
-1. Market Research & Requirements Definition
+# Market Research & Requirements Definition
 
 Action Items:
 
@@ -14,7 +14,7 @@ feature: single unified workspace).
 
 Deliverable: A requirements doc with ranked features for the MVP.
 
-2. Technical Architecture Planning
+## Technical Architecture Planning
 
 Action Items:
 
@@ -32,7 +32,7 @@ cloud/project storage.
 Deliverable: Architecture spec (diagrams, stack choice, scalability
 considerations).
 
-3. Prototype Development
+## Prototype Development
 
 Action Items:
 
@@ -45,7 +45,7 @@ Pick one environment to support first (e.g., React web apps) to validate flow.
 
 Deliverable: Clickable prototype or working proof-of-concept.
 
-4. Resource Planning & Team Assembly
+## Resource Planning & Team Assembly
 
 Action Items:
 
@@ -63,7 +63,7 @@ Decide: solo build → hire contractors → or recruit co-founder.
 
 Deliverable: Resource plan (skill needs, time allocation, budget).
 
-5. Funding & Business Model
+## Funding & Business Model
 
 Action Items:
 
@@ -82,7 +82,7 @@ licenses.
 
 Deliverable: Lean financial plan with 6–12 month runway.
 
-6. Roadmap & Milestones
+## Roadmap & Milestones
 
 Phase 1 (0–3 months): Research, architecture spec, basic IDE prototype.
 
@@ -207,7 +207,7 @@ Top-left: VS Code, Replit
 
 Center: Expo (mobile heavy but not fully integrated)
 
-3. Opportunity Lanes (Visual Pillars)
+1. Opportunity Lanes (Visual Pillars)
 
 On a Notion Kanban board or Miro sticky notes, create lanes:
 
@@ -241,7 +241,7 @@ Lower price point
 
 Indie/startup friendly
 
-4. Suggested Setup in Tools
+1. Suggested Setup in Tools
 
 Notion: Create a Board Database → each competitor as a card → add properties:
 Strengths, Weaknesses, Gaps, Takeaway. Add a Gallery view for visual

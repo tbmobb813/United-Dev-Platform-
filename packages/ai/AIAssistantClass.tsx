@@ -1,4 +1,5 @@
 import React from 'react';
+import { AIManager } from './AIManager';
 
 // Types for the AI Assistant
 export interface ChatMessage {
@@ -16,7 +17,7 @@ export interface AIAssistantProps {
   currentFile?: string;
   selectedCode?: string;
   onCodeInsert?: (code: string) => void;
-  aiManager?: any;
+  aiManager?: AIManager;
 }
 
 interface AIAssistantState {
@@ -399,16 +400,6 @@ class AIAssistant extends React.Component<AIAssistantProps, AIAssistantState> {
                   fontWeight: '600',
                   minWidth: '80px',
                   transition: 'background-color 0.2s',
-                }}
-                onMouseEnter={e => {
-                  if (!(!input.trim() || isLoading)) {
-                    e.target.style.backgroundColor = '#0056b3';
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (!(!input.trim() || isLoading)) {
-                    e.target.style.backgroundColor = '#007bff';
-                  }
                 }}
               >
                 {isLoading ? '...' : 'Send'}

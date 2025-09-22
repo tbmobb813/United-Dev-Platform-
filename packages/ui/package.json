@@ -13,5 +13,8 @@
   },
   "devDependencies": {
     "@types/react": "18.2.79"
+  },
+  "dependencies": {
+    "yjs": "^13.6.27"
   }
 }

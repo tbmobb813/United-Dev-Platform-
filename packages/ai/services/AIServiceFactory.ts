@@ -1,6 +1,7 @@
 import { AIService, AIServiceConfig } from './AIService';
-import { OpenAIService } from './OpenAIService';
 import { AnthropicService } from './AnthropicService';
+import { OllamaService } from './OllamaService';
+import { OpenAIService } from './OpenAIService';
 
 export class AIServiceFactory {
   private static services: Map<string, AIService> = new Map();
@@ -23,11 +24,9 @@ export class AIServiceFactory {
         service = new AnthropicService(config);
         break;
       case 'local':
-        // For future local model support (Ollama, etc.)
-        throw new Error('Local AI provider not yet implemented');
       case 'ollama':
-        // For future Ollama support
-        throw new Error('Ollama provider not yet implemented');
+        service = new OllamaService(config);
+        break;
       default:
         throw new Error(`Unsupported AI provider: ${config.provider}`);
     }
@@ -66,7 +65,22 @@ export class AIServiceFactory {
           'claude-3-haiku-20240307',
         ],
       },
-      // Future providers can be added here
+      {
+        id: 'ollama',
+        name: 'Ollama (Local)',
+        description: 'Local AI models running through Ollama',
+        requiresApiKey: false,
+        models: [
+          'llama2',
+          'codellama',
+          'mistral',
+          'gemma',
+          'phi',
+          'neural-chat',
+          'starling-lm',
+          'orca-mini',
+        ],
+      },
     ];
   }
 
@@ -89,6 +103,14 @@ export class AIServiceFactory {
       !config.apiKey
     ) {
       errors.push(`API key is required for ${config.provider}`);
+    }
+
+    if (
+      config.provider === 'ollama' &&
+      config.baseUrl &&
+      !config.baseUrl.startsWith('http')
+    ) {
+      errors.push('Ollama base URL must be a valid HTTP(S) URL');
     }
 
     if (
@@ -137,5 +159,12 @@ export const DEFAULT_CONFIGS = {
     model: 'gpt-3.5-turbo',
     maxTokens: 1000,
     temperature: 0.3,
+  },
+  local: {
+    provider: 'ollama' as const,
+    model: 'codellama',
+    maxTokens: 2000,
+    temperature: 0.3,
+    baseUrl: 'http://localhost:11434',
   },
 } as const;

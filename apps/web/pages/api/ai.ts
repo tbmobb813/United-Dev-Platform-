@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '../../lib/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,10 +10,22 @@ export default async function handler(
   }
 
   try {
-    const { messages, system } = req.body;
+    const { messages, system, sessionId, userId } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Invalid messages format' });
+    }
+
+    // Verify session exists if provided
+    let session = null;
+    if (sessionId) {
+      session = await prisma.aiChatSession.findUnique({
+        where: { id: sessionId },
+      });
+
+      if (!session) {
+        return res.status(400).json({ error: 'Session not found' });
+      }
     }
 
     // Check if local models are enabled
@@ -25,6 +38,20 @@ export default async function handler(
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey && !useLocalModels) {
       return res.status(500).json({ error: 'OpenAI API key not configured' });
+    }
+
+    // Store the user message if session exists
+    if (session && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === 'user') {
+        await prisma.aiMessage.create({
+          data: {
+            sessionId,
+            role: 'USER',
+            content: lastMessage.content,
+          },
+        });
+      }
     }
 
     // Prepare the request to OpenAI or local model
@@ -67,13 +94,14 @@ export default async function handler(
       'Access-Control-Allow-Headers': 'Cache-Control',
     });
 
-    // Stream the response
+    // Stream the response and collect assistant message
     const reader = response.body?.getReader();
     if (!reader) {
       return res.status(500).json({ error: 'Failed to read response' });
     }
 
     const decoder = new TextDecoder();
+    let assistantContent = '';
 
     try {
       while (true) {
@@ -81,18 +109,58 @@ export default async function handler(
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\\n');
+        const lines = chunk.split('\n');
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            res.write(`${line}\\n`);
+            // Extract content for database storage
+            if (line !== 'data: [DONE]' && session) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                const content = data.choices?.[0]?.delta?.content;
+                if (content) {
+                  assistantContent += content;
+                }
+              } catch (e) {
+                // Ignore JSON parse errors for non-JSON lines
+              }
+            }
+
+            res.write(`${line}\n`);
           }
         }
       }
     } catch (streamError) {
       console.error('Streaming error:', streamError);
     } finally {
-      res.write('data: [DONE]\\n\\n');
+      res.write('data: [DONE]\n\n');
+
+      // Store the complete assistant response
+      if (session && assistantContent) {
+        try {
+          await prisma.aiMessage.create({
+            data: {
+              sessionId,
+              role: 'ASSISTANT',
+              content: assistantContent,
+              metadata: {
+                model: requestBody.model,
+                temperature: requestBody.temperature,
+                useLocalModels,
+              },
+            },
+          });
+
+          // Update session timestamp
+          await prisma.aiChatSession.update({
+            where: { id: sessionId },
+            data: { updatedAt: new Date() },
+          });
+        } catch (dbError) {
+          console.error('Error storing AI message:', dbError);
+        }
+      }
+
       res.end();
     }
   } catch (error) {

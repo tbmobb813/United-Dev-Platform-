@@ -6,6 +6,7 @@ export * from './Input';
 export * from './Layout';
 export * from './Loading';
 export * from './Modal';
+export * from './OfflineEditor';
 export * from './PresenceIndicator';
 export * from './Settings';
 export * from './ShortcutsHelp';

@@ -9,8 +9,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "yjs": "^13.6.27",
+    "y-indexeddb": "^9.0.12",
+    "y-protocols": "^1.0.6",
     "y-websocket": "^1.5.0",
-    "y-protocols": "^1.0.6"
+    "yjs": "^13.6.27"
   }
 }
