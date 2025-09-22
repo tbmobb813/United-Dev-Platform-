@@ -17,3 +17,6 @@ export const prompts = {
   explainFile: `You are a senior engineer. Explain the file succinctly...`,
   suggestRefactor: `Propose a safe refactor with a unified diff...`,
 };
+
+export { default as AIAssistant } from "./AIAssistant";
+export type { ChatMessage, AIAssistantProps } from "./AIAssistant";

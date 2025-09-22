@@ -10,10 +10,13 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@udp/ui-native": "workspace:*",
     "expo": "^51.0.0",
     "expo-linking": "~6.3.1",
     "react": "18.2.0",
-    "react-native": "0.74.0"
+    "react-native": "0.74.0",
+    "yjs": "^13.6.18",
+    "y-websocket": "^2.0.4"
   },
   "devDependencies": {
     "@types/react": "18.2.79"

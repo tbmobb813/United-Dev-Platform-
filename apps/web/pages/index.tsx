@@ -6,17 +6,31 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { Awareness } from "y-protocols/awareness";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "@udp/ui";
+import {
+  Button,
+  Input,
+  Card,
+  Stack,
+  Loading,
+  FileManager,
+  useKeyboardShortcuts,
+  commonShortcuts,
+  ShortcutsHelp,
+  Settings,
+  CollaborationPanel,
+} from "@udp/ui";
+import { AIAssistant } from "../components/AIAssistant";
+import { codeCompletionService } from "../components/CodeCompletionProvider";
 
 // Dynamic imports for client-side only components
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
-  loading: () => <p>Loading editor...</p>,
+  loading: () => <Loading text="Loading editor..." />,
 });
 
 const QRCode = dynamic(() => import("qrcode.react"), {
   ssr: false,
-  loading: () => <div>Loading QR code...</div>,
+  loading: () => <Loading text="Loading QR code..." />,
 });
 
 function generateColor() {
@@ -37,6 +51,14 @@ export default function Home() {
   const [file, setFile] = useState("/README.md");
   const [roomInput, setRoomInput] = useState(room);
   const [docInput, setDocInput] = useState(docName);
+  const [isAIOpen, setIsAIOpen] = useState(false);
+  const [selectedCode, setSelectedCode] = useState<string>("");
+  const [isFileManagerOpen, setIsFileManagerOpen] = useState(false);
+  const [fileManagerMode, setFileManagerMode] = useState<
+    "open" | "save" | "create"
+  >("open");
+  const [isShortcutsHelpOpen, setIsShortcutsHelpOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
   )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
@@ -57,6 +79,7 @@ export default function Home() {
       cursor?: { line: number; column: number };
     }[]
   >([]);
+  const [userId] = useState(() => uuidv4().substring(0, 5));
 
   useEffect(() => {
     setIsClient(true);
@@ -101,8 +124,6 @@ export default function Home() {
           `# ${docName}\n\nCollaborative document for room: ${room}\nDocument: ${docName}\n\nType here and open the mobile app to test handoff.`
         );
       }
-
-      const userId = uuidv4().substring(0, 5);
 
       const handleChange = () => {
         if (!awarenessRef.current) return;
@@ -169,7 +190,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error setting up Yjs:", error);
     }
-  }, [room, docName, userName]);
+  }, [room, docName, userName, userId]);
 
   const updateCursorDecorations = (
     usersWithCursors: {
@@ -241,8 +262,28 @@ export default function Home() {
     editorRef.current = editor;
     const model = editor.getModel();
     if (!model || !ytextRef.current) return;
-    editor.updateOptions({ wordWrap: "on", minimap: { enabled: false } });
+
+    // Configure editor options
+    editor.updateOptions({
+      wordWrap: "on",
+      minimap: { enabled: false },
+      suggestOnTriggerCharacters: true,
+      quickSuggestions: true,
+      suggestSelection: "first",
+      acceptSuggestionOnEnter: "on",
+    });
+
     model.setValue(ytextRef.current.toString());
+
+    // Initialize code completion providers
+    try {
+      codeCompletionService.registerCompletionProviders();
+      codeCompletionService.registerHoverProvider();
+      codeCompletionService.registerCodeActionProvider();
+      console.log("✅ Code completion initialized");
+    } catch (error) {
+      console.warn("Failed to initialize code completion:", error);
+    }
 
     const yObserver = () => {
       if (!ytextRef.current || ignoreRef.current) return;
@@ -277,10 +318,23 @@ export default function Home() {
       });
     });
 
+    // Track text selection for AI assistant
+    const selectionDisposable = editor.onDidChangeCursorSelection((e) => {
+      if (!e.selection.isEmpty()) {
+        const selectedText = model.getValueInRange(e.selection);
+        if (selectedText) {
+          setSelectedCode(selectedText);
+        }
+      } else {
+        setSelectedCode("");
+      }
+    });
+
     editor.onDidDispose(() => {
       if (ytextRef.current) ytextRef.current.unobserve(yObserver);
       disposable.dispose();
       cursorDisposable.dispose();
+      selectionDisposable.dispose();
     });
   };
 
@@ -288,6 +342,66 @@ export default function Home() {
     localStorage.removeItem("userName");
     router.push("/login");
   };
+
+  const handleFileSelect = (filePath: string) => {
+    setFile(filePath);
+    console.log("Opening file:", filePath);
+  };
+
+  const handleFileSave = (filePath: string, content: string) => {
+    console.log("Saving file:", filePath, "with content:", content);
+    // Here you would implement actual file saving logic
+  };
+
+  const handleFileCreate = (filePath: string) => {
+    setFile(filePath);
+    console.log("Creating new file:", filePath);
+    // Here you would implement actual file creation logic
+  };
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    {
+      ...commonShortcuts.SAVE,
+      action: () => {
+        console.log("Save shortcut triggered");
+        // Implement save logic here
+      },
+    },
+    {
+      ...commonShortcuts.OPEN,
+      action: () => {
+        setFileManagerMode("open");
+        setIsFileManagerOpen(true);
+      },
+    },
+    {
+      ...commonShortcuts.NEW_FILE,
+      action: () => {
+        setFileManagerMode("create");
+        setIsFileManagerOpen(true);
+      },
+    },
+    {
+      ...commonShortcuts.AI_ASSISTANT,
+      action: () => {
+        setIsAIOpen(true);
+      },
+    },
+    {
+      key: "F1",
+      action: () => {
+        setIsShortcutsHelpOpen(true);
+      },
+      description: "Show keyboard shortcuts help",
+    },
+    {
+      ...commonShortcuts.SETTINGS,
+      action: () => {
+        setIsSettingsOpen(true);
+      },
+    },
+  ]);
 
   if (!userName || !isClient) return <div>Loading...</div>;
 
@@ -298,48 +412,72 @@ export default function Home() {
       </Head>
       <h1>Unified Dev Platform (Web)</h1>
       <p>Logged in as: {userName ? String(userName) : "Unknown"}</p>
-      <Button onClick={handleSignOut}>Sign out</Button>
-
-      <div
-        style={{
-          margin: "20px 0",
-          padding: "15px",
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        <h3>Document Navigation</h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            alignItems: "center",
-            marginBottom: "10px",
+      <Stack direction="row" gap="small" wrap>
+        <Button onClick={handleSignOut}>Sign out</Button>
+        <Button variant="outline" onClick={() => setIsAIOpen(true)}>
+          🤖 AI Assistant
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setFileManagerMode("open");
+            setIsFileManagerOpen(true);
           }}
         >
-          <label>Room:</label>
-          <input
-            value={roomInput}
-            onChange={(e) => setRoomInput(e.target.value)}
-            placeholder="Enter room name"
-            style={{
-              padding: "6px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
-          />
-          <label>Document:</label>
-          <input
-            value={docInput}
-            onChange={(e) => setDocInput(e.target.value)}
-            placeholder="Enter document name"
-            style={{
-              padding: "6px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
-          />
+          📁 Open File
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setFileManagerMode("save");
+            setIsFileManagerOpen(true);
+          }}
+        >
+          💾 Save As
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setFileManagerMode("create");
+            setIsFileManagerOpen(true);
+          }}
+        >
+          ➕ New File
+        </Button>
+        <Button
+          variant="ghost"
+          size="small"
+          onClick={() => setIsShortcutsHelpOpen(true)}
+        >
+          ❓ Help (F1)
+        </Button>
+        <Button
+          variant="ghost"
+          size="small"
+          onClick={() => setIsSettingsOpen(true)}
+        >
+          ⚙️ Settings
+        </Button>
+      </Stack>
+
+      <Card title="Document Navigation" style={{ margin: "20px 0" }}>
+        <Stack direction="row" gap="medium" align="center" wrap>
+          <Stack direction="row" gap="small" align="center">
+            <label>Room:</label>
+            <Input
+              value={roomInput}
+              onChange={setRoomInput}
+              placeholder="Enter room name"
+            />
+          </Stack>
+          <Stack direction="row" gap="small" align="center">
+            <label>Document:</label>
+            <Input
+              value={docInput}
+              onChange={setDocInput}
+              placeholder="Enter document name"
+            />
+          </Stack>
           <Button
             onClick={() => {
               const newUrl = `/?room=${encodeURIComponent(roomInput)}&doc=${encodeURIComponent(docInput)}`;
@@ -348,21 +486,56 @@ export default function Home() {
           >
             Switch Document
           </Button>
-        </div>
-        <p style={{ fontSize: "14px", color: "#666" }}>
+        </Stack>
+        <p style={{ fontSize: "14px", color: "#666", margin: "12px 0 0 0" }}>
           Current: <strong>{room}</strong> / <strong>{docName}</strong>
         </p>
-      </div>
+      </Card>
 
       <h2>
         Collaborative editor powered by Yjs. Room: {room}, Document: {docName}
       </h2>
       {isClient && (
-        <MonacoEditor
-          height="40vh"
-          language="markdown"
-          onMount={handleEditorDidMount}
-        />
+        <Stack gap="small">
+          <MonacoEditor
+            height="40vh"
+            language="markdown"
+            onMount={handleEditorDidMount}
+          />
+          <Card padding="small">
+            <Stack direction="row" gap="medium" align="center" wrap>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <span style={{ color: "#4caf50" }}>✅</span>
+                <span style={{ fontSize: "12px" }}>AI Assistant</span>
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <span style={{ color: "#2196f3" }}>💡</span>
+                <span style={{ fontSize: "12px" }}>Code Completion</span>
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <span style={{ color: "#ff9800" }}>🔍</span>
+                <span style={{ fontSize: "12px" }}>Hover Help</span>
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <span style={{ color: "#9c27b0" }}>⚡</span>
+                <span style={{ fontSize: "12px" }}>Quick Actions</span>
+              </div>
+              <div
+                style={{ fontSize: "11px", color: "#666", marginLeft: "auto" }}
+              >
+                💡 Type to trigger suggestions • Select code for AI assistance
+              </div>
+            </Stack>
+          </Card>
+        </Stack>
       )}
 
       <h3>Active users:</h3>
@@ -395,41 +568,97 @@ export default function Home() {
       <h2>Mobile Handoff (QR demo)</h2>
       <p>Scan to open the same document on the mobile client via deep link:</p>
       {isClient && deeplink ? (
-        <div>
+        <Stack gap="medium" align="center">
           <QRCode value={String(deeplink)} size={180} />
-          <div
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              backgroundColor: "#f0f0f0",
-              fontFamily: "monospace",
-              fontSize: "12px",
-              wordBreak: "break-all",
-              marginTop: "10px",
-            }}
+          <Card
+            title="Deep Link"
+            padding="medium"
+            style={{ maxWidth: "400px" }}
           >
-            <strong>Deep Link:</strong>
-            <br />
-            {String(deeplink)}
-          </div>
-        </div>
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: "12px",
+                wordBreak: "break-all",
+              }}
+            >
+              {deeplink}
+            </div>
+          </Card>
+        </Stack>
       ) : (
-        <div>Loading QR code and deep link...</div>
+        <Loading text="Loading QR code and deep link..." />
       )}
 
-      <p>
-        File path:
-        <input
+      <Stack
+        direction="row"
+        gap="small"
+        align="center"
+        style={{ marginTop: "16px" }}
+      >
+        <label>File path:</label>
+        <Input
           value={file}
-          onChange={(e) => setFile(e.target.value)}
-          style={{
-            padding: 6,
-            border: "1px solid #ddd",
-            borderRadius: 6,
-            marginLeft: 8,
-          }}
+          onChange={setFile}
+          placeholder="/README.md"
+          style={{ minWidth: "200px" }}
         />
-      </p>
+      </Stack>
+
+      {/* AI Assistant Modal */}
+      <AIAssistant
+        isOpen={isAIOpen}
+        onClose={() => setIsAIOpen(false)}
+        selectedCode={selectedCode}
+        fileName={file}
+        editorContent={ytextRef.current?.toString()}
+        cursorPosition={
+          editorRef.current
+            ? (() => {
+                const position = editorRef.current.getPosition();
+                return position
+                  ? { line: position.lineNumber, column: position.column }
+                  : undefined;
+              })()
+            : undefined
+        }
+      />
+
+      {/* File Manager Modal */}
+      <FileManager
+        isOpen={isFileManagerOpen}
+        onClose={() => setIsFileManagerOpen(false)}
+        mode={fileManagerMode}
+        currentFile={file}
+        onFileSelect={handleFileSelect}
+        onFileSave={handleFileSave}
+        onFileCreate={handleFileCreate}
+      />
+
+      {/* Shortcuts Help Modal */}
+      <ShortcutsHelp
+        isOpen={isShortcutsHelpOpen}
+        onClose={() => setIsShortcutsHelpOpen(false)}
+      />
+
+      {/* Settings Modal */}
+      <Settings
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
+
+      {/* Collaboration Panel */}
+      <div
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          zIndex: 1000,
+          maxWidth: "300px",
+        }}
+      >
+        <CollaborationPanel users={users} currentUserId={userId} />
+      </div>
     </div>
   );
 }

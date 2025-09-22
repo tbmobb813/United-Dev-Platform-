@@ -1,378 +1,779 @@
-# Building a Custom AI-Powered Developer Platform: Tech Stack and Roadmap
+# # AI-Powered Developer Platform: Architecture & Implementation Guide
+
+> A comprehensive guide for building a modern, AI-integrated development platform with machine learning capabilities.
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Technology Stack](#technology-stack)
+3. [AI Integration Strategies](#ai-integration-strategies)
+4. [Development Phases](#development-phases)
+5. [Implementation Guide](#implementation-guide)
+6. [Architecture](#architecture)
+7. [Security Considerations](#security-considerations)
+8. [Deployment & Operations](#deployment--operations)
+
+---
 
-Here’s a comprehensive overview of how to build a custom AI-powered developer platform with integrated machine learning capabilities. This includes tech stack recommendations, AI integration options, ML workflow components, and a suggested development timeline.
+## Overview
 
-## 1. Tech Stack Overview
+This document outlines the strategy for building a custom AI-powered developer platform that combines:
 
-1. Core Platform Foundation
+- **Web-based IDE** with syntax highlighting and intelligent code completion
+- **AI-assisted development** through chat interfaces and inline code suggestions
+- **Machine learning workflows** for model training and experimentation
+- **Version control integration** with Git-based collaboration
+- **Cloud deployment** capabilities with CI/CD pipelines
 
-Frontend: React (flexible, rich ecosystem) or Vue.js (lighter, easier to scaffold quickly).
+### Key Features
 
-Backend: Node.js (fast API development, good for realtime features) or Python (Flask/Django, especially if you want ML logic server-side).
+- ✅ Browser-based development environment
+- ✅ AI coding assistant (chat + inline suggestions)
+- ✅ Git integration with GitHub/GitLab
+- ✅ Real-time collaboration
+- ✅ Containerized deployment
+- ✅ ML experiment tracking
 
-Version Control Integration: Git hooks + GitHub/GitLab APIs.
+---
+
+## Technology Stack
+
+### Core Platform Foundation
+
+| Component | Primary Option | Alternative | Rationale |
+|-----------|---------------|-------------|-----------|
+| **Frontend** | React | Vue.js | Rich ecosystem, component reusability |
+| **Backend** | Node.js | Python (Flask/Django) | Fast API development, real-time features |
+| **Database** | PostgreSQL | MongoDB | ACID compliance, structured data |
+| **Editor** | Monaco Editor | CodeMirror | VS Code compatibility, feature-rich |
+| **Auth** | NextAuth.js | Clerk | GitHub OAuth integration |
+| **ORM** | Prisma | TypeORM | Type safety, developer experience |
 
-Project Management: Kanban/task boards (integrated like Jira-lite or Notion-style boards).
+### Development Infrastructure
 
-Deployment Infra:
+```yaml
+Build System: Next.js 14 (App Router)
+Package Manager: pnpm
+Monorepo: Turborepo
+Styling: Tailwind CSS + Radix UI
+State Management: React Query + Zustand
+Validation: Zod
+Testing: Vitest + React Testing Library
+```
 
-MVP → Vercel/Netlify (fast, managed).
+### Deployment Stack
 
-Scale → AWS/GCP/Azure with Docker + Kubernetes.
+| Environment | Technology | Purpose |
+|-------------|------------|---------|
+| **Development** | Docker Compose | Local development environment |
+| **Staging** | Vercel/Netlify | Quick preview deployments |
+| **Production** | AWS/GCP + Kubernetes | Scalable container orchestration |
+| **CI/CD** | GitHub Actions | Automated testing and deployment |
 
-2. AI Integration Options
+---
 
-API-based (Fastest MVP)
+## AI Integration Strategies
 
-OpenAI GPT-4/5, Anthropic Claude, Google Gemini.
+### 1. API-Based Integration (Recommended for MVP)
 
-Pros: Quick setup, best performance, no training needed.
+**Advantages:**
 
-Cons: Monthly cost, external dependency.
+- ⚡ Quick setup and implementation
+- 🎯 Best-in-class performance
+- 🔄 No model training required
+- 🛡️ Managed scaling and updates
 
-Local/Open Source Models
+**Providers:**
 
-Models like Code Llama, StarCoder2, DeepSeek-Coder.
+- **OpenAI GPT-4/4o** - General coding assistance
+- **Anthropic Claude** - Code analysis and documentation
+- **Google Gemini** - Multi-modal capabilities
 
-Run via Ollama or vLLM on your machine/server.
+```typescript
+// Example AI API integration
+const aiResponse = await fetch('/api/ai/completions', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    model: 'gpt-4o-mini',
+    messages: [
+      { role: 'system', content: 'You are an expert code reviewer.' },
+      { role: 'user', content: `Explain this code: ${selectedCode}` }
+    ],
+    temperature: 0.2
+  })
+});
+```
 
-Pros: Privacy, cost control, customization.
+### 2. Local/Open Source Models
 
-Cons: GPU required, setup complexity.
+**Advantages:**
 
-Hybrid Approach
+- 🔒 Data privacy and control
+- 💰 Cost predictability
+- ⚙️ Model customization
+- 🌐 Offline capabilities
 
-Use APIs for advanced reasoning.
+**Recommended Models:**
 
-Local models for autocomplete, smaller tasks, or offline coding.
+- **Code Llama 7B/13B** - Code completion and generation
+- **StarCoder2** - Multi-language code understanding
+- **DeepSeek-Coder** - Specialized coding tasks
 
-3. Machine Learning Workflow
+**Infrastructure:**
 
-If you want ML capabilities for training/testing your own models, you’ll need:
+- **Ollama** - Local model serving
+- **vLLM** - High-performance inference
+- **TensorRT-LLM** - NVIDIA GPU optimization
 
-Data Management: DVC, Airflow, or Prefect for pipelines.
+### 3. Hybrid Approach (Production Recommended)
 
-Training: PyTorch or TensorFlow (with Hugging Face for ease).
+```mermaid
+graph TD
+    A[User Request] --> B{Task Type}
+    B -->|Complex Reasoning| C[Cloud API]
+    B -->|Code Completion| D[Local Model]
+    B -->|Offline Mode| D
+    C --> E[Response]
+    D --> E
+```
 
-Experiment Tracking: MLflow or Weights & Biases.
+---
 
-Serving Models: FastAPI + ONNX Runtime / TorchServe.
+## Development Phases
 
-Hardware: NVIDIA GPU with CUDA or cloud GPU rental.
-
-4. Development Timeline
-
-MVP (3–6 months):
-
-IDE in browser (Monaco Editor or CodeMirror).
-
-GitHub/GitLab integration.
-
-API-based AI coding assistant.
-
-Extended (6–12 months):
-
-Local AI model integration.
-
-ML training/experiment tracking dashboard.
-
-Cloud deployment orchestration.
-
-Advanced (12+ months):
-
-Mobile IDE support.
-
-Multi-user collaboration.
-
-Custom AI coding agents with tool use.
-
-5. Suggested Roadmap
-
-MVP Phase → Focus on IDE + Git + AI API assistant.
-
-User Feedback → See how you (and others if shared) actually use it.
-
-Expand → Add ML experiment tools and local AI.
-
-Scale → Deploy multi-user support, cloud scaling, and training pipelines.
-
-✅ Recommended Starting Point:
-Build a web IDE + Git integration + AI API assistant using React + Node.js/Express. Use OpenAI’s or Anthropic’s API first (fast to implement), then later layer in a local Code Llama deployment for offline control.
-
-## 2. Step-by-step MVP build plan (practical + opinionated)
-
-0. Scope (what “done” means)
-
-Web IDE in browser (tabs, file tree, syntax highlight, run scripts).
-
-GitHub repo import + commit/push from the UI.
-
-AI assistant (inline suggest + chat) via API.
-
-Simple projects store (Postgres).
-
-One-click deploy (Docker) + CI that runs lint/tests.
-
-1. Tech choices (fastest path, lowest surprise)
-
-Framework: Next.js 14 (App Router) — frontend + backend in one codebase, great DX.
-
-UI: Monaco Editor (VS Code’s editor), Radix UI primitives.
-
-State: React Query (for server actions) + Zod (runtime validation).
-
-Auth: NextAuth (GitHub OAuth) or Clerk (fewer footguns). Start with GitHub OAuth.
-
-DB: Postgres (+ Prisma ORM).
-
-AI (Phase 1): OpenAI/Anthropic via server route (API first).
-
-AI (Phase 2): Ollama (local), vLLM (server) — OpenAI-compatible endpoints.
-
-Git: NodeGit for basic ops, fall back to server-side git CLI via child_process.
-
-Tasks/Jobs: simple server actions; add BullMQ + Redis later if needed.
-
-DevOps: Docker Compose (web + db), GitHub Actions (lint/test/build).
-
-Telemetry: minimal—server logs + basic request timing.
-
-2. Repo layout (monorepo-ready, but starts simple)
-   ai-dev-platform/
-   ├─ apps/
-   │ └─ web/ # Next.js app (frontend + API routes)
-   ├─ packages/
-   │ ├─ ui/ # (optional) shared components
-   │ └─ utils/ # (optional) shared utils (zod schemas, errors)
-   ├─ infra/
-   │ ├─ docker/ # Dockerfiles, compose yaml
-   │ └─ db/ # migrations, seed
-   ├─ .github/workflows/ # CI
-   └─ README.md
-
-3. Data model (Prisma)
-
-User: id, email, name, providerId
-
-Project: id, userId, name, repoUrl, createdAt
-
-File: id, projectId, path, content, updatedAt
-
-Run (optional MVP): id, projectId, kind(“node”|“python”), status, logs
-
-4. Environment & dev setup (your machine)
-
-Windows 11 + WSL2 Ubuntu 24.04 (your current setup)
-
-Install: Node 20, pnpm, Docker Desktop (WSL integration), Postgres via Docker.
-
-.env template (commit .env.example, never .env):
-
-# apps/web/.env
-
-NEXTAUTH_SECRET=changeme
-NEXTAUTH_URL=<http://localhost:3000>
-GITHUB_ID=your_client_id
-GITHUB_SECRET=your_client_secret
-
-OPENAI_API_KEY=sk-...
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/aidp
-ALLOW_LOCAL_MODELS=true # phase 2
-LOCAL_OPENAI_BASE_URL=<http://localhost:11434/v1> # Ollama (phase 2)
-
-5. Core features to implement (weekend-friendly chunks)
-
-A. Auth + DB (Day 1)
-
-NextAuth with GitHub provider
-
-Prisma init + migrations (User, Project)
-
-“Create Project” page (stores row, creates empty tree)
-
-B. Web IDE (Day 1–2)
-
-Monaco Editor component (tabs, language detection)
-
-File tree (CRUD against /api/file/\*)
-
-Save on Ctrl+S → server action writes to DB
-
-Run button (Node script runner in a sandboxed child process; capture stdout to UI)
-
-C. Git integration (Day 2)
-
-“Connect Repo” (OAuth scopes repo)
-
-git clone to a per-project working dir under /var/appdata/{user}/{project}
-
-“Commit & Push” modal (message, staged files)
-
-D. AI assistant (Day 2)
-
-Sidebar “Assistant” with chat + “Ask about this file”
-
-Inline code actions: “Explain selection”, “Write tests for this file”
-
-Server route /api/ai that proxies to OpenAI or to local (phase 2) based on env
-
-E. CI + Docker (Day 2)
-
-Dockerfile for web; compose with Postgres
-
-GitHub Actions: pnpm install → lint → test → build
-
-Seed script (optional)
-
-6. Key code sketches (just enough to get moving)
-
-Server route → AI proxy (apps/web/app/api/ai/route.ts)
-
+### Phase 1: MVP (3-6 months)
+
+**Core Features:**
+
+- [ ] Web-based IDE with file management
+- [ ] GitHub/GitLab repository integration
+- [ ] AI chat assistant and code suggestions
+- [ ] Basic project management
+- [ ] User authentication and project storage
+
+**Success Metrics:**
+
+- Basic IDE functionality working
+- AI assistant providing helpful suggestions
+- Git operations (clone, commit, push) functional
+- User can create and manage projects
+
+### Phase 2: Enhanced Features (6-12 months)
+
+**Additional Features:**
+
+- [ ] Local AI model integration
+- [ ] ML experiment tracking dashboard
+- [ ] Advanced collaboration tools
+- [ ] Cloud deployment automation
+- [ ] Plugin/extension system
+
+### Phase 3: Advanced Platform (12+ months)
+
+**Enterprise Features:**
+
+- [ ] Mobile IDE support
+- [ ] Multi-tenant architecture
+- [ ] Advanced AI agents with tool use
+- [ ] Custom model training pipelines
+- [ ] Enterprise security features
+
+---
+
+## Implementation Guide
+
+### Project Structure
+
+```
+ai-dev-platform/
+├── apps/
+│   ├── web/                    # Next.js frontend + API
+│   ├── desktop/                # Electron wrapper (future)
+│   └── mobile/                 # React Native app (future)
+├── packages/
+│   ├── ui/                     # Shared UI components
+│   ├── ai/                     # AI integration utilities
+│   ├── editor-core/            # Editor functionality
+│   └── types/                  # Shared TypeScript types
+├── infra/
+│   ├── docker/                 # Container configurations
+│   ├── k8s/                    # Kubernetes manifests
+│   └── scripts/                # Deployment scripts
+├── docs/                       # Documentation
+└── .github/workflows/          # CI/CD pipelines
+```
+
+### Environment Setup
+
+#### Prerequisites
+
+- **Node.js 20+** with pnpm
+- **Docker Desktop** with WSL2 integration
+- **PostgreSQL** (via Docker)
+- **Git** with SSH keys configured
+
+#### Environment Variables
+
+```env
+# Authentication
+NEXTAUTH_SECRET=your-secret-here
+NEXTAUTH_URL=http://localhost:3000
+GITHUB_ID=your-github-client-id
+GITHUB_SECRET=your-github-client-secret
+
+# Database
+DATABASE_URL=postgresql://postgres:password@localhost:5432/devplatform
+
+# AI Services
+OPENAI_API_KEY=sk-your-openai-key
+ANTHROPIC_API_KEY=your-anthropic-key
+
+# Local AI (Optional)
+ALLOW_LOCAL_MODELS=true
+LOCAL_OPENAI_BASE_URL=http://localhost:11434/v1
+```
+
+### Database Schema
+
+```sql
+-- Core entities
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    provider_id VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE projects (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id),
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    repo_url VARCHAR(500),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE files (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id),
+    path VARCHAR(500) NOT NULL,
+    content TEXT,
+    language VARCHAR(50),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE ai_conversations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id),
+    messages JSONB NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Core API Routes
+
+#### AI Integration Endpoint
+
+```typescript
+// app/api/ai/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+const requestSchema = z.object({
+  messages: z.array(z.object({
+    role: z.enum(['system', 'user', 'assistant']),
+    content: z.string()
+  })),
+  model: z.string().optional(),
+  temperature: z.number().min(0).max(2).optional()
+});
 
 export async function POST(req: NextRequest) {
-const { messages, system } = await req.json();
-const base = process.env.ALLOW_LOCAL_MODELS === 'true'
-? process.env.LOCAL_OPENAI_BASE_URL ?? '<https://api.openai.com/v1>'
-: '<https://api.openai.com/v1>';
+  try {
+    const body = await req.json();
+    const { messages, model = 'gpt-4o-mini', temperature = 0.2 } = requestSchema.parse(body);
 
-const res = await fetch(`${base}/chat/completions`, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-},
-body: JSON.stringify({
-model: 'gpt-4o-mini', // or local model name if using Ollama
-messages: [
-...(system ? [{ role: 'system', content: system }] : []),
-...messages,
-],
-temperature: 0.2,
-}),
-});
+    const baseUrl = process.env.ALLOW_LOCAL_MODELS === 'true' 
+      ? process.env.LOCAL_OPENAI_BASE_URL ?? 'https://api.openai.com/v1'
+      : 'https://api.openai.com/v1';
 
-return new NextResponse(res.body, { status: res.status });
+    const response = await fetch(`${baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature,
+        max_tokens: 4000
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`AI API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+
+  } catch (error) {
+    console.error('AI API error:', error);
+    return NextResponse.json(
+      { error: 'Failed to process AI request' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+#### File Management API
+
+```typescript
+// app/api/projects/[id]/files/route.ts
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const files = await prisma.file.findMany({
+    where: { projectId: params.id },
+    orderBy: { path: 'asc' }
+  });
+  
+  return NextResponse.json(files);
 }
 
-Monaco + inline AI action (client component snippet)
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { path, content, language } = await req.json();
+  
+  const file = await prisma.file.upsert({
+    where: { 
+      projectId_path: { 
+        projectId: params.id, 
+        path 
+      } 
+    },
+    update: { content, language },
+    create: { 
+      projectId: params.id, 
+      path, 
+      content, 
+      language 
+    }
+  });
+  
+  return NextResponse.json(file);
+}
+```
 
-const runExplainSelection = async () => {
-const selection = editorRef.current?.getModel()?.getValueInRange(
-editorRef.current.getSelection()
-) || '';
-const resp = await fetch('/api/ai', {
-method: 'POST',
-body: JSON.stringify({
-system: 'You are a senior code reviewer. Explain clearly and briefly.',
-messages: [{ role:'user', content: `Explain:\n\n${selection}`}]
-})
-});
-const data = await resp.json();
-setAssistantReply(data.choices?.[0]?.message?.content ?? 'No reply');
+---
+
+## Architecture
+
+### System Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        WEB[Web App]
+        MOBILE[Mobile App]
+        DESKTOP[Desktop App]
+    end
+    
+    subgraph "API Gateway"
+        GATEWAY[Next.js API Routes]
+    end
+    
+    subgraph "Core Services"
+        AUTH[Authentication]
+        PROJECT[Project Service]
+        AI[AI Service]
+        GIT[Git Integration]
+        EXEC[Code Execution]
+    end
+    
+    subgraph "Data Layer"
+        DB[(PostgreSQL)]
+        REDIS[(Redis Cache)]
+        S3[(File Storage)]
+    end
+    
+    subgraph "AI Providers"
+        OPENAI[OpenAI API]
+        LOCAL[Local Models]
+        ANTHROPIC[Anthropic]
+    end
+    
+    WEB --> GATEWAY
+    MOBILE --> GATEWAY
+    DESKTOP --> GATEWAY
+    
+    GATEWAY --> AUTH
+    GATEWAY --> PROJECT
+    GATEWAY --> AI
+    GATEWAY --> GIT
+    GATEWAY --> EXEC
+    
+    PROJECT --> DB
+    AUTH --> DB
+    AI --> REDIS
+    
+    AI --> OPENAI
+    AI --> LOCAL
+    AI --> ANTHROPIC
+    
+    PROJECT --> S3
+```
+
+### Component Architecture
+
+```typescript
+// Core AI Assistant Component
+interface AIAssistantProps {
+  projectId: string;
+  currentFile?: string;
+  selectedCode?: string;
+  onCodeInsert: (code: string) => void;
+}
+
+const AIAssistant: React.FC<AIAssistantProps> = ({
+  projectId,
+  currentFile,
+  selectedCode,
+  onCodeInsert
+}) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const sendMessage = async (content: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            ...messages,
+            { role: 'user', content }
+          ],
+          context: {
+            projectId,
+            currentFile,
+            selectedCode
+          }
+        })
+      });
+      
+      const data = await response.json();
+      setMessages(prev => [...prev, data.message]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="ai-assistant">
+      <ChatInterface 
+        messages={messages}
+        onSendMessage={sendMessage}
+        isLoading={isLoading}
+      />
+      <QuickActions
+        onExplainCode={() => sendMessage(`Explain this code: ${selectedCode}`)}
+        onWriteTests={() => sendMessage(`Write unit tests for: ${selectedCode}`)}
+        onOptimize={() => sendMessage(`Optimize this code: ${selectedCode}`)}
+      />
+    </div>
+  );
 };
+```
 
-Run script server action (Node child process)
+---
 
-import { exec } from 'node:child_process';
-export async function POST(req: Request) {
-const { cmd, cwd } = await req.json(); // validate!
-return new Response(await new Promise<string>(r => {
-exec(cmd, { cwd }, (err, stdout, stderr) => r(err ? stderr : stdout));
-}));
+## Security Considerations
+
+### Code Execution Security
+
+```typescript
+// Secure sandbox for code execution
+import { spawn } from 'child_process';
+import path from 'path';
+
+const DANGEROUS_COMMANDS = [
+  'rm', 'rmdir', 'del', 'format',
+  'net', 'netstat', 'ping', 'curl',
+  'sudo', 'su', 'chmod', 'chown'
+];
+
+export async function executeCode(
+  code: string, 
+  language: string, 
+  projectPath: string
+): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  
+  // Validate project path is within allowed directory
+  const allowedPath = path.resolve('/var/projects');
+  const resolvedPath = path.resolve(projectPath);
+  
+  if (!resolvedPath.startsWith(allowedPath)) {
+    throw new Error('Invalid project path');
+  }
+  
+  // Check for dangerous commands
+  if (DANGEROUS_COMMANDS.some(cmd => code.toLowerCase().includes(cmd))) {
+    throw new Error('Dangerous command detected');
+  }
+  
+  const command = getExecutionCommand(language);
+  const process = spawn(command, [], {
+    cwd: resolvedPath,
+    timeout: 30000, // 30 second timeout
+    env: {
+      ...process.env,
+      PATH: '/usr/local/bin:/usr/bin:/bin' // Restricted PATH
+    }
+  });
+  
+  return new Promise((resolve) => {
+    let stdout = '';
+    let stderr = '';
+    
+    process.stdout.on('data', (data) => {
+      stdout += data.toString();
+      if (stdout.length > 10000) { // Limit output size
+        process.kill();
+        stderr += 'Output limit exceeded';
+      }
+    });
+    
+    process.stderr.on('data', (data) => {
+      stderr += data.toString();
+    });
+    
+    process.on('close', (exitCode) => {
+      resolve({ stdout, stderr, exitCode: exitCode || 0 });
+    });
+  });
+}
+```
+
+### Authentication & Authorization
+
+```typescript
+// Role-based access control
+enum UserRole {
+  VIEWER = 'viewer',
+  EDITOR = 'editor',
+  ADMIN = 'admin'
 }
 
-7. Local models (Phase 2 – optional but easy to add)
+interface ProjectPermission {
+  userId: string;
+  projectId: string;
+  role: UserRole;
+}
 
-Install Ollama on Windows (or WSL) and pull e.g. llama3.1:8b or codellama:7b.
+export function checkProjectAccess(
+  userId: string, 
+  projectId: string, 
+  requiredRole: UserRole = UserRole.VIEWER
+): boolean {
+  const permission = getProjectPermission(userId, projectId);
+  
+  const roleHierarchy = {
+    [UserRole.VIEWER]: 1,
+    [UserRole.EDITOR]: 2,
+    [UserRole.ADMIN]: 3
+  };
+  
+  return roleHierarchy[permission.role] >= roleHierarchy[requiredRole];
+}
+```
 
-Start OpenAI-compatible server (ollama serve + openai-compat shim or use the community gateway).
+---
 
-Flip .env: ALLOW_LOCAL_MODELS=true and set LOCAL_OPENAI_BASE_URL.
+## Deployment & Operations
 
-Now the same /api/ai route talks to local when available, API when not.
+### Docker Configuration
 
-8. Security & sandboxing (MVP guardrails)
+```dockerfile
+# Dockerfile for web application
+FROM node:20-alpine AS builder
 
-Never run user commands outside project working dir.
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
 
-Add a denylist for dangerous commands (rm -rf /, network tools).
+COPY . .
+RUN npm run build
 
-Stream logs; kill after N seconds; limit stdout size.
+FROM node:20-alpine AS runner
+WORKDIR /app
 
-Always validate inputs with Zod on server.
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-9. Testing & CI (keep it lean)
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-Vitest + React Testing Library for components.
+USER nextjs
 
-API route tests: happy path + invalid input.
+EXPOSE 3000
+ENV PORT 3000
 
-Lint: ESLint + Prettier.
+CMD ["node", "server.js"]
+```
 
-CI gates: lint → unit tests → build.
+### Kubernetes Deployment
 
-10. Roadmap after MVP
+```yaml
+# k8s/web-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-dev-platform-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ai-dev-platform-web
+  template:
+    metadata:
+      labels:
+        app: ai-dev-platform-web
+    spec:
+      containers:
+      - name: web
+        image: ai-dev-platform:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: url
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-secret
+              key: openai-key
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+```
 
-Notebooks: lightweight Python notebook cells (run via server sandbox).
+### CI/CD Pipeline
 
-Agentic tools: “Run Tests”, “Refactor module”, “Add docs” buttons that call the AI with repo context + tool hooks.
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy to Production
 
-Experiments: MLflow container + “launch training” job with status board.
+on:
+  push:
+    branches: [main]
 
-Collab: presence cursors, comments, shared projects.
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run test
+      - run: pnpm run build
 
-Secrets vault: per-project tokens (encrypted at rest).
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.REGISTRY_URL }}/ai-dev-platform:${{ github.sha }} .
+          docker push ${{ secrets.REGISTRY_URL }}/ai-dev-platform:${{ github.sha }}
+      
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/ai-dev-platform-web \
+            web=${{ secrets.REGISTRY_URL }}/ai-dev-platform:${{ github.sha }}
+```
 
-High-level architecture diagram (ASCII)
-┌──────────────────────────────┐
-│ Browser (Next.js) │
-│ - Monaco IDE (tabs, tree) │
-│ - AI Chat / Inline actions │
-│ - Git & Run buttons │
-└───────────────┬──────────────┘
-│ HTTP(S)
-┌───────▼──────────────────────────────────────┐
-│ Next.js Server (app/api) │
-│ - Auth (NextAuth) │
-│ - File CRUD (DB-backed) │
-│ - Git ops (NodeGit / git CLI) │
-│ - Run sandbox (child_process, guards) │
-│ - /api/ai → OpenAI or Local (Ollama/vLLM) │
-└───────┬───────────────┬──────────────────────┘
-│ │
-┌───────▼──────┐ ┌────▼─────────────────┐
-│ Postgres │ │ AI Provider │
-│ (Prisma) │ │ - OpenAI (cloud) │
-└──────────────┘ │ - or Local (Ollama) │
-└───────────────────────┘
+---
 
-A realistic weekend checklist for you
+## Next Steps
 
-Saturday AM (2–3h)
+### Weekend Implementation Checklist
 
-Scaffold Next.js + NextAuth + Prisma.
+#### Saturday Morning (2-3 hours)
 
-Docker Compose: Postgres + web.
+- [ ] Set up Next.js project with TypeScript
+- [ ] Configure NextAuth with GitHub OAuth
+- [ ] Set up Prisma with PostgreSQL
+- [ ] Create basic project structure
 
-Migrate DB, test auth flow.
+#### Saturday Afternoon (3-4 hours)  
 
-Saturday PM (3–4h)
+- [ ] Implement Monaco Editor component
+- [ ] Create file tree UI with CRUD operations
+- [ ] Set up basic project management
 
-Add Monaco Editor + file tree UI.
+#### Sunday Morning (2-3 hours)
 
-File CRUD routes (save/load from DB).
+- [ ] Implement AI chat interface
+- [ ] Create `/api/ai` proxy endpoint
+- [ ] Add code explanation features
 
-Sunday AM (2–3h)
+#### Sunday Afternoon (2-3 hours)
 
-/api/ai proxy + chat sidebar + “Explain selection”.
+- [ ] Add Git integration (clone, commit, push)
+- [ ] Implement basic code execution
+- [ ] Set up Docker development environment
 
-Sunday PM (2–3h)
+### Future Enhancements
 
-Git: connect repo, clone/pull, commit/push (happy path).
+1. **Advanced AI Features**
+   - Context-aware code suggestions
+   - Automated testing generation
+   - Code review automation
+   - Documentation generation
 
-Basic “Run script” button with sandbox + logs.
+2. **Collaboration Features**
+   - Real-time editing with operational transforms
+   - Video/voice chat integration
+   - Shared workspaces
+   - Comment and review system
 
-Final hour
+3. **ML/AI Training Pipeline**
+   - Custom model fine-tuning
+   - Experiment tracking dashboard
+   - A/B testing for AI features
+   - Performance monitoring
 
-Add CI workflow + README with setup & .env example.
+4. **Enterprise Features**
+   - SSO integration
+   - Audit logging
+   - Advanced security policies
+   - Multi-tenant architecture
+
+---
