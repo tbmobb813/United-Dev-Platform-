@@ -5,17 +5,20 @@
 ### Option 1: Local PostgreSQL with Docker
 
 1. **Start the database:**
+
    ```bash
    cd apps/web
    docker-compose up -d
    ```
 
 2. **Run migrations:**
+
    ```bash
    npx prisma migrate dev --name init
    ```
 
 3. **Generate client:**
+
    ```bash
    npx prisma generate
    ```
@@ -23,11 +26,13 @@
 ### Option 2: Prisma Development Database
 
 1. **Start Prisma dev server:**
+
    ```bash
    npx prisma dev
    ```
 
 2. **Run migrations:**
+
    ```bash
    npx prisma migrate dev --name init
    ```
@@ -45,6 +50,7 @@
    - Vercel Postgres
 
 2. **Configure environment variables:**
+
    ```bash
    DATABASE_URL="postgresql://username:password@host:5432/database?schema=public"
    NEXTAUTH_SECRET="your-production-secret"
@@ -56,6 +62,7 @@
 ### Deployment Scripts
 
 #### 1. Production Database Setup
+
 ```bash
 # Deploy to production database
 npx prisma migrate deploy
@@ -65,6 +72,7 @@ npx prisma generate
 ```
 
 #### 2. Seed Database (Optional)
+
 ```bash
 # Run seed script if needed
 npx prisma db seed
@@ -73,6 +81,7 @@ npx prisma db seed
 ### Migration Management
 
 #### Creating New Migrations
+
 ```bash
 # After schema changes
 npx prisma migrate dev --name describe_your_changes
@@ -82,6 +91,7 @@ npx prisma migrate deploy
 ```
 
 #### Reset Database (Development Only)
+
 ```bash
 # Reset and re-migrate
 npx prisma migrate reset
@@ -90,12 +100,14 @@ npx prisma migrate reset
 ### Database Backup & Restore
 
 #### Backup
+
 ```bash
 # Backup production database
 pg_dump $DATABASE_URL > backup.sql
 ```
 
 #### Restore
+
 ```bash
 # Restore from backup
 psql $DATABASE_URL < backup.sql
@@ -104,6 +116,7 @@ psql $DATABASE_URL < backup.sql
 ## Environment Configuration
 
 ### Development (.env.local)
+
 ```bash
 DATABASE_URL="postgresql://udp_user:udp_password@localhost:5432/unified_dev_platform?schema=public"
 NEXTAUTH_URL="http://localhost:3000"
@@ -111,6 +124,7 @@ NEXTAUTH_SECRET="development-secret-key"
 ```
 
 ### Production (.env.production)
+
 ```bash
 DATABASE_URL="postgresql://user:pass@prod-host:5432/database"
 NEXTAUTH_URL="https://your-domain.com"
@@ -122,17 +136,21 @@ GITHUB_CLIENT_SECRET="prod-github-client-secret"
 ## Deployment Platforms
 
 ### Vercel Deployment
+
 1. **Connect repository** to Vercel
 2. **Add environment variables** in Vercel dashboard
 3. **Deploy** - migrations will run automatically
 
 ### Railway Deployment
+
 1. **Create PostgreSQL service**
 2. **Deploy application** with environment variables
 3. **Run migrations** via Railway CLI
 
 ### Docker Deployment
+
 1. **Build container:**
+
    ```dockerfile
    FROM node:18-alpine
    WORKDIR /app
@@ -146,6 +164,7 @@ GITHUB_CLIENT_SECRET="prod-github-client-secret"
    ```
 
 2. **Run with docker-compose:**
+
    ```yaml
    services:
      app:
@@ -163,6 +182,7 @@ GITHUB_CLIENT_SECRET="prod-github-client-secret"
 ## Monitoring & Maintenance
 
 ### Database Health Checks
+
 ```bash
 # Check database connection
 npx prisma db push --preview-feature
@@ -172,11 +192,13 @@ npx prisma studio
 ```
 
 ### Performance Monitoring
+
 - Enable PostgreSQL slow query log
 - Monitor connection pool usage
 - Set up database metrics alerts
 
 ### Backup Strategy
+
 - Automated daily backups
 - Point-in-time recovery setup
 - Cross-region backup replication
@@ -186,11 +208,13 @@ npx prisma studio
 ### Common Issues
 
 1. **Migration conflicts:**
+
    ```bash
    npx prisma migrate resolve --applied migration_name
    ```
 
 2. **Schema drift:**
+
    ```bash
    npx prisma db push
    ```
@@ -201,6 +225,7 @@ npx prisma studio
    - Ensure database is running
 
 ### Debug Commands
+
 ```bash
 # Check Prisma client
 npx prisma validate

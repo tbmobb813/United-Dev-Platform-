@@ -4,14 +4,14 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@udp/*": ["../../packages/*/index.ts"]
+      "@udp/*": [
+        "../../packages/*/index.ts"
+      ]
     }
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules"
