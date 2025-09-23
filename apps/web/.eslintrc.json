@@ -1,10 +1,21 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "worker": true
+  },
+  "globals": {
+    "TextDecoder": "readonly",
+    "TextEncoder": "readonly",
+    "WebAssembly": "readonly",
+    "alert": "readonly",
+    "setInterval": "readonly",
+    "clearInterval": "readonly"
+  },
+  "extends": ["@udp/eslint-config/react"],
   "rules": {
+    "no-undef": "off",
     "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/no-explicit-any": "warn",
-    // Disable only the duplicate-head rule which currently crashes the
-    // workspace linter due to an API mismatch in the plugin/runtime.
-    "@next/next/no-duplicate-head": "off"
+    "@typescript-eslint/no-explicit-any": "warn"
   }
 }

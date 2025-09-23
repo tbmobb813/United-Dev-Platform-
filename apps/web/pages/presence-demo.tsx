@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { CollaborationPanel } from '@udp/ui';
 import { useEffect, useState } from 'react';
 
@@ -49,7 +50,7 @@ export default function PresenceDemo() {
 
   // Simulate user activity changes
   useEffect(() => {
-    const interval = setInterval(() => {
+  const interval = window.setInterval(() => {
       setUsers(currentUsers => {
         return currentUsers.map(user => {
           // Randomly toggle activity for non-current users
@@ -84,9 +85,9 @@ export default function PresenceDemo() {
           return user;
         });
       });
-    }, 3000); // Update every 3 seconds
+  }, 3000); // Update every 3 seconds
 
-    return () => clearInterval(interval);
+  return () => window.clearInterval(interval as number);
   }, [currentUserId]);
 
   return (

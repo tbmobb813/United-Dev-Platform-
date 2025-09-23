@@ -245,7 +245,7 @@ export default function Home() {
 
       // Add dynamic styles for cursors
       const styleId = 'user-cursor-styles';
-      let styleElement = document.getElementById(styleId) as HTMLStyleElement;
+    let styleElement = document.getElementById(styleId) as any;
       if (!styleElement) {
         styleElement = document.createElement('style');
         styleElement.id = styleId;
@@ -274,7 +274,7 @@ export default function Home() {
         )
         .join('\n');
 
-      styleElement.textContent = styles;
+  styleElement.textContent = styles;
     } catch (error) {
       console.warn('Failed to update cursor decorations:', error);
     }

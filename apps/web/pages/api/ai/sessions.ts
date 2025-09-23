@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
+import logger from '@udp/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -67,7 +68,7 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
 
     res.status(200).json({ sessions });
   } catch (error) {
-    console.error('Error fetching chat sessions:', error);
+    logger.error('Error fetching chat sessions:', error);
     res.status(500).json({ error: 'Failed to fetch chat sessions' });
   }
 }
@@ -133,7 +134,7 @@ async function createChatSession(req: NextApiRequest, res: NextApiResponse) {
 
     res.status(201).json({ session });
   } catch (error: any) {
-    console.error('Error creating chat session:', error);
+    logger.error('Error creating chat session:', error);
 
     if (error.code === 'P2003') {
       return res.status(400).json({ error: 'User or project not found' });

@@ -5,14 +5,13 @@ import morgan from 'morgan';
 import { WebSocketServer } from 'ws';
 import { setupWSConnection } from 'y-websocket/bin/utils.js';
 import { prisma } from '@udp/db';
+import logger from './lib/logger.js';
 
-// Store active collaboration sessions and documents
-const sessions = new Map();
-const documents = new Map();
+// (Placeholder) collaboration session/document storage can be added here when needed
 
 // Enhanced WebSocket connection handler with Yjs collaboration
 function setupCollaborativeWSConnection(conn, req) {
-  console.log('Collaborative WebSocket connection established');
+  logger.info('Collaborative WebSocket connection established');
   
   // Extract session/document ID from URL
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -20,8 +19,8 @@ function setupCollaborativeWSConnection(conn, req) {
   const projectId = url.searchParams.get('projectId');
   const userId = url.searchParams.get('userId');
   
-  if (!sessionId || !projectId) {
-    console.log('Missing sessionId or projectId, closing connection');
+    if (!sessionId || !projectId) {
+    logger.warn('Missing sessionId or projectId, closing connection');
     conn.close(1008, 'Missing required parameters');
     return;
   }
@@ -52,18 +51,18 @@ function setupCollaborativeWSConnection(conn, req) {
           await handleFileSave(conn, data, projectId, userId);
           break;
         default:
-          console.log('Unknown message type:', data.type);
+          logger.warn('Unknown message type:', data.type);
       }
     } catch (error) {
       if (message.toString().startsWith('{')) {
-        console.error('Error processing message:', error);
+        logger.error('Error processing message:', error);
       }
       // Ignore non-JSON messages (likely Yjs sync messages)
     }
   });
 
   conn.on('close', async () => {
-    console.log('Collaborative WebSocket connection closed');
+  logger.info('Collaborative WebSocket connection closed');
     if (userId && sessionId) {
       await updateUserPresence(sessionId, userId, false);
     }
@@ -154,7 +153,7 @@ async function handleJoinSession(conn, data, sessionId, projectId, userId) {
     }, userId);
 
   } catch (error) {
-    console.error('Error handling join session:', error);
+  logger.error('Error handling join session:', error);
     conn.send(JSON.stringify({
       type: 'error',
       message: 'Failed to join session'
@@ -180,7 +179,7 @@ async function handleLeaveSession(conn, data, sessionId, userId) {
     }, userId);
 
   } catch (error) {
-    console.error('Error handling leave session:', error);
+  logger.error('Error handling leave session:', error);
   }
 }
 
@@ -211,14 +210,14 @@ async function handleCursorUpdate(conn, data, sessionId, userId) {
     }, userId);
 
   } catch (error) {
-    console.error('Error handling cursor update:', error);
+  logger.error('Error handling cursor update:', error);
   }
 }
 
 // Handle file save operations
 async function handleFileSave(conn, data, projectId, userId) {
   try {
-    const { fileId, content, path } = data;
+    const { fileId, content } = data;
     
     if (fileId) {
       // Update existing file
@@ -252,7 +251,7 @@ async function handleFileSave(conn, data, projectId, userId) {
     }
 
   } catch (error) {
-    console.error('Error handling file save:', error);
+  logger.error('Error handling file save:', error);
     conn.send(JSON.stringify({
       type: 'error',
       message: 'Failed to save file'
@@ -281,15 +280,15 @@ async function updateUserPresence(sessionId, userId, isActive) {
       }
     });
   } catch (error) {
-    console.error('Error updating user presence:', error);
+    logger.error('Error updating user presence:', error);
   }
 }
 
 // Broadcast message to all participants in a session except sender
-function broadcastToSession(sessionId, message, excludeUserId) {
+function broadcastToSession(sessionId, message, _excludeUserId) {
   // In a real implementation, you'd keep track of WebSocket connections
   // and broadcast to active connections. This is a simplified version.
-  console.log(`Broadcasting to session ${sessionId}:`, message);
+  logger.info(`Broadcasting to session ${sessionId}:`, message);
 }
 
 const PORT = process.env.PORT || 3030;
@@ -315,7 +314,7 @@ app.get('/health', (_req, res) => res.json({
 // API endpoints
 app.get('/api/sessions/:sessionId', async (req, res) => {
   try {
-    const { sessionId } = req.params;
+    const sessionId = req.params.sessionId;
     
     const session = await prisma.collaborationSession.findUnique({
       where: { id: sessionId },
@@ -348,7 +347,7 @@ app.get('/api/sessions/:sessionId', async (req, res) => {
 
     res.json({ session });
   } catch (error) {
-    console.error('Error fetching session:', error);
+    logger.error('Error fetching session:', error);
     res.status(500).json({ error: 'Failed to fetch session' });
   }
 });
@@ -364,12 +363,12 @@ app.post('/ai/run', async (req, res) => {
     // Log AI interaction if projectId and userId provided
     if (projectId && userId) {
       // This could create an AI chat session and log the interaction
-      console.log(`AI interaction: ${userId} in project ${projectId}`);
+      logger.info(`AI interaction: ${userId} in project ${projectId}`);
     }
     
     res.json({ result, timestamp: new Date().toISOString() });
   } catch (error) {
-    console.error('Error in AI endpoint:', error);
+    logger.error('Error in AI endpoint:', error);
     res.status(500).json({ error: 'AI service error' });
   }
 });
@@ -382,7 +381,7 @@ const wss = new WebSocketServer({ noServer: true });
 
 // Handle WebSocket upgrades
 server.on('upgrade', (request, socket, head) => {
-  console.log('WebSocket upgrade request:', request.url);
+  logger.info('WebSocket upgrade request:', request.url);
   
   wss.handleUpgrade(request, socket, head, (ws) => {
     setupCollaborativeWSConnection(ws, request);
@@ -390,8 +389,8 @@ server.on('upgrade', (request, socket, head) => {
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Express error:', err);
+app.use((err, req, res, _next) => {
+  logger.error('Express error:', err);
   res.status(500).json({ 
     error: 'Internal Server Error',
     timestamp: new Date().toISOString()
@@ -400,23 +399,21 @@ app.use((err, req, res, next) => {
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down gracefully');
+  logger.info('SIGTERM received, shutting down gracefully');
   
   // Close database connection
   await prisma.$disconnect();
   
   // Close server
   server.close(() => {
-    console.log('Server closed');
+  logger.info('Server closed');
     process.exit(0);
   });
 });
 
 // Start server
 server.listen(PORT, () => {
-  console.log(
-    `[api] WebSocket collaboration server listening on http://localhost:${PORT}`
-  );
-  console.log(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`);
+  logger.info(`[api] WebSocket collaboration server listening on http://localhost:${PORT}`);
+  logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`);
 });

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
+import logger from '@udp/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -63,7 +64,7 @@ async function getProjectFiles(
 
     res.status(200).json({ files });
   } catch (error) {
-    console.error('Error fetching project files:', error);
+    logger.error('Error fetching project files:', error);
     res.status(500).json({ error: 'Failed to fetch files' });
   }
 }
@@ -116,7 +117,7 @@ async function createFile(
 
     res.status(201).json({ file });
   } catch (error: any) {
-    console.error('Error creating file:', error);
+    logger.error('Error creating file:', error);
 
     if (error.code === 'P2002') {
       return res.status(400).json({

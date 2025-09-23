@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-duplicate-head */
 import { resolve } from 'path';
 
 /** @type {import('next').NextConfig} */

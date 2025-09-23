@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
 import { requireAuth } from '../../../lib/auth';
+import logger from '@udp/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,13 +9,13 @@ export default async function handler(
 ) {
   // Require authentication for all project operations
   const session = await requireAuth(req, res);
-  if (!session) {return;}
+  if (!session || !session.user) {return;}
 
   switch (req.method) {
     case 'GET':
-      return await getProjects(req, res, session.user.id);
+  return await getProjects(req, res, (session.user as any).id);
     case 'POST':
-      return await createProject(req, res, session.user.id);
+  return await createProject(req, res, (session.user as any).id);
     default:
       res.setHeader('Allow', ['GET', 'POST']);
       res.status(405).json({ error: `Method ${req.method} Not Allowed` });
@@ -124,7 +125,7 @@ async function getProjects(
       },
     });
   } catch (error) {
-    console.error('Error fetching projects:', error);
+    logger.error('Error fetching projects:', error);
     res.status(500).json({ error: 'Failed to fetch projects' });
   }
 }
@@ -180,7 +181,7 @@ async function createProject(
 
     res.status(201).json({ project });
   } catch (error: any) {
-    console.error('Error creating project:', error);
+    logger.error('Error creating project:', error);
 
     // Handle unique constraint violations
     if (error.code === 'P2002') {

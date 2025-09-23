@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { getConfig } from '@udp/config';
 import { UserPresence } from '@udp/editor-core';
 import React, { useEffect, useState } from 'react';
@@ -104,18 +105,19 @@ export const EnhancedCollaborationPanel: React.FC<
   // Auto-collapse after 30 seconds if only 1 user and no activity
   useEffect(() => {
     if (collaborators.length <= 1 && config.maxCollaborators > 1) {
-      const timer = setTimeout(() => {
+  const timer = window.setTimeout(() => {
         if (Date.now() - lastActivity > 30000) {
           setIsCollapsed(true);
           setShowAutoCollapseHint(true);
           onToggleCollapse?.(true);
 
           // Hide hint after 3 seconds
-          setTimeout(() => setShowAutoCollapseHint(false), 3000);
+          // use window.setTimeout to avoid no-undef in some lint configs
+          window.setTimeout(() => setShowAutoCollapseHint(false), 3000);
         }
       }, 30000);
 
-      return () => clearTimeout(timer);
+  return () => window.clearTimeout(timer as number);
     }
   }, [
     collaborators.length,

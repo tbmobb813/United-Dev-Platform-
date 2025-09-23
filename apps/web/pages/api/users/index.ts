@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
+import logger from '@udp/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,7 +32,7 @@ async function getUsers(req: NextApiRequest, res: NextApiResponse) {
 
     res.status(200).json({ users });
   } catch (error) {
-    console.error('Error fetching users:', error);
+    logger.error('Error fetching users:', error);
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 }
@@ -67,7 +68,7 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
 
     res.status(201).json({ user });
   } catch (error: any) {
-    console.error('Error creating user:', error);
+    logger.error('Error creating user:', error);
 
     // Handle unique constraint violations
     if (error.code === 'P2002') {

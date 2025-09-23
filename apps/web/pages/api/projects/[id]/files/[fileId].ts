@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
+import logger from '@udp/logger';
 
 export default async function handler(
   req: NextApiRequest,
@@ -71,7 +72,7 @@ async function getFile(
 
     res.status(200).json({ file });
   } catch (error) {
-    console.error('Error fetching file:', error);
+    logger.error('Error fetching file:', error);
     res.status(500).json({ error: 'Failed to fetch file' });
   }
 }
@@ -129,7 +130,7 @@ async function updateFile(
 
     res.status(200).json({ file });
   } catch (error: any) {
-    console.error('Error updating file:', error);
+    logger.error('Error updating file:', error);
 
     if (error.code === 'P2025') {
       return res.status(404).json({ error: 'File not found' });
@@ -160,7 +161,7 @@ async function deleteFile(
 
     res.status(200).json({ message: 'File deleted successfully' });
   } catch (error: any) {
-    console.error('Error deleting file:', error);
+    logger.error('Error deleting file:', error);
 
     if (error.code === 'P2025') {
       return res.status(404).json({ error: 'File not found' });

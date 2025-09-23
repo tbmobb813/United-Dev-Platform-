@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
+import logger from '@udp/logger';
 
+/* global TextDecoder */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -81,7 +83,7 @@ export default async function handler(
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('AI API error:', error);
+      logger.error('AI API error:', error);
       return res.status(response.status).json({ error: 'AI service error' });
     }
 
@@ -104,6 +106,8 @@ export default async function handler(
     let assistantContent = '';
 
     try {
+      // intentional streaming read loop
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
         if (done) {break;}
@@ -131,7 +135,7 @@ export default async function handler(
         }
       }
     } catch (streamError) {
-      console.error('Streaming error:', streamError);
+      logger.error('Streaming error:', streamError);
     } finally {
       res.write('data: [DONE]\n\n');
 
@@ -157,14 +161,14 @@ export default async function handler(
             data: { updatedAt: new Date() },
           });
         } catch (dbError) {
-          console.error('Error storing AI message:', dbError);
+          logger.error('Error storing AI message:', dbError);
         }
       }
 
       res.end();
     }
   } catch (error) {
-    console.error('AI handler error:', error);
+    logger.error('AI handler error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }

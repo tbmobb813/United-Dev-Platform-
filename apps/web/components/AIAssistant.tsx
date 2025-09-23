@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-duplicate-head */
+/* global TextDecoder, TextEncoder, alert, setInterval, clearInterval, setTimeout, clearTimeout, HTMLDivElement, HTMLStyleElement */
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Card, Stack, Input, Button, Loading } from '@udp/ui';
 
@@ -112,7 +112,9 @@ Please provide helpful, accurate coding assistance with explanations.`;
       setIsTyping(false);
 
       let accumulatedContent = '';
-      while (true) {
+  // streaming reader loop — intentional constant condition
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
         const { done, value } = await reader.read();
         if (done) {break;}
 
