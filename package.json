@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  },
   "pnpm": {
     "overrides": {
       "react": "18.3.1",
