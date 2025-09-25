@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "prepare": "pnpm build"
+    "generate": "prisma generate --schema ../../apps/api/prisma/schema.prisma",
+    "prepare": "pnpm run generate && pnpm build"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2"
