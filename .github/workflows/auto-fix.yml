@@ -29,14 +29,22 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.0.0 --activate
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run ESLint auto-fix and Prettier
+      - name: Enable Corepack & pnpm (early)
         run: |
-          # run auto-fixers; allow non-zero exit so workflow continues
-          pnpm lint:fix || true
-          pnpm format || true
+          corepack enable
+          # Use latest pnpm for speed/bugfixes during setup, then pin for reproducibility
+          corepack prepare pnpm@latest --activate
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
+      - name: Enable Corepack & pnpm (pinned)
+        run: |
+          corepack enable
+          # Pin to the repo's packageManager / pnpm version to ensure reproducible CI
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Detect changes
         id: changes
