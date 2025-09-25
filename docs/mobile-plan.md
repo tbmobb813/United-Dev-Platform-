@@ -1,42 +1,36 @@
-Short answer: yes—include it. But make it a mobile-extended experience
-(continue/review/ship) rather than “full desktop IDE on a phone.” Start small,
-prove value, then expand.
+Short answer: yes—include it. But make it a mobile-extended experience (continue/review/ship) rather
+than “full desktop IDE on a phone.” Start small, prove value, then expand.
 
-What to build first (phased, low-risk) Phase 1 — “Continue on Mobile” MVP (2–4
-weeks of focused work)
+What to build first (phased, low-risk) Phase 1 — “Continue on Mobile” MVP (2–4 weeks of focused
+work)
 
-Read-only repo + diffs: Browse files, syntax-highlighted code, PR list, inline
-comments.
+Read-only repo + diffs: Browse files, syntax-highlighted code, PR list, inline comments.
 
-AI Quick Actions: “Summarize this PR,” “Explain this error,” “Draft a fix,”
-“Write tests for this diff.”
+AI Quick Actions: “Summarize this PR,” “Explain this error,” “Draft a fix,” “Write tests for this
+diff.”
 
 Safe edits: Single-file edits with preview diff → open PR from phone.
 
 Build/CI hooks: Trigger/retry CI, view logs, rollback/deploy toggles.
 
-Auth & security: OAuth with GitHub/GitLab; device attestation; per-action
-scopes.
+Auth & security: OAuth with GitHub/GitLab; device attestation; per-action scopes.
 
-Why this first: It captures 80% of mobile value (reviews, quick fixes, ops) with
-low UX risk.
+Why this first: It captures 80% of mobile value (reviews, quick fixes, ops) with low UX risk.
 
 Phase 2 — Cloud Workspace Hand-off (4–8 weeks)
 
-Open-in-Cloud: Tap to open the same branch in a cloud VS Code-like environment
-(containers/VM). Phone = thin client.
+Open-in-Cloud: Tap to open the same branch in a cloud VS Code-like environment (containers/VM).
+Phone = thin client.
 
-Agent Tasks: “Upgrade to RN 0.xx,” “Fix failing tests,” “Bump deps safely,”
-“Generate migration + run.” Agent runs in the cloud; phone monitors, approves,
-or reverts.
+Agent Tasks: “Upgrade to RN 0.xx,” “Fix failing tests,” “Bump deps safely,” “Generate migration +
+run.” Agent runs in the cloud; phone monitors, approves, or reverts.
 
-Artifacts & previews: Per-PR web preview links, Android emulator snapshots,
-screenshot diffs.
+Artifacts & previews: Per-PR web preview links, Android emulator snapshots, screenshot diffs.
 
 Phase 3 — Power-User Mobile (optional)
 
-Multi-file edits, terminal attach (read-only by default), local keyboard
-shortcuts, external keyboard support.
+Multi-file edits, terminal attach (read-only by default), local keyboard shortcuts, external
+keyboard support.
 
 Offline notes & TODOs that sync back as issues/PR comments.
 
@@ -50,19 +44,17 @@ API gateway for VCS, CI/CD, artifact store.
 
 Cloud dev-env service (container-per-branch) with persistent volumes.
 
-AI layer: stateless function calling + long-running “agent” jobs (queue + worker
-with guardrails).
+AI layer: stateless function calling + long-running “agent” jobs (queue + worker with guardrails).
 
-Storage: Object store for logs/builds, vector store for code embeddings (for AI
-context).
+Storage: Object store for logs/builds, vector store for code embeddings (for AI context).
 
-Security: OAuth, short-lived tokens, repo/branch ACLs, server-side code
-execution only (no eval on device).
+Security: OAuth, short-lived tokens, repo/branch ACLs, server-side code execution only (no eval on
+device).
 
 UX principles that keep this lovable on a phone
 
-Task cards, not tabs: Present “Review PR #42,” “Fix failing test,” “Bump axios”
-as cards with 1-tap outcomes.
+Task cards, not tabs: Present “Review PR #42,” “Fix failing test,” “Bump axios” as cards with 1-tap
+outcomes.
 
 Chunked diffs: Collapsed hunks; tap-to-expand; “summarize this hunk.”
 
@@ -70,18 +62,17 @@ One-screen compose: Edit → AI suggest → preview diff → commit/PR in one fl
 
 Voice-to-code prompts: Let users say the change; agent drafts it.
 
-Safe rails: Every AI action creates a branch/PR with a checklist (tests run,
-typecheck, lint).
+Safe rails: Every AI action creates a branch/PR with a checklist (tests run, typecheck, lint).
 
 Where this differentiates you
 
-Agent-as-Teammate for mobile: Not just chat—bounded, reviewable plans (plan →
-apply → open PR), always reversible.
+Agent-as-Teammate for mobile: Not just chat—bounded, reviewable plans (plan → apply → open PR),
+always reversible.
 
 DevOps on the go: CI controls + targeted rollbacks + release notes summaries.
 
-Context-rich AI: Embeddings of the codebase + repo conventions →
-higher-precision suggestions than generic assistants.
+Context-rich AI: Embeddings of the codebase + repo conventions → higher-precision suggestions than
+generic assistants.
 
 KPIs to prove it’s working
 
@@ -97,8 +88,8 @@ Weekly active mobile “continuation” users; retention at 4 weeks.
 
 Risks & how you mitigate
 
-Tiny-screen fatigue: Focus on review/ops/quick edits first; defer complex
-refactors to cloud hand-off.
+Tiny-screen fatigue: Focus on review/ops/quick edits first; defer complex refactors to cloud
+hand-off.
 
 Safety of AI edits: Always branch + CI gate + explicit human approval.
 
@@ -110,22 +101,18 @@ Pricing & packaging (simple)
 
 Free: Read-only review, comments, CI retry, 10 AI summaries/day.
 
-Pro: Unlimited AI, safe edits/PR-from-phone, 5 concurrent agent tasks, cloud
-workspace hours.
+Pro: Unlimited AI, safe edits/PR-from-phone, 5 concurrent agent tasks, cloud workspace hours.
 
-Team: SSO, policy controls (who can run agents), prewarmed envs, usage
-analytics.
+Team: SSO, policy controls (who can run agents), prewarmed envs, usage analytics.
 
 30/60/90 quick plan
 
-30 days: Ship Phase-1 MVP (review + safe edits + AI summaries + CI triggers).
-Dogfood on your own repos.
+30 days: Ship Phase-1 MVP (review + safe edits + AI summaries + CI triggers). Dogfood on your own
+repos.
 
-60 days: Cloud hand-off + agent jobs with guardrails; add PR previews and
-artifact viewing.
+60 days: Cloud hand-off + agent jobs with guardrails; add PR previews and artifact viewing.
 
-90 days: External beta; add voice prompts, keyboard shortcuts, and team
-analytics.
+90 days: External beta; add voice prompts, keyboard shortcuts, and team analytics.
 
 “Build list” you can hand to Copilot/engineers today
 
@@ -143,16 +130,15 @@ Audit log service (every AI/CI action; actor; repo; PR; hash).
 
 Feature flags: per-repo enable agent tasks.
 
-If you want, I can draft the mobile MVP screens map (routes + components) and a
-minimal backend API spec you can drop into a .github/copilot-instructions.md to
-align the agent with this plan.
+If you want, I can draft the mobile MVP screens map (routes + components) and a minimal backend API
+spec you can drop into a .github/copilot-instructions.md to align the agent with this plan.
 
-You said: yes ChatGPT said: Thought for 12s Mobile Mvp Spec — “continue On
-Mobile” (phase 1) Mobile MVP Spec — “Continue on Mobile” (Phase 1)
+You said: yes ChatGPT said: Thought for 12s Mobile Mvp Spec — “continue On Mobile” (phase 1) Mobile
+MVP Spec — “Continue on Mobile” (Phase 1)
 
-Goal: Ship a focused, low‑risk mobile experience that lets users review,
-summarize, make safe edits, open PRs, and poke CI from their phone. Cloud agents
-do the heavy lifting; mobile stays fast and simple.
+Goal: Ship a focused, low‑risk mobile experience that lets users review, summarize, make safe edits,
+open PRs, and poke CI from their phone. Cloud agents do the heavy lifting; mobile stays fast and
+simple.
 
 1. App Surface (Screens Map)
 
@@ -168,25 +154,25 @@ DeviceLinkScreen — Device attestation; shows device name + revoke button.
 
 MainTabs
 
-HomeScreen — Recent activity cards: “PR #42 needs review”, “Build failed”,
-“Agent fix ready to review”.
+HomeScreen — Recent activity cards: “PR #42 needs review”, “Build failed”, “Agent fix ready to
+review”.
 
 ReposScreen — Org/repo picker; search; starred repos sticky.
 
 PRListScreen — Filter: Open / Needs review / Assigned / Mine.
 
-MyTasksScreen — AI/Agent jobs queue with statuses (Queued → Running → Needs
-approval → Completed/Failed).
+MyTasksScreen — AI/Agent jobs queue with statuses (Queued → Running → Needs approval →
+Completed/Failed).
 
 SettingsScreen — Account, tokens, feature flags.
 
 Modals / Stacks
 
-PRDetailScreen — Header: title, labels, CI status chips; tabs: Overview | Diff |
-Checks | Files | Comments.
+PRDetailScreen — Header: title, labels, CI status chips; tabs: Overview | Diff | Checks | Files |
+Comments.
 
-DiffViewerScreen — Collapsed hunks; tap to expand; inline comments; AI
-“Summarize hunk / Explain change / Draft tests”.
+DiffViewerScreen — Collapsed hunks; tap to expand; inline comments; AI “Summarize hunk / Explain
+change / Draft tests”.
 
 FileViewerScreen — Read-only code viewer with jump-to-symbol and search.
 
@@ -194,30 +180,28 @@ EditFileScreen — Single-file editor → Preview diff → Commit (branch) → O
 
 CILogScreen — Streamed logs with AI "Explain error" & "Suggest fix".
 
-AIPromptSheet — Prompt → Plan → Apply as PR (always branch, never force-push
-main).
+AIPromptSheet — Prompt → Plan → Apply as PR (always branch, never force-push main).
 
 Core Components
 
-PRCard, StatusChip, DiffHunk, InlineComment, AIActionsBar, MonacoLite (or RN
-code editor), LogViewer, TaskRow, SkeletonList.
+PRCard, StatusChip, DiffHunk, InlineComment, AIActionsBar, MonacoLite (or RN code editor),
+LogViewer, TaskRow, SkeletonList.
 
 2. Golden Flows
 
 Review a PR on the go
 
-Tap PR → PRDetail → Diff → Expand hunk → Summarize hunk → Leave inline comment →
-Approve/Request changes.
+Tap PR → PRDetail → Diff → Expand hunk → Summarize hunk → Leave inline comment → Approve/Request
+changes.
 
 Safe quick edit
 
-Open file from PR → EditFile → Save → Preview diff → Create branch
-(user@mobile/quickfix-xyz) → Open PR.
+Open file from PR → EditFile → Save → Preview diff → Create branch (user@mobile/quickfix-xyz) → Open
+PR.
 
 Unblock CI
 
-From CILog, press Retry → If fail → Explain error → Draft fix → Review patch →
-Open PR.
+From CILog, press Retry → If fail → Explain error → Draft fix → Review patch → Open PR.
 
 Agent task (guard‑railed)
 
@@ -229,8 +213,8 @@ Mobile: show Plan + Diff summary + Checks → user Approve → server opens PR.
 
 3. Backend/API (minimal, Copilot-friendly)
 
-Principles: Server holds tokens; mobile never talks to VCS directly. All
-AI/agent changes go through branch + PR; everything is auditable and reversible.
+Principles: Server holds tokens; mobile never talks to VCS directly. All AI/agent changes go through
+branch + PR; everything is auditable and reversible.
 
 REST-ish Endpoints (v1)
 
@@ -262,8 +246,8 @@ Edits/PR creation
 
 POST /v1/branches { repoId, from: sha|branch, name }
 
-POST /v1/patch { repoId, branch, patches: [{ path, beforeSha?,
-content|unifiedDiff }] } → { commitSha }
+POST /v1/patch { repoId, branch, patches: [{ path, beforeSha?, content|unifiedDiff }] } → {
+commitSha }
 
 POST /v1/pulls { repoId, head, base, title, body, draft? } → { number, url }
 
@@ -281,11 +265,10 @@ POST /v1/ai/summarize-diff { repoId, prNumber, range? }
 
 POST /v1/ai/explain-log { text, repoId?, toolchainHint? }
 
-POST /v1/ai/draft-fix { repoId, branch, prompt, constraints? } → returns plan +
-proposed patch (no write yet)
+POST /v1/ai/draft-fix { repoId, branch, prompt, constraints? } → returns plan + proposed patch (no
+write yet)
 
-POST /v1/agent/tasks { type: UPGRADE|REFCTOR|FIX|TESTS, repoId, prompt,
-branchBase } → { taskId }
+POST /v1/agent/tasks { type: UPGRADE|REFCTOR|FIX|TESTS, repoId, prompt, branchBase } → { taskId }
 
 GET /v1/agent/tasks/:taskId → { state, plan, diffs, checks }
 
@@ -299,30 +282,25 @@ GET /v1/audit (query: actor, repoId, since)
 
 Webhooks
 
-/wh/github → events: pull_request, check_suite, check_run, push, issue_comment.
-Fan‑out to notifications and cache.
+/wh/github → events: pull_request, check_suite, check_run, push, issue_comment. Fan‑out to
+notifications and cache.
 
-Minimal Data Models // PR summary type PR = { number: number title: string
-author: { login: string, avatarUrl: string } status:
-'OPEN'|'DRAFT'|'MERGED'|'CLOSED' ci: { state: 'SUCCESS'|'FAILED'|'PENDING',
-runId?: string } updatedAt: string }
+Minimal Data Models // PR summary type PR = { number: number title: string author: { login: string,
+avatarUrl: string } status: 'OPEN'|'DRAFT'|'MERGED'|'CLOSED' ci: { state:
+'SUCCESS'|'FAILED'|'PENDING', runId?: string } updatedAt: string }
 
-// Agent task type AgentTask = { id: string type:
-'UPGRADE'|'REFACTOR'|'FIX'|'TESTS' state:
-'QUEUED'|'RUNNING'|'AWAITING_APPROVAL'|'COMPLETED'|'FAILED' plan?: string
-diffs?: Array<{path:string, summary:string}> checks?: { typecheck:'OK|FAIL',
-lint:'OK|FAIL', tests:{ passed:number, failed:number } } pr?: { number:number,
-url:string } } Permissions & Safety
+// Agent task type AgentTask = { id: string type: 'UPGRADE'|'REFACTOR'|'FIX'|'TESTS' state:
+'QUEUED'|'RUNNING'|'AWAITING_APPROVAL'|'COMPLETED'|'FAILED' plan?: string diffs?:
+Array<{path:string, summary:string}> checks?: { typecheck:'OK|FAIL', lint:'OK|FAIL', tests:{
+passed:number, failed:number } } pr?: { number:number, url:string } } Permissions & Safety
 
 Server exchanges OAuth for provider token → mints short‑lived JWT for mobile.
 
-Per‑action authorization (repo + branch ACLs). Feature flag: Agent allowed per
-repo.
+Per‑action authorization (repo + branch ACLs). Feature flag: Agent allowed per repo.
 
 All write ops require server‑side branch creation; force‑push disabled.
 
-Audit log row for every AI/agent action: {actor, repoId, branch, sha, diffHash,
-timestamp}.
+Audit log row for every AI/agent action: {actor, repoId, branch, sha, diffHash, timestamp}.
 
 4. Copilot Alignment (drop‑in .github/copilot-instructions.md seed)
 
@@ -332,10 +310,8 @@ Purpose: Help coding agents avoid breaking CI and enforce safe patterns.
 
 ## Build & Test
 
-- Use Node 20 (set in CI). Run `bun install` or `npm ci` per repo
-  `packageManager` field.
-- Always run `bun run typecheck && bun run lint && bun run test` before
-  proposing PRs.
+- Use Node 20 (set in CI). Run `bun install` or `npm ci` per repo `packageManager` field.
+- Always run `bun run typecheck && bun run lint && bun run test` before proposing PRs.
 
 ## Branch & PR
 
@@ -361,8 +337,7 @@ Purpose: Help coding agents avoid breaking CI and enforce safe patterns.
 
 5. CI/Infra (MVP)
 
-GitHub Actions: typecheck, lint, test jobs; mobile-preview job to build diff
-summary artifact.
+GitHub Actions: typecheck, lint, test jobs; mobile-preview job to build diff summary artifact.
 
 Cache embeddings per commit (e.g., sqlite or pg vector ext) for fast AI context.
 
@@ -370,11 +345,10 @@ Containers: One per hot branch (LRU prewarm 3 most active).
 
 6. Telemetry & KPIs
 
-Event names: pr.viewed, diff.summarized, ci.retry, edit.pr_opened,
-agent.task_approved.
+Event names: pr.viewed, diff.summarized, ci.retry, edit.pr_opened, agent.task_approved.
 
-Weekly dashboard: time‑to‑first‑review (desktop vs mobile), AI patch merge rate,
-MTTR for failing builds.
+Weekly dashboard: time‑to‑first‑review (desktop vs mobile), AI patch merge rate, MTTR for failing
+builds.
 
 7. Roadmap Next (Phase 2 hooks)
 

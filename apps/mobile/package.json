@@ -33,7 +33,9 @@
     "typescript": "^5.3.3"
   },
   "eslintConfig": {
-    "extends": ["@udp/eslint-config/react-native"]
+    "extends": [
+      "@udp/eslint-config/react-native"
+    ]
   },
   "prettier": "@udp/prettier-config"
 }

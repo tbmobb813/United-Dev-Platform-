@@ -25,7 +25,7 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
   projectPath,
   onFileSelect,
   onFileOpen,
-  className = ''
+  className = '',
 }) => {
   const [rootNode, setRootNode] = useState<TreeNode | null>(null);
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
@@ -36,31 +36,34 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
     entry,
     children: [],
     isExpanded: false,
-    isLoading: false
+    isLoading: false,
   });
 
   // Load directory contents
-  const loadDirectoryContents = useCallback(async (node: TreeNode): Promise<TreeNode[]> => {
-    try {
-      const listing = await fileSystem.listDirectory(node.entry.path, {
-        includeHidden: false,
-        recursive: false
-      });
+  const loadDirectoryContents = useCallback(
+    async (node: TreeNode): Promise<TreeNode[]> => {
+      try {
+        const listing = await fileSystem.listDirectory(node.entry.path, {
+          includeHidden: false,
+          recursive: false,
+        });
 
-      return listing.entries
-        .sort((a, b) => {
-          // Directories first, then files
-          if (a.type !== b.type) {
-            return a.type === 'directory' ? -1 : 1;
-          }
-          return a.name.localeCompare(b.name);
-        })
-        .map(createTreeNode);
-    } catch (err) {
-      setError(`Failed to load directory: ${err}`);
-      return [];
-    }
-  }, [fileSystem]);
+        return listing.entries
+          .sort((a, b) => {
+            // Directories first, then files
+            if (a.type !== b.type) {
+              return a.type === 'directory' ? -1 : 1;
+            }
+            return a.name.localeCompare(b.name);
+          })
+          .map(createTreeNode);
+      } catch (err) {
+        setError(`Failed to load directory: ${err}`);
+        return [];
+      }
+    },
+    [fileSystem]
+  );
 
   // Initialize root node
   useEffect(() => {
@@ -103,11 +106,16 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
                 }
                 const updateWithChildren = (current: TreeNode): TreeNode => {
                   if (current.entry.path === node.entry.path) {
-                    return { ...current, children, isLoading: false, isExpanded: true };
+                    return {
+                      ...current,
+                      children,
+                      isLoading: false,
+                      isExpanded: true,
+                    };
                   }
                   return {
                     ...current,
-                    children: current.children.map(updateWithChildren)
+                    children: current.children.map(updateWithChildren),
                   };
                 };
                 return updateWithChildren(prevRoot);
@@ -120,7 +128,7 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
         }
         return {
           ...current,
-          children: current.children.map(updateNode)
+          children: current.children.map(updateNode),
         };
       };
 
@@ -142,15 +150,20 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
   };
 
   // Render tree node
-  const renderTreeNode = (node: TreeNode, level: number = 0): React.ReactElement => {
+  const renderTreeNode = (
+    node: TreeNode,
+    level: number = 0
+  ): React.ReactElement => {
     const isSelected = selectedPath === node.entry.path;
     const hasChildren = node.entry.type === 'directory';
     const indent = level * 16;
 
     return (
-      <div key={node.entry.path} className='tree-node'>
+      <div key={node.entry.path} className="tree-node">
         <div
-          className={`tree-item ${isSelected ? 'selected' : ''} ${node.entry.type}`}
+          className={`tree-item ${isSelected ? 'selected' : ''} ${
+            node.entry.type
+          }`}
           style={{ paddingLeft: `${indent + 8}px` }}
           onClick={() => handleFileSelect(node.entry)}
           onDoubleClick={() => handleFileDoubleClick(node.entry)}
@@ -158,7 +171,7 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
           {hasChildren && (
             <span
               className={`tree-toggle ${node.isExpanded ? 'expanded' : ''}`}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 toggleDirectory(node);
               }}
@@ -166,16 +179,14 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
               {node.isLoading ? '⟳' : node.isExpanded ? '▼' : '▶'}
             </span>
           )}
-          
-          <span className='file-icon'>
-            {getFileIcon(node.entry)}
-          </span>
-          
-          <span className='file-name'>{node.entry.name}</span>
+
+          <span className="file-icon">{getFileIcon(node.entry)}</span>
+
+          <span className="file-name">{node.entry.name}</span>
         </div>
 
         {hasChildren && node.isExpanded && node.children.length > 0 && (
-          <div className='tree-children'>
+          <div className="tree-children">
             {node.children.map(child => renderTreeNode(child, level + 1))}
           </div>
         )}
@@ -190,7 +201,7 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
     }
 
     const extension = fileSystem.extname(entry.name).toLowerCase();
-    
+
     switch (extension) {
       case '.js':
       case '.jsx':
@@ -221,7 +232,7 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
   if (error) {
     return (
       <div className={`project-navigator error ${className}`}>
-        <div className='error-message'>
+        <div className="error-message">
           {error}
           <button onClick={() => setError(null)}>✕</button>
         </div>
@@ -232,21 +243,19 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
   if (!rootNode) {
     return (
       <div className={`project-navigator loading ${className}`}>
-        <div className='loading-message'>Loading project...</div>
+        <div className="loading-message">Loading project...</div>
       </div>
     );
   }
 
   return (
     <div className={`project-navigator ${className}`}>
-      <div className='project-header'>
-        <h3 className='project-title'>{fileSystem.basename(projectPath)}</h3>
-        <span className='project-path'>{projectPath}</span>
+      <div className="project-header">
+        <h3 className="project-title">{fileSystem.basename(projectPath)}</h3>
+        <span className="project-path">{projectPath}</span>
       </div>
-      
-      <div className='project-tree'>
-        {renderTreeNode(rootNode)}
-      </div>
+
+      <div className="project-tree">{renderTreeNode(rootNode)}</div>
     </div>
   );
 };

@@ -62,8 +62,8 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
 
         <div style={{ display: 'flex', gap: '4px' }}>
           <Button
-            size='small'
-            variant='ghost'
+            size="small"
+            variant="ghost"
             onClick={toggleMinimized}
             style={{
               padding: '4px 6px',
@@ -83,7 +83,7 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
             users={users}
             currentUserId={currentUserId}
             showActivityFeed={true}
-            onUserClick={(userId) => {
+            onUserClick={userId => {
               // Could implement user focus/navigation here
               // For now, we'll just ignore the click
               void userId;

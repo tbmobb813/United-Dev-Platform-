@@ -112,14 +112,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
             <PresenceIndicator
               isActive={isActive}
               lastSeen={lastSeen}
-              size='small'
+              size="small"
               showStatus={true}
             />
           )}
           {user.cursor && (
-            <span
-              style={{ fontSize: '10px', color: '#999' }}
-            >
+            <span style={{ fontSize: '10px', color: '#999' }}>
               L{user.cursor.line}:C{user.cursor.column}
             </span>
           )}

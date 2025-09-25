@@ -243,7 +243,11 @@ ${code}
 ${
   context?.codeStyle
     ? `Code Style Preferences:
-- Indent: ${context.codeStyle.useTabs ? 'tabs' : `${context.codeStyle.indentSize} spaces`}
+- Indent: ${
+        context.codeStyle.useTabs
+          ? 'tabs'
+          : `${context.codeStyle.indentSize} spaces`
+      }
 - Quotes: ${context.codeStyle.quotes}
 - Semicolons: ${context.codeStyle.semicolons ? 'required' : 'optional'}
 - Max line length: ${context.codeStyle.maxLineLength}
@@ -510,7 +514,9 @@ Provide a specific ${type} refactoring suggestion as JSON:
 
   private generateCacheKey(request: RefactoringRequest): string {
     const { fileName, language, code, selectedCode, refactoringType } = request;
-    const contentHash = `${fileName}-${language}-${code.length}-${selectedCode?.length || 0}-${refactoringType || 'auto'}`;
+    const contentHash = `${fileName}-${language}-${code.length}-${
+      selectedCode?.length || 0
+    }-${refactoringType || 'auto'}`;
     return contentHash;
   }
 

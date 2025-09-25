@@ -57,7 +57,9 @@
     "react-dom": ">=18.0.0"
   },
   "eslintConfig": {
-    "extends": ["@udp/eslint-config/react"]
+    "extends": [
+      "@udp/eslint-config/react"
+    ]
   },
   "prettier": "@udp/prettier-config"
 }

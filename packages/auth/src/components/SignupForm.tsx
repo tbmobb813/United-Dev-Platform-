@@ -48,20 +48,35 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     const feedback: string[] = [];
     let score = 0;
 
-    if (password.length >= 8) {score += 1;}
-    else {feedback.push('Password must be at least 8 characters');}
+    if (password.length >= 8) {
+      score += 1;
+    } else {
+      feedback.push('Password must be at least 8 characters');
+    }
 
-    if (/[A-Z]/.test(password)) {score += 1;}
-    else {feedback.push('Include uppercase letters');}
+    if (/[A-Z]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include uppercase letters');
+    }
 
-    if (/[a-z]/.test(password)) {score += 1;}
-    else {feedback.push('Include lowercase letters');}
+    if (/[a-z]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include lowercase letters');
+    }
 
-    if (/\d/.test(password)) {score += 1;}
-    else {feedback.push('Include numbers');}
+    if (/\d/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include numbers');
+    }
 
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {score += 1;}
-    else {feedback.push('Include special characters');}
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include special characters');
+    }
 
     return { score, feedback };
   };
@@ -121,13 +136,14 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof RegisterCredentials) => 
+  const handleInputChange =
+    (field: keyof RegisterCredentials) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = field === 'acceptTerms' ? e.target.checked : e.target.value;
-      
+
       setCredentials(prev => ({
         ...prev,
-        [field]: value
+        [field]: value,
       }));
 
       // Validate password strength in real-time
@@ -137,169 +153,195 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       }
     };
 
-  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setConfirmPassword(e.target.value);
   };
 
   const displayError = error || formError;
-  const passwordMatch = credentials.password && confirmPassword && credentials.password === confirmPassword;
-  const passwordMismatch = credentials.password && confirmPassword && credentials.password !== confirmPassword;
+  const passwordMatch =
+    credentials.password &&
+    confirmPassword &&
+    credentials.password === confirmPassword;
+  const passwordMismatch =
+    credentials.password &&
+    confirmPassword &&
+    credentials.password !== confirmPassword;
 
   const getStrengthColor = (score: number) => {
-    if (score <= 1) {return '#ff4444';}
-    if (score <= 2) {return '#ff8800';}
-    if (score <= 3) {return '#ffbb00';}
-    if (score <= 4) {return '#88cc00';}
+    if (score <= 1) {
+      return '#ff4444';
+    }
+    if (score <= 2) {
+      return '#ff8800';
+    }
+    if (score <= 3) {
+      return '#ffbb00';
+    }
+    if (score <= 4) {
+      return '#88cc00';
+    }
     return '#00cc44';
   };
 
   const getStrengthText = (score: number) => {
-    if (score <= 1) {return 'Very Weak';}
-    if (score <= 2) {return 'Weak';}
-    if (score <= 3) {return 'Fair';}
-    if (score <= 4) {return 'Good';}
+    if (score <= 1) {
+      return 'Very Weak';
+    }
+    if (score <= 2) {
+      return 'Weak';
+    }
+    if (score <= 3) {
+      return 'Fair';
+    }
+    if (score <= 4) {
+      return 'Good';
+    }
     return 'Strong';
   };
 
   return (
     <div className={`auth-form signup-form ${className}`}>
-      <div className='auth-form__header'>
+      <div className="auth-form__header">
         <h2>Create Account</h2>
         <p>Sign up to get started with your account</p>
       </div>
 
-      <form onSubmit={handleSubmit} className='auth-form__form'>
+      <form onSubmit={handleSubmit} className="auth-form__form">
         {displayError && (
-          <div className='auth-form__error' role='alert'>
+          <div className="auth-form__error" role="alert">
             {displayError}
           </div>
         )}
 
-        <div className='form-group'>
-          <label htmlFor='email' className='form-label'>
+        <div className="form-group">
+          <label htmlFor="email" className="form-label">
             Email Address *
           </label>
           <input
-            id='email'
-            type='email'
+            id="email"
+            type="email"
             value={credentials.email}
             onChange={handleInputChange('email')}
-            placeholder='Enter your email'
-            className='form-input'
+            placeholder="Enter your email"
+            className="form-input"
             required
             disabled={loading}
-            autoComplete='email'
+            autoComplete="email"
           />
         </div>
 
         {requireUsername && (
-          <div className='form-group'>
-            <label htmlFor='username' className='form-label'>
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">
               Username *
             </label>
             <input
-              id='username'
-              type='text'
+              id="username"
+              type="text"
               value={credentials.username}
               onChange={handleInputChange('username')}
-              placeholder='Choose a username'
-              className='form-input'
+              placeholder="Choose a username"
+              className="form-input"
               required
               disabled={loading}
-              autoComplete='username'
+              autoComplete="username"
             />
           </div>
         )}
 
         {requireNames && (
-          <div className='form-row'>
-            <div className='form-group'>
-              <label htmlFor='firstName' className='form-label'>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="firstName" className="form-label">
                 First Name *
               </label>
               <input
-                id='firstName'
-                type='text'
+                id="firstName"
+                type="text"
                 value={credentials.firstName}
                 onChange={handleInputChange('firstName')}
-                placeholder='First name'
-                className='form-input'
+                placeholder="First name"
+                className="form-input"
                 required
                 disabled={loading}
-                autoComplete='given-name'
+                autoComplete="given-name"
               />
             </div>
-            <div className='form-group'>
-              <label htmlFor='lastName' className='form-label'>
+            <div className="form-group">
+              <label htmlFor="lastName" className="form-label">
                 Last Name *
               </label>
               <input
-                id='lastName'
-                type='text'
+                id="lastName"
+                type="text"
                 value={credentials.lastName}
                 onChange={handleInputChange('lastName')}
-                placeholder='Last name'
-                className='form-input'
+                placeholder="Last name"
+                className="form-input"
                 required
                 disabled={loading}
-                autoComplete='family-name'
+                autoComplete="family-name"
               />
             </div>
           </div>
         )}
 
         {inviteCodeRequired && (
-          <div className='form-group'>
-            <label htmlFor='inviteCode' className='form-label'>
+          <div className="form-group">
+            <label htmlFor="inviteCode" className="form-label">
               Invite Code *
             </label>
             <input
-              id='inviteCode'
-              type='text'
+              id="inviteCode"
+              type="text"
               value={credentials.inviteCode}
               onChange={handleInputChange('inviteCode')}
-              placeholder='Enter invite code'
-              className='form-input'
+              placeholder="Enter invite code"
+              className="form-input"
               required
               disabled={loading}
             />
           </div>
         )}
 
-        <div className='form-group'>
-          <label htmlFor='password' className='form-label'>
+        <div className="form-group">
+          <label htmlFor="password" className="form-label">
             Password *
           </label>
           <input
-            id='password'
-            type='password'
+            id="password"
+            type="password"
             value={credentials.password}
             onChange={handleInputChange('password')}
-            placeholder='Create a password'
-            className='form-input'
+            placeholder="Create a password"
+            className="form-input"
             required
             disabled={loading}
-            autoComplete='new-password'
+            autoComplete="new-password"
           />
-          
+
           {credentials.password && (
-            <div className='password-strength'>
-              <div className='password-strength__bar'>
-                <div 
-                  className='password-strength__fill'
+            <div className="password-strength">
+              <div className="password-strength__bar">
+                <div
+                  className="password-strength__fill"
                   style={{
                     width: `${(passwordStrength.score / 5) * 100}%`,
-                    backgroundColor: getStrengthColor(passwordStrength.score)
+                    backgroundColor: getStrengthColor(passwordStrength.score),
                   }}
                 />
               </div>
-              <div className='password-strength__text'>
-                <span style={{ color: getStrengthColor(passwordStrength.score) }}>
+              <div className="password-strength__text">
+                <span
+                  style={{ color: getStrengthColor(passwordStrength.score) }}
+                >
                   {getStrengthText(passwordStrength.score)}
                 </span>
               </div>
               {passwordStrength.feedback.length > 0 && (
-                <ul className='password-strength__feedback'>
+                <ul className="password-strength__feedback">
                   {passwordStrength.feedback.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
@@ -309,51 +351,63 @@ export const SignupForm: React.FC<SignupFormProps> = ({
           )}
         </div>
 
-        <div className='form-group'>
-          <label htmlFor='confirmPassword' className='form-label'>
+        <div className="form-group">
+          <label htmlFor="confirmPassword" className="form-label">
             Confirm Password *
           </label>
           <input
-            id='confirmPassword'
-            type='password'
+            id="confirmPassword"
+            type="password"
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
-            placeholder='Confirm your password'
-            className={`form-input ${passwordMismatch ? 'form-input--error' : ''} ${passwordMatch ? 'form-input--success' : ''}`}
+            placeholder="Confirm your password"
+            className={`form-input ${
+              passwordMismatch ? 'form-input--error' : ''
+            } ${passwordMatch ? 'form-input--success' : ''}`}
             required
             disabled={loading}
-            autoComplete='new-password'
+            autoComplete="new-password"
           />
           {passwordMismatch && (
-            <div className='form-feedback form-feedback--error'>
+            <div className="form-feedback form-feedback--error">
               Passwords do not match
             </div>
           )}
           {passwordMatch && (
-            <div className='form-feedback form-feedback--success'>
+            <div className="form-feedback form-feedback--success">
               Passwords match
             </div>
           )}
         </div>
 
         {showTermsAndConditions && (
-          <div className='form-group checkbox-group'>
-            <label className='checkbox-label'>
+          <div className="form-group checkbox-group">
+            <label className="checkbox-label">
               <input
-                type='checkbox'
+                type="checkbox"
                 checked={credentials.acceptTerms}
                 onChange={handleInputChange('acceptTerms')}
-                className='checkbox-input'
+                className="checkbox-input"
                 disabled={loading}
                 required
               />
-              <span className='checkbox-text'>
+              <span className="checkbox-text">
                 I agree to the{' '}
-                <a href='/terms' target='_blank' rel='noopener noreferrer' className='link'>
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link"
+                >
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href='/privacy' target='_blank' rel='noopener noreferrer' className='link'>
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link"
+                >
                   Privacy Policy
                 </a>
               </span>
@@ -362,22 +416,24 @@ export const SignupForm: React.FC<SignupFormProps> = ({
         )}
 
         <button
-          type='submit'
-          disabled={loading || (showTermsAndConditions && !credentials.acceptTerms)}
-          className='auth-form__submit'
+          type="submit"
+          disabled={
+            loading || (showTermsAndConditions && !credentials.acceptTerms)
+          }
+          className="auth-form__submit"
         >
           {loading ? 'Creating account...' : 'Create Account'}
         </button>
       </form>
 
       {showLogin && onSignIn && (
-        <div className='auth-form__footer'>
+        <div className="auth-form__footer">
           <p>
             Already have an account?{' '}
             <button
-              type='button'
+              type="button"
               onClick={onSignIn}
-              className='link-button'
+              className="link-button"
               disabled={loading}
             >
               Sign in

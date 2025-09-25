@@ -46,7 +46,9 @@ export class AnthropicService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `Anthropic API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
+          `Anthropic API error: ${response.status} ${response.statusText}${
+            errorData ? ` - ${errorData.error?.message}` : ''
+          }`
         );
       }
 
@@ -107,7 +109,9 @@ export class AnthropicService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `Anthropic API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
+          `Anthropic API error: ${response.status} ${response.statusText}${
+            errorData ? ` - ${errorData.error?.message}` : ''
+          }`
         );
       }
 

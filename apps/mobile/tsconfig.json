@@ -8,14 +8,6 @@
       "@udp/editor-core": ["../../packages/editor-core/index.ts"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "../../packages/config/**/*",
-    "../../packages/filesystem/**/*",
-    "../../packages/git/**/*"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "../../packages/config/**/*", "../../packages/filesystem/**/*", "../../packages/git/**/*"]
 }

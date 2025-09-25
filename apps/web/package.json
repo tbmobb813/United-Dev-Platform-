@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy", 
+    "db:deploy": "prisma migrate deploy",
     "db:reset": "prisma migrate reset",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
@@ -52,7 +52,9 @@
     "typescript": "^5.3.3"
   },
   "eslintConfig": {
-    "extends": ["@udp/eslint-config/react"],
+    "extends": [
+      "@udp/eslint-config/react"
+    ],
     "rules": {
       "@next/next/no-duplicate-head": "off"
     }

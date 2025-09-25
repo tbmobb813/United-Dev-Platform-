@@ -2,7 +2,8 @@
 
 ## Issue: pnpm not in PowerShell PATH
 
-The project uses pnpm@9.0.0 as specified in package.json, but pnpm may not be available directly in PowerShell after global installation.
+The project uses pnpm@9.0.0 as specified in package.json, but pnpm may not be available directly in
+PowerShell after global installation.
 
 ## Solution Options
 
@@ -73,4 +74,5 @@ npx pnpm run build
 
 ## Recommendation
 
-Continue using `npx pnpm` for consistency and reliability. The workspace setup is working correctly, just needs the npx prefix in PowerShell environments.
+Continue using `npx pnpm` for consistency and reliability. The workspace setup is working correctly,
+just needs the npx prefix in PowerShell environments.

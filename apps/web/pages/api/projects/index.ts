@@ -11,9 +11,13 @@ export default async function handler(
 ) {
   // Require authentication for all project operations
   const session = await requireAuth(req, res);
-  if (!session || !session.user) {return;}
+  if (!session || !session.user) {
+    return;
+  }
   const userId = (session.user as { id?: string } | undefined)?.id;
-  if (!userId) { return; }
+  if (!userId) {
+    return;
+  }
 
   switch (req.method) {
     case 'GET':
@@ -34,11 +38,11 @@ async function getProjects(
   try {
     const { userId, visibility, page = '1', limit = '10', search } = req.query;
 
-  const pageNum = parseInt(page as string);
-  const limitNum = parseInt(limit as string);
-  const skip = (pageNum - 1) * limitNum;
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const skip = (pageNum - 1) * limitNum;
 
-  const where = {} as Prisma.ProjectWhereInput;
+    const where = {} as Prisma.ProjectWhereInput;
 
     // Filter by visibility with access control
     if (visibility && typeof visibility === 'string') {

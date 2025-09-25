@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Unified Development Platform provides a comprehensive REST API for managing users, projects, files, collaboration, and AI interactions. All endpoints return JSON responses with consistent error handling.
+The Unified Development Platform provides a comprehensive REST API for managing users, projects,
+files, collaboration, and AI interactions. All endpoints return JSON responses with consistent error
+handling.
 
 ## Base URL
 
@@ -12,7 +14,8 @@ http://localhost:3000/api
 
 ## Authentication
 
-Currently, the API operates without authentication middleware. In production, all endpoints should be protected with NextAuth.js session validation.
+Currently, the API operates without authentication middleware. In production, all endpoints should
+be protected with NextAuth.js session validation.
 
 ## API Endpoints
 
@@ -216,9 +219,7 @@ Stream AI chat with optional database storage.
 
 ```json
 {
-  "messages": [
-    {"role": "user", "content": "Hello"}
-  ],
+  "messages": [{ "role": "user", "content": "Hello" }],
   "system": "You are a helpful assistant", // optional
   "sessionId": "session_cuid", // optional, for message storage
   "userId": "user_cuid" // optional

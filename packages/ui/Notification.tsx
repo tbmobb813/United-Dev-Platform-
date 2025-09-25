@@ -1,5 +1,11 @@
 /* global setTimeout, clearTimeout */
-import React, { createContext, useCallback, useContext, useEffect, useReducer } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from 'react';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
@@ -23,7 +29,9 @@ export interface NotificationAction {
 
 export interface NotificationContextValue {
   notifications: Notification[];
-  addNotification: (notification: Omit<Notification, 'id' | 'timestamp'>) => string;
+  addNotification: (
+    notification: Omit<Notification, 'id' | 'timestamp'>
+  ) => string;
   removeNotification: (id: string) => void;
   clearAll: () => void;
   success: (message: string, options?: Partial<Notification>) => string;
@@ -32,7 +40,7 @@ export interface NotificationContextValue {
   info: (message: string, options?: Partial<Notification>) => string;
 }
 
-type NotificationAction_Internal = 
+type NotificationAction_Internal =
   | { type: 'ADD_NOTIFICATION'; payload: Notification }
   | { type: 'REMOVE_NOTIFICATION'; payload: string }
   | { type: 'CLEAR_ALL' };
@@ -42,27 +50,34 @@ interface NotificationState {
 }
 
 const initialState: NotificationState = {
-  notifications: []
+  notifications: [],
 };
 
-const NotificationContext = createContext<NotificationContextValue | undefined>(undefined);
+const NotificationContext = createContext<NotificationContextValue | undefined>(
+  undefined
+);
 
-function notificationReducer(state: NotificationState, action: NotificationAction_Internal): NotificationState {
+function notificationReducer(
+  state: NotificationState,
+  action: NotificationAction_Internal
+): NotificationState {
   switch (action.type) {
     case 'ADD_NOTIFICATION':
       return {
         ...state,
-        notifications: [...state.notifications, action.payload]
+        notifications: [...state.notifications, action.payload],
       };
     case 'REMOVE_NOTIFICATION':
       return {
         ...state,
-        notifications: state.notifications.filter(notification => notification.id !== action.payload)
+        notifications: state.notifications.filter(
+          notification => notification.id !== action.payload
+        ),
       };
     case 'CLEAR_ALL':
       return {
         ...state,
-        notifications: []
+        notifications: [],
       };
     default:
       return state;
@@ -77,14 +92,20 @@ export interface NotificationProviderProps {
   children: React.ReactNode;
   maxNotifications?: number;
   defaultDuration?: number;
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
+  position?:
+    | 'top-right'
+    | 'top-left'
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'top-center'
+    | 'bottom-center';
 }
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   children,
   maxNotifications = 5,
   defaultDuration = 5000,
-  position = 'top-right'
+  position = 'top-right',
 }) => {
   const [state, dispatch] = useReducer(notificationReducer, initialState);
 
@@ -92,54 +113,83 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     dispatch({ type: 'REMOVE_NOTIFICATION', payload: id });
   }, []);
 
-  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp'>) => {
-    const id = generateId();
-    const newNotification: Notification = {
-      ...notification,
-      id,
-      timestamp: Date.now(),
-      duration: notification.duration ?? defaultDuration
-    };
+  const addNotification = useCallback(
+    (notification: Omit<Notification, 'id' | 'timestamp'>) => {
+      const id = generateId();
+      const newNotification: Notification = {
+        ...notification,
+        id,
+        timestamp: Date.now(),
+        duration: notification.duration ?? defaultDuration,
+      };
 
-    dispatch({ type: 'ADD_NOTIFICATION', payload: newNotification });
+      dispatch({ type: 'ADD_NOTIFICATION', payload: newNotification });
 
-    // Auto-remove after duration (unless persistent)
-    if (!newNotification.persistent && newNotification.duration && newNotification.duration > 0) {
-      setTimeout(() => {
-        removeNotification(id);
-      }, newNotification.duration);
-    }
-
-    // Remove oldest if exceeding max
-    if (state.notifications.length >= maxNotifications) {
-      const oldestId = state.notifications[0]?.id;
-      if (oldestId) {
-        removeNotification(oldestId);
+      // Auto-remove after duration (unless persistent)
+      if (
+        !newNotification.persistent &&
+        newNotification.duration &&
+        newNotification.duration > 0
+      ) {
+        setTimeout(() => {
+          removeNotification(id);
+        }, newNotification.duration);
       }
-    }
 
-    return id;
-  }, [defaultDuration, maxNotifications, removeNotification, state.notifications.length]);
+      // Remove oldest if exceeding max
+      if (state.notifications.length >= maxNotifications) {
+        const oldestId = state.notifications[0]?.id;
+        if (oldestId) {
+          removeNotification(oldestId);
+        }
+      }
+
+      return id;
+    },
+    [
+      defaultDuration,
+      maxNotifications,
+      removeNotification,
+      state.notifications.length,
+    ]
+  );
 
   const clearAll = useCallback(() => {
     dispatch({ type: 'CLEAR_ALL' });
   }, []);
 
-  const success = useCallback((message: string, options?: Partial<Notification>) => {
-    return addNotification({ ...options, type: 'success', message });
-  }, [addNotification]);
+  const success = useCallback(
+    (message: string, options?: Partial<Notification>) => {
+      return addNotification({ ...options, type: 'success', message });
+    },
+    [addNotification]
+  );
 
-  const error = useCallback((message: string, options?: Partial<Notification>) => {
-    return addNotification({ ...options, type: 'error', message, persistent: options?.persistent ?? true });
-  }, [addNotification]);
+  const error = useCallback(
+    (message: string, options?: Partial<Notification>) => {
+      return addNotification({
+        ...options,
+        type: 'error',
+        message,
+        persistent: options?.persistent ?? true,
+      });
+    },
+    [addNotification]
+  );
 
-  const warning = useCallback((message: string, options?: Partial<Notification>) => {
-    return addNotification({ ...options, type: 'warning', message });
-  }, [addNotification]);
+  const warning = useCallback(
+    (message: string, options?: Partial<Notification>) => {
+      return addNotification({ ...options, type: 'warning', message });
+    },
+    [addNotification]
+  );
 
-  const info = useCallback((message: string, options?: Partial<Notification>) => {
-    return addNotification({ ...options, type: 'info', message });
-  }, [addNotification]);
+  const info = useCallback(
+    (message: string, options?: Partial<Notification>) => {
+      return addNotification({ ...options, type: 'info', message });
+    },
+    [addNotification]
+  );
 
   const contextValue: NotificationContextValue = {
     notifications: state.notifications,
@@ -149,7 +199,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     success,
     error,
     warning,
-    info
+    info,
   };
 
   return (
@@ -164,11 +214,15 @@ interface NotificationContainerProps {
   position: string;
 }
 
-const NotificationContainer: React.FC<NotificationContainerProps> = ({ position }) => {
+const NotificationContainer: React.FC<NotificationContainerProps> = ({
+  position,
+}) => {
   const context = useContext(NotificationContext);
-  
+
   if (!context) {
-    throw new Error('NotificationContainer must be used within NotificationProvider');
+    throw new Error(
+      'NotificationContainer must be used within NotificationProvider'
+    );
   }
 
   const { notifications, removeNotification } = context;
@@ -178,8 +232,10 @@ const NotificationContainer: React.FC<NotificationContainerProps> = ({ position 
   }
 
   return (
-    <div className={`notification-container notification-container--${position}`}>
-      {notifications.map((notification) => (
+    <div
+      className={`notification-container notification-container--${position}`}
+    >
+      {notifications.map(notification => (
         <NotificationItem
           key={notification.id}
           notification={notification}
@@ -195,7 +251,10 @@ interface NotificationItemProps {
   onClose: () => void;
 }
 
-const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onClose }) => {
+const NotificationItem: React.FC<NotificationItemProps> = ({
+  notification,
+  onClose,
+}) => {
   const [isVisible, setIsVisible] = React.useState(false);
   const [isExiting, setIsExiting] = React.useState(false);
 
@@ -217,48 +276,49 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onClo
 
   const getIcon = () => {
     switch (notification.type) {
-      case 'success': return '✓';
-      case 'error': return '✕';
-      case 'warning': return '⚠';
-      case 'info': return 'ℹ';
-      default: return '';
+      case 'success':
+        return '✓';
+      case 'error':
+        return '✕';
+      case 'warning':
+        return '⚠';
+      case 'info':
+        return 'ℹ';
+      default:
+        return '';
     }
   };
 
   return (
-    <div 
+    <div
       className={`
         notification 
         notification--${notification.type}
         ${isVisible ? 'notification--visible' : ''}
         ${isExiting ? 'notification--exiting' : ''}
       `}
-      role='alert'
-      aria-live='polite'
+      role="alert"
+      aria-live="polite"
     >
-      <div className='notification__content'>
-        <div className='notification__icon'>
-          {getIcon()}
-        </div>
-        
-        <div className='notification__body'>
+      <div className="notification__content">
+        <div className="notification__icon">{getIcon()}</div>
+
+        <div className="notification__body">
           {notification.title && (
-            <div className='notification__title'>
-              {notification.title}
-            </div>
+            <div className="notification__title">{notification.title}</div>
           )}
-          <div className='notification__message'>
-            {notification.message}
-          </div>
-          
+          <div className="notification__message">{notification.message}</div>
+
           {notification.actions && notification.actions.length > 0 && (
-            <div className='notification__actions'>
+            <div className="notification__actions">
               {notification.actions.map((action, index) => (
                 <button
                   key={index}
-                  type='button'
+                  type="button"
                   onClick={action.onClick}
-                  className={`notification__action notification__action--${action.variant || 'secondary'}`}
+                  className={`notification__action notification__action--${
+                    action.variant || 'secondary'
+                  }`}
                 >
                   {action.label}
                 </button>
@@ -266,25 +326,27 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onClo
             </div>
           )}
         </div>
-        
+
         <button
-          type='button'
+          type="button"
           onClick={handleClose}
-          className='notification__close'
-          aria-label='Close notification'
+          className="notification__close"
+          aria-label="Close notification"
         >
           ✕
         </button>
       </div>
-      
-      {!notification.persistent && notification.duration && notification.duration > 0 && (
-        <div 
-          className='notification__progress'
-          style={{ 
-            animationDuration: `${notification.duration}ms` 
-          }}
-        />
-      )}
+
+      {!notification.persistent &&
+        notification.duration &&
+        notification.duration > 0 && (
+          <div
+            className="notification__progress"
+            style={{
+              animationDuration: `${notification.duration}ms`,
+            }}
+          />
+        )}
     </div>
   );
 };
@@ -292,11 +354,13 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onClo
 // Hook to use notifications
 export const useNotifications = (): NotificationContextValue => {
   const context = useContext(NotificationContext);
-  
+
   if (!context) {
-    throw new Error('useNotifications must be used within NotificationProvider');
+    throw new Error(
+      'useNotifications must be used within NotificationProvider'
+    );
   }
-  
+
   return context;
 };
 
@@ -314,7 +378,7 @@ export const Toast: React.FC<ToastProps> = ({
   type = 'info',
   duration = 3000,
   onClose,
-  show = true
+  show = true,
 }) => {
   const [isVisible, setIsVisible] = React.useState(show);
 
@@ -337,24 +401,31 @@ export const Toast: React.FC<ToastProps> = ({
 
   const getIcon = () => {
     switch (type) {
-      case 'success': return '✓';
-      case 'error': return '✕';
-      case 'warning': return '⚠';
-      case 'info': return 'ℹ';
-      default: return '';
+      case 'success':
+        return '✓';
+      case 'error':
+        return '✕';
+      case 'warning':
+        return '⚠';
+      case 'info':
+        return 'ℹ';
+      default:
+        return '';
     }
   };
 
   return (
-    <div className={`toast toast--${type} ${isVisible ? 'toast--visible' : ''}`}>
-      <div className='toast__icon'>{getIcon()}</div>
-      <div className='toast__message'>{message}</div>
+    <div
+      className={`toast toast--${type} ${isVisible ? 'toast--visible' : ''}`}
+    >
+      <div className="toast__icon">{getIcon()}</div>
+      <div className="toast__message">{message}</div>
       {onClose && (
         <button
-          type='button'
+          type="button"
           onClick={onClose}
-          className='toast__close'
-          aria-label='Close'
+          className="toast__close"
+          aria-label="Close"
         >
           ✕
         </button>

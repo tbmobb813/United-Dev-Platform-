@@ -250,7 +250,9 @@ export class ContextAwareAssistant {
     bestPractices: string[];
   }> {
     const prompt = `
-Context: ${this.codebaseContext?.projectType || 'General'} project in ${context.language}
+Context: ${this.codebaseContext?.projectType || 'General'} project in ${
+      context.language
+    }
 ${context.fileName ? `File: ${context.fileName}` : ''}
 
 Current Code:
@@ -296,7 +298,11 @@ Return JSON format with suggestions array and explanation.`;
 - Type: ${this.codebaseContext.projectType || 'Unknown'}
 - Language: ${this.codebaseContext.language}
 - Framework: ${this.codebaseContext.framework || 'None specified'}
-${this.codebaseContext.dependencies ? `- Dependencies: ${this.codebaseContext.dependencies.join(', ')}\n` : ''}
+${
+  this.codebaseContext.dependencies
+    ? `- Dependencies: ${this.codebaseContext.dependencies.join(', ')}\n`
+    : ''
+}
 `;
     }
 
@@ -334,7 +340,10 @@ ${context.selectedCode}
       const recentHistory = this.conversationHistory.slice(-3);
       prompt += '\n\nRecent Conversation:';
       recentHistory.forEach((exchange, index) => {
-        prompt += `\n${index + 1}. Q: ${exchange.query.query.substring(0, 100)}...`;
+        prompt += `\n${index + 1}. Q: ${exchange.query.query.substring(
+          0,
+          100
+        )}...`;
         prompt += `\n   A: ${exchange.response.answer.substring(0, 150)}...`;
       });
     }
@@ -375,7 +384,9 @@ ${
   this.codebaseContext.codePatterns
     ? `
 Code Patterns:
-${this.codebaseContext.codePatterns.map(p => `- ${p.pattern}: ${p.description} (used ${p.frequency} times)`).join('\n')}
+${this.codebaseContext.codePatterns
+  .map(p => `- ${p.pattern}: ${p.description} (used ${p.frequency} times)`)
+  .join('\n')}
 `
     : ''
 }
@@ -611,7 +622,9 @@ Format as JSON:
   private formatFileStructure(files: FileNode[]): string {
     const formatNode = (node: FileNode, depth = 0): string => {
       const indent = '  '.repeat(depth);
-      let result = `${indent}${node.name}${node.type === 'directory' ? '/' : ''}\n`;
+      let result = `${indent}${node.name}${
+        node.type === 'directory' ? '/' : ''
+      }\n`;
 
       if (node.children) {
         result += node.children
@@ -634,7 +647,9 @@ Format as JSON:
 Project Context Summary:
 - Language: ${this.codebaseContext.language}
 - Framework: ${this.codebaseContext.framework || 'None'}
-- Dependencies: ${this.codebaseContext.dependencies?.slice(0, 5).join(', ') || 'None'}
+- Dependencies: ${
+      this.codebaseContext.dependencies?.slice(0, 5).join(', ') || 'None'
+    }
 ${
   this.codebaseContext.codePatterns
     ? `- Common patterns: ${this.codebaseContext.codePatterns

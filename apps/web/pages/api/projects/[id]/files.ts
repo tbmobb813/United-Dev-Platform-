@@ -33,7 +33,7 @@ async function getProjectFiles(
   try {
     const { path, type } = req.query;
 
-  const where = { projectId } as Prisma.ProjectFileWhereInput;
+    const where = { projectId } as Prisma.ProjectFileWhereInput;
 
     // Filter by path prefix (for directory contents)
     if (path && typeof path === 'string') {

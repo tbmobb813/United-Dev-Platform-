@@ -57,7 +57,10 @@ export interface FieldErrorProps {
 const defaultValidators = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   required: (value: any, rule: ValidationRule): string | null => {
-    if (rule.required && (value === null || value === undefined || value === '')) {
+    if (
+      rule.required &&
+      (value === null || value === undefined || value === '')
+    ) {
       return rule.message || 'This field is required';
     }
     return null;
@@ -176,16 +179,21 @@ const defaultValidators = {
       }
     }
     return null;
-  }
+  },
 };
 
 // Utility function to validate a single field
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const validateField = (value: any, rules: ValidationRule[]): string[] => {
+export const validateField = (
+  value: any,
+  rules: ValidationRule[]
+): string[] => {
   const errors: string[] = [];
 
   for (const rule of rules) {
-    for (const [validatorName, validator] of Object.entries(defaultValidators)) {
+    for (const [validatorName, validator] of Object.entries(
+      defaultValidators
+    )) {
       if (rule[validatorName as keyof ValidationRule] !== undefined) {
         const error = validator(value, rule);
         if (error) {
@@ -200,7 +208,10 @@ export const validateField = (value: any, rules: ValidationRule[]): string[] => 
 
 // Utility function to validate all fields
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const validateForm = (data: Record<string, any>, validation: FieldValidation): ValidationErrors => {
+export const validateForm = (
+  data: Record<string, any>,
+  validation: FieldValidation
+): ValidationErrors => {
   const errors: ValidationErrors = {};
 
   for (const [fieldName, rules] of Object.entries(validation)) {
@@ -230,10 +241,10 @@ export const useFormValidation = (
       // Validate single field
       const rules = validation[fieldName] || [];
       const fieldErrors = validateField(data[fieldName], rules);
-      
+
       setErrors(prev => ({
         ...prev,
-        [fieldName]: fieldErrors
+        [fieldName]: fieldErrors,
       }));
 
       return fieldErrors.length === 0;
@@ -246,13 +257,13 @@ export const useFormValidation = (
   const validateAll = (): boolean => {
     const newErrors = validateForm(data, validation);
     setErrors(newErrors);
-    
+
     const isValid = Object.keys(newErrors).length === 0;
-    
+
     if (options.onValidationChange) {
       options.onValidationChange(isValid, newErrors);
     }
-    
+
     return isValid;
   };
 
@@ -271,7 +282,7 @@ export const useFormValidation = (
   const setFieldError = (fieldName: string, error: string): void => {
     setErrors(prev => ({
       ...prev,
-      [fieldName]: [error]
+      [fieldName]: [error],
     }));
   };
 
@@ -280,7 +291,9 @@ export const useFormValidation = (
   };
 
   const getFirstError = (fieldName: string): string | null => {
-    return errors[fieldName] && errors[fieldName].length > 0 ? errors[fieldName][0] : null;
+    return errors[fieldName] && errors[fieldName].length > 0
+      ? errors[fieldName][0]
+      : null;
   };
 
   const isValid = Object.keys(errors).length === 0;
@@ -300,7 +313,7 @@ export const useFormValidation = (
     clearErrors,
     setFieldError,
     hasError,
-    getFirstError
+    getFirstError,
   };
 };
 
@@ -312,12 +325,12 @@ export const FormValidation: React.FC<FormValidationProps> = ({
   onValidationChange,
   showErrorsOnMount = false,
   validateOnChange = false,
-  className = ''
+  className = '',
 }) => {
-  const {
-    isValid,
-    validateAll
-  } = useFormValidation(data, validation, { validateOnChange, onValidationChange });
+  const { isValid, validateAll } = useFormValidation(data, validation, {
+    validateOnChange,
+    onValidationChange,
+  });
 
   useEffect(() => {
     if (showErrorsOnMount) {
@@ -337,7 +350,7 @@ export const FieldError: React.FC<FieldErrorProps> = ({
   fieldName,
   errors = {},
   className = '',
-  showFirst = true
+  showFirst = true,
 }) => {
   const fieldErrors = errors[fieldName] || [];
 
@@ -348,9 +361,9 @@ export const FieldError: React.FC<FieldErrorProps> = ({
   const errorsToShow = showFirst ? [fieldErrors[0]] : fieldErrors;
 
   return (
-    <div className={`field-error ${className}`} role='alert' aria-live='polite'>
+    <div className={`field-error ${className}`} role="alert" aria-live="polite">
       {errorsToShow.map((error, index) => (
-        <div key={index} className='field-error__message'>
+        <div key={index} className="field-error__message">
           {error}
         </div>
       ))}
@@ -370,7 +383,8 @@ export interface ValidationContextValue {
   getFirstError: (fieldName: string) => string | null;
 }
 
-export const ValidationContext = React.createContext<ValidationContextValue | null>(null);
+export const ValidationContext =
+  React.createContext<ValidationContextValue | null>(null);
 
 export const ValidationProvider: React.FC<{
   children: ReactNode;
@@ -404,45 +418,48 @@ export const useValidation = (): ValidationContextValue => {
 export const quickValidation = {
   required: (message?: string): ValidationRule => ({
     required: true,
-    message
+    message,
   }),
 
   email: (message?: string): ValidationRule => ({
     email: true,
-    message
+    message,
   }),
 
   minLength: (length: number, message?: string): ValidationRule => ({
     minLength: length,
-    message: message || `Must be at least ${length} characters`
+    message: message || `Must be at least ${length} characters`,
   }),
 
   maxLength: (length: number, message?: string): ValidationRule => ({
     maxLength: length,
-    message: message || `Must be at most ${length} characters`
+    message: message || `Must be at most ${length} characters`,
   }),
 
   pattern: (pattern: RegExp, message?: string): ValidationRule => ({
     pattern,
-    message: message || 'Invalid format'
+    message: message || 'Invalid format',
   }),
 
   number: (message?: string): ValidationRule => ({
     number: true,
-    message
+    message,
   }),
 
   range: (min: number, max: number, message?: string): ValidationRule => ({
     min,
     max,
-    message: message || `Value must be between ${min} and ${max}`
+    message: message || `Value must be between ${min} and ${max}`,
   }),
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  custom: (validator: (value: any) => boolean | string, message?: string): ValidationRule => ({
+  custom: (
+    validator: (value: any) => boolean | string,
+    message?: string
+  ): ValidationRule => ({
     custom: validator,
-    message
-  })
+    message,
+  }),
 };
 
 export default FormValidation;

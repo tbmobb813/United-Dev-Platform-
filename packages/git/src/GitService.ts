@@ -824,15 +824,17 @@ export class GitService implements GitServiceInterface {
                 oldLines: status === 'added' ? 0 : 10,
                 newStart: 1,
                 newLines: status === 'deleted' ? 0 : 10,
-                header: `@@ -1,${status === 'added' ? 0 : 10} +1,${status === 'deleted' ? 0 : 10} @@`,
+                header: `@@ -1,${status === 'added' ? 0 : 10} +1,${
+                  status === 'deleted' ? 0 : 10
+                } @@`,
                 lines: [
                   {
                     type:
                       status === 'added'
                         ? 'add'
                         : status === 'deleted'
-                          ? 'delete'
-                          : 'context',
+                        ? 'delete'
+                        : 'context',
                     content: `${status} file: ${filepath}`,
                     oldLineNumber: 1,
                     newLineNumber: 1,

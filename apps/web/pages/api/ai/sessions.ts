@@ -23,7 +23,7 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { userId, projectId, context } = req.query;
 
-  const where = {} as Prisma.AiChatSessionWhereInput;
+    const where = {} as Prisma.AiChatSessionWhereInput;
 
     if (userId && typeof userId === 'string') {
       where.userId = userId;

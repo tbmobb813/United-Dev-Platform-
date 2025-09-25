@@ -129,7 +129,9 @@ export class OfflinePersistenceManager {
       // eslint-disable-next-line no-console
       console.warn('Failed to initialize IndexedDB:', error);
       this.updateSyncStatus({
-        error: `IndexedDB initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `IndexedDB initialization failed: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
       });
     }
   }
@@ -451,10 +453,10 @@ export class OfflinePersistenceManager {
         syncStatus: this.syncStatus.isConnected
           ? 'synced'
           : this.syncStatus.pendingChanges > 0
-            ? 'pending'
-            : this.syncStatus.error
-              ? 'error'
-              : 'offline',
+          ? 'pending'
+          : this.syncStatus.error
+          ? 'error'
+          : 'offline',
       },
     ];
   }

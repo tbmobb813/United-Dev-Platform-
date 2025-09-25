@@ -1,12 +1,12 @@
 import { Button, Card, Loading, Stack } from '@udp/ui-native';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { AIService, ApiService } from '../services';
 import { FileNode } from './FileBrowser';
@@ -44,8 +44,11 @@ export const FileViewer: React.FC<FileViewerProps> = ({
     try {
       // Try to load content from API if file has ID and projectId
       if (file.id && projectId) {
-        const response = await ApiService.getMobileFileContent(projectId, file.id);
-        
+        const response = await ApiService.getMobileFileContent(
+          projectId,
+          file.id
+        );
+
         if (response.error) {
           Alert.alert('Error', response.error);
           return;
@@ -83,11 +86,11 @@ export const FileViewer: React.FC<FileViewerProps> = ({
       // Try to save via API if file has ID and projectId
       if (file.id && projectId) {
         const response = await ApiService.saveMobileFileContent(
-          projectId, 
-          file.id, 
+          projectId,
+          file.id,
           editedContent
         );
-        
+
         if (response.error) {
           Alert.alert('Error', `Failed to save: ${response.error}`);
           return;
@@ -110,7 +113,9 @@ export const FileViewer: React.FC<FileViewerProps> = ({
     setIsEditing(false);
   };
 
-  const handleAIAction = async (action: 'explain' | 'test' | 'optimize' | 'summarize') => {
+  const handleAIAction = async (
+    action: 'explain' | 'test' | 'optimize' | 'summarize'
+  ) => {
     if (!content.trim()) {
       Alert.alert('No Content', 'No file content to analyze');
       return;
@@ -146,12 +151,12 @@ export const FileViewer: React.FC<FileViewerProps> = ({
       for await (const response of aiGenerator) {
         accumulatedResponse = response.content;
         setAiResponse(accumulatedResponse);
-        
+
         if (response.error) {
           Alert.alert('AI Error', response.error);
           break;
         }
-        
+
         if (response.finished) {
           break;
         }
@@ -205,7 +210,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Loading text='Loading file...' />
+        <Loading text="Loading file..." />
       </View>
     );
   }
@@ -213,8 +218,8 @@ export const FileViewer: React.FC<FileViewerProps> = ({
   return (
     <View style={styles.container}>
       {/* Header with file info */}
-      <Card title={`📄 ${file.name}`} padding='medium' style={{}}>
-        <Stack gap='small' style={{}}>
+      <Card title={`📄 ${file.name}`} padding="medium" style={{}}>
+        <Stack gap="small" style={{}}>
           <View style={styles.fileInfo}>
             <Text style={styles.filePath}>{file.path}</Text>
             <View style={styles.fileMetadata}>
@@ -230,35 +235,35 @@ export const FileViewer: React.FC<FileViewerProps> = ({
           </View>
 
           {/* Action buttons */}
-          <Stack direction='row' gap='small' style={{}}>
+          <Stack direction="row" gap="small" style={{}}>
             <Button
-              title='⬅️ Back'
+              title="⬅️ Back"
               onPress={onClose}
-              variant='secondary'
-              size='small'
+              variant="secondary"
+              size="small"
               style={{}}
             />
             {!readOnly && !isEditing && (
               <Button
-                title='✏️ Edit'
+                title="✏️ Edit"
                 onPress={handleEdit}
-                size='small'
+                size="small"
                 style={{}}
               />
             )}
             {isEditing && (
               <>
                 <Button
-                  title='💾 Save'
+                  title="💾 Save"
                   onPress={handleSave}
-                  size='small'
+                  size="small"
                   style={{}}
                 />
                 <Button
-                  title='❌ Cancel'
+                  title="❌ Cancel"
                   onPress={handleCancel}
-                  variant='secondary'
-                  size='small'
+                  variant="secondary"
+                  size="small"
                   style={{}}
                 />
               </>
@@ -275,7 +280,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
             value={editedContent}
             onChangeText={setEditedContent}
             multiline
-            placeholder='Start typing...'
+            placeholder="Start typing..."
             scrollEnabled
           />
         ) : (
@@ -288,35 +293,35 @@ export const FileViewer: React.FC<FileViewerProps> = ({
       {/* AI Actions Footer */}
       {showAIActions && (
         <View style={styles.aiActions}>
-          <Stack direction='row' gap='small' style={{}}>
+          <Stack direction="row" gap="small" style={{}}>
             <Button
-              title='🤖 Explain'
+              title="🤖 Explain"
               onPress={() => handleAIAction('explain')}
-              size='small'
-              variant='outline'
+              size="small"
+              variant="outline"
               style={{}}
               disabled={aiLoading}
             />
             <Button
-              title='🧪 Tests'
+              title="🧪 Tests"
               onPress={() => handleAIAction('test')}
-              size='small'
-              variant='outline'
+              size="small"
+              variant="outline"
               style={{}}
               disabled={aiLoading}
             />
             <Button
-              title='⚡ Optimize'
+              title="⚡ Optimize"
               onPress={() => handleAIAction('optimize')}
-              size='small'
-              variant='outline'
+              size="small"
+              variant="outline"
               style={{}}
               disabled={aiLoading}
             />
           </Stack>
           {aiLoading && (
             <View style={styles.aiLoadingContainer}>
-              <Loading text='AI processing...' />
+              <Loading text="AI processing..." />
             </View>
           )}
         </View>
@@ -329,7 +334,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
 async function getMockFileContent(file: FileNode): Promise<string> {
   // TODO: Replace with actual API call
   const extension = file.extension?.toLowerCase();
-  
+
   switch (extension) {
     case 'tsx':
     case 'jsx':
@@ -341,7 +346,11 @@ interface ${file.name.replace('.tsx', '').replace('.jsx', '')}Props {
   onPress?: () => void;
 }
 
-export const ${file.name.replace('.tsx', '').replace('.jsx', '')}: React.FC<${file.name.replace('.tsx', '').replace('.jsx', '')}Props> = ({
+export const ${file.name
+        .replace('.tsx', '')
+        .replace('.jsx', '')}: React.FC<${file.name
+        .replace('.tsx', '')
+        .replace('.jsx', '')}Props> = ({
   title,
   onPress,
 }) => {
@@ -378,7 +387,10 @@ export class ${file.name.replace('.ts', '')}Service {
     return null;
   }
 
-  async create(data: Partial<${file.name.replace('.ts', '')}>): Promise<${file.name.replace('.ts', '')}> {
+  async create(data: Partial<${file.name.replace(
+    '.ts',
+    ''
+  )}>): Promise<${file.name.replace('.ts', '')}> {
     // Implementation here
     throw new Error('Not implemented');
   }

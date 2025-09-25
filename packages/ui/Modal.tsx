@@ -69,9 +69,9 @@ export const Modal: React.FC<ModalProps> = ({
           ...style,
         }}
       >
-        <Stack gap='medium'>
+        <Stack gap="medium">
           {(title || showCloseButton) && (
-            <Stack direction='row' justify='between' align='center'>
+            <Stack direction="row" justify="between" align="center">
               {title && (
                 <h2
                   style={{
@@ -85,7 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
                 </h2>
               )}
               {showCloseButton && (
-                <Button variant='ghost' size='small' onClick={onClose}>
+                <Button variant="ghost" size="small" onClick={onClose}>
                   ✕
                 </Button>
               )}
@@ -95,7 +95,7 @@ export const Modal: React.FC<ModalProps> = ({
           <div>{children}</div>
 
           {actions && (
-            <Stack direction='row' justify='end' gap='small'>
+            <Stack direction="row" justify="end" gap="small">
               {actions}
             </Stack>
           )}

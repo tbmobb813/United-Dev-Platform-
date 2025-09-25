@@ -26,13 +26,13 @@ export default function App() {
         doc: queryParams.doc || 'main-document',
       };
       setParams(newParams);
-      
+
       // If we have repo/file params, show the collaborative editor
       if (newParams.repo && newParams.file) {
         setUseDeepLink(true);
       }
     };
-    
+
     const sub = Linking.addEventListener('url', handleDeepLink);
     Linking.getInitialURL().then(url => {
       if (url) {
@@ -54,11 +54,13 @@ export default function App() {
   if (useDeepLink && params.repo && params.file) {
     return (
       <SafeAreaView style={{ flex: 1, padding: 24 }}>
-        <Stack gap='medium'>
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>UDP Mobile - Collaborative Mode</Text>
+        <Stack gap="medium">
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+            UDP Mobile - Collaborative Mode
+          </Text>
 
-          <Card title='Connection Info' padding='medium'>
-            <Stack gap='small'>
+          <Card title="Connection Info" padding="medium">
+            <Stack gap="small">
               <Text>Repo: {params.repo}</Text>
               <Text>File: {params.file}</Text>
               <Text>Room: {params.room}</Text>
@@ -70,12 +72,12 @@ export default function App() {
             Real-time collaborative editing with web app
           </Text>
 
-          <Card title={`Document: ${params.doc}`} padding='medium'>
+          <Card title={`Document: ${params.doc}`} padding="medium">
             <CollaborativeEditor
               roomId={params.room}
               documentId={params.doc}
               userId={generateUserId()}
-              userName='Mobile User'
+              userName="Mobile User"
               onContentChange={handleContentChange}
             />
           </Card>

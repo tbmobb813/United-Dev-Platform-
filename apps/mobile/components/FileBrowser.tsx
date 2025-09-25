@@ -52,8 +52,11 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
     try {
       if (repository?.id) {
         // Use real API to load files
-        const response = await ApiService.getMobileFileTree(repository.id, path === '/' ? undefined : path);
-        
+        const response = await ApiService.getMobileFileTree(
+          repository.id,
+          path === '/' ? undefined : path
+        );
+
         if (response.error) {
           Alert.alert('Error', response.error);
           return;
@@ -81,13 +84,13 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
 
   const toggleDirectory = (directory: FileNode) => {
     const newExpandedDirs = new Set(expandedDirs);
-    
+
     if (expandedDirs.has(directory.path)) {
       newExpandedDirs.delete(directory.path);
     } else {
       newExpandedDirs.add(directory.path);
     }
-    
+
     setExpandedDirs(newExpandedDirs);
     onDirectorySelect?.(directory);
   };
@@ -210,11 +213,9 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
               )}
             </View>
           </View>
-          
+
           {item.type === 'directory' && (
-            <Text style={styles.expandIcon}>
-              {isExpanded ? '▼' : '▶'}
-            </Text>
+            <Text style={styles.expandIcon}>{isExpanded ? '▼' : '▶'}</Text>
           )}
         </TouchableOpacity>
 
@@ -223,7 +224,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
           <FlatList
             data={item.children}
             renderItem={renderFile}
-            keyExtractor={(child) => child.path}
+            keyExtractor={child => child.path}
             scrollEnabled={false}
           />
         )}
@@ -234,7 +235,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   if (loading && !refreshing) {
     return (
       <View style={styles.loadingContainer}>
-        <Loading text='Loading files...' />
+        <Loading text="Loading files..." />
       </View>
     );
   }
@@ -242,8 +243,8 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   return (
     <View style={styles.container}>
       {/* Header with repo info and navigation */}
-      <Card title='📁 File Browser' padding='medium' style={{}}>
-        <Stack gap='small' style={{}}>
+      <Card title="📁 File Browser" padding="medium" style={{}}>
+        <Stack gap="small" style={{}}>
           {repository && (
             <View style={styles.repoInfo}>
               <Text style={styles.repoName}>
@@ -254,7 +255,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
               </Text>
             </View>
           )}
-          
+
           <View style={styles.pathNavigation}>
             <TouchableOpacity
               style={styles.pathButton}
@@ -275,7 +276,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         <FlatList
           data={files}
           renderItem={renderFile}
-          keyExtractor={(item) => item.path}
+          keyExtractor={item => item.path}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
@@ -287,23 +288,23 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       {/* Quick Actions Footer */}
       {showAIActions && (
         <View style={styles.quickActions}>
-          <Stack direction='row' gap='small' style={{}}>
-            <Button 
-              title='🤖 AI Summary' 
-              size='small' 
-              onPress={() => {}} 
+          <Stack direction="row" gap="small" style={{}}>
+            <Button
+              title="🤖 AI Summary"
+              size="small"
+              onPress={() => {}}
               style={{}}
             />
-            <Button 
-              title='📊 Code Stats' 
-              size='small' 
-              onPress={() => {}} 
+            <Button
+              title="📊 Code Stats"
+              size="small"
+              onPress={() => {}}
               style={{}}
             />
-            <Button 
-              title='🔍 Search Files' 
-              size='small' 
-              onPress={() => {}} 
+            <Button
+              title="🔍 Search Files"
+              size="small"
+              onPress={() => {}}
               style={{}}
             />
           </Stack>

@@ -238,11 +238,15 @@ Current context: You're working in a real-time collaborative editor where multip
 
     if (context) {
       if (context.selectedCode) {
-        formattedMessage += `\n\n**Selected Code:**\n\`\`\`${context.language || 'text'}\n${context.selectedCode}\n\`\`\``;
+        formattedMessage += `\n\n**Selected Code:**\n\`\`\`${
+          context.language || 'text'
+        }\n${context.selectedCode}\n\`\`\``;
       }
 
       if (context.fullCode && context.fullCode !== context.selectedCode) {
-        formattedMessage += `\n\n**Full File Context:**\n\`\`\`${context.language || 'text'}\n${context.fullCode}\n\`\`\``;
+        formattedMessage += `\n\n**Full File Context:**\n\`\`\`${
+          context.language || 'text'
+        }\n${context.fullCode}\n\`\`\``;
       }
 
       if (context.cursorPosition) {

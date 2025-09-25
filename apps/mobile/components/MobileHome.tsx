@@ -1,16 +1,18 @@
 import { Stack } from '@udp/ui-native';
 import React, { useState } from 'react';
 import {
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { FileNavigator } from '../components/FileNavigator';
 
 export const MobileHome: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'browse' | 'collaborate'>('browse');
+  const [activeTab, setActiveTab] = useState<'browse' | 'collaborate'>(
+    'browse'
+  );
 
   const TabButton: React.FC<{
     tab: 'browse' | 'collaborate';
@@ -24,7 +26,9 @@ export const MobileHome: React.FC = () => {
       <Text style={[styles.tabIcon, activeTab === tab && styles.activeTabText]}>
         {icon}
       </Text>
-      <Text style={[styles.tabLabel, activeTab === tab && styles.activeTabText]}>
+      <Text
+        style={[styles.tabLabel, activeTab === tab && styles.activeTabText]}
+      >
         {label}
       </Text>
     </TouchableOpacity>
@@ -42,8 +46,8 @@ export const MobileHome: React.FC = () => {
 
       {/* Tab Navigation */}
       <View style={styles.tabContainer}>
-        <TabButton tab='browse' icon='📁' label='Browse' />
-        <TabButton tab='collaborate' icon='✏️' label='Edit' />
+        <TabButton tab="browse" icon="📁" label="Browse" />
+        <TabButton tab="collaborate" icon="✏️" label="Edit" />
       </View>
 
       {/* Content */}
@@ -62,7 +66,7 @@ export const MobileHome: React.FC = () => {
           />
         ) : (
           <View style={styles.comingSoon}>
-            <Stack gap='medium' style={{}}>
+            <Stack gap="medium" style={{}}>
               <Text style={styles.comingSoonIcon}>🚧</Text>
               <Text style={styles.comingSoonTitle}>Coming Soon</Text>
               <Text style={styles.comingSoonText}>

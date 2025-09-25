@@ -24,7 +24,9 @@
     "yjs": "^13.6.27"
   },
   "eslintConfig": {
-    "extends": ["@udp/eslint-config/react"]
+    "extends": [
+      "@udp/eslint-config/react"
+    ]
   },
   "prettier": "@udp/prettier-config"
 }

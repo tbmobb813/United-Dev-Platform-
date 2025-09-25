@@ -18,7 +18,7 @@ export default function LoginNative() {
       <input
         value={name}
         onChange={e => setName(e.target.value)}
-        placeholder='Enter your name'
+        placeholder="Enter your name"
         style={{ padding: 6, border: '1px solid #ddd', borderRadius: 6 }}
       />
       <div style={{ marginTop: 12 }}>

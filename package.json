@@ -23,7 +23,7 @@
     "fix": "pnpm lint:fix && pnpm format",
     "reset": "pnpm clean && pnpm install",
     "validate-env": "node scripts/validate-env.js",
-  "ci:validate-env": "node scripts/ci-validate-env.js",
+    "ci:validate-env": "node scripts/ci-validate-env.js",
     "validate-devops": "node scripts/validate-devops.js",
     "dev:web": "cd apps/web && pnpm dev",
     "dev:api": "cd apps/api && pnpm dev",

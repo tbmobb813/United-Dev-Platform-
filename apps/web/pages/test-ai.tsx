@@ -12,7 +12,7 @@ export default function TestAIAssistant() {
 
   const handleCodeInsert = (code: string) => {
     console.log('Inserting code:', code);
-  window.alert(`Code would be inserted: ${code.substring(0, 50)}...`);
+    window.alert(`Code would be inserted: ${code.substring(0, 50)}...`);
   };
 
   return (
