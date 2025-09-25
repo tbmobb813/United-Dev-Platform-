@@ -57,6 +57,12 @@ jobs:
           author_email: 'github-actions[bot]@users.noreply.github.com'
           push: true
 
+      - name: Ensure branch has upstream
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --set-upstream origin ${{ steps.newbranch.outputs.branch }}
+
       - name: Create Pull Request with fixes
         if: steps.changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v5
