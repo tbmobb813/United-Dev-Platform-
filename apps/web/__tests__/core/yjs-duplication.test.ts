@@ -21,7 +21,7 @@ describe('Yjs Duplication Check', () => {
 
     // The real test is whether this assertion fails.
     // If it does, it means the marker was already set.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  expect((globalScope as any)[yjsMarker]).toBe(true);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    expect((globalScope as any)[yjsMarker]).toBe(true);
   });
 });
