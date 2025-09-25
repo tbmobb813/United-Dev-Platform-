@@ -55,6 +55,7 @@ jobs:
           add: '.'
           author_name: 'github-actions[bot]'
           author_email: 'github-actions[bot]@users.noreply.github.com'
+          push: true
 
       - name: Create Pull Request with fixes
         if: steps.changes.outputs.changed == 'true'
