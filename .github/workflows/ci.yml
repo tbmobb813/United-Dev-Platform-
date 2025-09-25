@@ -40,8 +40,17 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: pnpm ci:validate-env
 
-      - name: Run checks (lint, type, test)
-        run: pnpm check
+      - name: Check Prettier formatting
+        run: pnpm format:check
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Run TypeScript type check
+        run: pnpm type-check
+
+      - name: Run tests
+        run: pnpm test
 
       - name: Build web
         run: pnpm --filter @udp/web build
