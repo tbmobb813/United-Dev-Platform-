@@ -107,7 +107,10 @@ function setupCollaborativeWSConnection(conn, req) {
   const projectId = url.searchParams.get('projectId');
   const userId = url.searchParams.get('userId');
 
-  if (!sessionId || !projectId) {
+  // For development, allow connections without sessionId/projectId
+  if (!sessionId && !projectId && process.env.NODE_ENV !== 'production') {
+    logger.info('Development mode: accepting connection without session params');
+  } else if (!sessionId || !projectId) {
     logger.warn('Missing sessionId or projectId, closing connection');
     conn.close(1008, 'Missing required parameters');
     return;
