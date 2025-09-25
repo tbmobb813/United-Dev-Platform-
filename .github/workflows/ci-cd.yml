@@ -13,6 +13,7 @@ env:
 jobs:
   setup:
     name: Setup and Cache
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     outputs:
       pnpm-cache-dir: ${{ steps.pnpm-cache.outputs.pnpm-cache-dir }}
@@ -54,6 +55,7 @@ jobs:
 
   lint:
     name: Lint and Format Check
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -65,7 +67,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm
+      - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
@@ -87,6 +89,7 @@ jobs:
 
   type-check:
     name: TypeScript Type Check
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -98,7 +101,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm
+      - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
@@ -117,6 +120,7 @@ jobs:
 
   test:
     name: Run Tests
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -128,7 +132,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm
+      - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
@@ -147,6 +151,7 @@ jobs:
 
   validate-env:
     name: Validate Environment
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -158,7 +163,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm
+      - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
@@ -187,6 +192,7 @@ jobs:
 
   build:
     name: Build Applications
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     needs: [setup, lint, type-check, test, validate-env]
     strategy:
@@ -201,7 +207,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm
+      - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
@@ -236,7 +242,7 @@ jobs:
     name: Build Docker Images
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    if: ${{ github.actor != 'github-actions[bot]' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') }}
     strategy:
       matrix:
         service: [web, api]
@@ -272,6 +278,7 @@ jobs:
 
   security-scan:
     name: Security Scan
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -318,10 +325,7 @@ jobs:
     name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: [build, docker-build, security-scan]
-    if: github.ref == 'refs/heads/develop'
-    environment:
-      name: staging
-      url: https://staging.udp.example.com
+    if: ${{ github.actor != 'github-actions[bot]' && github.ref == 'refs/heads/develop' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -339,10 +343,7 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [build, docker-build, security-scan]
-    if: github.ref == 'refs/heads/main'
-    environment:
-      name: production
-      url: https://udp.example.com
+    if: ${{ github.actor != 'github-actions[bot]' && github.ref == 'refs/heads/main' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -360,7 +361,7 @@ jobs:
     name: Notification
     runs-on: ubuntu-latest
     needs: [deploy-staging, deploy-production]
-    if: always()
+    if: ${{ github.actor != 'github-actions[bot]' && always() }}
     steps:
       - name: Notify deployment status
         run: |
