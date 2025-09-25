@@ -25,6 +25,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -168,7 +173,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install dotenv for validation script
-        run: pnpm add -D dotenv
+        run: pnpm add -Dw dotenv
 
       - name: Validate environment configuration
         env:
