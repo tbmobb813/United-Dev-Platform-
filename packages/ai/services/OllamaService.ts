@@ -133,9 +133,11 @@ export class OllamaService extends AIService {
       const decoder = new (globalThis as any).TextDecoder();
 
       try {
-        while (true) {
+        let finished = false;
+        while (!finished) {
           const { done, value } = await reader.read();
           if (done) {
+            finished = true;
             break;
           }
 
@@ -155,6 +157,7 @@ export class OllamaService extends AIService {
               lastResponse = data;
 
               if (data.done) {
+                finished = true;
                 break;
               }
             } catch {
@@ -255,9 +258,11 @@ export class OllamaService extends AIService {
       const reader = response.body?.getReader();
       if (reader) {
         try {
-          while (true) {
+          let finished = false;
+          while (!finished) {
             const { done } = await reader.read();
             if (done) {
+              finished = true;
               break;
             }
           }

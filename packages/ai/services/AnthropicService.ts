@@ -1,4 +1,4 @@
-/* global TextDecoder, TextEncoder */
+/* global TextDecoder */
 
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
@@ -66,9 +66,8 @@ export class AnthropicService extends AIService {
         model: data.model,
         finish_reason: data.stop_reason,
       };
-    } catch (error) {
-      console.error('Anthropic API error:', error);
-      throw error;
+    } catch {
+      throw new Error('Anthropic API error');
     }
   }
 
@@ -127,9 +126,11 @@ export class AnthropicService extends AIService {
 
       const decoder = new TextDecoder();
 
-      while (true) {
+      let finished = false;
+      while (!finished) {
         const { done, value } = await reader.read();
         if (done) {
+          finished = true;
           break;
         }
 
@@ -171,7 +172,7 @@ export class AnthropicService extends AIService {
                     parsed.usage.input_tokens + parsed.usage.output_tokens,
                 };
               }
-            } catch (e) {
+            } catch {
               // Ignore JSON parse errors for malformed chunks
             }
           }
@@ -184,9 +185,8 @@ export class AnthropicService extends AIService {
         model,
         finish_reason: finishReason,
       };
-    } catch (error) {
-      console.error('Anthropic Streaming API error:', error);
-      throw error;
+    } catch {
+      throw new Error('Anthropic Streaming API error');
     }
   }
 
@@ -224,8 +224,7 @@ export class AnthropicService extends AIService {
       });
 
       return response.ok;
-    } catch (error) {
-      console.error('Anthropic connection validation failed:', error);
+    } catch {
       return false;
     }
   }
