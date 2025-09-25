@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { getServerSession } from 'next-auth/next';
 import type { NextAuthOptions } from 'next-auth';
 
@@ -8,7 +8,7 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: 'jwt' },
 };
 
-export async function requireAuth(req: NextApiRequest, res: NextApiResponse) {
+export async function requireAuth(req: IncomingMessage, res: ServerResponse) {
   try {
     const session = await getServerSession(
       req as any,

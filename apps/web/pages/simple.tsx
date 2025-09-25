@@ -1,3 +1,5 @@
+'use client';
+
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
