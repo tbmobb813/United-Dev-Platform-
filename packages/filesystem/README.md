@@ -146,7 +146,7 @@ function App() {
     <div>
       <ProjectNavigator
         fileSystem={fs}
-        projectPath="/workspace"
+        projectPath='/workspace'
         onFileSelect={handleFileSelect}
       />
       <FileExplorer
