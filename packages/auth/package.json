@@ -34,7 +34,7 @@
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
     "crypto-js": "^4.2.0",
-    "jose": "^5.9.3"
+    "jose": "^6.1.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
