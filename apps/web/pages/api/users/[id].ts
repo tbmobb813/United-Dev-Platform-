@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
 import logger from '@udp/logger';
+import { getErrorMessage, isPrismaError } from '../../../lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -68,8 +69,9 @@ async function getUser(id: string, res: NextApiResponse) {
     }
 
     res.status(200).json({ user });
-  } catch (error) {
-    logger.error('Error fetching user:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error fetching user:', msg);
     res.status(500).json({ error: 'Failed to fetch user' });
   }
 }
@@ -100,15 +102,16 @@ async function updateUser(
     });
 
     res.status(200).json({ user });
-  } catch (error: any) {
-    logger.error('Error updating user:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error updating user:', msg);
 
-    if (error.code === 'P2025') {
+    if (isPrismaError(error) && error.code === 'P2025') {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if (error.code === 'P2002') {
-      const field = error.meta?.target?.[0] || 'field';
+    if (isPrismaError(error) && error.code === 'P2002') {
+      const field = error.meta?.target?.[0] ?? 'field';
       return res.status(400).json({
         error: `${field} already exists`,
       });
@@ -125,10 +128,11 @@ async function deleteUser(id: string, res: NextApiResponse) {
     });
 
     res.status(200).json({ message: 'User deleted successfully' });
-  } catch (error: any) {
-    logger.error('Error deleting user:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error deleting user:', msg);
 
-    if (error.code === 'P2025') {
+    if (isPrismaError(error) && error.code === 'P2025') {
       return res.status(404).json({ error: 'User not found' });
     }
 

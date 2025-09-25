@@ -1,5 +1,5 @@
 import { withAuth } from 'next-auth/middleware';
-import logger from '../api/lib/logger';
+import logger from '@udp/logger';
 
 export default withAuth(
   function middleware(req) {

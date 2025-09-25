@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
+import type { Prisma } from '@prisma/client';
 import logger from '@udp/logger';
+import { getErrorMessage, toEnum, isPrismaError } from '../../../lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,7 +23,7 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { userId, projectId, context } = req.query;
 
-    const where: any = {};
+  const where = {} as Prisma.AiChatSessionWhereInput;
 
     if (userId && typeof userId === 'string') {
       where.userId = userId;
@@ -32,7 +34,7 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (context && typeof context === 'string') {
-      where.context = context;
+      where.context = toEnum(context);
     }
 
     const sessions = await prisma.aiChatSession.findMany({
@@ -67,8 +69,9 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
     });
 
     res.status(200).json({ sessions });
-  } catch (error) {
-    logger.error('Error fetching chat sessions:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error fetching chat sessions:', msg);
     res.status(500).json({ error: 'Failed to fetch chat sessions' });
   }
 }
@@ -133,10 +136,11 @@ async function createChatSession(req: NextApiRequest, res: NextApiResponse) {
     });
 
     res.status(201).json({ session });
-  } catch (error: any) {
-    logger.error('Error creating chat session:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error creating chat session:', msg);
 
-    if (error.code === 'P2003') {
+    if (isPrismaError(error) && error.code === 'P2003') {
       return res.status(400).json({ error: 'User or project not found' });
     }
 

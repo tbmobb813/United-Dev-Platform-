@@ -4,10 +4,14 @@ import React from 'react';
 interface OfflineEditorProps {
   room: string;
   serverUrl: string;
-  children: (doc: any, status: { isConnected: boolean; pendingChanges: number; lastSync?: Date }) => React.ReactNode;
+  children: (
+    doc: unknown,
+    status: { isConnected: boolean; pendingChanges: number; lastSync?: Date }
+  ) => React.ReactNode;
 }
 
-const OfflineEditor: React.FC<OfflineEditorProps> = ({ room, serverUrl, children }) => {
+const OfflineEditor: React.FC<OfflineEditorProps> = (props) => {
+  const { children } = props;
   // Mock document and status
   const mockDoc = {};
   const mockStatus = {

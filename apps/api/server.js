@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import { WebSocketServer } from 'ws';
 import { setupWSConnection } from 'y-websocket/bin/utils.js';
 import { prisma } from '@udp/db';
-import logger from './lib/logger.js';
+import logger from '@udp/logger';
 
 // (Placeholder) collaboration session/document storage can be added here when needed
 

@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '@udp/db';
 import { requireAuth } from '../../../lib/auth';
 import logger from '@udp/logger';
+import { getErrorMessage, isPrismaError } from '../../../lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,12 +12,14 @@ export default async function handler(
   // Require authentication for all project operations
   const session = await requireAuth(req, res);
   if (!session || !session.user) {return;}
+  const userId = (session.user as { id?: string } | undefined)?.id;
+  if (!userId) { return; }
 
   switch (req.method) {
     case 'GET':
-  return await getProjects(req, res, (session.user as any).id);
+      return await getProjects(req, res, userId);
     case 'POST':
-  return await createProject(req, res, (session.user as any).id);
+      return await createProject(req, res, userId);
     default:
       res.setHeader('Allow', ['GET', 'POST']);
       res.status(405).json({ error: `Method ${req.method} Not Allowed` });
@@ -30,15 +34,17 @@ async function getProjects(
   try {
     const { userId, visibility, page = '1', limit = '10', search } = req.query;
 
-    const pageNum = parseInt(page as string);
-    const limitNum = parseInt(limit as string);
-    const skip = (pageNum - 1) * limitNum;
+  const pageNum = parseInt(page as string);
+  const limitNum = parseInt(limit as string);
+  const skip = (pageNum - 1) * limitNum;
 
-    const where: any = {};
+  const where = {} as Prisma.ProjectWhereInput;
 
     // Filter by visibility with access control
     if (visibility && typeof visibility === 'string') {
-      where.visibility = visibility;
+      // pass-through: query param string -> Prisma enum value
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      where.visibility = visibility as any;
     } else {
       // Default: show public projects and projects user has access to
       where.OR = [
@@ -124,8 +130,9 @@ async function getProjects(
         pages: Math.ceil(total / limitNum),
       },
     });
-  } catch (error) {
-    logger.error('Error fetching projects:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error fetching projects:', msg);
     res.status(500).json({ error: 'Failed to fetch projects' });
   }
 }
@@ -180,11 +187,12 @@ async function createProject(
     });
 
     res.status(201).json({ project });
-  } catch (error: any) {
-    logger.error('Error creating project:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error creating project:', msg);
 
-    // Handle unique constraint violations
-    if (error.code === 'P2002') {
+    // Handle unique constraint violations (Prisma error shape)
+    if (isPrismaError(error) && error.code === 'P2002') {
       return res.status(400).json({
         error: 'Project name already exists for this owner',
       });

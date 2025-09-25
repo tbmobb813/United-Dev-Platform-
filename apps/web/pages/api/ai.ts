@@ -12,7 +12,7 @@ export default async function handler(
   }
 
   try {
-    const { messages, system, sessionId, userId } = req.body;
+  const { messages, system, sessionId } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Invalid messages format' });
@@ -107,7 +107,7 @@ export default async function handler(
 
     try {
       // intentional streaming read loop
-      // eslint-disable-next-line no-constant-condition
+       
       while (true) {
         const { done, value } = await reader.read();
         if (done) {break;}
@@ -125,7 +125,7 @@ export default async function handler(
                 if (content) {
                   assistantContent += content;
                 }
-              } catch (e) {
+              } catch {
                 // Ignore JSON parse errors for non-JSON lines
               }
             }
@@ -167,8 +167,8 @@ export default async function handler(
 
       res.end();
     }
-  } catch (error) {
-    logger.error('AI handler error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    } catch (error) {
+      logger.error('AI handler error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
 }

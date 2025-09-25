@@ -245,7 +245,7 @@ export default function Home() {
 
       // Add dynamic styles for cursors
       const styleId = 'user-cursor-styles';
-    let styleElement = document.getElementById(styleId) as any;
+  let styleElement = document.getElementById(styleId) as HTMLStyleElement | null;
       if (!styleElement) {
         styleElement = document.createElement('style');
         styleElement.id = styleId;
