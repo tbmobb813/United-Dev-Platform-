@@ -36,7 +36,7 @@ export interface FileExplorerState {
  */
 export const FileExplorer: React.FC<FileExplorerProps> = ({
   fileSystem,
-  syncManager,
+  _syncManager,
   rootPath = '/',
   onFileSelect,
   onFileOpen,
@@ -180,7 +180,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     rename: async (file: FileSystemEntry) => {
-      const newName = prompt('Enter new name:', file.name);
+      const newName = window.prompt('Enter new name:', file.name);
       if (newName && newName !== file.name) {
         try {
           const newPath = fileSystem.join(
@@ -200,7 +200,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     delete: async (file: FileSystemEntry) => {
-      if (confirm(`Are you sure you want to delete "${file.name}"?`)) {
+      if (window.confirm(`Are you sure you want to delete "${file.name}"?`)) {
         try {
           if (file.type === 'directory') {
             await fileSystem.deleteDirectory(file.path, true);
@@ -219,7 +219,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     newFile: async () => {
-      const fileName = prompt('Enter file name:');
+      const fileName = window.prompt('Enter file name:');
       if (fileName) {
         try {
           const filePath = fileSystem.join(state.currentPath, fileName);
@@ -236,7 +236,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     newFolder: async () => {
-      const folderName = prompt('Enter folder name:');
+      const folderName = window.prompt('Enter folder name:');
       if (folderName) {
         try {
           const folderPath = fileSystem.join(state.currentPath, folderName);
@@ -311,7 +311,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     const indent = level * 20;
 
     return (
-      <div key={entry.path} className="file-entry-container">
+      <div key={entry.path} className='file-entry-container'>
         <div
           className={`file-entry ${isSelected ? 'selected' : ''} ${entry.type}`}
           style={{ paddingLeft: `${indent + 8}px` }}
@@ -337,19 +337,19 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
             </span>
           )}
 
-          <span className="file-icon">
+          <span className='file-icon'>
             {entry.type === 'directory' ? '📁' : '📄'}
           </span>
 
-          <span className="file-name">{entry.name}</span>
+          <span className='file-name'>{entry.name}</span>
 
           {entry.size !== undefined && entry.type === 'file' && (
-            <span className="file-size">{formatFileSize(entry.size)}</span>
+            <span className='file-size'>{formatFileSize(entry.size)}</span>
           )}
         </div>
 
         {entry.type === 'directory' && isExpanded && (
-          <div className="directory-contents">
+          <div className='directory-contents'>
             {state.entries
               .filter(child => fileSystem.dirname(child.path) === entry.path)
               .map(child => renderEntry(child, level + 1))}
@@ -384,23 +384,23 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       onClick={closeContextMenu}
     >
       {/* Header */}
-      <div className="file-explorer-header">
-        <div className="breadcrumb">
+      <div className='file-explorer-header'>
+        <div className='breadcrumb'>
           {state.currentPath
             .split('/')
             .filter(Boolean)
             .map((segment, index, arr) => {
               const path = '/' + arr.slice(0, index + 1).join('/');
               return (
-                <span key={path} className="breadcrumb-segment">
+                <span key={path} className='breadcrumb-segment'>
                   <button
                     onClick={() => loadDirectory(path)}
-                    className="breadcrumb-button"
+                    className='breadcrumb-button'
                   >
                     {segment}
                   </button>
                   {index < arr.length - 1 && (
-                    <span className="breadcrumb-separator">/</span>
+                    <span className='breadcrumb-separator'>/</span>
                   )}
                 </span>
               );
@@ -408,22 +408,22 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
         </div>
 
         {!readOnly && (
-          <div className="file-explorer-actions">
+          <div className='file-explorer-actions'>
             <button
               onClick={() => contextMenuActions.newFile()}
-              title="New File"
+              title='New File'
             >
               📄+
             </button>
             <button
               onClick={() => contextMenuActions.newFolder()}
-              title="New Folder"
+              title='New Folder'
             >
               📁+
             </button>
             <button
               onClick={() => loadDirectory(state.currentPath)}
-              title="Refresh"
+              title='Refresh'
             >
               🔄
             </button>
@@ -432,11 +432,11 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       </div>
 
       {/* Loading indicator */}
-      {state.loading && <div className="loading-indicator">Loading...</div>}
+      {state.loading && <div className='loading-indicator'>Loading...</div>}
 
       {/* Error message */}
       {state.error && (
-        <div className="error-message">
+        <div className='error-message'>
           {state.error}
           <button onClick={() => setState(prev => ({ ...prev, error: null }))}>
             ✕
@@ -445,7 +445,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       )}
 
       {/* File list */}
-      <div className="file-list">
+      <div className='file-list'>
         {state.entries
           .filter(entry => fileSystem.dirname(entry.path) === state.currentPath)
           .sort((a, b) => {
@@ -461,7 +461,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       {/* Context menu */}
       {state.contextMenu.show && state.contextMenu.target && (
         <div
-          className="context-menu"
+          className='context-menu'
           style={{
             position: 'fixed',
             left: state.contextMenu.x,
@@ -504,7 +504,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
 
       {/* Selection info */}
       {state.selectedFiles.size > 0 && (
-        <div className="selection-info">
+        <div className='selection-info'>
           {state.selectedFiles.size} item(s) selected
         </div>
       )}
