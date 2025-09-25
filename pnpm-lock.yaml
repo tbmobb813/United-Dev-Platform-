@@ -483,7 +483,7 @@ importers:
         version: 18.3.1
       react-native:
         specifier: 0.74.0
-        version: 0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.3.24)(react@18.3.1)
+        version: 0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@19.1.13)(react@18.3.1)
 
 packages:
 
@@ -8458,14 +8458,14 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@react-native/virtualized-lists@0.74.81(@types/react@18.3.24)(react-native@0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.3.24)(react@18.3.1))(react@18.3.1)':
+  '@react-native/virtualized-lists@0.74.81(@types/react@19.1.13)(react-native@0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@19.1.13)(react@18.3.1))(react@18.3.1)':
     dependencies:
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 18.3.1
-      react-native: 0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.3.24)(react@18.3.1)
+      react-native: 0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@19.1.13)(react@18.3.1)
     optionalDependencies:
-      '@types/react': 18.3.24
+      '@types/react': 19.1.13
 
   '@rivascva/react-native-code-editor@1.2.2(react-native@0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -12469,7 +12469,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-native@0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.3.24)(react@18.3.1):
+  react-native@0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@19.1.13)(react@18.3.1):
     dependencies:
       '@jest/create-cache-key-function': 29.7.0
       '@react-native-community/cli': 13.6.4
@@ -12481,7 +12481,7 @@ snapshots:
       '@react-native/gradle-plugin': 0.74.81
       '@react-native/js-polyfills': 0.74.81
       '@react-native/normalize-colors': 0.74.81
-      '@react-native/virtualized-lists': 0.74.81(@types/react@18.3.24)(react-native@0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.3.24)(react@18.3.1))(react@18.3.1)
+      '@react-native/virtualized-lists': 0.74.81(@types/react@19.1.13)(react-native@0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@19.1.13)(react@18.3.1))(react@18.3.1)
       abort-controller: 3.0.0
       anser: 1.4.10
       ansi-regex: 5.0.1
@@ -12510,7 +12510,7 @@ snapshots:
       ws: 6.2.3
       yargs: 17.7.2
     optionalDependencies:
-      '@types/react': 18.3.24
+      '@types/react': 19.1.13
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
