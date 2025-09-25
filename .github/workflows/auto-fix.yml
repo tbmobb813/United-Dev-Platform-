@@ -7,6 +7,7 @@ jobs:
   autofix:
     name: Run auto-fixes and open PR
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'github-actions[bot]' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
