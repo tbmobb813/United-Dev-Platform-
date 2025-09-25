@@ -232,8 +232,8 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       jose:
-        specifier: ^5.9.3
-        version: 5.10.0
+        specifier: ^6.1.0
+        version: 6.1.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -434,6 +434,8 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
+
+  packages/logger: {}
 
   packages/prettier-config:
     dependencies:
@@ -1443,7 +1445,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.18.31':
     resolution: {integrity: sha512-v9llw9fT3Uv+TCM6Xllo54t672CuYtinEQZ2LPJ2EJsCwuTc4Cd2gXQaouuIVD21VoeGQnr5JtJuWbF97sBKzQ==}
@@ -4180,9 +4182,6 @@ packages:
 
   jose@4.15.9:
     resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
-
-  jose@5.10.0:
-    resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
 
   jose@6.1.0:
     resolution: {integrity: sha512-TTQJyoEoKcC1lscpVDCSsVgYzUDg/0Bt3WE//WiTPK6uOCQC2KZS4MpugbMWt/zyjkopgZoXhZuCi00gLudfUA==}
@@ -11164,8 +11163,6 @@ snapshots:
   join-component@1.1.0: {}
 
   jose@4.15.9: {}
-
-  jose@5.10.0: {}
 
   jose@6.1.0: {}
 
