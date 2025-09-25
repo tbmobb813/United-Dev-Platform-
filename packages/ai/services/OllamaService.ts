@@ -133,8 +133,8 @@ export class OllamaService extends AIService {
       const decoder = new (globalThis as any).TextDecoder();
 
       try {
-  let finished = false;
-  while (!finished) {
+        let finished = false;
+        while (!finished) {
           const { done, value } = await reader.read();
           if (done) {
             finished = true;
