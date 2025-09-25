@@ -81,7 +81,6 @@ jobs:
             The workflow runs `pnpm lint:fix` and `pnpm format`, commits any changes to a new branch, and opens this PR.
           labels: auto-fix
           base: main
-          head: ${{ steps.newbranch.outputs.branch }}
 
       - name: No changes
         if: steps.changes.outputs.changed == 'false'
