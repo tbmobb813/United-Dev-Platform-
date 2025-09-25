@@ -46,8 +46,8 @@
     "@typescript-eslint/parser": "^8.44.0",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
-    "eslint": "^9.36.0",
-    "eslint-config-next": "^14.2.5",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.32",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   },

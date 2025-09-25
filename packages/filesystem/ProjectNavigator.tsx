@@ -159,7 +159,7 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
     const indent = level * 16;
 
     return (
-      <div key={node.entry.path} className="tree-node">
+      <div key={node.entry.path} className='tree-node'>
         <div
           className={`tree-item ${isSelected ? 'selected' : ''} ${
             node.entry.type
@@ -180,13 +180,13 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
             </span>
           )}
 
-          <span className="file-icon">{getFileIcon(node.entry)}</span>
+          <span className='file-icon'>{getFileIcon(node.entry)}</span>
 
-          <span className="file-name">{node.entry.name}</span>
+          <span className='file-name'>{node.entry.name}</span>
         </div>
 
         {hasChildren && node.isExpanded && node.children.length > 0 && (
-          <div className="tree-children">
+          <div className='tree-children'>
             {node.children.map(child => renderTreeNode(child, level + 1))}
           </div>
         )}
@@ -232,7 +232,7 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
   if (error) {
     return (
       <div className={`project-navigator error ${className}`}>
-        <div className="error-message">
+        <div className='error-message'>
           {error}
           <button onClick={() => setError(null)}>✕</button>
         </div>
@@ -243,19 +243,19 @@ export const ProjectNavigator: React.FC<ProjectNavigatorProps> = ({
   if (!rootNode) {
     return (
       <div className={`project-navigator loading ${className}`}>
-        <div className="loading-message">Loading project...</div>
+        <div className='loading-message'>Loading project...</div>
       </div>
     );
   }
 
   return (
     <div className={`project-navigator ${className}`}>
-      <div className="project-header">
-        <h3 className="project-title">{fileSystem.basename(projectPath)}</h3>
-        <span className="project-path">{projectPath}</span>
+      <div className='project-header'>
+        <h3 className='project-title'>{fileSystem.basename(projectPath)}</h3>
+        <span className='project-path'>{projectPath}</span>
       </div>
 
-      <div className="project-tree">{renderTreeNode(rootNode)}</div>
+      <div className='project-tree'>{renderTreeNode(rootNode)}</div>
     </div>
   );
 };

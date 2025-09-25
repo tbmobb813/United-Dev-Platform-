@@ -84,7 +84,7 @@ const OfflineCollaborationDemo: React.FC = () => {
           📝 Live Collaborative Editor with Offline Support
         </div>
 
-        <OfflineEditor room="platform-demo" serverUrl="ws://localhost:1234">
+        <OfflineEditor room='platform-demo' serverUrl='ws://localhost:1234'>
           {(doc, status) => (
             <div style={{ padding: '16px' }}>
               <div
