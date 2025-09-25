@@ -1,4 +1,4 @@
-/* global TextDecoder */
+/* global TextDecoder, TextEncoder */
 
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
