@@ -42,8 +42,8 @@
   },
   "devDependencies": {
     "@types/react": "18.2.79",
-    "@typescript-eslint/eslint-plugin": "^8.44.0",
-    "@typescript-eslint/parser": "^8.44.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "eslint": "^9.36.0",
