@@ -44,7 +44,7 @@ export default function CollaborateScreen() {
     <View style={styles.container}>
       <CollaborativeEditor
         roomId={roomId}
-        documentId="main-document"
+        documentId='main-document'
         userId={userId}
         userName={userName}
         onContentChange={handleContentChange}
