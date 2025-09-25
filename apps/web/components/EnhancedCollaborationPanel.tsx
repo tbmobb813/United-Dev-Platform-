@@ -204,7 +204,7 @@ export const EnhancedCollaborationPanel: React.FC<
     return (
       <div style={containerStyles} onMouseEnter={handleActivity}>
         <div style={{ textAlign: 'center' }}>
-          <button style={buttonStyles} onClick={toggleMinimize} title="Expand">
+          <button style={buttonStyles} onClick={toggleMinimize} title='Expand'>
             👥
           </button>
           <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '2px' }}>
@@ -236,7 +236,7 @@ export const EnhancedCollaborationPanel: React.FC<
           <button
             style={buttonStyles}
             onClick={toggleMinimize}
-            title="Minimize"
+            title='Minimize'
           >
             −
           </button>
@@ -249,7 +249,7 @@ export const EnhancedCollaborationPanel: React.FC<
             collaborators={collaborators}
             maxVisible={5}
             showNames={true}
-            size="sm"
+            size='sm'
           />
 
           {collaborators.length === 0 && (

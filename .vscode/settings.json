@@ -1,0 +1,24 @@
+{
+  // Use the workspace Prettier package (installed via pnpm)
+  "prettier.prettierPath": "./node_modules/prettier",
+  // Require a Prettier config to avoid fallback to extension defaults
+  "prettier.requireConfig": true,
+  // Explicitly point to the local Prettier config file to avoid workspace package resolution issues
+  "prettier.configPath": "packages/prettier-config/index.js",
+  // Recommended default formatter
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Enable format on save for the main languages
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": true
+  }
+}

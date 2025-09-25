@@ -71,73 +71,73 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div className={`auth-form login-form ${className}`}>
-      <div className="auth-form__header">
+      <div className='auth-form__header'>
         <h2>Sign In</h2>
         <p>Enter your credentials to access your account</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="auth-form__form">
+      <form onSubmit={handleSubmit} className='auth-form__form'>
         {displayError && (
-          <div className="auth-form__error" role="alert">
+          <div className='auth-form__error' role='alert'>
             {displayError}
           </div>
         )}
 
-        <div className="form-group">
-          <label htmlFor="email" className="form-label">
+        <div className='form-group'>
+          <label htmlFor='email' className='form-label'>
             Email Address
           </label>
           <input
-            id="email"
-            type="email"
+            id='email'
+            type='email'
             value={credentials.email}
             onChange={handleInputChange('email')}
-            placeholder="Enter your email"
-            className="form-input"
+            placeholder='Enter your email'
+            className='form-input'
             required
             disabled={loading}
-            autoComplete="email"
+            autoComplete='email'
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password" className="form-label">
+        <div className='form-group'>
+          <label htmlFor='password' className='form-label'>
             Password
           </label>
           <input
-            id="password"
-            type="password"
+            id='password'
+            type='password'
             value={credentials.password}
             onChange={handleInputChange('password')}
-            placeholder="Enter your password"
-            className="form-input"
+            placeholder='Enter your password'
+            className='form-input'
             required
             disabled={loading}
-            autoComplete="current-password"
+            autoComplete='current-password'
           />
         </div>
 
-        <div className="form-row">
+        <div className='form-row'>
           {showRememberMe && (
-            <div className="form-group checkbox-group">
-              <label className="checkbox-label">
+            <div className='form-group checkbox-group'>
+              <label className='checkbox-label'>
                 <input
-                  type="checkbox"
+                  type='checkbox'
                   checked={credentials.rememberMe}
                   onChange={handleInputChange('rememberMe')}
-                  className="checkbox-input"
+                  className='checkbox-input'
                   disabled={loading}
                 />
-                <span className="checkbox-text">Remember me</span>
+                <span className='checkbox-text'>Remember me</span>
               </label>
             </div>
           )}
 
           {showForgotPassword && onForgotPassword && (
             <button
-              type="button"
+              type='button'
               onClick={onForgotPassword}
-              className="link-button"
+              className='link-button'
               disabled={loading}
             >
               Forgot password?
@@ -145,19 +145,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           )}
         </div>
 
-        <button type="submit" disabled={loading} className="auth-form__submit">
+        <button type='submit' disabled={loading} className='auth-form__submit'>
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
 
       {showSignUp && onSignUp && (
-        <div className="auth-form__footer">
+        <div className='auth-form__footer'>
           <p>
             Don't have an account?{' '}
             <button
-              type="button"
+              type='button'
               onClick={onSignUp}
-              className="link-button"
+              className='link-button'
               disabled={loading}
             >
               Sign up

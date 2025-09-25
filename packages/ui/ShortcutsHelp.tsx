@@ -27,12 +27,12 @@ export const ShortcutsHelp: React.FC<ShortcutsHelpProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Keyboard Shortcuts"
-      size="medium"
+      title='Keyboard Shortcuts'
+      size='medium'
     >
-      <Stack gap="medium">
+      <Stack gap='medium'>
         {shortcuts.map((shortcut, index) => (
-          <Card key={index} padding="small">
+          <Card key={index} padding='small'>
             <div
               style={{
                 display: 'flex',

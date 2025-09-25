@@ -18,6 +18,9 @@ importers:
       '@udp/prettier-config':
         specifier: workspace:*
         version: link:packages/prettier-config
+      dotenv:
+        specifier: ^16.1.4
+        version: 16.6.1
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -434,6 +437,8 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
+
+  packages/logger: {}
 
   packages/prettier-config:
     dependencies:
