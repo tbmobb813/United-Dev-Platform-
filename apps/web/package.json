@@ -29,7 +29,7 @@
     "@udp/editor-core": "workspace:^",
     "@udp/ui": "workspace:^",
     "monaco-editor": "^0.49.0",
-    "next": "14.2.5",
+    "next": "15.5.4",
     "next-auth": "^4.24.11",
     "prisma": "^6.16.2",
     "qrcode.react": "^3.1.0",
