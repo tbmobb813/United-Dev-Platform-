@@ -31,9 +31,9 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   loading: () => <Loading text='Loading editor...' />,
 });
 
-const QRCode = dynamic<any>(
+const QRCode = dynamic<React.ComponentType<{ value: string; size?: number }>>(
   () =>
-    import('qrcode.react').then(mod => (mod && (mod as any).default) || mod),
+    import('qrcode.react').then(mod => (mod && (mod as { default: React.ComponentType<{ value: string; size?: number }> }).default) || mod),
   {
     ssr: false,
     loading: () => <Loading text='Loading QR code...' />,

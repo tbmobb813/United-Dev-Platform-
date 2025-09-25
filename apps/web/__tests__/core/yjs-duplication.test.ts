@@ -1,24 +1,20 @@
 // ...existing code...
-  it('should not have multiple Yjs instances', () => {
-    // This is a simplified check. In a real environment, we would need to
-    // check across different modules and bundles.
-    // The original yjs.mjs file has a check like this:
-    // if (glo['__ $YJS$ __'] === true) { ... }
-    // We can simulate a similar check here.
+import { describe, it, expect } from 'vitest';
 
-    const globalScope = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : {});
+describe('Yjs duplication detection', () => {
+  it('should not have multiple Yjs instances', () => {
+    // Use Record<string, unknown> for globalScope to avoid 'any' warnings
+    const globalScope: Record<string, unknown> = typeof globalThis !== 'undefined'
+      ? (globalThis as unknown as Record<string, unknown>)
+      : (typeof window !== 'undefined' ? (window as unknown as Record<string, unknown>) : {});
     const yjsMarker = '__YJS_DUPLICATION_CHECK__';
 
-    // do a guarded check for an existing marker
-    if ((globalScope as any)[yjsMarker]) {
+    if (globalScope[yjsMarker]) {
       console.error('Yjs has already been imported. This indicates a duplication issue.');
     }
 
-  // assign marker on global scope for test (use any because global shape varies in test env)
-  (globalScope as any)[yjsMarker] = true;
+    globalScope[yjsMarker] = true;
 
-  // The real test is whether this assertion fails.
-  // If it does, it means the marker was already set.
-  expect((globalScope as any)[yjsMarker]).toBe(true);
+    expect(globalScope[yjsMarker]).toBe(true);
   });
 });
