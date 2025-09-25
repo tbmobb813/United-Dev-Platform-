@@ -228,8 +228,8 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="🤖 AI Assistant"
-      size="large"
+      title={'🤖 AI Assistant'}
+      size={'large'}
     >
       {/* @ts-ignore */}
       <div
