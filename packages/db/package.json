@@ -1,0 +1,20 @@
+{
+  "name": "@udp/db",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "generate": "prisma generate --schema ../../apps/api/prisma/schema.prisma",
+    "prepare": "pnpm run generate && pnpm build"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "prisma": "^6.16.2",
+    "@types/node": "^20.11.2"
+  }
+}

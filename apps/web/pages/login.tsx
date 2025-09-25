@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Button } from '@udp/ui/Button';
+import { Button } from '@udp/ui';
 
 export default function Login() {
   const router = useRouter();
@@ -12,12 +12,13 @@ export default function Login() {
       router.push('/');
     }
   };
+
   return (
     <div style={{ padding: 24 }}>
       <h1>Login</h1>
       <input
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={e => setName(e.target.value)}
         placeholder="Enter your name"
         style={{ padding: 6, border: '1px solid #ddd', borderRadius: 6 }}
       />

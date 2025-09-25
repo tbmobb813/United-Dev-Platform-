@@ -1,0 +1,65 @@
+{
+  "name": "@udp/auth",
+  "version": "0.0.1",
+  "description": "Authentication and authorization system for United Dev Platform",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "authentication",
+    "authorization",
+    "jwt",
+    "oauth",
+    "sso",
+    "security"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "crypto-js": "^4.2.0",
+    "jose": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^24.5.2",
+    "@types/react": "^18.3.7",
+    "@types/react-dom": "^18.3.7",
+    "@udp/eslint-config": "workspace:*",
+    "@udp/prettier-config": "workspace:*",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "react": "^18.3.1",
+    "typescript": "^5.9.2",
+    "tsup": "^8.3.5",
+    "rimraf": "^6.0.1"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@udp/eslint-config/react"
+    ]
+  },
+  "prettier": "@udp/prettier-config"
+}

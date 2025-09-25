@@ -1,20 +1,43 @@
 {
   "name": "unified-dev-platform",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@9.0.0",
+  "pnpm": {
+    "overrides": {
+      "react": "18.3.1",
+      "react-dom": "18.3.1"
+    }
+  },
   "scripts": {
-    "dev": "turbo dev",
     "build": "turbo build",
-    "lint": "turbo run lint"
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "turbo type-check",
+    "clean": "turbo clean && rm -rf node_modules",
+    "test": "turbo test",
+    "check": "pnpm lint && pnpm type-check && pnpm test",
+    "fix": "pnpm lint:fix && pnpm format",
+    "reset": "pnpm clean && pnpm install",
+    "validate-env": "node scripts/validate-env.js",
+    "ci:validate-env": "node scripts/ci-validate-env.js",
+    "validate-devops": "node scripts/validate-devops.js",
+    "dev:web": "cd apps/web && pnpm dev",
+    "dev:api": "cd apps/api && pnpm dev",
+    "dev:mobile": "cd apps/mobile && pnpm start",
+    "dev:all": "turbo dev --parallel",
+    "prebuild": "pnpm check && pnpm validate-env",
+    "postinstall": "pnpm type-check"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.36.0",
-    "@typescript-eslint/eslint-plugin": "^8.44.0",
-    "@typescript-eslint/parser": "^8.44.0",
-    "eslint": "^9.36.0",
-    "ts-node": "^10.9.2",
-    "turbo": "^2.0.0",
-    "typescript": "^5.4.0"
+    "@udp/eslint-config": "workspace:*",
+    "@udp/prettier-config": "workspace:*",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.5",
+    "typescript": "^5.3.3"
   }
 }

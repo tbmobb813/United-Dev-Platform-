@@ -1,0 +1,33 @@
+{
+  "name": "@udp/config",
+  "version": "0.0.1",
+  "description": "Centralized configuration management for UDP",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@udp/eslint-config": "workspace:*",
+    "@udp/prettier-config": "workspace:*",
+    "typescript": "^5.0.0"
+  },
+  "prettier": "@udp/prettier-config",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main, feat/* ]
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup pnpm (after setup-node)
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate environment (main only)
+        if: github.ref == 'refs/heads/main'
+        run: pnpm ci:validate-env
+
+      - name: Run checks (lint, type, test)
+        run: pnpm check
+
+      - name: Build web
+        run: pnpm --filter @udp/web build

@@ -1,5 +1,4 @@
-import { Awareness } from "y-protocols/awareness";
-import * as Y from "yjs";
+import { Awareness } from 'y-protocols/awareness';
 
 export type UserState = {
   id: string;
@@ -7,18 +6,12 @@ export type UserState = {
   color: string;
 };
 
-// Create a Y.Doc instance for collaboration
-export const ydoc = new Y.Doc();
-
-// Create awareness instance
-export const awareness = new Awareness(ydoc);
-
 // Helper function to set user state
-export function setUserState(userState: UserState) {
+export function setUserState(awareness: Awareness, userState: UserState) {
   awareness.setLocalState(userState);
 }
 
 // Helper function to get all user states
-export function getAllUserStates(): Map<number, UserState> {
+export function getAllUserStates(awareness: Awareness): Map<number, UserState> {
   return awareness.getStates() as Map<number, UserState>;
 }

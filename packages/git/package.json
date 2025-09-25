@@ -1,0 +1,41 @@
+{
+  "name": "@udp/git",
+  "version": "0.0.1",
+  "description": "Git integration package for United Dev Platform",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "isomorphic-git": "^1.25.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@udp/eslint-config": "workspace:*",
+    "@udp/prettier-config": "workspace:*",
+    "@udp/types": "workspace:*",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@udp/filesystem": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

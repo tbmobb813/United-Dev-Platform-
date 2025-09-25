@@ -1,22 +1,293 @@
 node_modules/
-pnpm-lock.yaml
+.next/
+dist/
+build/
+.env
+.env.*
+.env.local
+.DS_Store
+/.turbo
+/.cache
+/.parcel-cache
+coverage/
+apps/web/.next/
+apps/api/node_modules/
+packages/**/node_modules/
+apps/mobile/.expo/
+apps/mobile/.expo-shared/
+apps/mobile/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pids
+*.pid
+*.seed
+*.log
+logs/
+*.sqlite
+*.sqlite3
+/.vscode/
+/.idea/
+/.parcel-cache/# Dependencies
+node_modules/
+.pnpm-store/
+.yarn/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Next.js
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Bower dependency directory (https://bower.io/)
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
 .next/
 out/
 
-# Expo & React Native
-apps/mobile/.expo/
-apps/mobile/node_modules/
-apps/mobile/android/
-apps/mobile/ios/
+# Nuxt.js build / generate output
+.nuxt
+dist
 
-# Build outputs
-dist/
-build/
+# Gatsby files
+.cache/
+public
 
-# IDE & editor settings
-.vscode/
+# Vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Temporary folders
+tmp/
+temp/
 
 # Logs
+logs
 *.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+build/
+dist/
+lib/
+es/
+types/
+
+# Electron build
+electron-builder/
+release/
+
+# Mobile
+*.ipa
+*.apk
+*.aab
+
+# Expo
+.expo/
+.expo-shared/
+expo-env.d.ts
+
+# React Native
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# Bundle artifacts
+*.jsbundle
+
+# CocoaPods
+ios/Pods/
+ios/Podfile.lock
+
+# Android
+android/app/debug
+android/app/profile
+android/app/release
+android/.gradle/
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/local.properties
+*.keystore
+!debug.keystore
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# AI/ML
+*.model
+*.pkl
+*.h5
+*.pb
+models/
+datasets/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Documentation build
+docs/_build/
+site/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Monaco Editor
+monaco-editor/
+
+# Package manager files
+package-lock.json
+yarn.lock
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# Platform specific
+.turbo/
+.vercel/
+.netlify/
+
+# Local environment and secrets
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+secrets.json
+config/secrets.json
+
+# Testing
+coverage/
+.nyc_output
+junit.xml
+
+# Storybook
+storybook-static/
+
+# Performance monitoring
+.clinic/
+
+# Development tools
+.vscode/settings.json
+.vscode/launch.json
+
+# AI development
+*.checkpoint
+checkpoint/
+*.tfevents.*
+
+# Load testing
+locust-report.html
+*.jmx.log
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Kubernetes
+k8s/secrets/
+*.kubeconfig

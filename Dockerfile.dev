@@ -1,0 +1,23 @@
+# Development Dockerfile
+FROM node:20-alpine AS base
+
+# Install development tools
+RUN apk add --no-cache git python3 make g++
+RUN corepack enable
+RUN corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/*/package.json ./packages/*/
+COPY apps/*/package.json ./apps/*/
+
+# Install all dependencies including devDependencies
+RUN pnpm install
+
+# Copy source code
+COPY . .
+
+# Default command (can be overridden in docker-compose)
+CMD ["pnpm", "dev"]

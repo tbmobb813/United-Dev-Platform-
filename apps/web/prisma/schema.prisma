@@ -1,0 +1,359 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User management with NextAuth.js support
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  username    String   @unique
+  name        String?
+  avatar      String?
+  githubId    String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // NextAuth.js fields
+  image       String?
+  emailVerified DateTime?
+  
+  // Owned projects
+  ownedProjects Project[]
+  
+  // Project memberships
+  memberships ProjectMember[]
+  
+  // AI chat sessions
+  aiSessions AiChatSession[]
+  
+  // File activities
+  fileActivities FileActivity[]
+  
+  // Collaboration sessions
+  sessionParticipations SessionParticipant[]
+  
+  // NextAuth.js relations
+  accounts Account[]
+  sessions Session[]
+  
+  @@map("users")
+}
+
+// NextAuth.js Account model
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// NextAuth.js Session model
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("sessions")
+}
+
+// NextAuth.js VerificationToken model
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+// Project management
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  visibility  ProjectVisibility @default(PRIVATE)
+  repositoryUrl String?
+  
+  // Owner
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Project structure
+  files       ProjectFile[]
+  
+  // Collaboration
+  members     ProjectMember[]
+  sessions    CollaborationSession[]
+  
+  // AI interactions
+  aiSessions  AiChatSession[]
+  
+  // Git integration
+  gitRepository GitRepository?
+  
+  @@map("projects")
+}
+
+enum ProjectVisibility {
+  PRIVATE
+  PUBLIC
+  TEAM
+}
+
+// Project team management
+model ProjectMember {
+  id        String          @id @default(cuid())
+  role      ProjectRole     @default(DEVELOPER)
+  
+  // Relations
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  projectId String
+  project   Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  joinedAt  DateTime        @default(now())
+  
+  @@unique([userId, projectId])
+  @@map("project_members")
+}
+
+enum ProjectRole {
+  OWNER
+  ADMIN
+  DEVELOPER
+  VIEWER
+}
+
+// File system
+model ProjectFile {
+  id          String   @id @default(cuid())
+  path        String   // Full path within project
+  name        String   // File name
+  type        FileType @default(FILE)
+  content     String?  // File content (for text files)
+  size        Int      @default(0)
+  mimeType    String?
+  
+  // Project relation
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // File activities (edits, views, etc.)
+  activities  FileActivity[]
+  
+  @@unique([projectId, path])
+  @@map("project_files")
+}
+
+enum FileType {
+  FILE
+  DIRECTORY
+}
+
+// File activity tracking
+model FileActivity {
+  id          String       @id @default(cuid())
+  action      FileAction
+  changes     Json?        // Delta/diff information
+  
+  // Relations
+  fileId      String
+  file        ProjectFile  @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt   DateTime     @default(now())
+  
+  @@map("file_activities")
+}
+
+enum FileAction {
+  CREATE
+  UPDATE
+  DELETE
+  RENAME
+  MOVE
+  VIEW
+}
+
+// Real-time collaboration sessions
+model CollaborationSession {
+  id          String   @id @default(cuid())
+  name        String   // Session name/description
+  isActive    Boolean  @default(true)
+  
+  // Project relation
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  // Session participants
+  participants SessionParticipant[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  endedAt     DateTime?
+  
+  @@map("collaboration_sessions")
+}
+
+// Session participants for presence tracking
+model SessionParticipant {
+  id          String   @id @default(cuid())
+  
+  // Relations
+  sessionId   String
+  session     CollaborationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Participant state
+  cursor      Json?    // Cursor position, selections
+  isActive    Boolean  @default(true)
+  
+  // Timestamps
+  joinedAt    DateTime @default(now())
+  leftAt      DateTime?
+  
+  @@unique([sessionId, userId])
+  @@map("session_participants")
+}
+
+// AI Chat and assistance
+model AiChatSession {
+  id          String   @id @default(cuid())
+  title       String?
+  context     AiContext @default(GENERAL)
+  
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  projectId   String?  // Optional project context
+  project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  
+  // Messages in this session
+  messages    AiMessage[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("ai_chat_sessions")
+}
+
+enum AiContext {
+  GENERAL
+  CODE_REVIEW
+  DEBUGGING
+  ARCHITECTURE
+  DOCUMENTATION
+}
+
+// AI chat messages
+model AiMessage {
+  id          String   @id @default(cuid())
+  role        MessageRole
+  content     String
+  metadata    Json?    // Token usage, model info, etc.
+  
+  // Session relation
+  sessionId   String
+  session     AiChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  
+  @@map("ai_messages")
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+// Git integration metadata (optional)
+model GitRepository {
+  id          String   @id @default(cuid())
+  url         String   @unique
+  branch      String   @default("main")
+  lastSync    DateTime?
+  syncStatus  SyncStatus @default(PENDING)
+  
+  // Project relation
+  projectId   String   @unique
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  // Commits tracking
+  commits     GitCommit[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("git_repositories")
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCING
+  SYNCED
+  ERROR
+}
+
+// Git commit history
+model GitCommit {
+  id          String   @id @default(cuid())
+  hash        String   @unique
+  message     String
+  author      String
+  authorEmail String
+  
+  // Repository relation
+  repoId      String
+  repository  GitRepository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  committedAt DateTime
+  createdAt   DateTime @default(now())
+  
+  @@map("git_commits")
+}

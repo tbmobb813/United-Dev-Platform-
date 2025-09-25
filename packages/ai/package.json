@@ -2,5 +2,21 @@
   "name": "@udp/ai",
   "version": "0.0.1",
   "main": "index.ts",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "echo 'Build not needed - using simple React.createElement'",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@udp/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "typescript": "^5.0.0"
+  }
 }

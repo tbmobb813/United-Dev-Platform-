@@ -1,0 +1,28 @@
+{
+  "name": "@udp/eslint-config",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "description": "Shared ESLint configuration for the United Dev Platform monorepo",
+  "exports": {
+    ".": "./index.js",
+    "./base": "./base.js",
+    "./react": "./react.js",
+    "./react-native": "./react-native.js",
+    "./node": "./node.js"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint-config-next": "^14.2.5",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-import-resolver-typescript": "^3.6.1"
+  },
+  "peerDependencies": {
+    "eslint": "^8.57.0 || ^9.0.0",
+    "typescript": "^5.0.0"
+  }
+}

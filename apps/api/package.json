@@ -8,10 +8,12 @@
     "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "ws": "^8.18.0",
-    "y-websocket": "^1.5.0",
+    "@prisma/client": "^6.16.2",
     "cors": "^2.8.5",
-    "morgan": "^1.10.0"
+    "express": "^4.19.2",
+    "morgan": "^1.10.0",
+    "ws": "^8.18.0",
+    "y-websocket": "^1.5.4",
+    "yjs": "^13.6.27"
   }
 }

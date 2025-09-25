@@ -1,0 +1,59 @@
+version: 2
+updates:
+  # Enable version updates for npm packages
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
+    open-pull-requests-limit: 10
+    reviewers:
+      - 'team-leads'
+    assignees:
+      - 'devops-team'
+    commit-message:
+      prefix: 'chore'
+      prefix-development: 'dev-deps'
+      include: 'scope'
+    groups:
+      # Group all patch and minor updates
+      development-dependencies:
+        dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'
+      production-dependencies:
+        dependency-type: 'production'
+        update-types:
+          - 'patch'
+      # Separate group for major updates
+      major-updates:
+        update-types:
+          - 'major'
+
+  # Enable version updates for Docker
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'tuesday'
+      time: '04:00'
+    open-pull-requests-limit: 5
+    reviewers:
+      - 'devops-team'
+    commit-message:
+      prefix: 'docker'
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/.github/workflows'
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+      time: '04:00'
+    open-pull-requests-limit: 5
+    reviewers:
+      - 'devops-team'
+    commit-message:
+      prefix: 'ci'
