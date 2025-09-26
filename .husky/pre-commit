@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running lint-staged..."
+# Run lint-staged only on staged files (faster than linting the whole monorepo)
+npx --no-install lint-staged
