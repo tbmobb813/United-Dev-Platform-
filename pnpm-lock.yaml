@@ -46,6 +46,12 @@ importers:
       '@prisma/client':
         specifier: ^6.16.2
         version: 6.16.2(prisma@6.16.2(typescript@5.9.2))(typescript@5.9.2)
+      '@udp/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@udp/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -445,7 +451,11 @@ importers:
         specifier: ^5.0.0
         version: 5.9.2
 
-  packages/logger: {}
+  packages/logger:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.11.2
+        version: 20.19.17
 
   packages/prettier-config:
     dependencies:
