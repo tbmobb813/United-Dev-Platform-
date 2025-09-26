@@ -7,8 +7,39 @@
   "prettier.configPath": "packages/prettier-config/index.js",
   // Recommended default formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  // Enable format on save for the main languages
+
+  // Format & lint on save
   "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.fixAll.eslint": true
+  },
+
+  // TypeScript SDK pinned to workspace
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Editor preferences
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // Exclusions to keep the explorer and search fast
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/build": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true
+  },
+
+  // Per-language format on save (explicit)
   "[javascript]": {
     "editor.formatOnSave": true
   },
@@ -20,5 +51,9 @@
   },
   "[javascriptreact]": {
     "editor.formatOnSave": true
-  }
+  },
+
+  // Disable telemetry for VS Code extension consistency
+  "telemetry.enableTelemetry": false,
+  "telemetry.enableCrashReporter": false
 }
