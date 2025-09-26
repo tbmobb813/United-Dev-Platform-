@@ -10,14 +10,19 @@ WORKDIR /app
 # Install dependencies
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/*/package.json ./packages/*/
-COPY apps/*/package.json ./apps/*/
+## Copy workspace packages and apps so pnpm can detect workspace packages during install
+COPY turbo.json ./
+COPY packages ./packages
+COPY apps ./apps
+## Use --frozen-lockfile to ensure reproducible builds. Make sure pnpm-lock.yaml
+## is kept up-to-date locally before building images.
 RUN pnpm install --frozen-lockfile
 
 # Build stage
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/apps ./apps
 COPY . .
 
 # Build all packages first
@@ -25,18 +30,19 @@ RUN pnpm build
 
 # Web application stage
 FROM base AS web
-COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/web ./apps/web
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
 
 EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "apps/web/server.js"]
+WORKDIR /app
+CMD ["pnpm", "start"]
 
-# API service stage  
+# API service stage
 FROM base AS api
 COPY --from=builder /app/apps/api ./apps/api
 COPY --from=builder /app/node_modules ./node_modules
