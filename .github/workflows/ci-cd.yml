@@ -315,7 +315,7 @@ jobs:
     needs: [build, docker-build, security-scan]
     if: github.ref == 'refs/heads/develop'
     environment:
-      name: staging
+      name: Staging
       url: https://staging.udp.example.com
     steps:
       - name: Checkout code
@@ -336,7 +336,7 @@ jobs:
     needs: [build, docker-build, security-scan]
     if: github.ref == 'refs/heads/main'
     environment:
-      name: production
+      name: Production
       url: https://udp.example.com
     steps:
       - name: Checkout code
