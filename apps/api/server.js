@@ -3,7 +3,10 @@ import express from 'express';
 import http from 'http';
 import morgan from 'morgan';
 import { WebSocketServer } from 'ws';
-import { setupWSConnection } from 'y-websocket/bin/utils.js';
+// Use the package-exported subpath (no file extension) so Node's ESM resolver
+// honors the package.json "exports" field. Importing 'y-websocket/bin/utils.js'
+// caused ERR_PACKAGE_PATH_NOT_EXPORTED inside the container.
+import { setupWSConnection } from 'y-websocket/bin/utils';
 import { prisma } from '@udp/db';
 import logger from '@udp/logger';
 
