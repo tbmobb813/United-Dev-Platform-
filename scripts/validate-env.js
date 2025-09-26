@@ -105,8 +105,29 @@ function validateEnvironment() {
 }
 
 // Run validation if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  config();
+import { fileURLToPath } from 'url';
+
+// Normalize check so it works on Windows and Unix-like systems.
+// When the script is executed directly (e.g. `node scripts/validate-env.js`),
+// process.argv[1] contains the path to the script. Convert import.meta.url to
+// a file path and compare the two.
+const __filename = fileURLToPath(import.meta.url);
+
+if (__filename === process.argv[1]) {
+  // Load generic .env first, then environment-specific file (e.g. .env.development)
+  // so values in .env.development override generic .env values when present.
+  const env = process.env.NODE_ENV || 'development';
+  try {
+    config();
+  } catch {
+    // ignore
+  }
+  try {
+    config({ path: `.env.${env}` });
+  } catch {
+    // ignore
+  }
+
   validateEnvironment();
 }
 
