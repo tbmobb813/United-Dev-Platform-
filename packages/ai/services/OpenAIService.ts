@@ -47,8 +47,7 @@ export class OpenAIService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `OpenAI API error: ${response.status} ${response.statusText}${
-            errorData ? ` - ${errorData.error?.message}` : ''
+          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''
           }`
         );
       }
@@ -104,8 +103,7 @@ export class OpenAIService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `OpenAI API error: ${response.status} ${response.statusText}${
-            errorData ? ` - ${errorData.error?.message}` : ''
+          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''
           }`
         );
       }
