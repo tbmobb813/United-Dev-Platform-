@@ -1,6 +1,7 @@
 echo "Pre-commit: lint-staged is disabled by default in this environment to avoid ESM/Path issues."
 echo "To enable lint-staged on commit, set ENABLE_PRECOMMIT_LINT=1 in your shell before committing."
 
+
 if [ "$ENABLE_PRECOMMIT_LINT" = "1" ]; then
 	echo "ENABLE_PRECOMMIT_LINT=1 detected — attempting to run lint-staged."
 	# Prefer running the local binary if it exists. This avoids dynamic ESM import
