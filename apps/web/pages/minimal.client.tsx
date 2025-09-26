@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
@@ -8,7 +8,7 @@ import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { Awareness } from 'y-protocols/awareness';
 import { v4 as uuidv4 } from 'uuid';
-import { Button } from '@udp/ui';
+// Using native button here to avoid type issues during rebase resolution.
 
 function generateColor() {
   const letters = '0123456789ABCDEF';
@@ -115,7 +115,7 @@ export default function MinimalHomeClient() {
         doc.destroy();
       };
     } catch (error) {
-      logger.error('Error setting up Yjs:', error);
+  logger.error('Error setting up Yjs:', error);
     }
   }, [room, userName, isClient]);
 
@@ -135,7 +135,7 @@ export default function MinimalHomeClient() {
       </Head>
       <h1>Minimal Unified Dev Platform (Web)</h1>
       <p>Logged in as: {String(userName)}</p>
-      <Button onClick={handleSignOut}>Sign out</Button>
+  <button onClick={handleSignOut}>Sign out</button>
 
       <h2>Collaborative Room: {String(room)}</h2>
       <div
