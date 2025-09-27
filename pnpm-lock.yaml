@@ -9,6 +9,7 @@ overrides:
   react-dom: 18.3.1
   yjs: 13.6.27
   y-protocols: 1.0.6
+  y-websocket: 1.5.4
 
 importers:
 
@@ -75,7 +76,7 @@ importers:
         specifier: ^8.18.0
         version: 8.18.3
       y-websocket:
-        specifier: ^1.5.4
+        specifier: 1.5.4
         version: 1.5.4(yjs@13.6.27)
       yjs:
         specifier: 13.6.27
@@ -111,7 +112,7 @@ importers:
         specifier: 0.74.0
         version: 0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.2.79)(react@18.3.1)
       y-websocket:
-        specifier: ^1.5.4
+        specifier: 1.5.4
         version: 1.5.4(yjs@13.6.27)
       yjs:
         specifier: 13.6.27
@@ -193,7 +194,7 @@ importers:
         specifier: 1.0.6
         version: 1.0.6(yjs@13.6.27)
       y-websocket:
-        specifier: ^1.5.4
+        specifier: 1.5.4
         version: 1.5.4(yjs@13.6.27)
       yjs:
         specifier: 13.6.27
@@ -369,7 +370,7 @@ importers:
         specifier: 1.0.6
         version: 1.0.6(yjs@13.6.27)
       y-websocket:
-        specifier: ^1.5.4
+        specifier: 1.5.4
         version: 1.5.4(yjs@13.6.27)
 
   packages/eslint-config:
