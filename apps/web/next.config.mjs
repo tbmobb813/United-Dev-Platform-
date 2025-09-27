@@ -39,8 +39,14 @@ const nextConfig = {
       yjs: yjsEsm,
       'yjs/dist/yjs.mjs': yjsEsm,
       'yjs/dist/yjs.cjs': yjsEsm,
-      // y-protocols uses path-based exports; alias the specific awareness module that we import
+      // y-protocols uses path-based exports; alias the specific modules we import
+      // to the canonical installed files so webpack treats them as the same
+      // module across different pnpm/nested layouts.
       'y-protocols/awareness': require.resolve('y-protocols/awareness.js'),
+      'y-protocols/dist/sync.cjs': require.resolve('y-protocols/dist/sync.cjs'),
+      // Defensive alias for nested pnpm layout of y-protocols (matches source-map traces)
+      'node_modules/.pnpm/y-protocols@1.0.6_yjs@13.6.27/node_modules/y-protocols/dist/sync.cjs':
+        require.resolve('y-protocols/dist/sync.cjs'),
       // alias y-websocket to its package entry (safe to point at package entry)
       'y-websocket': require.resolve('y-websocket'),
       // Some bundlers / pnpm layouts cause imports to resolve to a nested

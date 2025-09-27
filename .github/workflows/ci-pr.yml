@@ -5,8 +5,8 @@ on:
         types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
-  issues: write
+    contents: read
+    issues: write
 
 jobs:
     validate:
@@ -16,25 +16,25 @@ jobs:
 
             - name: Enable Corepack & pnpm (early)
               run: |
-                corepack enable
-                corepack prepare pnpm@latest --activate
+                  corepack enable
+                  corepack prepare pnpm@latest --activate
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                node-version: 18
-                cache: "pnpm"
+                  node-version: 18
+                  cache: "pnpm"
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v2
               with:
-                version: 8
+                  version: 8
 
             - name: Cache pnpm store
               uses: actions/cache@v4
               with:
-                path: ~/.pnpm-store
-                key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  path: ~/.pnpm-store
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -60,25 +60,25 @@ jobs:
 
             - name: Enable Corepack & pnpm (early)
               run: |
-                corepack enable
-                corepack prepare pnpm@latest --activate
+                  corepack enable
+                  corepack prepare pnpm@latest --activate
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                node-version: 18
-                cache: "pnpm"
+                  node-version: 18
+                  cache: "pnpm"
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v2
               with:
-                version: 8
+                  version: 8
 
             - name: Cache pnpm store
               uses: actions/cache@v4
               with:
-                path: ~/.pnpm-store
-                key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  path: ~/.pnpm-store
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
             - name: Install dependencies
               # allow non-frozen install in this job so the detector can run
@@ -90,31 +90,31 @@ jobs:
 
             - name: Run duplicate-Yjs detector
               run: |
-                mkdir -p artifacts/duplicate-yjs
-                pnpm check:duplicate-yjs -- --dir apps/web/.next --report artifacts/duplicate-yjs/pr-report.json
+                  mkdir -p artifacts/duplicate-yjs
+                  pnpm check:duplicate-yjs -- --dir apps/web/.next --report artifacts/duplicate-yjs/pr-report.json
 
             - name: Upload duplicate-Yjs report
               if: always()
               uses: actions/upload-artifact@v4
               with:
-                name: duplicate-yjs-report
-                path: artifacts/duplicate-yjs/pr-report.json
+                  name: duplicate-yjs-report
+                  path: artifacts/duplicate-yjs/pr-report.json
 
             - name: read_report
               id: read_report
               if: always()
               env:
-                REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
+                  REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
               run: |
-                node ./scripts/ci/read-duplicate-report.js
+                  node ./scripts/ci/read-duplicate-report.cjs
 
             - name: Post duplicate-Yjs summary as PR comment
               if: always()
               uses: peter-evans/create-or-update-comment@v3
               with:
-                token: ${{ secrets.GITHUB_TOKEN }}
-                issue-number: ${{ github.event.pull_request.number }}
-                body: |
-                  **duplicate-Yjs detector report**
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  issue-number: ${{ github.event.pull_request.number }}
+                  body: |
+                      **duplicate-Yjs detector report**
 
-                  ${{ steps.read_report.outputs.summary }}
+                      ${{ steps.read_report.outputs.summary }}
