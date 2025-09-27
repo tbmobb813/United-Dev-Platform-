@@ -2,8 +2,18 @@
 // Simple heuristic detector for duplicate Yjs runtime in Next.js `.next` output.
 // Usage: node scripts/check-duplicate-yjs.js --dir apps/web/.next --report out.json
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+let SourceMapConsumer = null;
+// try dynamic import of source-map in case it's available
+try {
+  // top-level await is allowed in ESM
+  // eslint-disable-next-line no-await-in-loop
+  const sm = await import('source-map');
+  SourceMapConsumer = sm.SourceMapConsumer;
+} catch (err) {
+  SourceMapConsumer = null;
+}
 
 function findFiles(dir, exts = ['.js', '.map']) {
   const out = [];
@@ -18,34 +28,99 @@ function findFiles(dir, exts = ['.js', '.map']) {
 }
 
 function scanBundleDir(dir) {
-  const files = findFiles(dir, ['.js', '.map']);
+  const files = findFiles(dir, ['.js']);
   const matches = [];
   for (const f of files) {
     const content = fs.readFileSync(f, 'utf8');
-    // Search for yjs indicators
-    if (
-      /\byjs\b/i.test(content) ||
-      /\by-protocols\b/i.test(content) ||
-      /y-websocket/i.test(content) ||
-      /Y\b/.test(content)
-    ) {
-      matches.push({ file: f, reason: 'contains-yjs-like-identifiers' });
+    // Search for yjs indicators and capture match positions
+    const indicators = [/\byjs\b/ig, /\by-protocols\b/ig, /y-websocket/ig, /\bY\b/g];
+    const fileMatches = [];
+    for (const re of indicators) {
+      let m;
+      while ((m = re.exec(content)) !== null) {
+        fileMatches.push({ index: m.index, match: m[0] });
+        // avoid infinite loops for zero-width matches
+        if (m.index === re.lastIndex) re.lastIndex++;
+      }
+    }
+    if (fileMatches.length > 0) {
+      matches.push({ file: f, reason: 'contains-yjs-like-identifiers', positions: fileMatches });
     }
   }
   return matches;
 }
 
+function indexToLineColumn(content, index) {
+  const prefix = content.slice(0, index);
+  const lines = prefix.split('\n');
+  const line = lines.length; // 1-based
+  const column = lines[lines.length - 1].length; // 0-based
+  return { line, column };
+}
+
+async function mapMatchesToSources(matches) {
+  const mapped = [];
+  for (const m of matches) {
+    const generatedFile = m.file;
+    const mapPathCandidates = [generatedFile + '.map', generatedFile.replace(/\.js$/, '.js.map'), generatedFile.replace(/\.js$/, '.map')];
+    let mapPath = mapPathCandidates.find(p => fs.existsSync(p));
+    const content = fs.readFileSync(generatedFile, 'utf8');
+    for (const pos of m.positions) {
+      const { line, column } = indexToLineColumn(content, pos.index);
+      const entry = {
+        generatedFile,
+        generatedIndex: pos.index,
+        generatedMatch: pos.match,
+        generatedLine: line,
+        generatedColumn: column,
+        source: null,
+        sourceLine: null,
+        sourceColumn: null,
+        sourceName: null,
+      };
+      if (mapPath && SourceMapConsumer) {
+        try {
+          const rawMap = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+          // use SourceMapConsumer.with for proper disposal
+          // note: originalPositionFor expects 1-based line, 0-based column
+          // we pass the generated line and column computed above
+          // wrap in a callback
+          // eslint-disable-next-line no-await-in-loop
+          const orig = await SourceMapConsumer.with(rawMap, null, consumer => {
+            return consumer.originalPositionFor({ line, column });
+          });
+          if (orig && orig.source) {
+            entry.source = orig.source;
+            entry.sourceLine = orig.line;
+            entry.sourceColumn = orig.column;
+            entry.sourceName = orig.name || null;
+          }
+        } catch (err) {
+          // if source-map parsing fails, ignore mapping but continue
+          entry.mapError = String(err.message || err);
+        }
+      } else if (!mapPath) {
+        entry.mapError = 'no-source-map';
+      } else if (!SourceMapConsumer) {
+        entry.mapError = 'missing-dependency-source-map';
+      }
+      mapped.push(entry);
+    }
+  }
+  return mapped;
+}
+
 function filterAllowlist(matches, allowlist = []) {
   if (!allowlist || allowlist.length === 0) return matches;
-  const normalized = allowlist.map((p) => path.resolve(p));
-  return matches.filter((m) => !normalized.includes(path.resolve(m.file)));
+  const normalized = allowlist.map(p => path.resolve(p));
+  return matches.filter(m => !normalized.includes(path.resolve(m.file)));
 }
 
 function uniq(arr) {
   return Array.from(new Set(arr));
 }
 
-function main() {
+async function main() {
   const argv = process.argv.slice(2);
   const dirIdx = argv.indexOf('--dir');
   const reportIdx = argv.indexOf('--report');
@@ -59,37 +134,53 @@ function main() {
     process.exit(2);
   }
 
-  const matches = scanBundleDir(dir);
-  // Heuristic: count distinct chunk files that contain indicators
-  const filesWithIndicators = uniq(matches.map(m => m.file));
+  // Count scanned JS files
+  const allJsFiles = findFiles(dir, ['.js']);
+  const scannedFiles = allJsFiles.length;
 
-  let filteredMatches = filterAllowlist(matches, allowlist);
-  const filteredFiles = uniq(filteredMatches.map((m) => m.file));
+  const matches = scanBundleDir(dir);
+  const mapped = await mapMatchesToSources(matches);
+
+  // Allowlist may refer to generated files or original source files
+  const normalizedAllowlist = (allowlist || []).map(p => path.resolve(p));
+  const filtered = mapped.filter(e => {
+    const gen = path.resolve(e.generatedFile);
+    const src = e.source ? path.resolve(e.source) : null;
+    if (normalizedAllowlist.includes(gen)) return false;
+    if (src && normalizedAllowlist.includes(src)) return false;
+    return true;
+  });
+
+  // Determine flagged set: prefer original source paths when available
+  const flaggedSet = new Set(filtered.map(e => (e.source ? e.source : e.generatedFile)));
 
   const result = {
     dir,
-    scannedFiles: files.length,
-    rawMatches: matches.length,
-    matches: filteredMatches,
-    flaggedFiles: filteredFiles.length,
+    scannedFiles,
+    rawMatches: mapped.length,
+    matches: filtered,
+    flaggedFiles: flaggedSet.size,
     allowlist,
-    severity: filteredFiles.length > 1 ? 'error' : filteredFiles.length === 1 ? 'warning' : 'ok',
+    severity:
+      flaggedSet.size > 1
+        ? 'error'
+        : flaggedSet.size === 1
+          ? 'warning'
+          : 'ok',
   };
 
   if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
 
-  console.log(
-    `Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`
-  );
+  console.log(`Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`);
   if (report) console.log(`Wrote report to ${report}`);
 
   if (result.flaggedFiles > 1) {
-    console.error('Potential duplicate Yjs runtime detected (more than one flagged chunk).');
+    console.error('Potential duplicate Yjs runtime detected (more than one flagged chunk/source).');
     if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
     process.exit(3);
   }
   if (result.flaggedFiles === 1) {
-    console.warn('Single chunk references Yjs-like identifiers (flagged as warning).');
+    console.warn('Single chunk/source references Yjs-like identifiers (flagged as warning).');
     if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
     process.exit(0);
   }
@@ -97,4 +188,9 @@ function main() {
   process.exit(0);
 }
 
-if (require.main === module) main();
+if (typeof process !== 'undefined' && process.argv[1] && process.argv[1].endsWith('check-duplicate-yjs.js')) {
+  main().catch(err => {
+    console.error('Detector failure:', err && err.stack ? err.stack : String(err));
+    process.exit(4);
+  });
+}

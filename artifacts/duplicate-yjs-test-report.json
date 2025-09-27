@@ -1,0 +1,106 @@
+{
+  "dir": "./scripts",
+  "scannedFiles": 4,
+  "rawMatches": 8,
+  "matches": [
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 63,
+      "generatedMatch": "Yjs",
+      "generatedLine": 2,
+      "generatedColumn": 43,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    },
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 141,
+      "generatedMatch": "yjs",
+      "generatedLine": 3,
+      "generatedColumn": 39,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    },
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 1113,
+      "generatedMatch": "yjs",
+      "generatedLine": 35,
+      "generatedColumn": 18,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    },
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 1630,
+      "generatedMatch": "yjs",
+      "generatedLine": 47,
+      "generatedColumn": 48,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    },
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 6183,
+      "generatedMatch": "Yjs",
+      "generatedLine": 178,
+      "generatedColumn": 39,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    },
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 6429,
+      "generatedMatch": "Yjs",
+      "generatedLine": 183,
+      "generatedColumn": 49,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    },
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 6769,
+      "generatedMatch": "yjs",
+      "generatedLine": 191,
+      "generatedColumn": 99,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    },
+    {
+      "generatedFile": "scripts/check-duplicate-yjs.js",
+      "generatedIndex": 1215,
+      "generatedMatch": "y-websocket",
+      "generatedLine": 36,
+      "generatedColumn": 59,
+      "source": null,
+      "sourceLine": null,
+      "sourceColumn": null,
+      "sourceName": null,
+      "mapError": "no-source-map"
+    }
+  ],
+  "flaggedFiles": 1,
+  "allowlist": [],
+  "severity": "warning"
+}
