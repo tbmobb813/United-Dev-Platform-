@@ -95,17 +95,10 @@ jobs:
             path: ~/.pnpm-store
             key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-<<<<<<< HEAD
         - name: Install dependencies
           # allow non-frozen install in this job so the detector can run
           # (temporary: prefer updating pnpm-lock.yaml in the repo long-term)
           run: pnpm install --no-frozen-lockfile
-=======
-            - name: Install dependencies
-              # allow non-frozen install in this job so the detector can run
-              # (temporary: prefer updating pnpm-lock.yaml in the repo long-term)
-              run: pnpm install --no-frozen-lockfile
->>>>>>> 7c90639 (ci(pr): allow build-and-detect to run pnpm install without frozen-lockfile so detector can run in CI (temp))
 
         - name: Build web (production, keep source-maps per next.config)
           # Provide safe fallbacks for NEXT_PUBLIC_* vars so the build does not
