@@ -65,6 +65,31 @@ async function mapMatchesToSources(matches) {
     const mapPathCandidates = [generatedFile + '.map', generatedFile.replace(/\.js$/, '.js.map'), generatedFile.replace(/\.js$/, '.map')];
     let mapPath = mapPathCandidates.find(p => fs.existsSync(p));
     const content = fs.readFileSync(generatedFile, 'utf8');
+    // If no obvious sidecar map, attempt to parse sourceMappingURL from the generated file
+    let inlineSourceMap = null;
+    if (!mapPath) {
+      // Look for //# sourceMappingURL=... or //@ sourceMappingURL=... or /*# sourceMappingURL=... */
+      const singleLineMatch = content.match(/(?:\/\/|\/*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i);
+      if (singleLineMatch && singleLineMatch[1]) {
+        const raw = singleLineMatch[1].trim();
+        // data URI?
+        const dataMatch = raw.match(/^data:([^,;]+)(?:;charset=[^;,]+)?;(base64),(.+)$/i);
+        if (dataMatch) {
+          try {
+            const b64 = dataMatch[3];
+            const decoded = Buffer.from(b64, 'base64').toString('utf8');
+            inlineSourceMap = decoded;
+          } catch (err) {
+            // ignore decoding errors
+            inlineSourceMap = null;
+          }
+        } else {
+          // treat as relative/absolute path
+          const possible = path.resolve(path.dirname(generatedFile), raw);
+          if (fs.existsSync(possible)) mapPath = possible;
+        }
+      }
+    }
     for (const pos of m.positions) {
       const { line, column } = indexToLineColumn(content, pos.index);
       const entry = {
@@ -78,9 +103,14 @@ async function mapMatchesToSources(matches) {
         sourceColumn: null,
         sourceName: null,
       };
-      if (mapPath && SourceMapConsumer) {
+      if ((mapPath || inlineSourceMap) && SourceMapConsumer) {
         try {
-          const rawMap = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+          let rawMap;
+          if (inlineSourceMap) {
+            rawMap = JSON.parse(inlineSourceMap);
+          } else {
+            rawMap = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+          }
           // use SourceMapConsumer.with for proper disposal
           // note: originalPositionFor expects 1-based line, 0-based column
           // we pass the generated line and column computed above
