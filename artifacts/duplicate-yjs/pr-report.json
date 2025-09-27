@@ -81,11 +81,10 @@
       "generatedMatch": "yjs",
       "generatedLine": 30,
       "generatedColumn": 2326,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://udp/web/components/CodeCompletionProvider.ts?ff08",
+      "sourceLine": 41,
+      "sourceColumn": 32,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/pages_index_client_tsx.js",
@@ -93,11 +92,10 @@
       "generatedMatch": "yjs",
       "generatedLine": 30,
       "generatedColumn": 2335,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://udp/web/components/CodeCompletionProvider.ts?ff08",
+      "sourceLine": 41,
+      "sourceColumn": 32,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/pages_index_client_tsx.js",
@@ -105,11 +103,10 @@
       "generatedMatch": "Yjs",
       "generatedLine": 30,
       "generatedColumn": 11881,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://udp/web/components/CodeCompletionProvider.ts?ff08",
+      "sourceLine": 41,
+      "sourceColumn": 32,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/pages_index_client_tsx.js",
@@ -117,11 +114,10 @@
       "generatedMatch": "Yjs",
       "generatedLine": 30,
       "generatedColumn": 34307,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://udp/web/components/CodeCompletionProvider.ts?ff08",
+      "sourceLine": 41,
+      "sourceColumn": 32,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/pages_index_client_tsx.js",
@@ -129,11 +125,10 @@
       "generatedMatch": "y-websocket",
       "generatedLine": 30,
       "generatedColumn": 2436,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://udp/web/components/CodeCompletionProvider.ts?ff08",
+      "sourceLine": 41,
+      "sourceColumn": 32,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/pages_index_client_tsx.js",
@@ -141,11 +136,10 @@
       "generatedMatch": "y-websocket",
       "generatedLine": 30,
       "generatedColumn": 2453,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://udp/web/components/CodeCompletionProvider.ts?ff08",
+      "sourceLine": 41,
+      "sourceColumn": 32,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/jose@4.15.9.js",
@@ -156,8 +150,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/monaco-editor@0.49.0.js",
@@ -168,8 +161,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/monaco-editor@0.49.0.js",
@@ -180,8 +172,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/monaco-editor@0.49.0.js",
@@ -192,8 +183,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/monaco-editor@0.49.0.js",
@@ -204,8 +194,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/monaco-editor@0.49.0.js",
@@ -216,8 +205,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/monaco-editor@0.49.0.js",
@@ -228,8 +216,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/server/vendor-chunks/oauth@0.9.15.js",
@@ -240,8 +227,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/main.js",
@@ -273,11 +259,10 @@
       "generatedMatch": "Y",
       "generatedLine": 18,
       "generatedColumn": 17066,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/monaco-editor@0.49.0/node_modules/monaco-editor/esm/vs/basic-languages/mysql/mysql.js?eaaf",
+      "sourceLine": 13,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/node_modules_pnpm_monaco-editor_0_49_0_node_modules_monaco-editor_esm_vs_basic-languages_qsha-e572cd.js",
@@ -285,11 +270,10 @@
       "generatedMatch": "Y",
       "generatedLine": 18,
       "generatedColumn": 3516,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/monaco-editor@0.49.0/node_modules/monaco-editor/esm/vs/basic-languages/qsharp/qsharp.js?4a3d",
+      "sourceLine": 13,
+      "sourceColumn": 3,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/node_modules_pnpm_monaco-editor_0_49_0_node_modules_monaco-editor_esm_vs_editor_editor_main_js.js",
@@ -301,7 +285,7 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "mapError": "no-source-map"
+      "mapError": "Unexpected non-whitespace character after JSON at position 3306 (line 1 column 3307)"
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/node_modules_pnpm_monaco-editor_0_49_0_node_modules_monaco-editor_esm_vs_editor_editor_main_js.js",
@@ -313,7 +297,7 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "mapError": "no-source-map"
+      "mapError": "Unexpected non-whitespace character after JSON at position 3306 (line 1 column 3307)"
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/node_modules_pnpm_monaco-editor_0_49_0_node_modules_monaco-editor_esm_vs_editor_editor_main_js.js",
@@ -325,7 +309,7 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "mapError": "no-source-map"
+      "mapError": "Unexpected non-whitespace character after JSON at position 3306 (line 1 column 3307)"
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/node_modules_pnpm_monaco-editor_0_49_0_node_modules_monaco-editor_esm_vs_editor_editor_main_js.js",
@@ -337,7 +321,7 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "mapError": "no-source-map"
+      "mapError": "Unexpected non-whitespace character after JSON at position 3306 (line 1 column 3307)"
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/node_modules_pnpm_monaco-editor_react_4_7_0_monaco-editor_0_49_0_react-dom_18_3_1_react_18_3_-b49d21.js",
@@ -349,7 +333,7 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "mapError": "no-source-map"
+      "mapError": "Unexpected non-whitespace character after JSON at position 5466 (line 1 column 5467)"
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/node_modules_pnpm_monaco-editor_react_4_7_0_monaco-editor_0_49_0_react-dom_18_3_1_react_18_3_-b49d21.js",
@@ -361,7 +345,7 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "mapError": "no-source-map"
+      "mapError": "Unexpected non-whitespace character after JSON at position 5466 (line 1 column 5467)"
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -369,11 +353,10 @@
       "generatedMatch": "yjs",
       "generatedLine": 61,
       "generatedColumn": 2533,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -381,11 +364,10 @@
       "generatedMatch": "yjs",
       "generatedLine": 61,
       "generatedColumn": 2567,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -393,11 +375,10 @@
       "generatedMatch": "yjs",
       "generatedLine": 61,
       "generatedColumn": 2592,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -405,11 +386,10 @@
       "generatedMatch": "yjs",
       "generatedLine": 61,
       "generatedColumn": 2601,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -417,11 +397,10 @@
       "generatedMatch": "Yjs",
       "generatedLine": 61,
       "generatedColumn": 12708,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -429,11 +408,10 @@
       "generatedMatch": "Yjs",
       "generatedLine": 61,
       "generatedColumn": 35581,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -444,8 +422,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -456,8 +433,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -468,8 +444,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -480,8 +455,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -492,8 +466,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -504,8 +477,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -516,8 +488,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -528,8 +499,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -540,8 +510,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -552,8 +521,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -564,8 +532,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -576,8 +543,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -588,8 +554,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -600,8 +565,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -612,8 +576,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -624,8 +587,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -636,8 +598,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -648,8 +609,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -660,8 +620,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -672,8 +631,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -684,8 +642,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -696,8 +653,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -708,8 +664,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -720,8 +675,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -732,8 +686,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -744,8 +697,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -756,8 +708,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -768,8 +719,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -780,8 +730,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -792,8 +741,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -804,8 +752,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -816,8 +763,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -828,8 +774,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -840,8 +785,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -852,8 +796,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -864,8 +807,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -876,8 +818,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -888,8 +829,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -900,8 +840,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -912,8 +851,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -924,8 +862,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -936,8 +873,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -948,8 +884,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -960,8 +895,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -972,8 +906,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -984,8 +917,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -996,8 +928,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1008,8 +939,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1020,8 +950,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1032,8 +961,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1044,8 +972,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1056,8 +983,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1068,8 +994,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1080,8 +1005,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1092,8 +1016,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1104,8 +1027,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1116,8 +1038,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1128,8 +1049,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1140,8 +1060,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1152,8 +1071,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1164,8 +1082,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1176,8 +1093,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1188,8 +1104,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1200,8 +1115,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1212,8 +1126,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1224,8 +1137,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1236,8 +1148,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1248,8 +1159,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1260,8 +1170,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1272,8 +1181,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1284,8 +1192,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1296,8 +1203,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1308,8 +1214,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1320,8 +1225,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1332,8 +1236,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1344,8 +1247,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1356,8 +1258,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1368,8 +1269,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1380,8 +1280,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1392,8 +1291,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1404,8 +1302,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1416,8 +1313,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1428,8 +1324,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1440,8 +1335,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1452,8 +1346,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1464,8 +1357,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1476,8 +1368,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1488,8 +1379,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1500,8 +1390,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1512,8 +1401,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1524,8 +1412,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1536,8 +1423,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1548,8 +1434,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1560,8 +1445,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1572,8 +1456,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1584,8 +1467,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1596,8 +1478,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1608,8 +1489,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1620,8 +1500,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1632,8 +1511,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1644,8 +1522,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1656,8 +1533,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1668,8 +1544,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1680,8 +1555,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1692,8 +1566,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1704,8 +1577,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1713,11 +1585,10 @@
       "generatedMatch": "y-websocket",
       "generatedLine": 61,
       "generatedColumn": 2707,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1725,11 +1596,10 @@
       "generatedMatch": "y-websocket",
       "generatedLine": 61,
       "generatedColumn": 2749,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1737,11 +1607,10 @@
       "generatedMatch": "y-websocket",
       "generatedLine": 61,
       "generatedColumn": 2792,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1749,11 +1618,10 @@
       "generatedMatch": "y-websocket",
       "generatedLine": 61,
       "generatedColumn": 2809,
-      "source": null,
-      "sourceLine": null,
-      "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "source": "webpack://_N_E/node_modules/.pnpm/base64-js@1.5.1/node_modules/base64-js/index.js?25a0",
+      "sourceLine": 61,
+      "sourceColumn": 0,
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1764,8 +1632,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1776,8 +1643,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1788,8 +1654,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1800,8 +1665,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1812,8 +1676,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1824,8 +1687,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1836,8 +1698,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1848,8 +1709,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1860,8 +1720,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1872,8 +1731,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1884,8 +1742,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1896,8 +1753,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1908,8 +1764,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1920,8 +1775,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1932,8 +1786,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1944,8 +1797,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1956,8 +1808,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1968,8 +1819,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1980,8 +1830,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -1992,8 +1841,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2004,8 +1852,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2016,8 +1863,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2028,8 +1874,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2040,8 +1885,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2052,8 +1896,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2064,8 +1907,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2076,8 +1918,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2088,8 +1929,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2100,8 +1940,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2112,8 +1951,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2124,8 +1962,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2136,8 +1973,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2148,8 +1984,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2160,8 +1995,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2172,8 +2006,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2184,8 +2017,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2196,8 +2028,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2208,8 +2039,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2220,8 +2050,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2232,8 +2061,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2244,8 +2072,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2256,8 +2083,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2268,8 +2094,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2280,8 +2105,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2292,8 +2116,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/pages_index_client_tsx.js",
@@ -2304,8 +2127,7 @@
       "source": null,
       "sourceLine": null,
       "sourceColumn": null,
-      "sourceName": null,
-      "mapError": "no-source-map"
+      "sourceName": null
     },
     {
       "generatedFile": "apps/web/.next/static/chunks/polyfills.js",
@@ -2332,7 +2154,7 @@
       "mapError": "no-source-map"
     }
   ],
-  "flaggedFiles": 12,
+  "flaggedFiles": 13,
   "allowlist": [],
   "strict": false,
   "severity": "error"
