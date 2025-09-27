@@ -1,12 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, ReactNode } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableColumn<T = any> {
+export interface DataTableColumn<T = Record<string, unknown>> {
   key: string;
   title: string;
   dataIndex?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  render?: (value: any, record: T, index: number) => React.ReactNode;
+  render?: (value: unknown, record: T, index: number) => React.ReactNode;
   sortable?: boolean;
   filterable?: boolean;
   width?: number | string;
@@ -17,15 +16,14 @@ export interface DataTableColumn<T = any> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableProps<T = any> {
+export interface DataTableProps<T = Record<string, unknown>> {
   columns: DataTableColumn<T>[];
   data: T[];
   loading?: boolean;
   pagination?: PaginationConfig | false;
   rowSelection?: RowSelectionConfig<T>;
   rowKey?: string | ((record: T) => string);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onRow?: (record: T, index: number) => React.HTMLAttributes<any>;
+  onRow?: (record: T, index: number) => React.HTMLAttributes<unknown>;
   className?: string;
   size?: 'small' | 'medium' | 'large';
   bordered?: boolean;
@@ -36,8 +34,7 @@ export interface DataTableProps<T = any> {
   sortable?: boolean;
   filterable?: boolean;
   onSort?: (field: string, direction: 'asc' | 'desc' | null) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFilter?: (filters: Record<string, any>) => void;
+  onFilter?: (filters: Record<string, unknown>) => void;
 }
 
 export interface PaginationConfig {
@@ -51,20 +48,20 @@ export interface PaginationConfig {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface RowSelectionConfig<T = any> {
+export interface RowSelectionConfig<T = Record<string, unknown>> {
   type?: 'checkbox' | 'radio';
   selectedRowKeys?: React.Key[];
   onChange?: (selectedRowKeys: React.Key[], selectedRows: T[]) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelect?: (
     record: T,
     selected: boolean,
     selectedRows: T[],
-    nativeEvent: any
+    nativeEvent: unknown
   ) => void;
   onSelectAll?: (selected: boolean, selectedRows: T[], changeRows: T[]) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCheckboxProps?: (record: T) => { disabled?: boolean; [key: string]: any };
+  getCheckboxProps?: (
+    record: T
+  ) => { disabled?: boolean } & Record<string, unknown>;
 }
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -75,7 +72,7 @@ interface SortState {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const DataTable = <T extends Record<string, any>>({
+export const DataTable = <T extends Record<string, unknown>>({
   columns,
   data,
   loading = false,
@@ -177,11 +174,10 @@ export const DataTable = <T extends Record<string, any>>({
     return sortedData.slice(start, end);
   }, [sortedData, pagination]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleRowSelection = (
     record: T,
     selected: boolean,
-    nativeEvent: React.ChangeEvent<any>
+    nativeEvent: React.ChangeEvent<unknown>
   ) => {
     const key = getRowKey(record, 0);
     let newSelectedKeys: React.Key[];
@@ -216,10 +212,9 @@ export const DataTable = <T extends Record<string, any>>({
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelectAll = (
     selected: boolean,
-    _nativeEvent: React.ChangeEvent<any>
+    _nativeEvent: React.ChangeEvent<unknown>
   ) => {
     const newSelectedKeys = selected
       ? paginatedData.map((record, index) => getRowKey(record, index))
@@ -239,14 +234,18 @@ export const DataTable = <T extends Record<string, any>>({
     }
   };
 
-  const renderCell = (column: DataTableColumn<T>, record: T, index: number) => {
+  const renderCell = (
+    column: DataTableColumn<T>,
+    record: T,
+    index: number
+  ): ReactNode => {
     if (column.render) {
       const value = column.dataIndex ? record[column.dataIndex] : record;
-      return column.render(value, record, index);
+      return column.render(value, record, index) as ReactNode;
     }
 
     if (column.dataIndex) {
-      return record[column.dataIndex];
+      return record[column.dataIndex] as unknown as ReactNode;
     }
 
     return null;

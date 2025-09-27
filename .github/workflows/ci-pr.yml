@@ -1,0 +1,55 @@
+name: CI - Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm -w lint
+
+      - name: Typecheck
+        run: pnpm -w type-check
+
+      - name: Run critical tests
+        run: pnpm test:critical
+
+      - name: Build web (production, keep source-maps per next.config)
+        run: pnpm --filter @udp/web build
+
+      - name: Run duplicate-Yjs detector
+        run: |
+          mkdir -p artifacts/duplicate-yjs
+          pnpm check:duplicate-yjs -- --dir apps/web/.next --report artifacts/duplicate-yjs/pr-report.json || true
+
+      - name: Upload duplicate-Yjs report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: duplicate-yjs-report
+          path: artifacts/duplicate-yjs/pr-report.json

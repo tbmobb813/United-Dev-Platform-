@@ -7,17 +7,20 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "jest"
   },
   "dependencies": {
-    "y-indexeddb": "^9.0.12",
+    "y-indexeddb": "^9.0.12"
+  },
+  "peerDependencies": {
+    "yjs": "^13.6.27",
     "y-protocols": "^1.0.6",
     "y-websocket": "^1.5.4"
   },
-  "peerDependencies": {
-    "yjs": "^13.6.27"
-  },
   "devDependencies": {
+    "y-protocols": "^1.0.6",
+    "y-websocket": "^1.5.4",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "eslint": "^8.57.0",

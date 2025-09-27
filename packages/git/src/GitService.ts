@@ -498,11 +498,12 @@ export class GitService implements GitServiceInterface {
       });
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle merge conflicts that occur during merge operation
+      const err = error as { message?: string; code?: string } | undefined;
       if (
-        error.code === 'MergeNotSupportedError' ||
-        error.message?.includes('conflict')
+        err?.code === 'MergeNotSupportedError' ||
+        err?.message?.includes('conflict')
       ) {
         const conflicts = await this.detectMergeConflicts(repositoryPath);
 
@@ -513,14 +514,14 @@ export class GitService implements GitServiceInterface {
             reason: 'content' as const,
             resolved: false,
           })),
-          message: `Merge conflict occurred: ${error.message}`,
+          message: `Merge conflict occurred: ${err?.message || 'unknown'}`,
         };
 
         this.emit({
           type: 'conflict:detected',
           repositoryPath,
           timestamp: new Date(),
-          data: { conflicts: result.conflicts, error: error.message },
+          data: { conflicts: result.conflicts, error: err?.message },
         });
 
         return result;

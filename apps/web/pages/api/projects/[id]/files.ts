@@ -42,7 +42,11 @@ async function getProjectFiles(
 
     // Filter by file type
     if (type && typeof type === 'string') {
-      where.type = toEnum(type);
+      // Cast to the Prisma where-input type to satisfy TypeScript while
+      // preserving the runtime conversion performed by `toEnum`.
+      where.type = toEnum(
+        type
+      ) as unknown as Prisma.ProjectFileWhereInput['type'];
     }
 
     const files = await prisma.projectFile.findMany({
