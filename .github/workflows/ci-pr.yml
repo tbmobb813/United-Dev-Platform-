@@ -106,16 +106,7 @@ jobs:
               env:
                 REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
               run: |
-                if [ -f "$REPORT_PATH" ]; then
-                  node -e "const r=JSON.parse(require('fs').readFileSync('$REPORT_PATH','utf8')); const s=`scanned:${r.scannedFiles} flagged:${r.flaggedFiles} severity:${r.severity} strict:${r.strict}`; console.log(s);" > report_summary.txt
-                  echo "summary<<EOF" >> $GITHUB_OUTPUT
-                  cat report_summary.txt >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
-                else
-                  echo "summary<<EOF" >> $GITHUB_OUTPUT
-                  echo "no report generated" >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
-                fi
+                node ./scripts/ci/read-duplicate-report.js
 
             - name: Post duplicate-Yjs summary as PR comment
               if: always()

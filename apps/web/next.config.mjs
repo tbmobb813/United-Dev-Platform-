@@ -139,6 +139,15 @@ const nextConfig = {
       // the existing resolve.alias entries are still present and will be used.
     }
 
+    // Ensure server builds emit external source maps (sidecar .map files)
+    // so the duplicate detector can map generated positions back to
+    // original source files. This sets webpack's devtool only for server
+    // builds to keep client-side tooling unchanged (we already enable
+    // productionBrowserSourceMaps above for client bundles).
+    if (isServer) {
+      config.devtool = 'source-map';
+    }
+
     return config;
   },
 };
