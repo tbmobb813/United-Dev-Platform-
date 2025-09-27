@@ -27,7 +27,7 @@
     "test:critical": "jest --config ./jest.config.critical.cjs --runInBand || true",
     "test:core": "jest --config ./jest.config.core.cjs --runInBand || true",
     "test:full": "jest --config ./jest.config.full.cjs --runInBand || true",
-  "check:duplicate-yjs": "node ./scripts/check-duplicate-yjs.cjs",
+    "check:duplicate-yjs": "node ./scripts/check-duplicate-yjs.cjs",
     "check": "pnpm lint && pnpm type-check && pnpm test",
     "fix": "pnpm lint:fix && pnpm format",
     "reset": "pnpm clean && pnpm install",

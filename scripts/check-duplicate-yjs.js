@@ -73,7 +73,8 @@ async function mapMatchesToSources(matches) {
   function resolveSourcePath(rawSource, generatedFile) {
     if (!rawSource) return null;
     // If already an absolute path
-    if (path.isAbsolute(rawSource) && fs.existsSync(rawSource)) return rawSource;
+    if (path.isAbsolute(rawSource) && fs.existsSync(rawSource))
+      return rawSource;
 
     // webpack:///./src/index.tsx or webpack:///src/index.tsx
     if (/^webpack:(?:\/+)?/.test(rawSource)) {
@@ -97,7 +98,10 @@ async function mapMatchesToSources(matches) {
     if (/^https?:\/\//i.test(rawSource)) {
       try {
         const u = new URL(rawSource);
-        const cand = path.resolve(process.cwd(), u.pathname.replace(/^\/+/, ''));
+        const cand = path.resolve(
+          process.cwd(),
+          u.pathname.replace(/^\/+/, '')
+        );
         if (fs.existsSync(cand)) return cand;
         // fallback: try basename somewhere under .next (cheap attempt)
         const base = path.basename(u.pathname);
@@ -235,8 +239,10 @@ async function main() {
   const argv = process.argv.slice(2);
   const dirIdx = argv.indexOf('--dir');
   const reportIdx = argv.indexOf('--report');
+  const strictIdx = argv.indexOf('--strict');
   const dir = dirIdx >= 0 ? argv[dirIdx + 1] : 'apps/web/.next';
   const report = reportIdx >= 0 ? argv[reportIdx + 1] : null;
+  const strict = strictIdx >= 0;
   const allowlistIdx = argv.indexOf('--allowlist');
   const allowlist = allowlistIdx >= 0 ? argv[allowlistIdx + 1].split(',') : [];
 
@@ -262,10 +268,21 @@ async function main() {
     return true;
   });
 
-  // Determine flagged set: prefer original source paths when available
-  const flaggedSet = new Set(
-    filtered.map(e => (e.source ? e.source : e.generatedFile))
-  );
+  // Determine flagged set:
+  // - If strict, prefer resolvedSource entries (only count resolved originals) when available.
+  let flaggedSet;
+  if (strict) {
+    const resolved = filtered.map(e => e.resolvedSource).filter(Boolean);
+    if (resolved.length > 0) flaggedSet = new Set(resolved);
+    else
+      flaggedSet = new Set(
+        filtered.map(e => (e.source ? e.source : e.generatedFile))
+      );
+  } else {
+    flaggedSet = new Set(
+      filtered.map(e => (e.source ? e.source : e.generatedFile))
+    );
+  }
 
   const result = {
     dir,
@@ -274,6 +291,7 @@ async function main() {
     matches: filtered,
     flaggedFiles: flaggedSet.size,
     allowlist,
+    strict: !!strict,
     severity:
       flaggedSet.size > 1 ? 'error' : flaggedSet.size === 1 ? 'warning' : 'ok',
   };
