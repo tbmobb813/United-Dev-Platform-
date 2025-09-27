@@ -349,7 +349,10 @@ if (invokedDirectly) {
   // eslint-disable-next-line no-console
   main().catch(err => {
     // eslint-disable-next-line no-console
-    console.error('Detector failure:', err && err.stack ? err.stack : String(err));
+    console.error(
+      'Detector failure:',
+      err && err.stack ? err.stack : String(err)
+    );
     process.exit(4);
   });
 }
