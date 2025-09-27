@@ -4,17 +4,26 @@ on:
     pull_request:
         types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
     pr-check:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 18
-                  cache: "pnpm"
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "pnpm"
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v2
@@ -58,26 +67,26 @@ jobs:
               id: read_report
               if: always()
               env:
-                REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
+                  REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
               run: |
-                if [ -f "$REPORT_PATH" ]; then
-                  node -e "const r=JSON.parse(require('fs').readFileSync('$REPORT_PATH','utf8')); const s=\`scanned:${r.scannedFiles} flagged:${r.flaggedFiles} severity:${r.severity} strict:${r.strict}\`; console.log(s);" > report_summary.txt
-                  echo "summary<<EOF" >> $GITHUB_OUTPUT
-                  cat report_summary.txt >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
-                else
-                  echo "summary<<EOF" >> $GITHUB_OUTPUT
-                  echo "no report generated" >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
-                fi
+                  if [ -f "$REPORT_PATH" ]; then
+                    node -e "const r=JSON.parse(require('fs').readFileSync('$REPORT_PATH','utf8')); const s=\`scanned:${r.scannedFiles} flagged:${r.flaggedFiles} severity:${r.severity} strict:${r.strict}\`; console.log(s);" > report_summary.txt
+                    echo "summary<<EOF" >> $GITHUB_OUTPUT
+                    cat report_summary.txt >> $GITHUB_OUTPUT
+                    echo "EOF" >> $GITHUB_OUTPUT
+                  else
+                    echo "summary<<EOF" >> $GITHUB_OUTPUT
+                    echo "no report generated" >> $GITHUB_OUTPUT
+                    echo "EOF" >> $GITHUB_OUTPUT
+                  fi
 
             - name: Post duplicate-Yjs summary as PR comment
               if: always()
               uses: peter-evans/create-or-update-comment@v3
               with:
-                token: ${{ secrets.GITHUB_TOKEN }}
-                issue-number: ${{ github.event.pull_request.number }}
-                body: |
-                  **duplicate-Yjs detector report**
-                  
-                  ${{ steps.read_report.outputs.summary }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  issue-number: ${{ github.event.pull_request.number }}
+                  body: |
+                      **duplicate-Yjs detector report**
+
+                      ${{ steps.read_report.outputs.summary }}
