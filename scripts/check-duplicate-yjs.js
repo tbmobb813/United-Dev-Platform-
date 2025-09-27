@@ -321,16 +321,35 @@ async function main() {
   process.exit(0);
 }
 
-if (
-  typeof process !== 'undefined' &&
-  process.argv[1] &&
-  process.argv[1].endsWith('check-duplicate-yjs.js')
-) {
+// Export main so callers (including the CJS dynamic-import wrapper) can invoke it.
+export { main };
+
+// If this module is executed directly as a script, run main(). This covers both
+// invoking the ESM file directly with `node scripts/check-duplicate-yjs.js` and
+// environments that set process.argv[1] to the script path. We also check
+// import.meta.url to detect direct ESM execution under file:// URLs.
+const invokedDirectly = (() => {
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta.url) {
+      if (import.meta.url.endsWith('check-duplicate-yjs.js')) {
+        return true;
+      }
+    }
+  } catch (err) {
+    // reference the variable so linters don't complain about unused
+    void err;
+  }
+  if (typeof process !== 'undefined' && process.argv[1]) {
+    return process.argv[1].endsWith('check-duplicate-yjs.js');
+  }
+  return false;
+})();
+
+if (invokedDirectly) {
+  // eslint-disable-next-line no-console
   main().catch(err => {
-    console.error(
-      'Detector failure:',
-      err && err.stack ? err.stack : String(err)
-    );
+    // eslint-disable-next-line no-console
+    console.error('Detector failure:', err && err.stack ? err.stack : String(err));
     process.exit(4);
   });
 }
