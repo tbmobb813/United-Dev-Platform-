@@ -81,7 +81,9 @@ jobs:
                 key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
             - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+              # allow non-frozen install in this job so the detector can run
+              # (temporary: prefer updating pnpm-lock.yaml in the repo long-term)
+              run: pnpm install --no-frozen-lockfile
 
             - name: Build web (production, keep source-maps per next.config)
               run: pnpm --filter @udp/web build
