@@ -81,25 +81,19 @@ const nextConfig = {
       };
     }
 
-    // Force yjs into a single dedicated chunk on the client to avoid multiple
-    // inlined runtime instances. This creates a small `vendors-yjs` cache group
-    // which ensures modules from the `yjs` package are colocated into one
-    // chunk during production builds. We keep this narrowly targeted to
-    // minimize risk to Next's default chunking behavior.
-    if (!isServer) {
-      config.optimization = config.optimization || {};
-      config.optimization.splitChunks = config.optimization.splitChunks || {};
-      config.optimization.splitChunks.cacheGroups = {
-        ...(config.optimization.splitChunks.cacheGroups || {}),
-        'vendors-yjs': {
-          test: /[\\/]node_modules[\\/]yjs[\\/]/,
-          name: 'vendors-yjs',
-          chunks: 'all',
-          enforce: true,
-          priority: 40,
-        },
-      };
-    }
+    // Enforce a single shared yjs chunk for both client and server bundles
+    config.optimization = config.optimization || {};
+    config.optimization.splitChunks = config.optimization.splitChunks || {};
+    config.optimization.splitChunks.cacheGroups = {
+      ...(config.optimization.splitChunks.cacheGroups || {}),
+      'vendors-yjs': {
+        test: /[\\/]node_modules[\\/]yjs[\\/]/,
+        name: 'vendors-yjs',
+        chunks: 'all',
+        enforce: true,
+        priority: 100,
+      },
+    };
 
     // Ensure any requests that point at nested pnpm yjs copies or direct
     // dist file imports are redirected to the canonical hoisted ESM file.

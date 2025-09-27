@@ -8,6 +8,7 @@ overrides:
   react: 18.3.1
   react-dom: 18.3.1
   yjs: 13.6.27
+  y-protocols: 1.0.6
 
 importers:
 
@@ -189,7 +190,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.1
       y-protocols:
-        specifier: ^1.0.6
+        specifier: 1.0.6
         version: 1.0.6(yjs@13.6.27)
       y-websocket:
         specifier: ^1.5.4
@@ -365,7 +366,7 @@ importers:
         specifier: ^5.3.3
         version: 5.9.2
       y-protocols:
-        specifier: ^1.0.6
+        specifier: 1.0.6
         version: 1.0.6(yjs@13.6.27)
       y-websocket:
         specifier: ^1.5.4
