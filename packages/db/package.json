@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "generate": "prisma generate --schema ../../apps/api/prisma/schema.prisma",
-    "prepare": "pnpm run generate && pnpm build"
+    "prepare": "pnpm run generate && pnpm build",
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2"

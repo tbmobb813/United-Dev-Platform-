@@ -20,7 +20,7 @@ export const Input = ({
       numberOfLines={numberOfLines}
       editable={!disabled}
       textAlignVertical={multiline ? 'top' : 'center'}
-      placeholderTextColor="#999"
+      placeholderTextColor='#999'
     />
   );
 };

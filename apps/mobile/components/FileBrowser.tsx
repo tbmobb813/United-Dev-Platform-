@@ -235,7 +235,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   if (loading && !refreshing) {
     return (
       <View style={styles.loadingContainer}>
-        <Loading text="Loading files..." />
+        <Loading text='Loading files...' />
       </View>
     );
   }
@@ -243,8 +243,8 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   return (
     <View style={styles.container}>
       {/* Header with repo info and navigation */}
-      <Card title="📁 File Browser" padding="medium" style={{}}>
-        <Stack gap="small" style={{}}>
+      <Card title='📁 File Browser' padding='medium' style={{}}>
+        <Stack gap='small' style={{}}>
           {repository && (
             <View style={styles.repoInfo}>
               <Text style={styles.repoName}>
@@ -288,22 +288,22 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       {/* Quick Actions Footer */}
       {showAIActions && (
         <View style={styles.quickActions}>
-          <Stack direction="row" gap="small" style={{}}>
+          <Stack direction='row' gap='small' style={{}}>
             <Button
-              title="🤖 AI Summary"
-              size="small"
+              title='🤖 AI Summary'
+              size='small'
               onPress={() => {}}
               style={{}}
             />
             <Button
-              title="📊 Code Stats"
-              size="small"
+              title='📊 Code Stats'
+              size='small'
               onPress={() => {}}
               style={{}}
             />
             <Button
-              title="🔍 Search Files"
-              size="small"
+              title='🔍 Search Files'
+              size='small'
               onPress={() => {}}
               style={{}}
             />
