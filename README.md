@@ -1,20 +1,25 @@
 # United Dev Platform (UDP)
 
-Unified web, mobile, and AI development environment. This monorepo provides real-time collaborative
-editing, cross-platform support, and a foundation for advanced AI and plugin features.
+Unified web, mobile, and AI development environment. This monorepo provides
+real-time collaborative editing, cross-platform support, and a foundation for
+advanced AI and plugin features.
 
 ## Architecture Overview
 
 **Apps:**
 
-- `apps/web`: Next.js app with Monaco editor, Yjs sync (rooms/presence), login, QR deep-link.
-- `apps/api`: Node.js/Express server with Yjs WebSocket endpoint, AI stub, error handling.
-- `apps/mobile`: Expo React Native app for real-time Yjs sync and collaborative editing.
+- `apps/web`: Next.js app with Monaco editor, Yjs sync (rooms/presence), login,
+  QR deep-link.
+- `apps/api`: Node.js/Express server with Yjs WebSocket endpoint, AI stub, error
+  handling.
+- `apps/mobile`: Expo React Native app for real-time Yjs sync and collaborative
+  editing.
 - `apps/desktop`: Electron wrapper for the web client.
 
 **Packages:**
 
-- `packages/editor-core`: Yjs helpers, awareness utilities, DocumentManager, presence system.
+- `packages/editor-core`: Yjs helpers, awareness utilities, DocumentManager,
+  presence system.
 - `packages/types`: Shared TypeScript types.
 - `packages/ai`: AI prompt definitions and stubs.
 - `packages/ui`: Shared UI components (Button, Card, PresenceIndicator, etc.).
@@ -33,7 +38,8 @@ editing, cross-platform support, and a foundation for advanced AI and plugin fea
    ```
 2. **Set up environment variables:**
    - Copy `.env.example` to `.env` in the project root.
-   - Edit `.env` and set secure values for `NEXTAUTH_SECRET`, `DATABASE_URL`, and provider keys.
+   - Edit `.env` and set secure values for `NEXTAUTH_SECRET`, `DATABASE_URL`,
+     and provider keys.
    - See [`docs/ENVIRONMENT.md`](docs/ENVIRONMENT.md) for details.
 3. **Run development servers:**
    - Web: `pnpm dev --filter @udp/web`
@@ -43,25 +49,27 @@ editing, cross-platform support, and a foundation for advanced AI and plugin fea
 
 ## Environment Variables
 
-See [`docs/ENVIRONMENT.md`](docs/ENVIRONMENT.md) for setup and best practices. Do not commit `.env`
-files.
+See [`docs/ENVIRONMENT.md`](docs/ENVIRONMENT.md) for setup and best practices.
+Do not commit `.env` files.
 
 ## Testing & CI
 
 - Lint/typecheck scripts are present in most packages.
 - Test coverage is minimal; add test folders and scripts as needed.
-- Recommended: Use Jest for web/editor-core/ui/types, and Detox/React Native Testing Library for
-  mobile.
-- CI should run lint, typecheck, and tests for all packages. See Turbo build system docs for
-  configuration.
+- Recommended: Use Jest for web/editor-core/ui/types, and Detox/React Native
+  Testing Library for mobile.
+- CI should run lint, typecheck, and tests for all packages. See Turbo build
+  system docs for configuration.
 
 ## Known Workarounds & Issues
 
 - **Yjs Duplication in Production Bundles:**
-  - In some production builds, a second copy of Yjs may be inlined due to nested dependencies. See
-    build config and package aliasing strategies for mitigation. Only one runtime instance should
-    exist for correct collaborative editing.
-- **Authentication:** Basic localStorage implementation; full auth system planned.
+  - In some production builds, a second copy of Yjs may be inlined due to nested
+    dependencies. See build config and package aliasing strategies for
+    mitigation. Only one runtime instance should exist for correct collaborative
+    editing.
+- **Authentication:** Basic localStorage implementation; full auth system
+  planned.
 - **Git Integration:** Referenced in docs, not yet implemented.
 
 ## Strategic Docs & Roadmap
@@ -71,5 +79,7 @@ files.
 
 ## Milestones & Next Steps
 
-- See [Strategic Roadmap](docs/strategic-roadmap.md) for priorities, KPIs, and implementation plan.
-- Immediate focus: Stabilize core features, expand test coverage, and improve CI pipeline.
+- See [Strategic Roadmap](docs/strategic-roadmap.md) for priorities, KPIs, and
+  implementation plan.
+- Immediate focus: Stabilize core features, expand test coverage, and improve CI
+  pipeline.
