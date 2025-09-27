@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
@@ -115,7 +115,7 @@ export default function MinimalHomeClient() {
         doc.destroy();
       };
     } catch (error) {
-  logger.error('Error setting up Yjs:', error);
+      logger.error('Error setting up Yjs:', error);
     }
   }, [room, userName, isClient]);
 
@@ -135,7 +135,7 @@ export default function MinimalHomeClient() {
       </Head>
       <h1>Minimal Unified Dev Platform (Web)</h1>
       <p>Logged in as: {String(userName)}</p>
-  <button onClick={handleSignOut}>Sign out</button>
+      <button onClick={handleSignOut}>Sign out</button>
 
       <h2>Collaborative Room: {String(room)}</h2>
       <div
