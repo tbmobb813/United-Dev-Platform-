@@ -42,8 +42,13 @@
     "dev:mobile": "cd apps/mobile && pnpm start",
     "dev:all": "turbo dev --parallel",
     "prebuild": "pnpm check && pnpm validate-env",
-    "postinstall": "pnpm type-check"
+    "postinstall": "pnpm type-check",
+    "check:console": "node scripts/replace-console-with-logger.cjs --dry-run --report=artifacts/console-replace-report.json",
+    "apply:console": "node scripts/replace-console-with-logger.cjs --apply --report=artifacts/console-replace-report.json",
+    "mark:cli": "node scripts/mark-cli-no-console.cjs",
+    "test:scripts": "node --test scripts/__tests__/replace-console.test.js"
   },
+  
   "devDependencies": {
     "@jest/globals": "^30.1.2",
     "@types/jest": "^30.0.0",
