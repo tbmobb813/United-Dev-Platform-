@@ -87,8 +87,93 @@ const nextConfig = {
     };
 >>>>>>> 0bc14f6 (style: run prettier on changed files)
 
+<<<<<<< HEAD
   // Minimal, robust Next.js config tuned for the monorepo.
   const yjsEsm = (() => {
+=======
+    // Prefer the ESM 'module' field during client resolution so bundlers use
+    // the package's ESM build when available (this helps avoid mixing CJS
+    // and ESM builds of yjs in the client bundle).
+    if (!config.resolve.mainFields) {
+      config.resolve.mainFields = ['module', 'browser', 'main'];
+    } else {
+      config.resolve.mainFields = Array.from(
+        new Set(['module', 'browser', 'main', ...config.resolve.mainFields])
+      );
+    }
+
+    // Client-side optimizations
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        crypto: false,
+        stream: false,
+        buffer: false,
+        util: false,
+      };
+    }
+
+    // Enforce a single shared yjs chunk for both client and server bundles
+    config.optimization = config.optimization || {};
+    config.optimization.splitChunks = config.optimization.splitChunks || {};
+    config.optimization.splitChunks.cacheGroups = {
+      ...(config.optimization.splitChunks.cacheGroups || {}),
+      // Stronger cache group for Yjs family: match both hoisted and pnpm
+      // virtual-store nested paths so webpack groups all yjs-related
+      // modules into a single `vendors-yjs` chunk.
+      'vendors-yjs': {
+        // Use a function test to inspect the module's resource path where
+        // present. This lets us match pnpm virtual-store paths like:
+        // node_modules/.pnpm/yjs@13.6.27/node_modules/yjs/...
+        test: (module, chunks) => {
+          try {
+            // Prefer resource (absolute filesystem path) when available.
+            let p = module && module.resource;
+            // Some modules (CJS concatenated or loader-wrapped) don't expose
+            // `resource`. Fall back to nameForCondition() which often
+            // contains the module path, or module.identifier().
+            if (!p || typeof p !== 'string') {
+              if (typeof module.nameForCondition === 'function') {
+                p = module.nameForCondition();
+              }
+            }
+            if (!p || typeof p !== 'string') {
+              if (typeof module.identifier === 'function') {
+                p = module.identifier();
+              }
+            }
+            if (!p || typeof p !== 'string') return false;
+            // Match yjs, y-protocols, y-websocket in either hoisted
+            // node_modules or pnpm virtual-store nested paths.
+            return /[\\/]node_modules[\\/](?:\\.pnpm[\\/].*?[\\/])?(?:yjs|y-protocols|y-websocket)(?:[\\/]|$)/.test(
+              p
+            );
+          } catch (e) {
+            return false;
+          }
+        },
+  name: 'vendors-yjs',
+  chunks: 'all',
+  enforce: true,
+  priority: 200,
+  // Allow very small modules (like a single CJS file) to be pulled
+  // into the vendors-yjs chunk and prefer reusing an existing
+  // vendors-yjs chunk rather than creating a separate one.
+  minSize: 0,
+  reuseExistingChunk: true,
+      },
+    };
+
+    // Ensure any requests that point at nested pnpm yjs copies or direct
+    // dist file imports are redirected to the canonical hoisted ESM file.
+    // This uses webpack's NormalModuleReplacementPlugin which can match
+    // absolute/relative request paths (including nested pnpm virtual-store
+    // paths) and replace them with the single canonical module. This is a
+    // minimal, targeted fix to avoid inlining multiple Yjs runtimes in the
+    // client bundle.
+>>>>>>> 96f746c (WIP: <short description>)
     try {
 <<<<<<< HEAD
       return require.resolve('yjs');
@@ -173,7 +258,21 @@ const nextConfig = {
       // absolute requests are also rewritten).
       config.plugins.push(
         new webpackPkg.NormalModuleReplacementPlugin(/^yjs$/, resource => {
-          resource.request = yjsEsm;
+          // If the requesting module (issuer) is inside y-protocols or
+          // y-websocket, rewrite the request to the canonical yjs ESM file
+          // to avoid CJS/ESM interop causing multiple runtime instances.
+          try {
+            const issuer = (resource.contextInfo && resource.contextInfo.issuer) || resource.context || '';
+            if (typeof issuer === 'string' && /(?:y-protocols|y-websocket)(?:[\\/]|$)/.test(issuer)) {
+              resource.request = yjsEsm;
+            } else {
+              // If issuer info isn't available, still apply the canonical
+              // rewrite as a defensive fallback.
+              resource.request = yjsEsm;
+            }
+          } catch (e) {
+            resource.request = yjsEsm;
+          }
         })
       );
       // Emit external sidecar source maps instead of inline data-URIs. Some
