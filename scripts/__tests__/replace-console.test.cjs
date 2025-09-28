@@ -3,7 +3,7 @@ const path = require('path');
 
 function main() {
   const repoRoot = path.resolve(__dirname, '..', '..');
-  const fixture = path.join(repoRoot, 'scripts', '__tests__', 'fixtures', 'sample-with-console.ts');
+  const fixture = path.join(repoRoot, 'test-fixtures', 'sample-with-console.ts');
   const cmd = `node scripts/replace-console-with-logger.cjs --dry-run --files=${fixture}`;
   let out;
   try {
