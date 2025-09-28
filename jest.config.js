@@ -8,7 +8,11 @@ module.exports = {
   setupFilesAfterEnv: [],
   // Treat .ts files as ESM modules so imports like `import { describe } from '@jest/globals'` work
   extensionsToTreatAsEsm: ['.ts'],
-  globals: { 'ts-jest': { useESM: true } },
+  globals: {
+    'ts-jest': {
+      useESM: true,
+    },
+  },
   testPathIgnorePatterns: ['/node_modules/', '__tests__/jest.setup.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
