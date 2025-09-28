@@ -260,11 +260,24 @@ async function main() {
 
   // Allowlist may refer to generated files or original source files
   const normalizedAllowlist = (allowlist || []).map(p => path.resolve(p));
+  const allowlistBasenames = normalizedAllowlist.map(p => path.basename(p));
   const filtered = mapped.filter(e => {
     const gen = path.resolve(e.generatedFile);
     const src = e.source ? path.resolve(e.source) : null;
+    const rsrc = e.resolvedSource ? path.resolve(e.resolvedSource) : null;
+    // Exact match
     if (normalizedAllowlist.includes(gen)) return false;
     if (src && normalizedAllowlist.includes(src)) return false;
+    if (rsrc && normalizedAllowlist.includes(rsrc)) return false;
+    // Basename or suffix match to allow CI absolute paths to match local equivalents
+    const genBase = path.basename(gen);
+    const srcBase = src ? path.basename(src) : null;
+    const rsrcBase = rsrc ? path.basename(rsrc) : null;
+    if (allowlistBasenames.includes(genBase)) return false;
+    if (srcBase && allowlistBasenames.includes(srcBase)) return false;
+    if (rsrcBase && allowlistBasenames.includes(rsrcBase)) return false;
+    // Suffix match: allowlist entry may be a CI path that ends with the same suffix
+    if (normalizedAllowlist.some(a => gen.endsWith(a) || (src && src.endsWith(a)) || (rsrc && rsrc.endsWith(a)))) return false;
     return true;
   });
 
