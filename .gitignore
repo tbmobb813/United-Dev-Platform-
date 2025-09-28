@@ -290,4 +290,4 @@ docker-compose.override.yml
 
 # Kubernetes
 k8s/secrets/
-*.kubeconfig
+*.kubeconfigartifacts/
