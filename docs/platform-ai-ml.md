@@ -1,7 +1,7 @@
 # # AI-Powered Developer Platform: Architecture & Implementation Guide
 
-> A comprehensive guide for building a modern, AI-integrated development platform with machine
-> learning capabilities.
+> A comprehensive guide for building a modern, AI-integrated development
+> platform with machine learning capabilities.
 
 ## Table of Contents
 
@@ -18,11 +18,12 @@
 
 ## Overview
 
-This document outlines the strategy for building a custom AI-powered developer platform that
-combines:
+This document outlines the strategy for building a custom AI-powered developer
+platform that combines:
 
 - **Web-based IDE** with syntax highlighting and intelligent code completion
-- **AI-assisted development** through chat interfaces and inline code suggestions
+- **AI-assisted development** through chat interfaces and inline code
+  suggestions
 - **Machine learning workflows** for model training and experimentation
 - **Version control integration** with Git-based collaboration
 - **Cloud deployment** capabilities with CI/CD pipelines
@@ -93,14 +94,14 @@ Testing: Vitest + React Testing Library
 
 ```typescript
 // Example AI API integration
-const aiResponse = await fetch("/api/ai/completions", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
+const aiResponse = await fetch('/api/ai/completions', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    model: "gpt-4o-mini",
+    model: 'gpt-4o-mini',
     messages: [
-      { role: "system", content: "You are an expert code reviewer." },
-      { role: "user", content: `Explain this code: ${selectedCode}` },
+      { role: 'system', content: 'You are an expert code reviewer.' },
+      { role: 'user', content: `Explain this code: ${selectedCode}` },
     ],
     temperature: 0.2,
   }),
@@ -189,12 +190,13 @@ graph TD
 
 ---
 
-ai-dev-platform/ ├── apps/ │ ├── web/ # Next.js frontend + API │ ├── desktop/ # Electron wrapper
-(future) │ └── mobile/ # React Native app (future) ├── packages/ │ ├── ui/ # Shared UI components │
-├── ai/ # AI integration utilities │ ├── editor-core/ # Editor functionality │ └── types/ # Shared
-TypeScript types ├── infra/ │ ├── docker/ # Container configurations │ ├── k8s/ # Kubernetes
-manifests │ └── scripts/ # Deployment scripts ├── docs/ # Documentation └── .github/workflows/ #
-CI/CD pipelines
+ai-dev-platform/ ├── apps/ │ ├── web/ # Next.js frontend + API │ ├── desktop/ #
+Electron wrapper (future) │ └── mobile/ # React Native app (future) ├──
+packages/ │ ├── ui/ # Shared UI components │ ├── ai/ # AI integration utilities
+│ ├── editor-core/ # Editor functionality │ └── types/ # Shared TypeScript types
+├── infra/ │ ├── docker/ # Container configurations │ ├── k8s/ # Kubernetes
+manifests │ └── scripts/ # Deployment scripts ├── docs/ # Documentation └──
+.github/workflows/ # CI/CD pipelines
 
 ### Environment Setup
 
@@ -271,13 +273,13 @@ CREATE TABLE ai_conversations (
 
 ```typescript
 // app/api/ai/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 const requestSchema = z.object({
   messages: z.array(
     z.object({
-      role: z.enum(["system", "user", "assistant"]),
+      role: z.enum(['system', 'user', 'assistant']),
       content: z.string(),
     })
   ),
@@ -288,17 +290,21 @@ const requestSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { messages, model = "gpt-4o-mini", temperature = 0.2 } = requestSchema.parse(body);
+    const {
+      messages,
+      model = 'gpt-4o-mini',
+      temperature = 0.2,
+    } = requestSchema.parse(body);
 
     const baseUrl =
-      process.env.ALLOW_LOCAL_MODELS === "true"
-        ? process.env.LOCAL_OPENAI_BASE_URL ?? "https://api.openai.com/v1"
-        : "https://api.openai.com/v1";
+      process.env.ALLOW_LOCAL_MODELS === 'true'
+        ? (process.env.LOCAL_OPENAI_BASE_URL ?? 'https://api.openai.com/v1')
+        : 'https://api.openai.com/v1';
 
     const response = await fetch(`${baseUrl}/chat/completions`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
@@ -316,8 +322,11 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("AI API error:", error);
-    return NextResponse.json({ error: "Failed to process AI request" }, { status: 500 });
+    console.error('AI API error:', error);
+    return NextResponse.json(
+      { error: 'Failed to process AI request' },
+      { status: 500 }
+    );
   }
 }
 ```
@@ -326,16 +335,22 @@ export async function POST(req: NextRequest) {
 
 ```typescript
 // app/api/projects/[id]/files/route.ts
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const files = await prisma.file.findMany({
     where: { projectId: params.id },
-    orderBy: { path: "asc" },
+    orderBy: { path: 'asc' },
   });
 
   return NextResponse.json(files);
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const { path, content, language } = await req.json();
 
   const file = await prisma.file.upsert({
@@ -481,22 +496,22 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
 ```typescript
 // Secure sandbox for code execution
-import { spawn } from "child_process";
-import path from "path";
+import { spawn } from 'child_process';
+import path from 'path';
 
 const DANGEROUS_COMMANDS = [
-  "rm",
-  "rmdir",
-  "del",
-  "format",
-  "net",
-  "netstat",
-  "ping",
-  "curl",
-  "sudo",
-  "su",
-  "chmod",
-  "chown",
+  'rm',
+  'rmdir',
+  'del',
+  'format',
+  'net',
+  'netstat',
+  'ping',
+  'curl',
+  'sudo',
+  'su',
+  'chmod',
+  'chown',
 ];
 
 export async function executeCode(
@@ -505,16 +520,16 @@ export async function executeCode(
   projectPath: string
 ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
   // Validate project path is within allowed directory
-  const allowedPath = path.resolve("/var/projects");
+  const allowedPath = path.resolve('/var/projects');
   const resolvedPath = path.resolve(projectPath);
 
   if (!resolvedPath.startsWith(allowedPath)) {
-    throw new Error("Invalid project path");
+    throw new Error('Invalid project path');
   }
 
   // Check for dangerous commands
   if (DANGEROUS_COMMANDS.some(cmd => code.toLowerCase().includes(cmd))) {
-    throw new Error("Dangerous command detected");
+    throw new Error('Dangerous command detected');
   }
 
   const command = getExecutionCommand(language);
@@ -523,28 +538,28 @@ export async function executeCode(
     timeout: 30000, // 30 second timeout
     env: {
       ...process.env,
-      PATH: "/usr/local/bin:/usr/bin:/bin", // Restricted PATH
+      PATH: '/usr/local/bin:/usr/bin:/bin', // Restricted PATH
     },
   });
 
   return new Promise(resolve => {
-    let stdout = "";
-    let stderr = "";
+    let stdout = '';
+    let stderr = '';
 
-    process.stdout.on("data", data => {
+    process.stdout.on('data', data => {
       stdout += data.toString();
       if (stdout.length > 10000) {
         // Limit output size
         process.kill();
-        stderr += "Output limit exceeded";
+        stderr += 'Output limit exceeded';
       }
     });
 
-    process.stderr.on("data", data => {
+    process.stderr.on('data', data => {
       stderr += data.toString();
     });
 
-    process.on("close", exitCode => {
+    process.on('close', exitCode => {
       resolve({ stdout, stderr, exitCode: exitCode || 0 });
     });
   });
@@ -556,9 +571,9 @@ export async function executeCode(
 ```typescript
 // Role-based access control
 enum UserRole {
-  VIEWER = "viewer",
-  EDITOR = "editor",
-  ADMIN = "admin",
+  VIEWER = 'viewer',
+  EDITOR = 'editor',
+  ADMIN = 'admin',
 }
 
 interface ProjectPermission {
@@ -655,11 +670,11 @@ spec:
                   key: openai-key
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: '256Mi'
+              cpu: '250m'
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: '512Mi'
+              cpu: '500m'
 ```
 
 ### CI/CD Pipeline
@@ -679,8 +694,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20'
+          cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
@@ -740,21 +755,18 @@ jobs:
 ### Future Enhancements
 
 1. **Advanced AI Features**
-
    - Context-aware code suggestions
    - Automated testing generation
    - Code review automation
    - Documentation generation
 
 2. **Collaboration Features**
-
    - Real-time editing with operational transforms
    - Video/voice chat integration
    - Shared workspaces
    - Comment and review system
 
 3. **ML/AI Training Pipeline**
-
    - Custom model fine-tuning
    - Experiment tracking dashboard
    - A/B testing for AI features
