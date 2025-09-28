@@ -46,7 +46,7 @@
     "check:console": "node scripts/replace-console-with-logger.cjs --dry-run --report=artifacts/console-replace-report.json",
     "apply:console": "node scripts/replace-console-with-logger.cjs --apply --report=artifacts/console-replace-report.json",
     "mark:cli": "node scripts/mark-cli-no-console.cjs",
-    "test:scripts": "node --test scripts/__tests__/replace-console.test.js"
+    "test:scripts": "node --test scripts/__tests__/replace-console.test.cjs"
   },
   
   "devDependencies": {
