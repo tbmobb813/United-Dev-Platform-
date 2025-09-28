@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import logger from '@udp/logger';
 import { getProviders, signIn, getSession } from 'next-auth/react';
 import { useState } from 'react';
 
@@ -22,7 +23,7 @@ export default function SignIn({ providers }: SignInProps) {
     try {
       await signIn(providerId, { callbackUrl: '/' });
     } catch (error) {
-      console.error('Sign in error:', error);
+      logger.error('Sign in error:', error);
       setIsLoading(null);
     }
   };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import logger from '@udp/logger';
 import { Button } from './Button';
 import { Card } from './Card';
 import { Input } from './Input';
@@ -50,7 +51,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         try {
           setSettings({ ...defaultSettings, ...JSON.parse(savedSettings) });
         } catch (error) {
-          console.error('Failed to load settings:', error);
+          logger.error('Failed to load settings:', error);
         }
       }
     }
@@ -63,7 +64,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
       setIsSaved(true);
       window.setTimeout(() => setIsSaved(false), 2000);
     } catch (error) {
-      console.error('Failed to save settings:', error);
+      logger.error('Failed to save settings:', error);
     } finally {
       setIsLoading(false);
     }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logger from '@udp/logger';
 import { Modal } from './Modal';
 import { Card } from './Card';
 import { Input } from './Input';
@@ -81,7 +82,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
       onClose();
     } catch (error) {
-      console.error('File operation failed:', error);
+      logger.error('File operation failed:', error);
     } finally {
       setIsLoading(false);
     }

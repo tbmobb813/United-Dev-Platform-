@@ -1,10 +1,11 @@
 // Test file to verify imports work correctly
 import { AIAssistant } from '@udp/ai';
 import { Button, Card, Modal } from '@udp/ui';
+import logger from '@udp/logger';
 
 /* eslint-disable no-console */
-console.log('✅ All imports successful!');
-console.log('AIAssistant:', typeof AIAssistant);
-console.log('Button:', typeof Button);
-console.log('Card:', typeof Card);
-console.log('Modal:', typeof Modal);
+logger.info('✅ All imports successful!');
+logger.info('AIAssistant:', typeof AIAssistant);
+logger.info('Button:', typeof Button);
+logger.info('Card:', typeof Card);
+logger.info('Modal:', typeof Modal);

@@ -12,6 +12,7 @@ import {
   MoveOptions,
   ReadFileOptions,
 } from './types';
+import logger from '@udp/logger';
 
 /**
  * Virtual file system implementation for browser environments
@@ -98,8 +99,7 @@ export class VirtualFileSystem implements FileSystemProvider {
         try {
           callback(event);
         } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error in file watcher callback:', error);
+          logger.error('Error in file watcher callback:', error);
         }
       });
     }
@@ -113,8 +113,7 @@ export class VirtualFileSystem implements FileSystemProvider {
           try {
             callback(event);
           } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error('Error in directory watcher callback:', error);
+            logger.error('Error in directory watcher callback:', error);
           }
         });
       }

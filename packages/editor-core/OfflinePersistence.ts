@@ -1,4 +1,5 @@
 import { IndexeddbPersistence } from 'y-indexeddb';
+import logger from '@udp/logger';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from 'yjs';
 
@@ -126,8 +127,7 @@ export class OfflinePersistenceManager {
         }, 5000);
       });
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('Failed to initialize IndexedDB:', error);
+      logger.warn('Failed to initialize IndexedDB:', error);
       this.updateSyncStatus({
         error: `IndexedDB initialization failed: ${
           error instanceof Error ? error.message : 'Unknown error'
@@ -424,8 +424,7 @@ export class OfflinePersistenceManager {
         try {
           callback(event);
         } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error in event listener:', error);
+          logger.error('Error in event listener:', error);
         }
       });
     }

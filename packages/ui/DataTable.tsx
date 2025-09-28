@@ -104,7 +104,8 @@ export const DataTable = <T extends Record<string, unknown>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    return record[rowKey] || index;
+    // Coerce to React.Key to satisfy TypeScript; prefer string keys from data but fall back to index
+    return (record[rowKey as keyof T] as unknown as React.Key) || index;
   };
 
   const handleSort = (field: string) => {

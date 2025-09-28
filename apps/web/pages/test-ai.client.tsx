@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { AIAssistant } from '@udp/ai';
 import { Button } from '@udp/ui';
+import logger from '@udp/logger';
 
 export default function TestAIAssistantClient() {
   const [isAIOpen, setIsAIOpen] = useState(false);
@@ -13,7 +14,7 @@ export default function TestAIAssistantClient() {
   );
 
   const handleCodeInsert = (code: string) => {
-    console.log('Inserting code:', code);
+    logger.info('Inserting code:', code);
     window.alert(`Code would be inserted: ${code.substring(0, 50)}...`);
   };
 

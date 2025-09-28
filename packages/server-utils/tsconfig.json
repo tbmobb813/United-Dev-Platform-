@@ -8,6 +8,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": false,
+    "jsx": "preserve",
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",

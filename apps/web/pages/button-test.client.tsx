@@ -1,9 +1,10 @@
 /* eslint-env browser */
 import { Button } from '@udp/ui';
+import logger from '@udp/logger';
 
 export default function ButtonTestClient() {
   const handleClick = () => {
-    console.log('Button clicked!');
+    logger.info('Button clicked!');
   };
 
   return (

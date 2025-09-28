@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
+import logger from '@udp/logger';
 import { CollaborativeEditor } from '../../components/CollaborativeEditor';
 
 export default function CollaborateScreen() {
@@ -23,13 +24,13 @@ export default function CollaborateScreen() {
       setIsReady(true);
     } catch (error) {
       Alert.alert('Error', 'Failed to load user data');
-      console.error('Error loading user data:', error);
+      logger.error('Error loading user data:', error);
     }
   };
 
   const handleContentChange = (content: string) => {
     // Handle content changes (e.g., save to local storage)
-    console.log('Content updated:', content.length, 'characters');
+    logger.info('Content updated:', content.length, 'characters');
   };
 
   if (!isReady) {
