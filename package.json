@@ -25,7 +25,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "turbo type-check",
     "clean": "turbo clean && rm -rf node_modules",
-    "test": "turbo test -- --passWithNoTests",
+  "test": "NODE_OPTIONS=--experimental-vm-modules turbo test -- --passWithNoTests",
     "test:critical": "jest --config ./jest.config.critical.cjs --runInBand || true",
     "test:core": "jest --config ./jest.config.core.cjs --runInBand || true",
     "test:full": "jest --config ./jest.config.full.cjs --runInBand || true",

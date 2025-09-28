@@ -195,6 +195,9 @@ web-build/
 # Bundle artifacts
 *.jsbundle
 
+# Generated artifacts (detector reports, build debug files)
+artifacts/
+
 # CocoaPods
 ios/Pods/
 ios/Podfile.lock
