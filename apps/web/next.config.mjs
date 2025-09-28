@@ -55,6 +55,17 @@ const nextConfig = {
       // Add a defensive alias from that exact nested path string back to the
       // canonical hoisted ESM file so webpack treats these as the same module.
       'node_modules/.pnpm/yjs@13.6.27/node_modules/yjs/dist/yjs.mjs': yjsEsm,
+      // Exact nested pnpm paths observed in production source maps. Map them
+      // back to the canonical installed files so webpack treats these as the
+      // same module and doesn't inline multiple copies of the runtime.
+      'node_modules/.pnpm/y-protocols@1.0.6_yjs@13.6.27/node_modules/y-protocols/dist/sync.cjs':
+        require.resolve('y-protocols/dist/sync.cjs'),
+      'node_modules/.pnpm/y-protocols@1.0.6_yjs@13.6.27/node_modules/y-protocols/dist/awareness.cjs':
+        require.resolve('y-protocols/dist/awareness.cjs'),
+      'node_modules/.pnpm/y-protocols@1.0.6_yjs@13.6.27/node_modules/y-protocols/dist/auth.cjs':
+        require.resolve('y-protocols/dist/auth.cjs'),
+      'node_modules/.pnpm/y-websocket@1.5.4_yjs@13.6.27/node_modules/y-websocket/dist/y-websocket.cjs':
+        require.resolve('y-websocket'),
     };
 
     // Prefer the ESM 'module' field during client resolution so bundlers use
@@ -126,6 +137,58 @@ const nextConfig = {
           }
         )
       );
+      // Canonicalize any y-protocols requests (including nested pnpm layouts)
+      // to the installed package entry so webpack treats them as the same
+      // module across different pnpm/hoisted layouts.
+      config.plugins.push(
+        new webpackPkg.NormalModuleReplacementPlugin(/^y-protocols(\/.*)?$/, resource => {
+          // Map common y-protocols import variants to the explicit dist CJS
+          // files which are guaranteed to exist in the package. Avoid
+          // resolving the package root (which has no "." export) to
+          // prevent ERR_PACKAGE_PATH_NOT_EXPORTED during build.
+          const req = resource.request || '';
+          if (req === 'y-protocols' || req === 'y-protocols/sync' || req === 'y-protocols/sync.js') {
+            resource.request = require.resolve('y-protocols/dist/sync.cjs');
+          } else if (req.includes('awareness')) {
+            resource.request = require.resolve('y-protocols/dist/awareness.cjs');
+          } else if (req.includes('auth')) {
+            resource.request = require.resolve('y-protocols/dist/auth.cjs');
+          } else {
+            // Fallback to the sync CJS bundle.
+            resource.request = require.resolve('y-protocols/dist/sync.cjs');
+          }
+        })
+      );
+      // Also rewrite the specific nested pnpm y-protocols dist paths we observed
+      // in source maps back to the canonical installed dist files.
+      config.plugins.push(
+        new webpackPkg.NormalModuleReplacementPlugin(
+          /node_modules\/\.pnpm\/y-protocols@.*\/node_modules\/y-protocols\/dist\/.*\.cjs$/,
+          resource => {
+            // Normalize to the package-installed dist files (sync/awareness/auth)
+            // Let Node resolution pick the precise file where possible.
+            // Keep the original request basename so the module resolver can
+            // locate the right dist file under the package.
+            const basename = resource.request.replace(/^.*dist\//, 'dist/');
+            resource.request = require.resolve(`y-protocols/${basename}`);
+          }
+        )
+      );
+      // Canonicalize nested pnpm y-websocket dist path to the installed package
+      config.plugins.push(
+        new webpackPkg.NormalModuleReplacementPlugin(
+          /node_modules\/\.pnpm\/y-websocket@.*\/node_modules\/y-websocket\/dist\/y-websocket\.cjs$/,
+          resource => {
+            resource.request = require.resolve('y-websocket');
+          }
+        )
+      );
+      // Canonicalize y-websocket imports to the resolved package entry too.
+      config.plugins.push(
+        new webpackPkg.NormalModuleReplacementPlugin(/^y-websocket$/, resource => {
+          resource.request = require.resolve('y-websocket');
+        })
+      );
       // As a safety-net, also rewrite bare 'yjs' requests to the canonical file
       // (alias already exists above, but NormalModuleReplacementPlugin ensures
       // absolute requests are also rewritten).
@@ -134,19 +197,35 @@ const nextConfig = {
           resource.request = yjsEsm;
         })
       );
+      // Emit external sidecar source maps instead of inline data-URIs. Some
+      // vendor bundles (and server chunks) previously contained inline
+      // sourceMappingURL data URIs which the duplicate detector couldn't
+      // reliably parse. Force webpack to write separate `.map` sidecar files
+      // so the detector can read and map generated locations back to the
+      // original sources.
+      if (typeof webpackPkg.SourceMapDevToolPlugin === 'function') {
+        // Avoid emitting inline/sourceURL maps; use the DevTool plugin to
+        // produce external files. We intentionally set config.devtool to
+        // false so webpack won't fall back to an inline devtool mode.
+        config.devtool = false;
+        config.plugins.push(
+          new webpackPkg.SourceMapDevToolPlugin({
+            filename: '[file].map',
+            // Keep a stable module filename template so mappings contain
+            // readable webpack:// paths that the detector can resolve.
+            moduleFilenameTemplate: info => `webpack:///${info.resourcePath}`,
+          })
+        );
+      }
     } catch (e) {
       // If webpack isn't resolvable for some reason, don't crash the build here;
       // the existing resolve.alias entries are still present and will be used.
     }
 
-    // Ensure server builds emit external source maps (sidecar .map files)
-    // so the duplicate detector can map generated positions back to
-    // original source files. This sets webpack's devtool only for server
-    // builds to keep client-side tooling unchanged (we already enable
-    // productionBrowserSourceMaps above for client bundles).
-    if (isServer) {
-      config.devtool = 'source-map';
-    }
+    // We emit external sidecar maps via SourceMapDevToolPlugin above (when
+    // webpack is available). That plugin writes usable `.map` files instead
+    // of inline data URIs which improves the duplicate detector's ability
+    // to trace generated locations back to original source modules.
 
     return config;
   },

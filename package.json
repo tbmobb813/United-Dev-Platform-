@@ -11,8 +11,8 @@
       "react": "18.3.1",
       "react-dom": "18.3.1",
       "yjs": "13.6.27",
-        "y-protocols": "1.0.6",
-        "y-websocket": "1.5.4"
+      "y-protocols": "1.0.6",
+      "y-websocket": "1.5.4"
     }
   },
   "scripts": {
@@ -25,7 +25,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "turbo type-check",
     "clean": "turbo clean && rm -rf node_modules",
-  "test": "turbo test -- --passWithNoTests",
+    "test": "turbo test -- --passWithNoTests",
     "test:critical": "jest --config ./jest.config.critical.cjs --runInBand || true",
     "test:core": "jest --config ./jest.config.core.cjs --runInBand || true",
     "test:full": "jest --config ./jest.config.full.cjs --runInBand || true",

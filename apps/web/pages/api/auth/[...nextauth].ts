@@ -7,8 +7,8 @@ import type { NextAuthOptions } from 'next-auth';
 // detector. For production, keep the canonical config in
 // `apps/web/lib/authOptions.ts` or a shared package and rewire as needed.
 const authOptions: NextAuthOptions = {
-	providers: [],
-	session: { strategy: 'jwt' },
+  providers: [],
+  session: { strategy: 'jwt' },
 };
 
 export default NextAuth(authOptions);
