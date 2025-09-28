@@ -29,6 +29,9 @@ if (!r) {
 const summary = `scanned:${r.scannedFiles || 0} flagged:${r.flaggedFiles || 0} severity:${r.severity || 'unknown'} strict:${!!r.strict}`;
 console.log(summary);
 if (process.env.GITHUB_OUTPUT) {
-  fs.appendFileSync(process.env.GITHUB_OUTPUT, `summary<<EOF\n${summary}\nEOF\n`);
+  fs.appendFileSync(
+    process.env.GITHUB_OUTPUT,
+    `summary<<EOF\n${summary}\nEOF\n`
+  );
 }
 process.exit(0);
