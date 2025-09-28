@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "node server.js",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node server.js",
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",

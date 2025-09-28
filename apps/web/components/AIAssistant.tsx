@@ -1,6 +1,7 @@
 /* global TextDecoder */
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Card, Stack, Input, Button, Loading } from '@udp/ui';
+import logger from '@udp/logger';
 
 export interface ChatMessage {
   id: string;
@@ -158,7 +159,7 @@ Please provide helpful, accurate coding assistance with explanations.`;
         }
       }
     } catch (error) {
-      console.error('AI request failed:', error);
+      logger.error('AI request failed:', error);
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -290,35 +291,35 @@ Please provide:
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="🤖 AI Coding Assistant"
-      size="large"
+      title='🤖 AI Coding Assistant'
+      size='large'
       actions={[
-        <Button key="clear" variant="ghost" onClick={clearChat}>
+        <Button key='clear' variant='ghost' onClick={clearChat}>
           Clear Chat
         </Button>,
-        <Button key="close" variant="secondary" onClick={onClose}>
+        <Button key='close' variant='secondary' onClick={onClose}>
           Close
         </Button>,
       ]}
     >
-      <Stack gap="medium" style={{ height: '70vh' }}>
+      <Stack gap='medium' style={{ height: '70vh' }}>
         {/* Enhanced Quick Actions */}
         {selectedCode && (
-          <Card title="✨ Quick Actions" padding="small">
-            <Stack direction="row" gap="small" wrap>
-              <Button size="small" onClick={explainSelection}>
+          <Card title='✨ Quick Actions' padding='small'>
+            <Stack direction='row' gap='small' wrap>
+              <Button size='small' onClick={explainSelection}>
                 📖 Explain
               </Button>
-              <Button size="small" onClick={writeTests}>
+              <Button size='small' onClick={writeTests}>
                 🧪 Write Tests
               </Button>
-              <Button size="small" onClick={optimizeCode}>
+              <Button size='small' onClick={optimizeCode}>
                 ⚡ Optimize
               </Button>
-              <Button size="small" onClick={debugCode}>
+              <Button size='small' onClick={debugCode}>
                 🐛 Debug
               </Button>
-              <Button size="small" onClick={generateDocumentation}>
+              <Button size='small' onClick={generateDocumentation}>
                 📝 Document
               </Button>
             </Stack>
@@ -327,8 +328,8 @@ Please provide:
 
         {/* Context Information */}
         {(fileName || cursorPosition) && (
-          <Card title="📍 Context" padding="small">
-            <Stack gap="small">
+          <Card title='📍 Context' padding='small'>
+            <Stack gap='small'>
               {fileName && (
                 <div>
                   <strong>File:</strong> {fileName}
@@ -447,11 +448,11 @@ Please provide:
         </div>
 
         {/* Enhanced Input Form */}
-        <Stack direction="row" gap="small" align="center">
+        <Stack direction='row' gap='small' align='center'>
           <Input
             value={inputValue}
             onChange={setInputValue}
-            placeholder="Ask me anything about your code..."
+            placeholder='Ask me anything about your code...'
             style={{ flex: 1 }}
             disabled={isLoading}
           />

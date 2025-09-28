@@ -19,7 +19,8 @@
     "baseUrl": ".",
     "noUnusedParameters": false,
     "paths": {
-      "@udp/ui": ["../ui/index.ts"]
+      "@udp/ui": ["../ui/index.ts"],
+      "@udp/logger": ["../logger/index.ts"]
     },
     "typeRoots": ["../../node_modules/@types", "node_modules/@types"]
   },

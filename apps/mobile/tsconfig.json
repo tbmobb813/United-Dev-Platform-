@@ -2,10 +2,12 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
       "@udp/ui-native": ["../../packages/ui-native/index.js"],
-      "@udp/editor-core": ["../../packages/editor-core/index.ts"]
+      "@udp/editor-core": ["../../packages/editor-core/index.ts"],
+      "@udp/logger": ["../../packages/logger/index.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
