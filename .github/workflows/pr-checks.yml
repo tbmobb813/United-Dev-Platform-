@@ -32,3 +32,13 @@ jobs:
 
       - name: Run type-check
         run: pnpm type-check
+
+      - name: Run console-check (dry-run)
+        run: pnpm -w run check:console
+
+      - name: Upload console-check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: console-replace-report
+          path: artifacts/console-replace-report.json
