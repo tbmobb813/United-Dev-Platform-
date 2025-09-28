@@ -42,3 +42,8 @@ jobs:
         with:
           name: console-replace-report
           path: artifacts/console-replace-report.json
+
+      - name: Fail if console-check found edits
+        if: always()
+        run: |
+          node -e "const fs=require('fs'); const p='artifacts/console-replace-report.json'; if(!fs.existsSync(p)){console.log('no report'); process.exit(0);} const r=JSON.parse(fs.readFileSync(p,'utf8')); const found=r.some(e=>Array.isArray(e.edits)&&e.edits.length>0); if(found){console.error('console-check detected console calls that would be replaced — fail the job'); process.exit(1);} console.log('console-check: no edits')"
