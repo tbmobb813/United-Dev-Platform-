@@ -13,6 +13,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      yjs:
+        specifier: 13.6.27
+        version: 13.6.27
     devDependencies:
       '@jest/globals':
         specifier: ^30.1.2

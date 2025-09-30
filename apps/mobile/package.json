@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest --config ../../jest.config.core.cjs --runInBand"
   },
   "dependencies": {
     "@rivascva/react-native-code-editor": "^1.2.2",

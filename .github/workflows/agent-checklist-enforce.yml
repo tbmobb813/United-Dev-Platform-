@@ -1,0 +1,79 @@
+name: Agent PR — Checklist enforcement
+
+on:
+    pull_request:
+        types: [opened, edited, reopened, synchronize]
+
+jobs:
+    enforce_checklist:
+        name: Enforce Agent PR checklist
+        runs-on: ubuntu-latest
+        permissions:
+            issues: write
+        env:
+            AGENT_CHECK_STRICT: ${{ secrets.AGENT_CHECK_STRICT || 'false' }}
+        steps:
+            - name: Check out
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Validate Agent-PR-Checklist
+              uses: actions/github-script@v6
+              with:
+                  script: |
+                      const body = context.payload.pull_request && context.payload.pull_request.body ? context.payload.pull_request.body : '';
+                      const prNumber = context.payload.pull_request.number;
+                      const owner = context.repo.owner;
+                      const repo = context.repo.repo;
+
+                      const postComment = async (msg) => {
+                        await github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body: msg });
+                        core.info('Posted comment to PR ' + prNumber);
+                      };
+
+                      const makeError = async (msg) => {
+                        if (process.env.AGENT_CHECK_STRICT === 'true') {
+                          core.setFailed(msg);
+                        } else {
+                          await postComment(msg);
+                        }
+                      };
+
+                      if (!body) {
+                        await makeError(':warning: Agent check: PR body empty. Please include the Agent-PR-Checklist block as an HTML comment (see `.github/copilot-instructions.md`).');
+                        return;
+                      }
+
+                      // Extract the HTML comment block that starts with Agent-PR-Checklist
+                      const match = body.match(/Agent-PR-Checklist:([\s\S]*?)-->/);
+                      if (!match) {
+                        await makeError(':warning: Agent check: missing Agent-PR-Checklist comment block. Please include it in the PR body. See `.github/copilot-instructions.md` for format.');
+                        return;
+                      }
+
+                      const block = match[1];
+
+                      const requiredKeys = ['branch', 'pr_summary', 'files_changed', 'commands_run', 'ci_status'];
+                      const missing = requiredKeys.filter(k => !new RegExp(`${k}:`, 'i').test(block));
+                      if (missing.length) {
+                        await makeError(`:warning: Agent check: Agent-PR-Checklist is missing keys: ${missing.join(', ')}. Please populate them in the PR body.`);
+                        return;
+                      }
+
+                      // Ensure commands_run includes at least the required commands
+                      const hasTypecheck = /pnpm run type-check/.test(block) || /pnpm type-check/.test(block);
+                      const hasLint = /pnpm run lint/.test(block) || /pnpm lint/.test(block);
+                      const hasTest = /pnpm run test/.test(block) || /pnpm test/.test(block);
+                      const hasDuplicateYjs = /pnpm run check:duplicate-yjs/.test(block) || /pnpm check:duplicate-yjs/.test(block);
+
+                      if (!hasTypecheck || !hasLint || !hasTest || !hasDuplicateYjs) {
+                        await makeError(':warning: Agent check: Agent-PR-Checklist.commands_run must include: `pnpm run type-check`, `pnpm run lint`, `pnpm run test`, `pnpm run check:duplicate-yjs`.');
+                        return;
+                      }
+
+                      if (process.env.AGENT_CHECK_STRICT === 'true') {
+                        core.info('Agent checklist strict mode: passing as checks matched');
+                      } else {
+                        await postComment(':white_check_mark: Agent-PR-Checklist present and appears populated.');
+                      }
