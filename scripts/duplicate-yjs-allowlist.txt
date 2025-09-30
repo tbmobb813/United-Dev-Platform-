@@ -1,0 +1,16 @@
+# Duplicate Yjs detector allowlist
+# Lines here are treated as substrings matched against generated/resolved paths.
+# Add vendor package names or path fragments to ignore noisy matches.
+monaco-editor
+@monaco-editor/react
+jose
+lib0
+# End of allowlist
+
+# Build / chunk noise observed in Next/.next manifests and chunk names
+vendors-yjs-
+static/chunks/vendors-yjs-
+middleware-build-manifest
+middleware-react-loadable-manifest
+_buildManifest.js
+webpack/runtime/get%20javascript%20chunk%20filename
