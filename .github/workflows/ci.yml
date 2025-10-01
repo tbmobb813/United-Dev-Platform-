@@ -50,7 +50,7 @@ jobs:
         run: pnpm type-check
 
       - name: Run tests
-        run: pnpm test
+        run: pnpm test:ci
 
       - name: Build web
         run: pnpm --filter @udp/web build

@@ -424,7 +424,7 @@ async function main() {
     strict: !!strict,
   };
 
-  // Determine severity/exit logic:
+  // Determine severity/exit logic by default (non-strict):
   // - If more than one distinct Yjs runtime candidate exists => error
   // - If exactly one Yjs runtime candidate exists => warning (do not fail CI)
   // - Otherwise fall back to counting unique keys: >1 => error, ===1 => warning, 0 => ok
@@ -446,38 +446,63 @@ async function main() {
           : 'ok';
   }
 
-  if (report) {
-    fs.writeFileSync(report, JSON.stringify(result, null, 2));
+  // If strict mode is requested, escalate any flagged files (>=1) to an error.
+  if (strict && result.flaggedFiles >= 1) {
+    result.severity = 'error';
   }
 
+  async function writeReportAtomic(reportPath, obj) {
+    try {
+      const tmp = reportPath + '.' + Date.now() + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(obj, null, 2));
+      fs.renameSync(tmp, reportPath);
+    } catch (err) {
+      // ignore best-effort write errors but surface when running in CI
+      // eslint-disable-next-line no-console
+      console.error('Failed to write report:', err && err.message ? err.message : String(err));
+    }
+  }
+  if (report) {
+    await writeReportAtomic(report, result);
+  }
+
+  // eslint-disable-next-line no-console
   console.log(
     `Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`
   );
   if (report) {
+    // eslint-disable-next-line no-console
     console.log(`Wrote report to ${report}`);
   }
 
   if (result.flaggedFiles > 1) {
+    // eslint-disable-next-line no-console
     console.error(
       'Potential duplicate Yjs runtime detected (more than one flagged chunk/source).'
     );
     if (report) {
-      fs.writeFileSync(report, JSON.stringify(result, null, 2));
+      await writeReportAtomic(report, result);
     }
     process.exit(3);
   }
   if (result.flaggedFiles === 1) {
+    // eslint-disable-next-line no-console
     console.warn(
       'Single chunk/source references Yjs-like identifiers (flagged as warning).'
     );
     if (report) {
-      fs.writeFileSync(report, JSON.stringify(result, null, 2));
+      await writeReportAtomic(report, result);
+    }
+    // If strict mode is set, escalate to an error
+    if (strict) {
+      process.exit(3);
     }
     process.exit(0);
   }
   if (report) {
-    fs.writeFileSync(report, JSON.stringify(result, null, 2));
+    await writeReportAtomic(report, result);
   }
+  // In strict mode, any flagged files (>=1) should have exited earlier.
   process.exit(0);
 }
 

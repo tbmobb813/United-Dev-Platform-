@@ -11,6 +11,8 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      AGENT_CHECK_STRICT: "true"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,13 +53,14 @@ jobs:
         run: pnpm test:critical
 
       - name: Run full tests
-        run: pnpm test
+        # Use the CI-focused test script which forwards Jest flags correctly
+        run: pnpm test:ci
 
       - name: Early duplicate-Yjs check (conditional)
         if: github.actor == 'dependabot[bot]' || startsWith(github.actor, 'user-agent-') || env.AGENT_CHECK_STRICT == 'true'
         run: |
-          echo 'Running duplicate-yjs check (early)'
-          pnpm run check:duplicate-yjs || (
+          echo 'Running duplicate-yjs check (early) (strict enabled)'
+          pnpm run check:duplicate-yjs -- --strict || (
             echo 'duplicate-yjs check failed'; exit 1
           )
 
