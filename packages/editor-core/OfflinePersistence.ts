@@ -453,10 +453,10 @@ export class OfflinePersistenceManager {
         syncStatus: this.syncStatus.isConnected
           ? 'synced'
           : this.syncStatus.pendingChanges > 0
-          ? 'pending'
-          : this.syncStatus.error
-          ? 'error'
-          : 'offline',
+            ? 'pending'
+            : this.syncStatus.error
+              ? 'error'
+              : 'offline',
       },
     ];
   }

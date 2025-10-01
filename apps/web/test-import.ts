@@ -2,6 +2,7 @@
 import { AIAssistant } from '@udp/ai';
 import { Button, Card, Modal } from '@udp/ui';
 
+/* eslint-disable no-console */
 console.log('✅ All imports successful!');
 console.log('AIAssistant:', typeof AIAssistant);
 console.log('Button:', typeof Button);

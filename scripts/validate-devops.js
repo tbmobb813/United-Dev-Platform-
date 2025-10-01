@@ -77,6 +77,7 @@ const checks = [
 ];
 
 function validateDevOpsFoundation() {
+  /* eslint-disable no-console */
   console.log('🔍 Validating DevOps Foundation Setup...\n');
 
   const results = checks.map(({ name, check, details }) => {
