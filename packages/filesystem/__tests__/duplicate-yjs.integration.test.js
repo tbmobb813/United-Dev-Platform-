@@ -33,17 +33,25 @@ describe('duplicate-yjs detector - integration', () => {
       'check-duplicate-yjs.cjs'
     );
 
-    const res = spawnSync(process.execPath, [detector, '--dir', fixtureDir, '--report', reportPath], {
-      encoding: 'utf8',
-      timeout: 60_000,
-      maxBuffer: 10 * 1024 * 1024
-    });
+    const res = spawnSync(
+      process.execPath,
+      [detector, '--dir', fixtureDir, '--report', reportPath],
+      {
+        encoding: 'utf8',
+        timeout: 60_000,
+        maxBuffer: 10 * 1024 * 1024,
+      }
+    );
 
     // Surface stdout/stderr to help debug CI flakes
-  // eslint-disable-next-line no-console
-  if (res.stdout) { console.log('detector stdout:', res.stdout); }
-  // eslint-disable-next-line no-console
-  if (res.stderr) { console.log('detector stderr:', res.stderr); }
+    // eslint-disable-next-line no-console
+    if (res.stdout) {
+      console.log('detector stdout:', res.stdout);
+    }
+    // eslint-disable-next-line no-console
+    if (res.stderr) {
+      console.log('detector stderr:', res.stderr);
+    }
 
     if (res.error) {
       throw res.error;

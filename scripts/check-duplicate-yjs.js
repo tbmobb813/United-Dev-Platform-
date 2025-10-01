@@ -459,7 +459,10 @@ async function main() {
     } catch (err) {
       // ignore best-effort write errors but surface when running in CI
       // eslint-disable-next-line no-console
-      console.error('Failed to write report:', err && err.message ? err.message : String(err));
+      console.error(
+        'Failed to write report:',
+        err && err.message ? err.message : String(err)
+      );
     }
   }
   if (report) {
