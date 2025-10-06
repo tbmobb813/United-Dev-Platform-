@@ -10,11 +10,11 @@
     "prepare": "pnpm run generate && pnpm build"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2"
+    "@prisma/client": "^6.16.3"
   },
   "devDependencies": {
     "typescript": "^5.3.3",
-    "prisma": "^6.16.2",
+    "prisma": "^6.16.3",
     "@types/node": "^20.11.2"
   }
 }
