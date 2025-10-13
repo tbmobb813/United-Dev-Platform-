@@ -107,6 +107,18 @@ jobs:
       - name: Run ESLint
         run: pnpm lint
 
+      - name: Debug Prettier environment (temporary)
+        run: |
+          echo "--- git ---"
+          git rev-parse --short HEAD
+          git status --porcelain || true
+          echo "--- versions ---"
+          node --version
+          pnpm --version || true
+          pnpm exec -- prettier --version || true
+          echo "--- prettier config path ---"
+          pnpm exec -- prettier --find-config-path packages/ai/AIAssistant.tsx || true
+
       - name: Check Prettier formatting
         run: pnpm format:check
 
