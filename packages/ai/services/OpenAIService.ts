@@ -197,10 +197,14 @@ export class OpenAIService extends AIService {
       }
 
       const data = await response.json();
+      type OpenAIModel = { id: string };
       return data.data
         .filter(
-          (model: unknown): model is { id: string } =>
-            typeof model === 'object' && model !== null && 'id' in model
+          (model: unknown): model is OpenAIModel =>
+            typeof model === 'object' &&
+            model !== null &&
+            'id' in model &&
+            typeof (model as { id?: unknown }).id === 'string'
         )
         .map(model => model.id)
         .sort();
