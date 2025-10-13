@@ -82,7 +82,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
       | 'optimize'
       | 'test' = 'chat'
   ) => {
-    if (!content.trim()) return;
+    if (!content.trim()) {
+      return;
+    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -226,8 +228,8 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="🤖 AI Assistant"
-      size="large"
+      title='🤖 AI Assistant'
+      size='large'
     >
       {/* @ts-ignore */}
       <div
@@ -304,11 +306,11 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
                 </div>
                 {message.role === 'assistant' && onCodeInsert && (
                   <Button
-                    size="small"
-                    variant="outline"
-                    onClick={() => onCodeInsert(message.content)}
-                    style={{ marginTop: '8px' }}
-                  >
+                      size='small'
+                      variant='outline'
+                      onClick={() => onCodeInsert(message.content)}
+                      style={{ marginTop: '8px' }}
+                    >
                     Insert Code
                   </Button>
                 )}
@@ -325,13 +327,13 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
         {/* Quick Actions */}
         {selectedCode && (
-          <Card title="Quick Actions" style={{ marginBottom: '16px' }}>
+          <Card title='Quick Actions' style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {quickActions.map(action => (
                 <Button
                   key={action.label}
-                  variant="outline"
-                  size="small"
+                  variant='outline'
+                  size='small'
                   onClick={action.action}
                   disabled={isLoading}
                 >
@@ -349,10 +351,10 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
         {/* Input Area */}
         <div style={{ display: 'flex', gap: '8px' }}>
-          <Input
+            <Input
             value={input}
             onChange={setInput}
-            placeholder="Ask me anything about your code..."
+            placeholder='Ask me anything about your code...'
             style={{ flex: 1 }}
           />
           <Button

@@ -357,10 +357,10 @@ class AIAssistant extends React.Component<AIAssistantProps, AIAssistantState> {
                 marginTop: 'auto',
               }}
             >
-              <input
+                <input
                 value={input}
                 onChange={e => this.setState({ input: e.target.value })}
-                placeholder="Ask me anything about your code..."
+                placeholder='Ask me anything about your code...'
                 style={{
                   flex: 1,
                   padding: '12px 16px',
