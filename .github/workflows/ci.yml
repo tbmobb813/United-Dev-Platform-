@@ -23,6 +23,19 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -31,6 +31,19 @@ jobs:
           corepack enable
           corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -68,6 +81,19 @@ jobs:
           corepack enable
           corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Restore pnpm cache
         uses: actions/cache@v3
@@ -103,6 +129,19 @@ jobs:
           corepack enable
           corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Restore pnpm cache
         uses: actions/cache@v3
@@ -134,6 +173,19 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
 
 
       - name: Restore pnpm cache
