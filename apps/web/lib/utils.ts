@@ -20,10 +20,12 @@ export function isPrismaError(error: unknown): error is { code?: string } {
   );
 }
 
-export function toEnum<T extends string = string>(v: string | undefined): T | undefined {
+export function toEnum<T extends string = string>(
+  v: string | undefined
+): T | undefined {
   if (v === undefined || v === null) return undefined;
   // simple passthrough; callers usually convert strings to enum types
-  return (v as unknown) as T;
+  return v as unknown as T;
 }
 
 export { toEnum as toEnumString };
