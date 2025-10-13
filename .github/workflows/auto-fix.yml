@@ -19,10 +19,11 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 'latest'
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
