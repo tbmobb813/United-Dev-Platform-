@@ -82,9 +82,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
       | 'optimize'
       | 'test' = 'chat'
   ) => {
-    if (!content.trim()) {
-      return;
-    }
+    if (!content.trim()) return;
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -132,7 +130,6 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
         setStreamingContent('');
       } else {
-        // Fallback to placeholder if no AI manager
         const fallbackResponse = await simulateFallbackResponse(
           content,
           intent
