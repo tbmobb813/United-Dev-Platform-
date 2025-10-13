@@ -62,8 +62,8 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
 
         <div style={{ display: 'flex', gap: '4px' }}>
           <Button
-            size="small"
-            variant="ghost"
+            size='small'
+            variant='ghost'
             onClick={toggleMinimized}
             style={{
               padding: '4px 6px',

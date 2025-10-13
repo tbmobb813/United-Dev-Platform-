@@ -297,24 +297,24 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         ${isVisible ? 'notification--visible' : ''}
         ${isExiting ? 'notification--exiting' : ''}
       `}
-      role="alert"
-      aria-live="polite"
+      role='alert'
+      aria-live='polite'
     >
-      <div className="notification__content">
-        <div className="notification__icon">{getIcon()}</div>
+      <div className='notification__content'>
+        <div className='notification__icon'>{getIcon()}</div>
 
-        <div className="notification__body">
+        <div className='notification__body'>
           {notification.title && (
-            <div className="notification__title">{notification.title}</div>
+            <div className='notification__title'>{notification.title}</div>
           )}
-          <div className="notification__message">{notification.message}</div>
+          <div className='notification__message'>{notification.message}</div>
 
           {notification.actions && notification.actions.length > 0 && (
-            <div className="notification__actions">
+            <div className='notification__actions'>
               {notification.actions.map((action, index) => (
                 <button
                   key={index}
-                  type="button"
+                  type='button'
                   onClick={action.onClick}
                   className={`notification__action notification__action--${
                     action.variant || 'secondary'
@@ -328,10 +328,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         </div>
 
         <button
-          type="button"
+          type='button'
           onClick={handleClose}
-          className="notification__close"
-          aria-label="Close notification"
+          className='notification__close'
+          aria-label='Close notification'
         >
           ✕
         </button>
@@ -341,7 +341,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         notification.duration &&
         notification.duration > 0 && (
           <div
-            className="notification__progress"
+            className='notification__progress'
             style={{
               animationDuration: `${notification.duration}ms`,
             }}
@@ -418,14 +418,14 @@ export const Toast: React.FC<ToastProps> = ({
     <div
       className={`toast toast--${type} ${isVisible ? 'toast--visible' : ''}`}
     >
-      <div className="toast__icon">{getIcon()}</div>
-      <div className="toast__message">{message}</div>
+      <div className='toast__icon'>{getIcon()}</div>
+      <div className='toast__message'>{message}</div>
       {onClose && (
         <button
-          type="button"
+          type='button'
           onClick={onClose}
-          className="toast__close"
-          aria-label="Close"
+          className='toast__close'
+          aria-label='Close'
         >
           ✕
         </button>
