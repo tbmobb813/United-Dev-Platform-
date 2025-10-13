@@ -261,7 +261,7 @@ export const DataTable = <T extends Record<string, any>>({
     const direction = isActive ? sortState.direction : null;
 
     return (
-      <span className='datatable__sort-icon'>
+      <span className="datatable__sort-icon">
         <span
           className={`datatable__sort-up ${
             direction === 'asc' ? 'datatable__sort-up--active' : ''
@@ -317,8 +317,8 @@ export const DataTable = <T extends Record<string, any>>({
   if (loading) {
     return (
       <div className={tableClasses}>
-        <div className='datatable__loading'>
-          <div className='datatable__spinner' />
+        <div className="datatable__loading">
+          <div className="datatable__spinner" />
           <span>Loading...</span>
         </div>
       </div>
@@ -327,15 +327,15 @@ export const DataTable = <T extends Record<string, any>>({
 
   return (
     <div className={tableClasses}>
-      <div className='datatable__wrapper'>
-        <table className='datatable__table'>
-          <thead className='datatable__head'>
+      <div className="datatable__wrapper">
+        <table className="datatable__table">
+          <thead className="datatable__head">
             <tr>
               {rowSelection && (
-                <th className='datatable__selection-cell'>
+                <th className="datatable__selection-cell">
                   {rowSelection.type !== 'radio' && (
                     <input
-                      type='checkbox'
+                      type="checkbox"
                       checked={isAllSelected()}
                       ref={input => {
                         if (input) {
@@ -343,7 +343,7 @@ export const DataTable = <T extends Record<string, any>>({
                         }
                       }}
                       onChange={e => handleSelectAll(e.target.checked, e)}
-                      className='datatable__checkbox'
+                      className="datatable__checkbox"
                     />
                   )}
                 </th>
@@ -372,7 +372,7 @@ export const DataTable = <T extends Record<string, any>>({
                     }
                   }}
                 >
-                  <div className='datatable__header-content'>
+                  <div className="datatable__header-content">
                     <span>{column.title}</span>
                     {getSortIcon(column)}
                   </div>
@@ -380,14 +380,14 @@ export const DataTable = <T extends Record<string, any>>({
               ))}
             </tr>
           </thead>
-          <tbody className='datatable__body'>
+          <tbody className="datatable__body">
             {paginatedData.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length + (rowSelection ? 1 : 0)}
-                  className='datatable__empty-cell'
+                  className="datatable__empty-cell"
                 >
-                  <div className='datatable__empty'>{emptyText}</div>
+                  <div className="datatable__empty">{emptyText}</div>
                 </td>
               </tr>
             ) : (
@@ -407,14 +407,14 @@ export const DataTable = <T extends Record<string, any>>({
                     {...rowProps}
                   >
                     {rowSelection && (
-                      <td className='datatable__selection-cell'>
+                      <td className="datatable__selection-cell">
                         <input
                           type={rowSelection.type || 'checkbox'}
                           checked={selected}
                           onChange={e =>
                             handleRowSelection(record, e.target.checked, e)
                           }
-                          className='datatable__checkbox'
+                          className="datatable__checkbox"
                           {...(rowSelection.getCheckboxProps?.(record) || {})}
                         />
                       </td>
@@ -444,7 +444,7 @@ export const DataTable = <T extends Record<string, any>>({
       </div>
 
       {pagination && (
-        <div className='datatable__pagination'>
+        <div className="datatable__pagination">
           <DataTablePagination {...pagination} />
         </div>
       )}
@@ -517,19 +517,19 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
   };
 
   return (
-    <div className='datatable-pagination'>
+    <div className="datatable-pagination">
       {showTotal && (
-        <div className='datatable-pagination__total'>
+        <div className="datatable-pagination__total">
           {showTotal(total, [startIndex, endIndex])}
         </div>
       )}
 
-      <div className='datatable-pagination__controls'>
+      <div className="datatable-pagination__controls">
         <button
-          type='button'
+          type="button"
           disabled={current === 1}
           onClick={() => handlePageChange(current - 1)}
-          className='datatable-pagination__button'
+          className="datatable-pagination__button"
         >
           Previous
         </button>
@@ -537,7 +537,7 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
         {getPageNumbers().map((page, index) => (
           <button
             key={index}
-            type='button'
+            type="button"
             disabled={page === '...'}
             onClick={() => typeof page === 'number' && handlePageChange(page)}
             className={`
@@ -555,21 +555,21 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
         ))}
 
         <button
-          type='button'
+          type="button"
           disabled={current === totalPages}
           onClick={() => handlePageChange(current + 1)}
-          className='datatable-pagination__button'
+          className="datatable-pagination__button"
         >
           Next
         </button>
       </div>
 
       {showSizeChanger && (
-        <div className='datatable-pagination__size-changer'>
+        <div className="datatable-pagination__size-changer">
           <select
             value={pageSize}
             onChange={e => handlePageSizeChange(Number(e.target.value))}
-            className='datatable-pagination__size-select'
+            className="datatable-pagination__size-select"
           >
             {[10, 20, 50, 100].map(size => (
               <option key={size} value={size}>

@@ -212,7 +212,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Loading text='Loading file...' />
+        <Loading text="Loading file..." />
       </View>
     );
   }
@@ -220,8 +220,8 @@ export const FileViewer: React.FC<FileViewerProps> = ({
   return (
     <View style={styles.container}>
       {/* Header with file info */}
-      <Card title={`📄 ${file.name}`} padding='medium' style={{}}>
-        <Stack gap='small' style={{}}>
+      <Card title={`📄 ${file.name}`} padding="medium" style={{}}>
+        <Stack gap="small" style={{}}>
           <View style={styles.fileInfo}>
             <Text style={styles.filePath}>{file.path}</Text>
             <View style={styles.fileMetadata}>
@@ -237,35 +237,35 @@ export const FileViewer: React.FC<FileViewerProps> = ({
           </View>
 
           {/* Action buttons */}
-          <Stack direction='row' gap='small' style={{}}>
+          <Stack direction="row" gap="small" style={{}}>
             <Button
-              title='⬅️ Back'
+              title="⬅️ Back"
               onPress={onClose}
-              variant='secondary'
-              size='small'
+              variant="secondary"
+              size="small"
               style={{}}
             />
             {!readOnly && !isEditing && (
               <Button
-                title='✏️ Edit'
+                title="✏️ Edit"
                 onPress={handleEdit}
-                size='small'
+                size="small"
                 style={{}}
               />
             )}
             {isEditing && (
               <>
                 <Button
-                  title='💾 Save'
+                  title="💾 Save"
                   onPress={handleSave}
-                  size='small'
+                  size="small"
                   style={{}}
                 />
                 <Button
-                  title='❌ Cancel'
+                  title="❌ Cancel"
                   onPress={handleCancel}
-                  variant='secondary'
-                  size='small'
+                  variant="secondary"
+                  size="small"
                   style={{}}
                 />
               </>
@@ -282,7 +282,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
             value={editedContent}
             onChangeText={setEditedContent}
             multiline
-            placeholder='Start typing...'
+            placeholder="Start typing..."
             scrollEnabled
           />
         ) : (
@@ -295,35 +295,35 @@ export const FileViewer: React.FC<FileViewerProps> = ({
       {/* AI Actions Footer */}
       {showAIActions && (
         <View style={styles.aiActions}>
-          <Stack direction='row' gap='small' style={{}}>
+          <Stack direction="row" gap="small" style={{}}>
             <Button
-              title='🤖 Explain'
+              title="🤖 Explain"
               onPress={() => handleAIAction('explain')}
-              size='small'
-              variant='outline'
+              size="small"
+              variant="outline"
               style={{}}
               disabled={aiLoading}
             />
             <Button
-              title='🧪 Tests'
+              title="🧪 Tests"
               onPress={() => handleAIAction('test')}
-              size='small'
-              variant='outline'
+              size="small"
+              variant="outline"
               style={{}}
               disabled={aiLoading}
             />
             <Button
-              title='⚡ Optimize'
+              title="⚡ Optimize"
               onPress={() => handleAIAction('optimize')}
-              size='small'
-              variant='outline'
+              size="small"
+              variant="outline"
               style={{}}
               disabled={aiLoading}
             />
           </Stack>
           {aiLoading && (
             <View style={styles.aiLoadingContainer}>
-              <Loading text='AI processing...' />
+              <Loading text="AI processing..." />
             </View>
           )}
         </View>

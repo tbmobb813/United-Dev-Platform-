@@ -84,8 +84,8 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
   };
 
   return (
-    <Card title={`Collaboration (${users.length})`} padding='medium'>
-      <Stack gap='medium'>
+    <Card title={`Collaboration (${users.length})`} padding="medium">
+      <Stack gap="medium">
         <div
           style={{
             display: 'flex',
@@ -94,8 +94,8 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
           }}
         >
           <Button
-            variant='ghost'
-            size='small'
+            variant="ghost"
+            size="small"
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
             {isCollapsed ? 'Show Details ▼' : 'Hide Details ▲'}
@@ -117,7 +117,7 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
                 >
                   Active Now ({activeUsers.length})
                 </div>
-                <Stack gap='small'>
+                <Stack gap="small">
                   {activeUsers.map(user => (
                     <div
                       key={user.id}
@@ -129,7 +129,7 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
                         isActive={true}
                         lastSeen={user.lastSeen}
                         showPresence={true}
-                        size='medium'
+                        size="medium"
                       />
                     </div>
                   ))}
@@ -150,7 +150,7 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
                 >
                   Recently Active ({recentUsers.length})
                 </div>
-                <Stack gap='small'>
+                <Stack gap="small">
                   {recentUsers.map(user => (
                     <div
                       key={user.id}
@@ -162,7 +162,7 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
                         isActive={false}
                         lastSeen={user.lastSeen}
                         showPresence={true}
-                        size='medium'
+                        size="medium"
                       />
                     </div>
                   ))}
@@ -184,7 +184,7 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
                   Recent Activity
                 </div>
                 <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
-                  <Stack gap='small'>
+                  <Stack gap="small">
                     {activityFeed.slice(0, 5).map(activity => (
                       <div
                         key={activity.id}
@@ -201,7 +201,7 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
                       >
                         <PresenceIndicator
                           isActive={activity.action === 'joined'}
-                          size='small'
+                          size="small"
                           showStatus={false}
                         />
                         <span>

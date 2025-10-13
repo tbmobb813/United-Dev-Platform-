@@ -149,10 +149,10 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
           style={styles.editor}
           value={content}
           onChangeText={handleTextChange}
-          placeholder='Type here and collaborate in real-time...'
-          placeholderTextColor='#9ca3af'
+          placeholder="Type here and collaborate in real-time..."
+          placeholderTextColor="#9ca3af"
           multiline
-          textAlignVertical='top'
+          textAlignVertical="top"
           editable={isConnected}
         />
       </View>

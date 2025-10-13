@@ -46,8 +46,8 @@ export const MobileHome: React.FC = () => {
 
       {/* Tab Navigation */}
       <View style={styles.tabContainer}>
-        <TabButton tab='browse' icon='📁' label='Browse' />
-        <TabButton tab='collaborate' icon='✏️' label='Edit' />
+        <TabButton tab="browse" icon="📁" label="Browse" />
+        <TabButton tab="collaborate" icon="✏️" label="Edit" />
       </View>
 
       {/* Content */}
@@ -66,7 +66,7 @@ export const MobileHome: React.FC = () => {
           />
         ) : (
           <View style={styles.comingSoon}>
-            <Stack gap='medium' style={{}}>
+            <Stack gap="medium" style={{}}>
               <Text style={styles.comingSoonIcon}>🚧</Text>
               <Text style={styles.comingSoonTitle}>Coming Soon</Text>
               <Text style={styles.comingSoonText}>

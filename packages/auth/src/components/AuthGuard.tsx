@@ -83,8 +83,8 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   // Show loading state
   if (isLoading) {
     return (
-      <div className='auth-guard auth-guard--loading'>
-        <div className='auth-guard__spinner' />
+      <div className="auth-guard auth-guard--loading">
+        <div className="auth-guard__spinner" />
         <p>Loading...</p>
       </div>
     );
@@ -98,16 +98,16 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
 
     if (showLoginPrompt) {
       return (
-        <div className='auth-guard auth-guard--unauthenticated'>
-          <div className='auth-guard__content'>
-            <div className='auth-guard__icon'>🔒</div>
-            <h3 className='auth-guard__title'>Authentication Required</h3>
-            <p className='auth-guard__message'>{loginPromptText}</p>
+        <div className="auth-guard auth-guard--unauthenticated">
+          <div className="auth-guard__content">
+            <div className="auth-guard__icon">🔒</div>
+            <h3 className="auth-guard__title">Authentication Required</h3>
+            <p className="auth-guard__message">{loginPromptText}</p>
             {onLogin && (
               <button
-                type='button'
+                type="button"
                 onClick={onLogin}
-                className='auth-guard__login-button'
+                className="auth-guard__login-button"
               >
                 Sign In
               </button>
@@ -128,22 +128,22 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
     }
 
     return (
-      <div className='auth-guard auth-guard--unauthorized'>
-        <div className='auth-guard__content'>
-          <div className='auth-guard__icon'>⚠️</div>
-          <h3 className='auth-guard__title'>Access Denied</h3>
-          <p className='auth-guard__message'>
+      <div className="auth-guard auth-guard--unauthorized">
+        <div className="auth-guard__content">
+          <div className="auth-guard__icon">⚠️</div>
+          <h3 className="auth-guard__title">Access Denied</h3>
+          <p className="auth-guard__message">
             You don't have permission to access this content.
           </p>
           {requiredRoles.length > 0 && (
-            <div className='auth-guard__requirements'>
+            <div className="auth-guard__requirements">
               <p>
                 <strong>Required roles:</strong> {requiredRoles.join(', ')}
               </p>
             </div>
           )}
           {requiredPermissions.length > 0 && (
-            <div className='auth-guard__requirements'>
+            <div className="auth-guard__requirements">
               <p>
                 <strong>Required permissions:</strong>{' '}
                 {requiredPermissions.join(', ')}

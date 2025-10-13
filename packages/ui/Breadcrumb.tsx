@@ -50,7 +50,7 @@ export const BreadcrumbSeparator: React.FC<BreadcrumbSeparatorProps> = ({
   children = '/',
   className = '',
 }) => (
-  <span className={`breadcrumb__separator ${className}`} aria-hidden='true'>
+  <span className={`breadcrumb__separator ${className}`} aria-hidden="true">
     {children}
   </span>
 );
@@ -90,7 +90,7 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
   if (onClick && !disabled) {
     return (
       <button
-        type='button'
+        type="button"
         onClick={handleClick}
         className={`breadcrumb__link breadcrumb__link--button ${className}`}
         disabled={disabled}
@@ -149,10 +149,10 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     key: 'ellipsis',
     label: expandable ? (
       <button
-        type='button'
+        type="button"
         onClick={() => setExpanded(true)}
-        className='breadcrumb__expand-button'
-        aria-label='Show all breadcrumb items'
+        className="breadcrumb__expand-button"
+        aria-label="Show all breadcrumb items"
       >
         {expandText}
       </button>
@@ -185,8 +185,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
     const content = (
       <>
-        {item.icon && <span className='breadcrumb__icon'>{item.icon}</span>}
-        <span className='breadcrumb__label'>{item.label}</span>
+        {item.icon && <span className="breadcrumb__icon">{item.icon}</span>}
+        <span className="breadcrumb__label">{item.label}</span>
       </>
     );
 
@@ -256,7 +256,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   return (
     <nav className={breadcrumbClasses} aria-label={ariaLabel}>
-      <ol className='breadcrumb__list' role='list'>
+      <ol className="breadcrumb__list" role="list">
         {itemsToRender.map((item, index) => {
           const isLast = index === itemsToRender.length - 1;
           const itemElement = renderItem(item, index, isLast);
@@ -274,12 +274,12 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
         })}
 
         {expanded && expandable && (
-          <li className='breadcrumb__collapse'>
+          <li className="breadcrumb__collapse">
             <button
-              type='button'
+              type="button"
               onClick={() => setExpanded(false)}
-              className='breadcrumb__collapse-button'
-              aria-label='Collapse breadcrumb items'
+              className="breadcrumb__collapse-button"
+              aria-label="Collapse breadcrumb items"
             >
               {collapseText}
             </button>

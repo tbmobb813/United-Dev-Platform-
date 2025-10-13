@@ -361,9 +361,9 @@ export const FieldError: React.FC<FieldErrorProps> = ({
   const errorsToShow = showFirst ? [fieldErrors[0]] : fieldErrors;
 
   return (
-    <div className={`field-error ${className}`} role='alert' aria-live='polite'>
+    <div className={`field-error ${className}`} role="alert" aria-live="polite">
       {errorsToShow.map((error, index) => (
-        <div key={index} className='field-error__message'>
+        <div key={index} className="field-error__message">
           {error}
         </div>
       ))}

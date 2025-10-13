@@ -325,11 +325,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
             maxWidth,
             zIndex: 1000,
           }}
-          role='tooltip'
+          role="tooltip"
           aria-hidden={!isVisible}
         >
-          <div className='tooltip__content'>{content}</div>
-          {arrow && <div className='tooltip__arrow' style={getArrowStyles()} />}
+          <div className="tooltip__content">{content}</div>
+          {arrow && <div className="tooltip__arrow" style={getArrowStyles()} />}
         </div>
       )}
     </>

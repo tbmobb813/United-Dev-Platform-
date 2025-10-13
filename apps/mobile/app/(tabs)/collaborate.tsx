@@ -25,17 +25,17 @@ export default function CollaborateScreen() {
       setIsReady(true);
     } catch (error) {
       Alert.alert('Error', 'Failed to load user data');
-  // Keep error logging but avoid lint noise if rules vary between configs
-  // eslint-disable-next-line no-console
-  console.error('Error loading user data:', error);
+      // Keep error logging but avoid lint noise if rules vary between configs
+      // eslint-disable-next-line no-console
+      console.error('Error loading user data:', error);
     }
   };
 
   const handleContentChange = (content: string) => {
-  // Handle content changes (e.g., save to local storage)
-  // Use warn level to satisfy lint rules that may disallow console.log
-  // eslint-disable-next-line no-console
-  console.warn('Content updated:', content.length, 'characters');
+    // Handle content changes (e.g., save to local storage)
+    // Use warn level to satisfy lint rules that may disallow console.log
+    // eslint-disable-next-line no-console
+    console.warn('Content updated:', content.length, 'characters');
   };
 
   if (!isReady) {
@@ -50,7 +50,7 @@ export default function CollaborateScreen() {
     <View style={styles.container}>
       <CollaborativeEditor
         roomId={roomId}
-        documentId='main-document'
+        documentId="main-document"
         userId={userId}
         userName={userName}
         onContentChange={handleContentChange}

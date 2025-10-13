@@ -112,7 +112,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
             <PresenceIndicator
               isActive={isActive}
               lastSeen={lastSeen}
-              size='small'
+              size="small"
               showStatus={true}
             />
           )}
