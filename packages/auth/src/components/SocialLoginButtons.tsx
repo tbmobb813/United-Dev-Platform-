@@ -89,7 +89,10 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
     try {
       await onSocialLogin(providerId);
     } catch (error) {
-      console.error(`Social login failed for ${providerId}:`, error);
+      // Load logger at runtime to avoid TypeScript resolution issues in some tooling
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const logger = require('@udp/logger').default;
+      logger.error(`Social login failed for ${providerId}:`, error);
     }
   };
 
