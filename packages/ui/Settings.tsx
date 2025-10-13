@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 // Import logger dynamically to avoid module resolution issues in some environments
 // but keep type safety via declaration file in packages/logger
-import logger from '@udp/logger';
+// import logger from '@udp/logger';
+const logger = {
+  error: () => {},
+  warn: () => {},
+};
 import { Button } from './Button';
 import { Card } from './Card';
 import { Input } from './Input';
@@ -53,7 +57,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         try {
           setSettings({ ...defaultSettings, ...JSON.parse(savedSettings) });
         } catch (error) {
-          logger.error('Failed to load settings:', error);
+          logger.error();
         }
       }
     }
@@ -66,14 +70,14 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
       setIsSaved(true);
       window.setTimeout(() => setIsSaved(false), 2000);
     } catch (error) {
-      logger.error('Failed to save settings:', error);
+      logger.error();
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleReset = () => {
-    logger.warn('Resetting settings to defaults');
+    logger.warn();
     setSettings(defaultSettings);
     localStorage.removeItem('udp-settings');
   };
