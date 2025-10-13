@@ -207,14 +207,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Ensure pnpm is available
+      - name: Enable Corepack & pnpm
         run: |
-          npm install -g pnpm@${{ env.PNPM_VERSION }} || true
-
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
       - name: Restore pnpm cache
         uses: actions/cache@v3
@@ -294,9 +290,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Ensure pnpm is available
+      - name: Enable Corepack & pnpm
         run: |
-          npm install -g pnpm@${{ env.PNPM_VERSION }} || true
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
 
       - name: Restore pnpm cache
