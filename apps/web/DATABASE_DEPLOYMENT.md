@@ -42,7 +42,6 @@
 ### Database Preparation
 
 1. **Set up PostgreSQL instance** (choose one):
-
    - AWS RDS PostgreSQL
    - Google Cloud SQL PostgreSQL
    - Azure Database for PostgreSQL

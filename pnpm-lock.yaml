@@ -435,6 +435,8 @@ importers:
         specifier: ^5.0.0
         version: 5.9.2
 
+  packages/logger: {}
+
   packages/prettier-config:
     dependencies:
       prettier:

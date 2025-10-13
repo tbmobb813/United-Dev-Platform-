@@ -833,8 +833,8 @@ export class GitService implements GitServiceInterface {
                       status === 'added'
                         ? 'add'
                         : status === 'deleted'
-                        ? 'delete'
-                        : 'context',
+                          ? 'delete'
+                          : 'context',
                     content: `${status} file: ${filepath}`,
                     oldLineNumber: 1,
                     newLineNumber: 1,
