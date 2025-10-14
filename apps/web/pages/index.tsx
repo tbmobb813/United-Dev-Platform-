@@ -25,12 +25,12 @@ import { codeCompletionService } from '../components/CodeCompletionProvider';
 // Dynamic imports for client-side only components
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
-  loading: () => <Loading text="Loading editor..." />,
+  loading: () => <Loading text='Loading editor...' />,
 });
 
 const QRCode = dynamic(() => import('qrcode.react'), {
   ssr: false,
-  loading: () => <Loading text="Loading QR code..." />,
+  loading: () => <Loading text='Loading QR code...' />,
 });
 
 function generateColor() {
@@ -470,13 +470,13 @@ export default function Home() {
       </Head>
       <h1>Unified Dev Platform (Web)</h1>
       <p>Logged in as: {userName ? String(userName) : 'Unknown'}</p>
-      <Stack direction="row" gap="small" wrap>
+      <Stack direction='row' gap='small' wrap>
         <Button onClick={handleSignOut}>Sign out</Button>
-        <Button variant="outline" onClick={() => setIsAIOpen(true)}>
+        <Button variant='outline' onClick={() => setIsAIOpen(true)}>
           🤖 AI Assistant
         </Button>
         <Button
-          variant="outline"
+          variant='outline'
           onClick={() => {
             setFileManagerMode('open');
             setIsFileManagerOpen(true);
@@ -485,7 +485,7 @@ export default function Home() {
           📁 Open File
         </Button>
         <Button
-          variant="outline"
+          variant='outline'
           onClick={() => {
             setFileManagerMode('save');
             setIsFileManagerOpen(true);
@@ -494,7 +494,7 @@ export default function Home() {
           💾 Save As
         </Button>
         <Button
-          variant="outline"
+          variant='outline'
           onClick={() => {
             setFileManagerMode('create');
             setIsFileManagerOpen(true);
@@ -503,37 +503,37 @@ export default function Home() {
           ➕ New File
         </Button>
         <Button
-          variant="ghost"
-          size="small"
+          variant='ghost'
+          size='small'
           onClick={() => setIsShortcutsHelpOpen(true)}
         >
           ❓ Help (F1)
         </Button>
         <Button
-          variant="ghost"
-          size="small"
+          variant='ghost'
+          size='small'
           onClick={() => setIsSettingsOpen(true)}
         >
           ⚙️ Settings
         </Button>
       </Stack>
 
-      <Card title="Document Navigation" style={{ margin: '20px 0' }}>
-        <Stack direction="row" gap="medium" align="center" wrap>
-          <Stack direction="row" gap="small" align="center">
+      <Card title='Document Navigation' style={{ margin: '20px 0' }}>
+        <Stack direction='row' gap='medium' align='center' wrap>
+          <Stack direction='row' gap='small' align='center'>
             <label>Room:</label>
             <Input
               value={roomInput}
               onChange={setRoomInput}
-              placeholder="Enter room name"
+              placeholder='Enter room name'
             />
           </Stack>
-          <Stack direction="row" gap="small" align="center">
+          <Stack direction='row' gap='small' align='center'>
             <label>Document:</label>
             <Input
               value={docInput}
               onChange={setDocInput}
-              placeholder="Enter document name"
+              placeholder='Enter document name'
             />
           </Stack>
           <Button
@@ -556,7 +556,7 @@ export default function Home() {
         Collaborative editor powered by Yjs. Room: {room}, Document: {docName}
       </h2>
       {isClient && (
-        <Stack gap="small">
+        <Stack gap='small'>
           <div
             style={{
               border: '1px solid #e1e5e9',
@@ -591,10 +591,10 @@ export default function Home() {
               }
             `}</style>
             <MonacoEditor
-              height="40vh"
-              language="markdown"
+              height='40vh'
+              language='markdown'
               onMount={handleEditorDidMount}
-              theme="vs-light"
+              theme='vs-light'
               options={{
                 selectOnLineNumbers: true,
                 roundedSelection: false,
@@ -604,8 +604,8 @@ export default function Home() {
               }}
             />
           </div>
-          <Card padding="small">
-            <Stack direction="row" gap="medium" align="center" wrap>
+          <Card padding='small'>
+            <Stack direction='row' gap='medium' align='center' wrap>
               <div
                 style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
               >
@@ -672,9 +672,9 @@ export default function Home() {
       <h2>Mobile Handoff</h2>
       <p>Scan with your mobile device to join this collaboration session:</p>
       {isClient && deeplink ? (
-        <Stack gap="medium" align="center">
-          <Card padding="medium" style={{ textAlign: 'center' }}>
-            <Stack gap="small" align="center">
+        <Stack gap='medium' align='center'>
+          <Card padding='medium' style={{ textAlign: 'center' }}>
+            <Stack gap='small' align='center'>
               <QRCode value={webUrl} size={180} />
               <div style={{ fontSize: '12px', color: '#666' }}>
                 📱 Scan to open in mobile browser
@@ -682,17 +682,17 @@ export default function Home() {
             </Stack>
           </Card>
 
-          <Stack direction="row" gap="small" wrap>
+          <Stack direction='row' gap='small' wrap>
             <Button
-              variant="outline"
-              size="small"
+              variant='outline'
+              size='small'
               onClick={() => navigator.clipboard.writeText(webUrl)}
             >
               📋 Copy Web Link
             </Button>
             <Button
-              variant="outline"
-              size="small"
+              variant='outline'
+              size='small'
               onClick={() => navigator.clipboard.writeText(deeplink)}
             >
               📱 Copy App Link
@@ -700,11 +700,11 @@ export default function Home() {
           </Stack>
 
           <Card
-            title="Connection Details"
-            padding="medium"
+            title='Connection Details'
+            padding='medium'
             style={{ maxWidth: '400px' }}
           >
-            <Stack gap="small">
+            <Stack gap='small'>
               <div>
                 <strong>Room:</strong> {room}
               </div>
@@ -721,20 +721,20 @@ export default function Home() {
           </Card>
         </Stack>
       ) : (
-        <Loading text="Loading QR code and deep link..." />
+        <Loading text='Loading QR code and deep link...' />
       )}
 
       <Stack
-        direction="row"
-        gap="small"
-        align="center"
+        direction='row'
+        gap='small'
+        align='center'
         style={{ marginTop: '16px' }}
       >
         <label>File path:</label>
         <Input
           value={file}
           onChange={setFile}
-          placeholder="/README.md"
+          placeholder='/README.md'
           style={{ minWidth: '200px' }}
         />
       </Stack>

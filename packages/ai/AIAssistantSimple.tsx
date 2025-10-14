@@ -143,6 +143,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('AI request failed:', error);
       const errorMessage =
         error instanceof Error ? error.message : 'AI request failed';
@@ -432,7 +433,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Ask me anything about your code..."
+              placeholder='Ask me anything about your code...'
               style={{
                 flex: 1,
                 padding: '8px 12px',

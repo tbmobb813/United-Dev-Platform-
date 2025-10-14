@@ -10,6 +10,8 @@ module.exports = {
   bracketSpacing: true,
   bracketSameLine: false,
   arrowParens: 'avoid',
+  // Use single quotes in JSX attributes to match ESLint's jsx-quotes rule
+  jsxSingleQuote: true,
   endOfLine: 'lf',
 
   // Language-specific overrides

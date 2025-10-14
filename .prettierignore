@@ -1,3 +1,16 @@
+# Ignore generated Prisma client files (created at build/time)
+apps/web/generated/prisma/**
+apps/api/generated/prisma/**
+
+# Ignore node modules and build artifacts
+node_modules/
+dist/
+build/
+
+# Optional editor/project files
+.turbo/
+.next/
+.cache/
 node_modules
 .next
 .expo

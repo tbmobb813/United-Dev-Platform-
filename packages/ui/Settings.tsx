@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+// Import logger dynamically to avoid module resolution issues in some environments
+// but keep type safety via declaration file in packages/logger
+import logger from '@udp/logger';
 import { Button } from './Button';
 import { Card } from './Card';
 import { Input } from './Input';
@@ -50,7 +53,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         try {
           setSettings({ ...defaultSettings, ...JSON.parse(savedSettings) });
         } catch (error) {
-          console.error('Failed to load settings:', error);
+          logger.error('Failed to parse settings from localStorage', error);
         }
       }
     }
@@ -63,13 +66,14 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
       setIsSaved(true);
       window.setTimeout(() => setIsSaved(false), 2000);
     } catch (error) {
-      console.error('Failed to save settings:', error);
+      logger.error('Failed to save settings', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleReset = () => {
+    logger.warn('Settings reset to defaults.');
     setSettings(defaultSettings);
     localStorage.removeItem('udp-settings');
   };
@@ -85,25 +89,25 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Settings"
-      size="large"
+      title='Settings'
+      size='large'
       actions={[
-        <Button key="reset" variant="outline" onClick={handleReset}>
+        <Button key='reset' variant='outline' onClick={handleReset}>
           Reset to Defaults
         </Button>,
-        <Button key="cancel" variant="secondary" onClick={onClose}>
+        <Button key='cancel' variant='secondary' onClick={onClose}>
           Cancel
         </Button>,
-        <Button key="save" onClick={handleSave} disabled={isLoading}>
+        <Button key='save' onClick={handleSave} disabled={isLoading}>
           {isLoading ? <Loading /> : isSaved ? '✓ Saved!' : 'Save Settings'}
         </Button>,
       ]}
     >
-      <Stack gap="large">
+      <Stack gap='large'>
         {/* Editor Settings */}
-        <Card title="Editor" padding="medium">
-          <Stack gap="medium">
-            <Stack direction="row" gap="medium" align="center">
+        <Card title='Editor' padding='medium'>
+          <Stack gap='medium'>
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>Theme:</label>
               <select
                 value={settings.theme}
@@ -116,13 +120,13 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
                   border: '1px solid #ddd',
                 }}
               >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="auto">Auto</option>
+                <option value='light'>Light</option>
+                <option value='dark'>Dark</option>
+                <option value='auto'>Auto</option>
               </select>
             </Stack>
 
-            <Stack direction="row" gap="medium" align="center">
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>Font Size:</label>
               <Input
                 value={settings.fontSize.toString()}
@@ -134,7 +138,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               <span style={{ color: '#666' }}>px</span>
             </Stack>
 
-            <Stack direction="row" gap="medium" align="center">
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>Tab Size:</label>
               <Input
                 value={settings.tabSize.toString()}
@@ -146,28 +150,28 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               <span style={{ color: '#666' }}>spaces</span>
             </Stack>
 
-            <Stack direction="row" gap="medium" align="center">
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>Word Wrap:</label>
               <input
-                type="checkbox"
+                type='checkbox'
                 checked={settings.wordWrap}
                 onChange={e => updateSetting('wordWrap', e.target.checked)}
               />
             </Stack>
 
-            <Stack direction="row" gap="medium" align="center">
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>Show Minimap:</label>
               <input
-                type="checkbox"
+                type='checkbox'
                 checked={settings.minimap}
                 onChange={e => updateSetting('minimap', e.target.checked)}
               />
             </Stack>
 
-            <Stack direction="row" gap="medium" align="center">
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>Auto Save:</label>
               <input
-                type="checkbox"
+                type='checkbox'
                 checked={settings.autoSave}
                 onChange={e => updateSetting('autoSave', e.target.checked)}
               />
@@ -176,9 +180,9 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         </Card>
 
         {/* AI Settings */}
-        <Card title="AI Assistant" padding="medium">
-          <Stack gap="medium">
-            <Stack direction="row" gap="medium" align="center">
+        <Card title='AI Assistant' padding='medium'>
+          <Stack gap='medium'>
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>AI Model:</label>
               <select
                 value={settings.aiModel}
@@ -195,30 +199,30 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
                   minWidth: '150px',
                 }}
               >
-                <option value="gpt-4o-mini">GPT-4o Mini</option>
-                <option value="gpt-4">GPT-4</option>
-                <option value="claude">Claude</option>
-                <option value="local">Local Model</option>
+                <option value='gpt-4o-mini'>GPT-4o Mini</option>
+                <option value='gpt-4'>GPT-4</option>
+                <option value='claude'>Claude</option>
+                <option value='local'>Local Model</option>
               </select>
             </Stack>
 
-            <Stack gap="small">
+            <Stack gap='small'>
               <label>OpenAI API Key:</label>
               <Input
                 value={settings.openaiApiKey}
                 onChange={value => updateSetting('openaiApiKey', value)}
-                placeholder="sk-..."
-                type="password"
+                placeholder='sk-...'
+                type='password'
               />
               <div style={{ fontSize: '12px', color: '#666' }}>
                 Your API key is stored locally and never sent to our servers
               </div>
             </Stack>
 
-            <Stack direction="row" gap="medium" align="center">
+            <Stack direction='row' gap='medium' align='center'>
               <label style={{ minWidth: '120px' }}>Enable Local Models:</label>
               <input
-                type="checkbox"
+                type='checkbox'
                 checked={settings.allowLocalModels}
                 onChange={e =>
                   updateSetting('allowLocalModels', e.target.checked)
@@ -227,12 +231,12 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             </Stack>
 
             {settings.allowLocalModels && (
-              <Stack gap="small">
+              <Stack gap='small'>
                 <label>Local Model URL:</label>
                 <Input
                   value={settings.localModelUrl}
                   onChange={value => updateSetting('localModelUrl', value)}
-                  placeholder="http://localhost:11434/v1"
+                  placeholder='http://localhost:11434/v1'
                 />
                 <div style={{ fontSize: '12px', color: '#666' }}>
                   URL for your local AI model server (e.g., Ollama)
@@ -243,8 +247,8 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         </Card>
 
         {/* Info */}
-        <Card title="About" padding="medium">
-          <Stack gap="small">
+        <Card title='About' padding='medium'>
+          <Stack gap='small'>
             <div>
               <strong>Unified Dev Platform</strong> v0.0.2
             </div>

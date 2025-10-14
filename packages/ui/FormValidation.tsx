@@ -11,8 +11,7 @@ export interface ValidationRule {
   url?: boolean;
   number?: boolean;
   integer?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  custom?: (value: any) => boolean | string;
+  custom?: (value: unknown) => boolean | string;
   message?: string;
 }
 
@@ -38,8 +37,7 @@ export interface FormValidationHookResult {
 export interface FormValidationProps {
   children: ReactNode;
   validation: FieldValidation;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   onValidationChange?: (isValid: boolean, errors: ValidationErrors) => void;
   showErrorsOnMount?: boolean;
   validateOnChange?: boolean;
@@ -183,9 +181,8 @@ const defaultValidators = {
 };
 
 // Utility function to validate a single field
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateField = (
-  value: any,
+  value: unknown,
   rules: ValidationRule[]
 ): string[] => {
   const errors: string[] = [];
@@ -207,9 +204,8 @@ export const validateField = (
 };
 
 // Utility function to validate all fields
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateForm = (
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   validation: FieldValidation
 ): ValidationErrors => {
   const errors: ValidationErrors = {};
@@ -226,8 +222,7 @@ export const validateForm = (
 
 // Hook for form validation
 export const useFormValidation = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   validation: FieldValidation,
   options: {
     validateOnChange?: boolean;
@@ -361,9 +356,9 @@ export const FieldError: React.FC<FieldErrorProps> = ({
   const errorsToShow = showFirst ? [fieldErrors[0]] : fieldErrors;
 
   return (
-    <div className={`field-error ${className}`} role="alert" aria-live="polite">
+    <div className={`field-error ${className}`} role='alert' aria-live='polite'>
       {errorsToShow.map((error, index) => (
-        <div key={index} className="field-error__message">
+        <div key={index} className='field-error__message'>
           {error}
         </div>
       ))}
@@ -388,8 +383,7 @@ export const ValidationContext =
 
 export const ValidationProvider: React.FC<{
   children: ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   validation: FieldValidation;
   options?: {
     validateOnChange?: boolean;
@@ -452,9 +446,8 @@ export const quickValidation = {
     message: message || `Value must be between ${min} and ${max}`,
   }),
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   custom: (
-    validator: (value: any) => boolean | string,
+    validator: (value: unknown) => boolean | string,
     message?: string
   ): ValidationRule => ({
     custom: validator,

@@ -10,7 +10,7 @@ jobs:
     if: ${{ github.actor != 'github-actions[bot]' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: true
 
@@ -19,10 +19,23 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 'latest'
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
