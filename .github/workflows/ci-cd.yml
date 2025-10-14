@@ -376,9 +376,15 @@ jobs:
         run: |
           if [ -f trivy-results.sarif ]; then
             echo "Uploading trivy-results.sarif to Security tab"
-            # Provide the required commit_sha and ref fields per the Code Scanning SARIF upload API
+            # The Code Scanning SARIF upload API expects the SARIF content to be
+            # gzip-compressed and Base64-encoded. Compress and encode first,
+            # then post the encoded payload along with commit_sha and ref.
+            set -o pipefail
+            BASE64_SARIF=$(gzip -c trivy-results.sarif | base64 -w0) || {
+              echo "Failed to gzip+base64 encode trivy-results.sarif"; exit 1;
+            }
             gh api -X POST /repos/${{ github.repository }}/code-scanning/sarifs \
-              -F sarif=@trivy-results.sarif \
+              -F sarif="$BASE64_SARIF" \
               -F commit_sha=${{ github.sha }} \
               -F ref=${{ github.ref }}
           else
