@@ -133,7 +133,7 @@ jobs:
         env:
           REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
         run: |
-          node ./scripts/ci/read-duplicate-report.cjs
+          node ./scripts/ci/read-duplicate-report.js
 
       - name: Post duplicate-Yjs summary as PR comment
         if: always()

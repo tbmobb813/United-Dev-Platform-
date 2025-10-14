@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const reportPath =
   process.env.REPORT_PATH ||
@@ -16,10 +16,8 @@ function safeReadJson(file) {
 
 const r = safeReadJson(reportPath);
 if (!r) {
-  // Print a short, machine-friendly summary and exit 0 so reporting steps don't fail
   const msg = 'no report';
   console.log(msg);
-  // write to GITHUB_OUTPUT if available
   if (process.env.GITHUB_OUTPUT) {
     fs.appendFileSync(process.env.GITHUB_OUTPUT, `summary<<EOF\n${msg}\nEOF\n`);
   }

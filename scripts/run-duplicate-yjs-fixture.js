@@ -1,7 +1,13 @@
 #!/usr/bin/env node
-const path = require('path');
-const fs = require('fs');
-const { spawnSync } = require('child_process');
+// NOTE: This file is the canonical ESM fixture runner. If you must keep a
+// CommonJS copy for tooling compatibility, ensure it's updated from this file.
+import path from 'path';
+import fs from 'fs';
+import { spawnSync } from 'child_process';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const fixtureDir = path.resolve(
   __dirname,
