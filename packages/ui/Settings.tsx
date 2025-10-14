@@ -53,7 +53,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         try {
           setSettings({ ...defaultSettings, ...JSON.parse(savedSettings) });
         } catch (error) {
-          logger.error();
+          logger.error('Failed to parse settings from localStorage', error);
         }
       }
     }
