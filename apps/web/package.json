@@ -9,7 +9,7 @@
     "start": "next start -p 3000",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
     "test": "jest --config ../../jest.config.core.cjs --runInBand",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

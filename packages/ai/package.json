@@ -7,7 +7,7 @@
     "build": "echo 'Build not needed - using simple React.createElement'",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
     "test": "jest --config ../../jest.config.core.cjs --runInBand"
   },
   "dependencies": {

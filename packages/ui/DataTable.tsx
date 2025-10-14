@@ -104,7 +104,10 @@ export const DataTable = <T extends Record<string, unknown>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    return record[rowKey] || index;
+    return (
+      ((record as Record<string, unknown>)[rowKey as string] as React.Key) ||
+      index
+    );
   };
 
   const handleSort = (field: string) => {
@@ -245,7 +248,7 @@ export const DataTable = <T extends Record<string, unknown>>({
     }
 
     if (column.dataIndex) {
-      return record[column.dataIndex] as unknown as ReactNode;
+      return record[column.dataIndex] as React.ReactNode;
     }
 
     return null;
