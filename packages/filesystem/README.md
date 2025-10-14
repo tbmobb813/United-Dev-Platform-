@@ -140,7 +140,6 @@ syncManager.registerDocument('/workspace/src/App.tsx', yjsDocument);
 
 ```tsx
 import { FileExplorer, ProjectNavigator } from '@udp/filesystem';
-import { FileExplorer, ProjectNavigator } from '@udp/filesystem';
 
 function App() {
   return (
