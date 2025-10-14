@@ -11,7 +11,19 @@ const compat = new FlatCompat({
 
 const config = [
   {
-    ignores: ['.next/**', 'node_modules/**', 'dist/**', 'next-env.d.ts'],
+    // Ignore build and generated artifacts to avoid linting compiled files
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'dist/**',
+      'next-env.d.ts',
+      'next.config.mjs',
+      'next.config.*',
+      'generated/**',
+      'generated/prisma/**',
+      'generated/prisma/runtime/**',
+      'generated/prisma/**/wasm-*.js',
+    ],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
@@ -20,6 +32,8 @@ const config = [
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
+      // Disable crashing Next.js rule locally
+      '@next/next/no-duplicate-head': 'off',
       '@typescript-eslint/triple-slash-reference': 'off',
     },
   },

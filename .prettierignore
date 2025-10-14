@@ -1,3 +1,28 @@
+node_modules/
+**/node_modules/
+dist/
+build/
+.turbo/
+
+# Ignore generated Prisma runtime files in apps/web
+apps/web/generated/
+apps/web/generated/**
+
+# Ignore Prisma client runtime caches
+**/prisma/runtime/
+**/generated/prisma/**
+
+# Ignore Next.js build outputs
+apps/web/.next/
+apps/web/.next/**
+
+# Ignore generated TypeScript definition files and other generated artifacts
+**/generated/**
+
+# Temporary and env files
+.backup/
+.env
+.env.*
 node_modules
 .next
 .expo

@@ -20,22 +20,36 @@ module.exports = {
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
-          project: ['./tsconfig.json', './packages/*/tsconfig.json', './apps/*/tsconfig.json'],
+          project: [
+            './tsconfig.json',
+            './packages/*/tsconfig.json',
+            './apps/*/tsconfig.json',
+          ],
         },
         node: true,
       },
     },
     rules: {
+      // TypeScript handles undefined globals via lib/types; disable ESLint no-undef
+      'no-undef': 'off',
       // TypeScript specific rules
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      // Disable Next.js duplicate head rule due to plugin/version mismatch in workspace
+      '@next/next/no-duplicate-head': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/prefer-const': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports' },
+      ],
 
       // Import rules for better organization
       'import/order': [
@@ -74,8 +88,8 @@ module.exports = {
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-template': 'error',
-      'eqeqeq': ['error', 'always'],
-      'curly': ['error', 'all'],
+      eqeqeq: ['error', 'always'],
+      curly: ['error', 'all'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
     },
@@ -83,10 +97,16 @@ module.exports = {
 
   // React/Next.js specific configuration
   react: {
+    // Intentionally do not extend `next/core-web-vitals` in the shared
+    // React config because the installed @next ESLint plugin in this
+    // workspace is incompatible with the ESLint runtime used here and
+    // causes a crash in the rule `@next/next/no-duplicate-head`.
+    // The apps that specifically need Next.js rules (like `apps/web`)
+    // can opt into the plugin locally by extending `next/core-web-vitals`
+    // in their own .eslintrc.
     extends: [
       'eslint:recommended',
       '@typescript-eslint/recommended',
-      'next/core-web-vitals',
       'prettier',
     ],
     parser: '@typescript-eslint/parser',
@@ -115,16 +135,24 @@ module.exports = {
       },
     },
     rules: {
+      // Disable no-undef; TypeScript will check for undefined globals
+      'no-undef': 'off',
       // Include base rules
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/prefer-const': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports' },
+      ],
 
       // React specific rules
       'react/jsx-uses-react': 'off', // Not needed in React 17+
@@ -133,7 +161,12 @@ module.exports = {
       'react-hooks/exhaustive-deps': 'warn',
       'react/prop-types': 'off', // Not needed with TypeScript
       'react/jsx-no-useless-fragment': 'warn',
-      'react/jsx-curly-brace-presence': ['warn', { props: 'never', children: 'never' }],
+      'react/jsx-curly-brace-presence': [
+        'warn',
+        { props: 'never', children: 'never' },
+      ],
+      // Enforce single quotes in JSX attributes to match Prettier
+      'jsx-quotes': ['error', 'prefer-single'],
 
       // Import rules
       'import/order': [
@@ -207,15 +240,21 @@ module.exports = {
     },
     rules: {
       // Include base TypeScript rules
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/prefer-const': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports' },
+      ],
 
       // React specific rules
       'react/jsx-uses-react': 'off',
@@ -291,15 +330,21 @@ module.exports = {
     },
     rules: {
       // Include base TypeScript rules
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/prefer-const': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports' },
+      ],
 
       // Node.js specific rules
       'no-console': 'off', // Console logging is normal in Node.js
@@ -339,8 +384,8 @@ module.exports = {
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-template': 'error',
-      'eqeqeq': ['error', 'always'],
-      'curly': ['error', 'all'],
+      eqeqeq: ['error', 'always'],
+      curly: ['error', 'all'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
     },

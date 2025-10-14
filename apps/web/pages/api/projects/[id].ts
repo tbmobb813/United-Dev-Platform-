@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@udp/db';
+import logger from '@udp/logger';
+import { getErrorMessage, isPrismaError } from '../../../lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -107,8 +109,9 @@ async function getProject(id: string, res: NextApiResponse) {
     }
 
     res.status(200).json({ project });
-  } catch (error) {
-    console.error('Error fetching project:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error fetching project:', msg);
     res.status(500).json({ error: 'Failed to fetch project' });
   }
 }
@@ -148,14 +151,15 @@ async function updateProject(
     });
 
     res.status(200).json({ project });
-  } catch (error: any) {
-    console.error('Error updating project:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error updating project:', msg);
 
-    if (error.code === 'P2025') {
+    if (isPrismaError(error) && error.code === 'P2025') {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    if (error.code === 'P2002') {
+    if (isPrismaError(error) && error.code === 'P2002') {
       return res.status(400).json({
         error: 'Project name already exists',
       });
@@ -172,10 +176,11 @@ async function deleteProject(id: string, res: NextApiResponse) {
     });
 
     res.status(200).json({ message: 'Project deleted successfully' });
-  } catch (error: any) {
-    console.error('Error deleting project:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error deleting project:', msg);
 
-    if (error.code === 'P2025') {
+    if (isPrismaError(error) && error.code === 'P2025') {
       return res.status(404).json({ error: 'Project not found' });
     }
 

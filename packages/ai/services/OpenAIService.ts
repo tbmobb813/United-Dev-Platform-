@@ -1,3 +1,5 @@
+/* global TextDecoder */
+/* eslint-disable no-constant-condition */
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
 export class OpenAIService extends AIService {
@@ -45,7 +47,9 @@ export class OpenAIService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
+          `OpenAI API error: ${response.status} ${response.statusText}${
+            errorData ? ` - ${errorData.error?.message}` : ''
+          }`
         );
       }
 
@@ -58,6 +62,7 @@ export class OpenAIService extends AIService {
         finish_reason: data.choices[0]?.finish_reason,
       };
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('OpenAI API error:', error);
       throw error;
     }
@@ -101,7 +106,9 @@ export class OpenAIService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `OpenAI API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
+          `OpenAI API error: ${response.status} ${response.statusText}${
+            errorData ? ` - ${errorData.error?.message}` : ''
+          }`
         );
       }
 
@@ -153,7 +160,7 @@ export class OpenAIService extends AIService {
               if (parsed.choices[0]?.finish_reason) {
                 finishReason = parsed.choices[0].finish_reason;
               }
-            } catch (e) {
+            } catch {
               // Ignore JSON parse errors for malformed chunks
             }
           }
@@ -167,6 +174,7 @@ export class OpenAIService extends AIService {
         finish_reason: finishReason,
       };
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('OpenAI Streaming API error:', error);
       throw error;
     }
@@ -189,11 +197,19 @@ export class OpenAIService extends AIService {
       }
 
       const data = await response.json();
+      type OpenAIModel = { id: string };
       return data.data
-        .filter((model: any) => model.id.includes('gpt'))
-        .map((model: any) => model.id)
+        .filter(
+          (model: unknown): model is OpenAIModel =>
+            typeof model === 'object' &&
+            model !== null &&
+            'id' in model &&
+            typeof (model as { id?: unknown }).id === 'string'
+        )
+        .map(model => model.id)
         .sort();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching OpenAI models:', error);
       // Return default models if API call fails
       return ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo'];
@@ -214,6 +230,7 @@ export class OpenAIService extends AIService {
 
       return response.ok;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('OpenAI connection validation failed:', error);
       return false;
     }

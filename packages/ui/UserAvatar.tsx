@@ -117,9 +117,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
             />
           )}
           {user.cursor && (
-            <span
-              style={{ fontSize: '10px', color: '#999' }}
-            >
+            <span style={{ fontSize: '10px', color: '#999' }}>
               L{user.cursor.line}:C{user.cursor.column}
             </span>
           )}

@@ -1,3 +1,5 @@
+/* global TextDecoder */
+/* eslint-disable no-constant-condition */
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
 export class AnthropicService extends AIService {
@@ -44,7 +46,9 @@ export class AnthropicService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `Anthropic API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
+          `Anthropic API error: ${response.status} ${response.statusText}${
+            errorData ? ` - ${errorData.error?.message}` : ''
+          }`
         );
       }
 
@@ -63,6 +67,7 @@ export class AnthropicService extends AIService {
         finish_reason: data.stop_reason,
       };
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Anthropic API error:', error);
       throw error;
     }
@@ -105,7 +110,9 @@ export class AnthropicService extends AIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(
-          `Anthropic API error: ${response.status} ${response.statusText}${errorData ? ` - ${errorData.error?.message}` : ''}`
+          `Anthropic API error: ${response.status} ${response.statusText}${
+            errorData ? ` - ${errorData.error?.message}` : ''
+          }`
         );
       }
 
@@ -165,7 +172,7 @@ export class AnthropicService extends AIService {
                     parsed.usage.input_tokens + parsed.usage.output_tokens,
                 };
               }
-            } catch (e) {
+            } catch {
               // Ignore JSON parse errors for malformed chunks
             }
           }
@@ -179,6 +186,7 @@ export class AnthropicService extends AIService {
         finish_reason: finishReason,
       };
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Anthropic Streaming API error:', error);
       throw error;
     }
@@ -219,6 +227,7 @@ export class AnthropicService extends AIService {
 
       return response.ok;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Anthropic connection validation failed:', error);
       return false;
     }

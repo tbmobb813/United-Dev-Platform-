@@ -94,7 +94,9 @@ function validateEnvironment() {
   console.log(`   WebSocket URL: ${process.env.NEXT_PUBLIC_WS_URL}`);
   console.log(`   API URL: ${process.env.NEXT_PUBLIC_API_URL}`);
   console.log(
-    `   AI Models: ${process.env.ALLOW_LOCAL_MODELS === 'true' ? 'Local + API' : 'API only'}`
+    `   AI Models: ${
+      process.env.ALLOW_LOCAL_MODELS === 'true' ? 'Local + API' : 'API only'
+    }`
   );
   console.log(
     `   Debug Mode: ${process.env.DEBUG === 'true' ? 'Enabled' : 'Disabled'}`

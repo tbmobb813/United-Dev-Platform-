@@ -22,13 +22,13 @@ import {
   createAuthorizationMiddleware,
   Permissions,
   Roles,
-} from '@udp/auth';
+} from "@udp/auth";
 
 // Create authentication providers
 const localProvider = new LocalAuthProvider();
 const googleProvider = AuthProviderFactory.createGoogleProvider({
-  clientId: 'your-google-client-id',
-  clientSecret: 'your-google-client-secret',
+  clientId: "your-google-client-id",
+  clientSecret: "your-google-client-secret",
 });
 
 // Initialize auth service with multiple providers
@@ -40,25 +40,25 @@ const authService = new AuthService([localProvider, googleProvider]);
 ```typescript
 // Register a new user
 const registerResult = await authService.register({
-  email: 'user@example.com',
-  password: 'securepassword',
-  name: 'John Doe',
+  email: "user@example.com",
+  password: "securepassword",
+  name: "John Doe",
 });
 
 if (registerResult.success) {
-  console.log('User registered:', registerResult.user);
-  console.log('Access token:', registerResult.tokens?.accessToken);
+  console.log("User registered:", registerResult.user);
+  console.log("Access token:", registerResult.tokens?.accessToken);
 }
 
 // Login with email/password
 const loginResult = await authService.login({
-  email: 'user@example.com',
-  password: 'securepassword',
+  email: "user@example.com",
+  password: "securepassword",
 });
 
 if (loginResult.success) {
-  console.log('User logged in:', loginResult.user);
-  console.log('Session ID:', loginResult.sessionId);
+  console.log("User logged in:", loginResult.user);
+  console.log("Session ID:", loginResult.sessionId);
 }
 ```
 
@@ -67,41 +67,41 @@ if (loginResult.success) {
 ```typescript
 // Get OAuth authorization URL
 const oauthProvider = AuthProviderFactory.createGoogleProvider({
-  clientId: 'your-google-client-id',
-  clientSecret: 'your-google-client-secret',
+  clientId: "your-google-client-id",
+  clientSecret: "your-google-client-secret",
 });
 
-const authUrl = await oauthProvider.getAuthorizationUrl('http://localhost:3000/callback');
-console.log('Redirect user to:', authUrl);
+const authUrl = await oauthProvider.getAuthorizationUrl("http://localhost:3000/callback");
+console.log("Redirect user to:", authUrl);
 
 // After user returns from OAuth provider with authorization code
-const oauthResult = await oauthProvider.handleCallback('authorization_code_from_oauth');
+const oauthResult = await oauthProvider.handleCallback("authorization_code_from_oauth");
 
 if (oauthResult.success) {
-  console.log('OAuth login successful:', oauthResult.user);
+  console.log("OAuth login successful:", oauthResult.user);
 }
 ```
 
 ## Role-Based Access Control (RBAC)
 
 ```typescript
-import type { User } from '@udp/auth';
+import type { User } from "@udp/auth";
 
 // Example user with roles and permissions
 const user: User = {
-  id: '123',
-  email: 'admin@example.com',
-  name: 'Admin User',
+  id: "123",
+  email: "admin@example.com",
+  name: "Admin User",
   roles: [
     {
-      id: 'admin-role',
-      name: 'admin',
+      id: "admin-role",
+      name: "admin",
       permissions: [
-        { name: 'user:create', resource: '*' },
-        { name: 'user:read', resource: '*' },
-        { name: 'user:update', resource: '*' },
-        { name: 'user:delete', resource: '*' },
-        { name: 'system:admin', resource: '*' },
+        { name: "user:create", resource: "*" },
+        { name: "user:read", resource: "*" },
+        { name: "user:update", resource: "*" },
+        { name: "user:delete", resource: "*" },
+        { name: "system:admin", resource: "*" },
       ],
     },
   ],
@@ -112,16 +112,16 @@ const canCreateUser = RBACManager.hasPermission(user, Permissions.USER_CREATE);
 const canDeleteUser = RBACManager.hasPermission(user, Permissions.USER_DELETE);
 const hasAdminRole = RBACManager.hasRole(user, Roles.ADMIN);
 
-console.log('Can create user:', canCreateUser); // true
-console.log('Can delete user:', canDeleteUser); // true
-console.log('Has admin role:', hasAdminRole); // true
+console.log("Can create user:", canCreateUser); // true
+console.log("Can delete user:", canDeleteUser); // true
+console.log("Has admin role:", hasAdminRole); // true
 
 // Create extended authorization context
-const authContext = RBACManager.createExtendedContext(user, 'users', 'manage');
+const authContext = RBACManager.createExtendedContext(user, "users", "manage");
 
 // Use context methods
-console.log('Has admin permission:', authContext.hasPermission('system:admin'));
-console.log('User permissions:', authContext.permissions);
+console.log("Has admin permission:", authContext.hasPermission("system:admin"));
+console.log("User permissions:", authContext.permissions);
 ```
 
 ## Middleware for Route Protection
@@ -137,11 +137,11 @@ const adminMiddleware = createAuthorizationMiddleware({
 // Use middleware (example with Express.js style)
 function protectedRoute(req: any, res: any, next: any) {
   const user = req.user; // Assume user is attached to request
-  const context = RBACManager.createExtendedContext(user, 'admin', 'access');
-  
+  const context = RBACManager.createExtendedContext(user, "admin", "access");
+
   adminMiddleware(context, () => {
     // User has required permissions, continue with route handler
-    res.json({ message: 'Admin access granted' });
+    res.json({ message: "Admin access granted" });
   });
 }
 ```
@@ -153,14 +153,14 @@ class UserService {
   @RequirePermission(Permissions.USER_CREATE)
   async createUser(context: ExtendedAuthorizationContext, userData: any) {
     // This method requires user:create permission
-    console.log('Creating user for:', context.user.email);
+    console.log("Creating user for:", context.user.email);
     // Implementation here
   }
 
   @RequireRole(Roles.ADMIN)
   async deleteUser(context: ExtendedAuthorizationContext, userId: string) {
     // This method requires admin role
-    console.log('Admin deleting user:', userId);
+    console.log("Admin deleting user:", userId);
     // Implementation here
   }
 }
@@ -170,57 +170,57 @@ const userService = new UserService();
 const adminContext = RBACManager.createExtendedContext(adminUser);
 
 try {
-  await userService.createUser(adminContext, { name: 'New User' });
-  await userService.deleteUser(adminContext, 'user-123');
+  await userService.createUser(adminContext, { name: "New User" });
+  await userService.deleteUser(adminContext, "user-123");
 } catch (error) {
-  console.error('Access denied:', error.message);
+  console.error("Access denied:", error.message);
 }
 ```
 
 ## Token Management
 
 ```typescript
-import { TokenManager } from '@udp/auth';
+import { TokenManager } from "@udp/auth";
 
 // Generate tokens
 const tokenManager = new TokenManager();
-const payload = { userId: '123', email: 'user@example.com' };
+const payload = { userId: "123", email: "user@example.com" };
 
 const accessToken = await tokenManager.generateAccessToken(payload);
 const refreshToken = await tokenManager.generateRefreshToken(payload);
 
-console.log('Access token:', accessToken);
-console.log('Refresh token:', refreshToken);
+console.log("Access token:", accessToken);
+console.log("Refresh token:", refreshToken);
 
 // Verify tokens
 try {
   const decoded = await tokenManager.verifyToken(accessToken);
-  console.log('Token payload:', decoded);
+  console.log("Token payload:", decoded);
 } catch (error) {
-  console.error('Token verification failed:', error.message);
+  console.error("Token verification failed:", error.message);
 }
 ```
 
 ## Session Management
 
 ```typescript
-import { SessionRepository } from '@udp/auth';
+import { SessionRepository } from "@udp/auth";
 
 const sessionRepo = new SessionRepository();
 
 // Create session
 const session = await sessionRepo.create({
-  userId: '123',
+  userId: "123",
   expiresAt: new Date(Date.now() + 86400000), // 24 hours
-  metadata: { userAgent: 'Mozilla/5.0...' },
+  metadata: { userAgent: "Mozilla/5.0..." },
 });
 
-console.log('Session created:', session.id);
+console.log("Session created:", session.id);
 
 // Get session
 const retrievedSession = await sessionRepo.get(session.id);
 if (retrievedSession) {
-  console.log('Session found:', retrievedSession.userId);
+  console.log("Session found:", retrievedSession.userId);
 }
 
 // Update session activity
@@ -233,23 +233,23 @@ await sessionRepo.delete(session.id);
 ## Error Handling
 
 ```typescript
-import { AuthError } from '@udp/auth';
+import { AuthError } from "@udp/auth";
 
 try {
   const result = await authService.login({
-    email: 'invalid@example.com',
-    password: 'wrongpassword',
+    email: "invalid@example.com",
+    password: "wrongpassword",
   });
-  
+
   if (!result.success) {
-    console.error('Login failed:', result.error?.message);
-    console.error('Error code:', result.error?.code);
+    console.error("Login failed:", result.error?.message);
+    console.error("Error code:", result.error?.code);
   }
 } catch (error) {
   if (error instanceof AuthError) {
-    console.error('Auth error:', error.code, error.message);
+    console.error("Auth error:", error.code, error.message);
   } else {
-    console.error('Unexpected error:', error);
+    console.error("Unexpected error:", error);
   }
 }
 ```

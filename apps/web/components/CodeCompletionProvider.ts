@@ -130,10 +130,14 @@ export class CodeCompletionProvider {
           position: Monaco.Position
         ) => {
           const word = model.getWordAtPosition(position);
-          if (!word) return null;
+          if (!word) {
+            return null;
+          }
 
           const hoverInfo = this.getHoverInfo(word.word);
-          if (!hoverInfo) return null;
+          if (!hoverInfo) {
+            return null;
+          }
 
           return {
             range: new monaco.Range(

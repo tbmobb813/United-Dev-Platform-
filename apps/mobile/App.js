@@ -26,13 +26,13 @@ export default function App() {
         doc: queryParams.doc || 'main-document',
       };
       setParams(newParams);
-      
+
       // If we have repo/file params, show the collaborative editor
       if (newParams.repo && newParams.file) {
         setUseDeepLink(true);
       }
     };
-    
+
     const sub = Linking.addEventListener('url', handleDeepLink);
     Linking.getInitialURL().then(url => {
       if (url) {
@@ -55,7 +55,9 @@ export default function App() {
     return (
       <SafeAreaView style={{ flex: 1, padding: 24 }}>
         <Stack gap='medium'>
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>UDP Mobile - Collaborative Mode</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+            UDP Mobile - Collaborative Mode
+          </Text>
 
           <Card title='Connection Info' padding='medium'>
             <Stack gap='small'>

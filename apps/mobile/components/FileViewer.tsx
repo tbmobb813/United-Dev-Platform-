@@ -1,12 +1,12 @@
 import { Button, Card, Loading, Stack } from '@udp/ui-native';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { AIService, ApiService } from '../services';
 import { FileNode } from './FileBrowser';
@@ -33,7 +33,9 @@ export const FileViewer: React.FC<FileViewerProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState<string>('');
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiResponse, setAiResponse] = useState<string>('');
+  // Prefix with underscore to indicate intentional unused variable in some flows
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_aiResponse, setAiResponse] = useState<string>('');
 
   useEffect(() => {
     loadFileContent();
@@ -44,8 +46,11 @@ export const FileViewer: React.FC<FileViewerProps> = ({
     try {
       // Try to load content from API if file has ID and projectId
       if (file.id && projectId) {
-        const response = await ApiService.getMobileFileContent(projectId, file.id);
-        
+        const response = await ApiService.getMobileFileContent(
+          projectId,
+          file.id
+        );
+
         if (response.error) {
           Alert.alert('Error', response.error);
           return;
@@ -83,11 +88,11 @@ export const FileViewer: React.FC<FileViewerProps> = ({
       // Try to save via API if file has ID and projectId
       if (file.id && projectId) {
         const response = await ApiService.saveMobileFileContent(
-          projectId, 
-          file.id, 
+          projectId,
+          file.id,
           editedContent
         );
-        
+
         if (response.error) {
           Alert.alert('Error', `Failed to save: ${response.error}`);
           return;
@@ -110,7 +115,9 @@ export const FileViewer: React.FC<FileViewerProps> = ({
     setIsEditing(false);
   };
 
-  const handleAIAction = async (action: 'explain' | 'test' | 'optimize' | 'summarize') => {
+  const handleAIAction = async (
+    action: 'explain' | 'test' | 'optimize' | 'summarize'
+  ) => {
     if (!content.trim()) {
       Alert.alert('No Content', 'No file content to analyze');
       return;
@@ -146,12 +153,12 @@ export const FileViewer: React.FC<FileViewerProps> = ({
       for await (const response of aiGenerator) {
         accumulatedResponse = response.content;
         setAiResponse(accumulatedResponse);
-        
+
         if (response.error) {
           Alert.alert('AI Error', response.error);
           break;
         }
-        
+
         if (response.finished) {
           break;
         }
@@ -329,7 +336,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
 async function getMockFileContent(file: FileNode): Promise<string> {
   // TODO: Replace with actual API call
   const extension = file.extension?.toLowerCase();
-  
+
   switch (extension) {
     case 'tsx':
     case 'jsx':
@@ -341,7 +348,11 @@ interface ${file.name.replace('.tsx', '').replace('.jsx', '')}Props {
   onPress?: () => void;
 }
 
-export const ${file.name.replace('.tsx', '').replace('.jsx', '')}: React.FC<${file.name.replace('.tsx', '').replace('.jsx', '')}Props> = ({
+export const ${file.name
+        .replace('.tsx', '')
+        .replace('.jsx', '')}: React.FC<${file.name
+        .replace('.tsx', '')
+        .replace('.jsx', '')}Props> = ({
   title,
   onPress,
 }) => {
@@ -378,7 +389,10 @@ export class ${file.name.replace('.ts', '')}Service {
     return null;
   }
 
-  async create(data: Partial<${file.name.replace('.ts', '')}>): Promise<${file.name.replace('.ts', '')}> {
+  async create(data: Partial<${file.name.replace(
+    '.ts',
+    ''
+  )}>): Promise<${file.name.replace('.ts', '')}> {
     // Implementation here
     throw new Error('Not implemented');
   }

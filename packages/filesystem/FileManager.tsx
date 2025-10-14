@@ -31,7 +31,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
   onFileSelect,
   onFileOpen,
   readOnly = false,
-  className = ''
+  className = '',
 }) => {
   const [state, setState] = useState<FileManagerState>({
     currentPath: basePath,
@@ -41,17 +41,17 @@ export const FileManager: React.FC<FileManagerProps> = ({
     error: null,
     showNewFileDialog: false,
     showNewFolderDialog: false,
-    newItemName: ''
+    newItemName: '',
   });
 
   // Load directory contents
   const loadDirectory = async (path: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const listing = await fileSystem.listDirectory(path, {
         includeHidden: false,
-        recursive: false
+        recursive: false,
       });
 
       setState(prev => ({
@@ -64,13 +64,13 @@ export const FileManager: React.FC<FileManagerProps> = ({
           return a.name.localeCompare(b.name);
         }),
         currentPath: path,
-        loading: false
+        loading: false,
       }));
     } catch (error) {
       setState(prev => ({
         ...prev,
         error: `Failed to load directory: ${error}`,
-        loading: false
+        loading: false,
       }));
     }
   };
@@ -119,18 +119,18 @@ export const FileManager: React.FC<FileManagerProps> = ({
     try {
       const filePath = fileSystem.join(state.currentPath, state.newItemName);
       await fileSystem.writeFile(filePath, '', { createDirectories: true });
-      
+
       setState(prev => ({
         ...prev,
         showNewFileDialog: false,
-        newItemName: ''
+        newItemName: '',
       }));
-      
+
       await loadDirectory(state.currentPath);
     } catch (error) {
       setState(prev => ({
         ...prev,
-        error: `Failed to create file: ${error}`
+        error: `Failed to create file: ${error}`,
       }));
     }
   };
@@ -144,18 +144,18 @@ export const FileManager: React.FC<FileManagerProps> = ({
     try {
       const folderPath = fileSystem.join(state.currentPath, state.newItemName);
       await fileSystem.createDirectory(folderPath);
-      
+
       setState(prev => ({
         ...prev,
         showNewFolderDialog: false,
-        newItemName: ''
+        newItemName: '',
       }));
-      
+
       await loadDirectory(state.currentPath);
     } catch (error) {
       setState(prev => ({
         ...prev,
-        error: `Failed to create folder: ${error}`
+        error: `Failed to create folder: ${error}`,
       }));
     }
   };
@@ -172,13 +172,13 @@ export const FileManager: React.FC<FileManagerProps> = ({
       } else {
         await fileSystem.deleteFile(state.selectedFile.path);
       }
-      
+
       setState(prev => ({ ...prev, selectedFile: null }));
       await loadDirectory(state.currentPath);
     } catch (error) {
       setState(prev => ({
         ...prev,
-        error: `Failed to delete: ${error}`
+        error: `Failed to delete: ${error}`,
       }));
     }
   };
@@ -188,12 +188,12 @@ export const FileManager: React.FC<FileManagerProps> = ({
     const units = ['B', 'KB', 'MB', 'GB'];
     let size = bytes;
     let unitIndex = 0;
-    
+
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
     }
-    
+
     return `${size.toFixed(1)} ${units[unitIndex]}`;
   };
 
@@ -209,7 +209,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
     }
 
     const extension = fileSystem.extname(entry.name).toLowerCase();
-    
+
     switch (extension) {
       case '.js':
       case '.jsx':
@@ -251,17 +251,21 @@ export const FileManager: React.FC<FileManagerProps> = ({
           </button>
           <span className='current-path'>{state.currentPath}</span>
         </div>
-        
+
         {!readOnly && (
           <div className='file-actions'>
             <button
-              onClick={() => setState(prev => ({ ...prev, showNewFileDialog: true }))}
+              onClick={() =>
+                setState(prev => ({ ...prev, showNewFileDialog: true }))
+              }
               className='action-button'
             >
               + File
             </button>
             <button
-              onClick={() => setState(prev => ({ ...prev, showNewFolderDialog: true }))}
+              onClick={() =>
+                setState(prev => ({ ...prev, showNewFolderDialog: true }))
+              }
               className='action-button'
             >
               + Folder
@@ -285,9 +289,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
       </div>
 
       {/* Loading indicator */}
-      {state.loading && (
-        <div className='loading-indicator'>Loading...</div>
-      )}
+      {state.loading && <div className='loading-indicator'>Loading...</div>}
 
       {/* Error message */}
       {state.error && (
@@ -306,11 +308,13 @@ export const FileManager: React.FC<FileManagerProps> = ({
           <span className='column-size'>Size</span>
           <span className='column-modified'>Modified</span>
         </div>
-        
+
         {state.entries.map(entry => (
           <div
             key={entry.path}
-            className={`file-item ${state.selectedFile?.path === entry.path ? 'selected' : ''}`}
+            className={`file-item ${
+              state.selectedFile?.path === entry.path ? 'selected' : ''
+            }`}
             onClick={() => handleFileSelect(entry)}
             onDoubleClick={() => handleFileDoubleClick(entry)}
           >
@@ -321,8 +325,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
             <span className='file-size'>
               {entry.type === 'file' && entry.size !== undefined
                 ? formatFileSize(entry.size)
-                : '-'
-              }
+                : '-'}
             </span>
             <span className='file-modified'>
               {formatDate(entry.lastModified)}
@@ -339,17 +342,23 @@ export const FileManager: React.FC<FileManagerProps> = ({
             <input
               type='text'
               value={state.newItemName}
-              onChange={(e) => setState(prev => ({ ...prev, newItemName: e.target.value }))}
+              onChange={e =>
+                setState(prev => ({ ...prev, newItemName: e.target.value }))
+              }
               placeholder='Enter file name...'
               autoFocus
             />
             <div className='dialog-actions'>
               <button onClick={createNewFile}>Create</button>
-              <button onClick={() => setState(prev => ({ 
-                ...prev, 
-                showNewFileDialog: false, 
-                newItemName: '' 
-              }))}>
+              <button
+                onClick={() =>
+                  setState(prev => ({
+                    ...prev,
+                    showNewFileDialog: false,
+                    newItemName: '',
+                  }))
+                }
+              >
                 Cancel
               </button>
             </div>
@@ -365,17 +374,23 @@ export const FileManager: React.FC<FileManagerProps> = ({
             <input
               type='text'
               value={state.newItemName}
-              onChange={(e) => setState(prev => ({ ...prev, newItemName: e.target.value }))}
+              onChange={e =>
+                setState(prev => ({ ...prev, newItemName: e.target.value }))
+              }
               placeholder='Enter folder name...'
               autoFocus
             />
             <div className='dialog-actions'>
               <button onClick={createNewFolder}>Create</button>
-              <button onClick={() => setState(prev => ({ 
-                ...prev, 
-                showNewFolderDialog: false, 
-                newItemName: '' 
-              }))}>
+              <button
+                onClick={() =>
+                  setState(prev => ({
+                    ...prev,
+                    showNewFolderDialog: false,
+                    newItemName: '',
+                  }))
+                }
+              >
                 Cancel
               </button>
             </div>

@@ -1,9 +1,10 @@
 import { withAuth } from 'next-auth/middleware';
+import logger from '@udp/logger';
 
 export default withAuth(
   function middleware(req) {
     // Add any custom middleware logic here
-    console.log(`Authenticated request to ${req.nextUrl.pathname}`);
+    logger.info(`Authenticated request to ${req.nextUrl.pathname}`);
   },
   {
     callbacks: {

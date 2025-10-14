@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { Button } from '@udp/ui';
 
 export default function ButtonTest() {
@@ -19,7 +20,7 @@ export default function ButtonTest() {
       </div>
 
       <div style={{ marginBottom: 10 }}>
-        <Button onClick={() => alert('Hello!')}>Alert Button</Button>
+        <Button onClick={() => window.alert('Hello!')}>Alert Button</Button>
       </div>
 
       <div style={{ marginBottom: 10 }}>

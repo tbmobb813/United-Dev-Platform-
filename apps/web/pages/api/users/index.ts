@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@udp/db';
+import logger from '@udp/logger';
+import { getErrorMessage, isPrismaError } from '../../../lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,8 +32,9 @@ async function getUsers(req: NextApiRequest, res: NextApiResponse) {
     });
 
     res.status(200).json({ users });
-  } catch (error) {
-    console.error('Error fetching users:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error fetching users:', msg);
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 }
@@ -66,12 +69,13 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
     });
 
     res.status(201).json({ user });
-  } catch (error: any) {
-    console.error('Error creating user:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error creating user:', msg);
 
     // Handle unique constraint violations
-    if (error.code === 'P2002') {
-      const field = error.meta?.target?.[0] || 'field';
+    if (isPrismaError(error) && error.code === 'P2002') {
+      const field = error.meta?.target?.[0] ?? 'field';
       return res.status(400).json({
         error: `${field} already exists`,
       });

@@ -1,16 +1,18 @@
 import { Stack } from '@udp/ui-native';
 import React, { useState } from 'react';
 import {
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { FileNavigator } from '../components/FileNavigator';
 
 export const MobileHome: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'browse' | 'collaborate'>('browse');
+  const [activeTab, setActiveTab] = useState<'browse' | 'collaborate'>(
+    'browse'
+  );
 
   const TabButton: React.FC<{
     tab: 'browse' | 'collaborate';
@@ -24,7 +26,9 @@ export const MobileHome: React.FC = () => {
       <Text style={[styles.tabIcon, activeTab === tab && styles.activeTabText]}>
         {icon}
       </Text>
-      <Text style={[styles.tabLabel, activeTab === tab && styles.activeTabText]}>
+      <Text
+        style={[styles.tabLabel, activeTab === tab && styles.activeTabText]}
+      >
         {label}
       </Text>
     </TouchableOpacity>

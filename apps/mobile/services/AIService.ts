@@ -26,7 +26,9 @@ export class AIService {
 
 Keep explanations beginner-friendly but technically accurate.`;
 
-    const userMessage = `Please explain this ${language || 'code'} ${fileName ? `from file "${fileName}"` : ''}:
+    const userMessage = `Please explain this ${language || 'code'} ${
+      fileName ? `from file "${fileName}"` : ''
+    }:
 
 \`\`\`${language || ''}
 ${code}
@@ -52,7 +54,9 @@ ${code}
 
 Use appropriate testing frameworks for the language (Jest for JS/TS, pytest for Python, etc.).`;
 
-    const userMessage = `Generate test cases for this ${language || 'code'} ${fileName ? `from file "${fileName}"` : ''}:
+    const userMessage = `Generate test cases for this ${language || 'code'} ${
+      fileName ? `from file "${fileName}"` : ''
+    }:
 
 \`\`\`${language || ''}
 ${code}
@@ -81,7 +85,9 @@ Please provide complete, runnable test code with proper setup and assertions.`;
 
 Provide the optimized code with explanations of changes made.`;
 
-    const userMessage = `Optimize this ${language || 'code'} ${fileName ? `from file "${fileName}"` : ''}:
+    const userMessage = `Optimize this ${language || 'code'} ${
+      fileName ? `from file "${fileName}"` : ''
+    }:
 
 \`\`\`${language || ''}
 ${code}
@@ -110,7 +116,9 @@ Please provide the improved code with explanations of the optimizations made.`;
 
 Keep the summary concise but informative.`;
 
-    const userMessage = `Summarize this ${language || 'code'} ${fileName ? `from file "${fileName}"` : ''}:
+    const userMessage = `Summarize this ${language || 'code'} ${
+      fileName ? `from file "${fileName}"` : ''
+    }:
 
 \`\`\`${language || ''}
 ${code}
@@ -143,7 +151,9 @@ Be concise, practical, and provide code examples when helpful.`;
     if (code && messages.length === 1) {
       const contextMessage: AIMessage = {
         role: 'user',
-        content: `I'm working with this ${language || 'code'} ${fileName ? `in file "${fileName}"` : ''}:
+        content: `I'm working with this ${language || 'code'} ${
+          fileName ? `in file "${fileName}"` : ''
+        }:
 
 \`\`\`${language || ''}
 ${code}

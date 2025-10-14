@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import type { AuthResult, ResetPasswordConfirm, ResetPasswordRequest } from '../types';
+import type {
+  AuthResult,
+  ResetPasswordConfirm,
+  ResetPasswordRequest,
+} from '../types';
 
 export interface PasswordResetFormProps {
   onPasswordReset?: (request: ResetPasswordRequest) => Promise<AuthResult>;
@@ -32,7 +36,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
 
   const validatePassword = (password: string) => {
     const errors: string[] = [];
-    
+
     if (password.length < 8) {
       errors.push('Password must be at least 8 characters');
     }
@@ -76,7 +80,9 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
         setFormError(result.error.message);
       }
     } catch (err) {
-      setFormError(err instanceof Error ? err.message : 'Failed to send reset email');
+      setFormError(
+        err instanceof Error ? err.message : 'Failed to send reset email'
+      );
     }
   };
 
@@ -113,7 +119,9 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
         setFormError(result.error.message);
       }
     } catch (err) {
-      setFormError(err instanceof Error ? err.message : 'Failed to reset password');
+      setFormError(
+        err instanceof Error ? err.message : 'Failed to reset password'
+      );
     }
   };
 
@@ -131,8 +139,8 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
           <div className='auth-form__success'>
             <div className='success-icon'>✓</div>
             <p>
-              If an account with email <strong>{email}</strong> exists, 
-              you will receive password reset instructions shortly.
+              If an account with email <strong>{email}</strong> exists, you will
+              receive password reset instructions shortly.
             </p>
             <p className='text-secondary'>
               Didn't receive the email? Check your spam folder or try again.
@@ -159,7 +167,10 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
       <div className={`auth-form password-reset-form ${className}`}>
         <div className='auth-form__header'>
           <h2>Reset Password</h2>
-          <p>Enter your email address and we'll send you instructions to reset your password.</p>
+          <p>
+            Enter your email address and we'll send you instructions to reset
+            your password.
+          </p>
         </div>
 
         <form onSubmit={handleRequestSubmit} className='auth-form__form'>
@@ -177,7 +188,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
               id='email'
               type='email'
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               placeholder='Enter your email'
               className='form-input'
               required
@@ -263,7 +274,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
             id='newPassword'
             type='password'
             value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            onChange={e => setNewPassword(e.target.value)}
             placeholder='Enter new password'
             className='form-input'
             required
@@ -281,27 +292,34 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({
             id='confirmPassword'
             type='password'
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={e => setConfirmPassword(e.target.value)}
             placeholder='Confirm new password'
             className={`form-input ${
-              newPassword && confirmPassword && newPassword !== confirmPassword 
-                ? 'form-input--error' 
+              newPassword && confirmPassword && newPassword !== confirmPassword
+                ? 'form-input--error'
                 : ''
             }`}
             required
             disabled={loading}
             autoComplete='new-password'
           />
-          {newPassword && confirmPassword && newPassword !== confirmPassword && (
-            <div className='form-feedback form-feedback--error'>
-              Passwords do not match
-            </div>
-          )}
+          {newPassword &&
+            confirmPassword &&
+            newPassword !== confirmPassword && (
+              <div className='form-feedback form-feedback--error'>
+                Passwords do not match
+              </div>
+            )}
         </div>
 
         <button
           type='submit'
-          disabled={loading || !newPassword || !confirmPassword || newPassword !== confirmPassword}
+          disabled={
+            loading ||
+            !newPassword ||
+            !confirmPassword ||
+            newPassword !== confirmPassword
+          }
           className='auth-form__submit'
         >
           {loading ? 'Resetting...' : 'Reset Password'}

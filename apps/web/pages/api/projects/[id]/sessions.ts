@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../../lib/prisma';
+import { prisma } from '@udp/db';
+import logger from '@udp/logger';
+import { getErrorMessage, isPrismaError } from '../../../../lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -54,8 +56,8 @@ async function getSessions(projectId: string, res: NextApiResponse) {
     });
 
     res.status(200).json({ sessions });
-  } catch (error) {
-    console.error('Error fetching sessions:', error);
+  } catch (error: unknown) {
+    logger.error('Error fetching sessions:', getErrorMessage(error));
     res.status(500).json({ error: 'Failed to fetch sessions' });
   }
 }
@@ -119,10 +121,10 @@ async function createSession(
     });
 
     res.status(201).json({ session });
-  } catch (error: any) {
-    console.error('Error creating session:', error);
+  } catch (error: unknown) {
+    logger.error('Error creating session:', getErrorMessage(error));
 
-    if (error.code === 'P2003') {
+    if (isPrismaError(error) && error.code === 'P2003') {
       return res.status(400).json({ error: 'User not found' });
     }
 

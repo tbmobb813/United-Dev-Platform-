@@ -28,26 +28,46 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   onUnauthorized,
   onLogin,
   showLoginPrompt = true,
-  loginPromptText = 'Please sign in to access this content'
+  loginPromptText = 'Please sign in to access this content',
 }) => {
-  const hasRequiredRoles = (userRoles: string[], requiredRoles: string[]): boolean => {
-    if (requiredRoles.length === 0) {return true;}
+  const hasRequiredRoles = (
+    userRoles: string[],
+    requiredRoles: string[]
+  ): boolean => {
+    if (requiredRoles.length === 0) {
+      return true;
+    }
     return requiredRoles.some(role => userRoles.includes(role));
   };
 
-  const hasRequiredPermissions = (userPermissions: string[], requiredPermissions: string[]): boolean => {
-    if (requiredPermissions.length === 0) {return true;}
-    return requiredPermissions.every(permission => userPermissions.includes(permission));
+  const hasRequiredPermissions = (
+    userPermissions: string[],
+    requiredPermissions: string[]
+  ): boolean => {
+    if (requiredPermissions.length === 0) {
+      return true;
+    }
+    return requiredPermissions.every(permission =>
+      userPermissions.includes(permission)
+    );
   };
 
   const checkAccess = (): boolean => {
-    if (!isAuthenticated || !user) {return false;}
+    if (!isAuthenticated || !user) {
+      return false;
+    }
 
     const userRoles = user.roles?.map(role => role.name) || [];
-    const userPermissions = user.permissions?.map(permission => `${permission.resource}:${permission.action}`) || [];
+    const userPermissions =
+      user.permissions?.map(
+        permission => `${permission.resource}:${permission.action}`
+      ) || [];
 
     const hasRoles = hasRequiredRoles(userRoles, requiredRoles);
-    const hasPermissions = hasRequiredPermissions(userPermissions, requiredPermissions);
+    const hasPermissions = hasRequiredPermissions(
+      userPermissions,
+      requiredPermissions
+    );
 
     return hasRoles && hasPermissions;
   };
@@ -117,12 +137,17 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
           </p>
           {requiredRoles.length > 0 && (
             <div className='auth-guard__requirements'>
-              <p><strong>Required roles:</strong> {requiredRoles.join(', ')}</p>
+              <p>
+                <strong>Required roles:</strong> {requiredRoles.join(', ')}
+              </p>
             </div>
           )}
           {requiredPermissions.length > 0 && (
             <div className='auth-guard__requirements'>
-              <p><strong>Required permissions:</strong> {requiredPermissions.join(', ')}</p>
+              <p>
+                <strong>Required permissions:</strong>{' '}
+                {requiredPermissions.join(', ')}
+              </p>
             </div>
           )}
         </div>
@@ -146,11 +171,13 @@ export const withAuthGuard = <P extends object>(
   WrappedComponent: React.ComponentType<P>,
   options: WithAuthGuardProps = {}
 ) => {
-  const WithAuthGuardComponent: React.FC<P & { 
-    user?: User | null; 
-    isLoading?: boolean; 
-    isAuthenticated?: boolean;
-  }> = (props) => {
+  const WithAuthGuardComponent: React.FC<
+    P & {
+      user?: User | null;
+      isLoading?: boolean;
+      isAuthenticated?: boolean;
+    }
+  > = props => {
     const { user, isLoading, isAuthenticated, ...componentProps } = props;
 
     return (
@@ -168,8 +195,10 @@ export const withAuthGuard = <P extends object>(
     );
   };
 
-  WithAuthGuardComponent.displayName = `withAuthGuard(${WrappedComponent.displayName || WrappedComponent.name})`;
-  
+  WithAuthGuardComponent.displayName = `withAuthGuard(${
+    WrappedComponent.displayName || WrappedComponent.name
+  })`;
+
   return WithAuthGuardComponent;
 };
 
@@ -185,7 +214,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
   children,
   user,
   allowedRoles,
-  fallback
+  fallback,
 }) => {
   const userRoles = user?.roles?.map(role => role.name) || [];
   const hasAccess = allowedRoles.some(role => userRoles.includes(role));
@@ -211,15 +240,20 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   user,
   requiredPermissions,
   fallback,
-  requireAll = true
+  requireAll = true,
 }) => {
-  const userPermissions = user?.permissions?.map(permission => 
-    `${permission.resource}:${permission.action}`
-  ) || [];
+  const userPermissions =
+    user?.permissions?.map(
+      permission => `${permission.resource}:${permission.action}`
+    ) || [];
 
   const hasAccess = requireAll
-    ? requiredPermissions.every(permission => userPermissions.includes(permission))
-    : requiredPermissions.some(permission => userPermissions.includes(permission));
+    ? requiredPermissions.every(permission =>
+        userPermissions.includes(permission)
+      )
+    : requiredPermissions.some(permission =>
+        userPermissions.includes(permission)
+      );
 
   if (!hasAccess) {
     return fallback ? <>{fallback}</> : null;

@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '@udp/db';
+import logger from '@udp/logger';
 
+/* global TextDecoder */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -10,7 +12,7 @@ export default async function handler(
   }
 
   try {
-    const { messages, system, sessionId, userId } = req.body;
+    const { messages, system, sessionId } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Invalid messages format' });
@@ -81,7 +83,7 @@ export default async function handler(
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('AI API error:', error);
+      logger.error('AI API error:', error);
       return res.status(response.status).json({ error: 'AI service error' });
     }
 
@@ -104,9 +106,13 @@ export default async function handler(
     let assistantContent = '';
 
     try {
+      // intentional streaming read loop
+
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          break;
+        }
 
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n');
@@ -121,7 +127,7 @@ export default async function handler(
                 if (content) {
                   assistantContent += content;
                 }
-              } catch (e) {
+              } catch {
                 // Ignore JSON parse errors for non-JSON lines
               }
             }
@@ -131,7 +137,7 @@ export default async function handler(
         }
       }
     } catch (streamError) {
-      console.error('Streaming error:', streamError);
+      logger.error('Streaming error:', streamError);
     } finally {
       res.write('data: [DONE]\n\n');
 
@@ -157,14 +163,14 @@ export default async function handler(
             data: { updatedAt: new Date() },
           });
         } catch (dbError) {
-          console.error('Error storing AI message:', dbError);
+          logger.error('Error storing AI message:', dbError);
         }
       }
 
       res.end();
     }
   } catch (error) {
-    console.error('AI handler error:', error);
+    logger.error('AI handler error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }

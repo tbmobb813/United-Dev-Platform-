@@ -83,7 +83,7 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
             users={users}
             currentUserId={currentUserId}
             showActivityFeed={true}
-            onUserClick={(userId) => {
+            onUserClick={userId => {
               // Could implement user focus/navigation here
               // For now, we'll just ignore the click
               void userId;

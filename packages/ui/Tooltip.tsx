@@ -1,13 +1,14 @@
+/* global HTMLDivElement, clearTimeout */
 import React, { useEffect, useRef, useState } from 'react';
 
-export type TooltipPlacement = 
-  | 'top' 
-  | 'bottom' 
-  | 'left' 
-  | 'right' 
-  | 'top-start' 
-  | 'top-end' 
-  | 'bottom-start' 
+export type TooltipPlacement =
+  | 'top'
+  | 'bottom'
+  | 'left'
+  | 'right'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom-start'
   | 'bottom-end'
   | 'left-start'
   | 'left-end'
@@ -45,7 +46,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   overlayClassName = '',
   maxWidth = 250,
   arrow = true,
-  offset = 8
+  offset = 8,
 }) => {
   const [internalVisible, setInternalVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -57,7 +58,9 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const isVisible = visible !== undefined ? visible : internalVisible;
 
   const updatePosition = () => {
-    if (!triggerRef.current || !tooltipRef.current) {return;}
+    if (!triggerRef.current || !tooltipRef.current) {
+      return;
+    }
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const tooltipRect = tooltipRef.current.getBoundingClientRect();
@@ -144,7 +147,9 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   const show = () => {
-    if (disabled) {return;}
+    if (disabled) {
+      return;
+    }
 
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current);
@@ -222,13 +227,13 @@ export const Tooltip: React.FC<TooltipProps> = ({
   useEffect(() => {
     if (isVisible) {
       updatePosition();
-      
+
       const handleResize = () => updatePosition();
       const handleScroll = () => updatePosition();
-      
+
       window.addEventListener('resize', handleResize);
       window.addEventListener('scroll', handleScroll, true);
-      
+
       return () => {
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('scroll', handleScroll, true);
@@ -253,7 +258,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       position: 'absolute',
       width: 0,
       height: 0,
-      borderStyle: 'solid'
+      borderStyle: 'solid',
     };
 
     if (placement.startsWith('top')) {
@@ -261,25 +266,29 @@ export const Tooltip: React.FC<TooltipProps> = ({
       styles.left = '50%';
       styles.marginLeft = -arrowSize;
       styles.borderWidth = `${arrowSize}px ${arrowSize}px 0 ${arrowSize}px`;
-      styles.borderColor = 'var(--tooltip-bg, #333) transparent transparent transparent';
+      styles.borderColor =
+        'var(--tooltip-bg, #333) transparent transparent transparent';
     } else if (placement.startsWith('bottom')) {
       styles.bottom = '100%';
       styles.left = '50%';
       styles.marginLeft = -arrowSize;
       styles.borderWidth = `0 ${arrowSize}px ${arrowSize}px ${arrowSize}px`;
-      styles.borderColor = 'transparent transparent var(--tooltip-bg, #333) transparent';
+      styles.borderColor =
+        'transparent transparent var(--tooltip-bg, #333) transparent';
     } else if (placement.startsWith('left')) {
       styles.left = '100%';
       styles.top = '50%';
       styles.marginTop = -arrowSize;
       styles.borderWidth = `${arrowSize}px 0 ${arrowSize}px ${arrowSize}px`;
-      styles.borderColor = 'transparent transparent transparent var(--tooltip-bg, #333)';
+      styles.borderColor =
+        'transparent transparent transparent var(--tooltip-bg, #333)';
     } else if (placement.startsWith('right')) {
       styles.right = '100%';
       styles.top = '50%';
       styles.marginTop = -arrowSize;
       styles.borderWidth = `${arrowSize}px ${arrowSize}px ${arrowSize}px 0`;
-      styles.borderColor = 'transparent var(--tooltip-bg, #333) transparent transparent';
+      styles.borderColor =
+        'transparent var(--tooltip-bg, #333) transparent transparent';
     }
 
     return styles;
@@ -314,20 +323,13 @@ export const Tooltip: React.FC<TooltipProps> = ({
             top: position.top,
             left: position.left,
             maxWidth,
-            zIndex: 1000
+            zIndex: 1000,
           }}
           role='tooltip'
           aria-hidden={!isVisible}
         >
-          <div className='tooltip__content'>
-            {content}
-          </div>
-          {arrow && (
-            <div 
-              className='tooltip__arrow'
-              style={getArrowStyles()}
-            />
-          )}
+          <div className='tooltip__content'>{content}</div>
+          {arrow && <div className='tooltip__arrow' style={getArrowStyles()} />}
         </div>
       )}
     </>
@@ -342,22 +344,20 @@ export interface WithTooltipProps extends Omit<TooltipProps, 'children'> {
 export const withTooltip = <P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) => {
-  const WithTooltipComponent: React.FC<P & WithTooltipProps> = (props) => {
+  const WithTooltipComponent: React.FC<P & WithTooltipProps> = props => {
     const { tooltip, placement, trigger, ...componentProps } = props;
 
     return (
-      <Tooltip 
-        content={tooltip} 
-        placement={placement} 
-        trigger={trigger}
-      >
+      <Tooltip content={tooltip} placement={placement} trigger={trigger}>
         <WrappedComponent {...(componentProps as P)} />
       </Tooltip>
     );
   };
 
-  WithTooltipComponent.displayName = `withTooltip(${WrappedComponent.displayName || WrappedComponent.name})`;
-  
+  WithTooltipComponent.displayName = `withTooltip(${
+    WrappedComponent.displayName || WrappedComponent.name
+  })`;
+
   return WithTooltipComponent;
 };
 

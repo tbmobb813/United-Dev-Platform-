@@ -178,7 +178,9 @@ export function RequirePermission(permission: string, resource?: string) {
 
       if (!context || !context.hasPermission(permission, resource)) {
         throw new Error(
-          `Access denied. Required permission: ${permission}${resource ? ` on ${resource}` : ''}`
+          `Access denied. Required permission: ${permission}${
+            resource ? ` on ${resource}` : ''
+          }`
         );
       }
 

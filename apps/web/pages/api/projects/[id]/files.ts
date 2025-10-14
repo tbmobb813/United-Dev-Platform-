@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../../lib/prisma';
+import { prisma } from '@udp/db';
+import type { Prisma } from '@prisma/client';
+import logger from '@udp/logger';
+import { getErrorMessage, toEnum, isPrismaError } from '../../../../lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,7 +33,7 @@ async function getProjectFiles(
   try {
     const { path, type } = req.query;
 
-    const where: any = { projectId };
+    const where = { projectId } as Prisma.ProjectFileWhereInput;
 
     // Filter by path prefix (for directory contents)
     if (path && typeof path === 'string') {
@@ -39,7 +42,7 @@ async function getProjectFiles(
 
     // Filter by file type
     if (type && typeof type === 'string') {
-      where.type = type;
+      where.type = toEnum(type);
     }
 
     const files = await prisma.projectFile.findMany({
@@ -62,8 +65,9 @@ async function getProjectFiles(
     });
 
     res.status(200).json({ files });
-  } catch (error) {
-    console.error('Error fetching project files:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error fetching project files:', msg);
     res.status(500).json({ error: 'Failed to fetch files' });
   }
 }
@@ -115,10 +119,11 @@ async function createFile(
     });
 
     res.status(201).json({ file });
-  } catch (error: any) {
-    console.error('Error creating file:', error);
+  } catch (error: unknown) {
+    const msg = getErrorMessage(error);
+    logger.error('Error creating file:', msg);
 
-    if (error.code === 'P2002') {
+    if (isPrismaError(error) && error.code === 'P2002') {
       return res.status(400).json({
         error: 'File already exists at this path',
       });

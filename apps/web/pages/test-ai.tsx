@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React, { useState } from 'react';
 import { AIAssistant } from '@udp/ai';
 import { Button } from '@udp/ui';
@@ -11,7 +12,7 @@ export default function TestAIAssistant() {
 
   const handleCodeInsert = (code: string) => {
     console.log('Inserting code:', code);
-    alert(`Code would be inserted: ${code.substring(0, 50)}...`);
+    window.alert(`Code would be inserted: ${code.substring(0, 50)}...`);
   };
 
   return (

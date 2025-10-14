@@ -15,7 +15,10 @@ export interface BreadcrumbProps {
   items: BreadcrumbItem[];
   separator?: ReactNode;
   maxItems?: number;
-  itemRender?: (item: BreadcrumbItem, params: { location: 'first' | 'last' | 'middle' }) => ReactNode;
+  itemRender?: (
+    item: BreadcrumbItem,
+    params: { location: 'first' | 'last' | 'middle' }
+  ) => ReactNode;
   className?: string;
   separatorClassName?: string;
   itemClassName?: string;
@@ -45,7 +48,7 @@ export interface BreadcrumbLinkProps {
 // Default separator component
 export const BreadcrumbSeparator: React.FC<BreadcrumbSeparatorProps> = ({
   children = '/',
-  className = ''
+  className = '',
 }) => (
   <span className={`breadcrumb__separator ${className}`} aria-hidden='true'>
     {children}
@@ -58,7 +61,7 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
   onClick,
   children,
   className = '',
-  disabled = false
+  disabled = false,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClick = (event: React.MouseEvent<any>) => {
@@ -98,7 +101,11 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
   }
 
   return (
-    <span className={`breadcrumb__text ${disabled ? 'breadcrumb__text--disabled' : ''} ${className}`}>
+    <span
+      className={`breadcrumb__text ${
+        disabled ? 'breadcrumb__text--disabled' : ''
+      } ${className}`}
+    >
       {children}
     </span>
   );
@@ -119,12 +126,12 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   expandText = '...',
   collapseText = 'Show less',
   onItemClick,
-  'aria-label': ariaLabel = 'Breadcrumb navigation'
+  'aria-label': ariaLabel = 'Breadcrumb navigation',
 }) => {
   const [expanded, setExpanded] = React.useState(false);
 
   const shouldTruncate = maxItems && items.length > maxItems && !expanded;
-  
+
   const getVisibleItems = (): BreadcrumbItem[] => {
     if (!shouldTruncate) {
       return items;
@@ -149,13 +156,19 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       >
         {expandText}
       </button>
-    ) : expandText,
-    className: 'breadcrumb__ellipsis'
+    ) : (
+      expandText
+    ),
+    className: 'breadcrumb__ellipsis',
   });
 
-  const renderItem = (item: BreadcrumbItem, index: number, isLast: boolean): ReactNode => {
+  const renderItem = (
+    item: BreadcrumbItem,
+    index: number,
+    isLast: boolean
+  ): ReactNode => {
     const location = index === 0 ? 'first' : isLast ? 'last' : 'middle';
-    
+
     if (itemRender) {
       return itemRender(item, { location });
     }
@@ -165,8 +178,10 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       itemClassName,
       item.className || '',
       isLast ? `breadcrumb__item--active ${activeClassName}` : '',
-      item.disabled ? `breadcrumb__item--disabled ${disabledClassName}` : ''
-    ].filter(Boolean).join(' ');
+      item.disabled ? `breadcrumb__item--disabled ${disabledClassName}` : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     const content = (
       <>
@@ -179,14 +194,18 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       <li key={item.key || index} className={itemClasses}>
         <BreadcrumbLink
           href={!isLast ? item.href : undefined}
-          onClick={!isLast ? (event) => {
-            if (item.onClick) {
-              item.onClick(event);
-            }
-            if (onItemClick) {
-              onItemClick(item, index);
-            }
-          } : undefined}
+          onClick={
+            !isLast
+              ? event => {
+                  if (item.onClick) {
+                    item.onClick(event);
+                  }
+                  if (onItemClick) {
+                    onItemClick(item, index);
+                  }
+                }
+              : undefined
+          }
           disabled={item.disabled}
           className={isLast ? 'breadcrumb__current' : ''}
         >
@@ -202,12 +221,17 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       const separatorElement = separator as any;
       return React.cloneElement(separatorElement, {
         key: `separator-${index}`,
-        className: `${separatorElement.props?.className || ''} ${separatorClassName}`.trim()
+        className: `${
+          separatorElement.props?.className || ''
+        } ${separatorClassName}`.trim(),
       });
     }
-    
+
     return (
-      <BreadcrumbSeparator key={`separator-${index}`} className={separatorClassName}>
+      <BreadcrumbSeparator
+        key={`separator-${index}`}
+        className={separatorClassName}
+      >
         {separator}
       </BreadcrumbSeparator>
     );
@@ -215,17 +239,20 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   const visibleItems = getVisibleItems();
   const needsEllipsis = shouldTruncate && items.length > visibleItems.length;
-  
+
   // Insert ellipsis after first item if needed
-  const itemsToRender = needsEllipsis && visibleItems.length > 1
-    ? [visibleItems[0], getEllipsisItem(), ...visibleItems.slice(1)]
-    : visibleItems;
+  const itemsToRender =
+    needsEllipsis && visibleItems.length > 1
+      ? [visibleItems[0], getEllipsisItem(), ...visibleItems.slice(1)]
+      : visibleItems;
 
   const breadcrumbClasses = [
     'breadcrumb',
     className,
-    expanded ? 'breadcrumb--expanded' : ''
-  ].filter(Boolean).join(' ');
+    expanded ? 'breadcrumb--expanded' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <nav className={breadcrumbClasses} aria-label={ariaLabel}>
@@ -233,7 +260,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
         {itemsToRender.map((item, index) => {
           const isLast = index === itemsToRender.length - 1;
           const itemElement = renderItem(item, index, isLast);
-          
+
           if (isLast) {
             return itemElement;
           }
@@ -245,7 +272,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
             </React.Fragment>
           );
         })}
-        
+
         {expanded && expandable && (
           <li className='breadcrumb__collapse'>
             <button
@@ -266,17 +293,20 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 // Common breadcrumb patterns and utilities
 export const breadcrumbUtils = {
   // Create breadcrumb items from a path
-  fromPath: (path: string, options: {
-    basePath?: string;
-    labelMap?: Record<string, string>;
-    includeRoot?: boolean;
-    rootLabel?: ReactNode;
-  } = {}): BreadcrumbItem[] => {
+  fromPath: (
+    path: string,
+    options: {
+      basePath?: string;
+      labelMap?: Record<string, string>;
+      includeRoot?: boolean;
+      rootLabel?: ReactNode;
+    } = {}
+  ): BreadcrumbItem[] => {
     const {
       basePath = '',
       labelMap = {},
       includeRoot = true,
-      rootLabel = 'Home'
+      rootLabel = 'Home',
     } = options;
 
     const segments = path.split('/').filter(Boolean);
@@ -286,18 +316,22 @@ export const breadcrumbUtils = {
       items.push({
         key: 'root',
         label: rootLabel,
-        href: basePath || '/'
+        href: basePath || '/',
       });
     }
 
     segments.forEach((segment, index) => {
-      const segmentPath = `${basePath}/${segments.slice(0, index + 1).join('/')}`;
-      const label = labelMap[segment] || segment.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      
+      const segmentPath = `${basePath}/${segments
+        .slice(0, index + 1)
+        .join('/')}`;
+      const label =
+        labelMap[segment] ||
+        segment.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
       items.push({
         key: segmentPath,
         label,
-        href: segmentPath
+        href: segmentPath,
       });
     });
 
@@ -305,17 +339,19 @@ export const breadcrumbUtils = {
   },
 
   // Create breadcrumb items from a hierarchy
-  fromHierarchy: (hierarchy: Array<{
-    id: string;
-    name: string;
-    url?: string;
-    icon?: ReactNode;
-  }>): BreadcrumbItem[] => {
+  fromHierarchy: (
+    hierarchy: Array<{
+      id: string;
+      name: string;
+      url?: string;
+      icon?: ReactNode;
+    }>
+  ): BreadcrumbItem[] => {
     return hierarchy.map(item => ({
       key: item.id,
       label: item.name,
       href: item.url,
-      icon: item.icon
+      icon: item.icon,
     }));
   },
 
@@ -327,8 +363,8 @@ export const breadcrumbUtils = {
     dot: '•',
     pipe: '|',
     chevronIcon: <span style={{ fontSize: '0.8em' }}>▸</span>,
-    homeIcon: <span style={{ fontSize: '0.9em' }}>🏠</span>
-  }
+    homeIcon: <span style={{ fontSize: '0.9em' }}>🏠</span>,
+  },
 };
 
 // Preset breadcrumb configurations
@@ -337,29 +373,29 @@ export const breadcrumbPresets = {
   fileSystem: {
     separator: breadcrumbUtils.separators.slash,
     maxItems: 5,
-    expandable: true
+    expandable: true,
   },
 
   // Website navigation style
   website: {
     separator: breadcrumbUtils.separators.chevron,
     maxItems: 4,
-    expandable: false
+    expandable: false,
   },
 
   // Application navigation style
   application: {
     separator: breadcrumbUtils.separators.chevronIcon,
     maxItems: 6,
-    expandable: true
+    expandable: true,
   },
 
   // Minimal style
   minimal: {
     separator: breadcrumbUtils.separators.dot,
     maxItems: 3,
-    expandable: false
-  }
+    expandable: false,
+  },
 };
 
 export default Breadcrumb;

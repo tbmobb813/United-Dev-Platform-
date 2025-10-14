@@ -1,12 +1,6 @@
 import { DocumentManager, UserPresence } from '@udp/editor-core';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import * as Y from 'yjs';
 import { config } from '../config.js';
 
@@ -53,10 +47,7 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
         color: userColor,
       };
 
-      documentManager.current = new DocumentManager(
-        user,
-        config.wsUrl
-      );
+      documentManager.current = new DocumentManager(user, config.wsUrl);
 
       const doc = await documentManager.current.openDocument(
         roomId,
@@ -81,7 +72,9 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       documentManager.current.onCollaboratorsChanged(setCollaborators);
     } catch (err) {
       setError(
-        `Failed to connect: ${err instanceof Error ? err.message : 'Unknown error'}`
+        `Failed to connect: ${
+          err instanceof Error ? err.message : 'Unknown error'
+        }`
       );
       setIsConnected(false);
     }
@@ -110,7 +103,9 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
     if (!isConnected) {
       return 'Connecting...';
     }
-    return `Connected • ${collaborators.length} collaborator${collaborators.length !== 1 ? 's' : ''}`;
+    return `Connected • ${collaborators.length} collaborator${
+      collaborators.length !== 1 ? 's' : ''
+    }`;
   };
 
   return (

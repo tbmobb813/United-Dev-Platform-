@@ -59,7 +59,7 @@ export const PresenceIndicator: React.FC<PresenceIndicatorProps> = ({
     if (!lastSeen) {
       return '#9ca3af'; // Gray for unknown
     }
-    
+
     const minutesAgo = (new Date().getTime() - lastSeen.getTime()) / 60000;
     if (minutesAgo < 5) {
       return '#fbbf24'; // Yellow for recently active

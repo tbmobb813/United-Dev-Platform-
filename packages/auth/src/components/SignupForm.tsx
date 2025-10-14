@@ -1,3 +1,4 @@
+/* global HTMLInputElement */
 import React, { useState } from 'react';
 import type { AuthResult, RegisterCredentials } from '../types';
 
@@ -47,20 +48,35 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     const feedback: string[] = [];
     let score = 0;
 
-    if (password.length >= 8) {score += 1;}
-    else {feedback.push('Password must be at least 8 characters');}
+    if (password.length >= 8) {
+      score += 1;
+    } else {
+      feedback.push('Password must be at least 8 characters');
+    }
 
-    if (/[A-Z]/.test(password)) {score += 1;}
-    else {feedback.push('Include uppercase letters');}
+    if (/[A-Z]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include uppercase letters');
+    }
 
-    if (/[a-z]/.test(password)) {score += 1;}
-    else {feedback.push('Include lowercase letters');}
+    if (/[a-z]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include lowercase letters');
+    }
 
-    if (/\d/.test(password)) {score += 1;}
-    else {feedback.push('Include numbers');}
+    if (/\d/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include numbers');
+    }
 
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {score += 1;}
-    else {feedback.push('Include special characters');}
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('Include special characters');
+    }
 
     return { score, feedback };
   };
@@ -120,13 +136,14 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof RegisterCredentials) => 
+  const handleInputChange =
+    (field: keyof RegisterCredentials) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = field === 'acceptTerms' ? e.target.checked : e.target.value;
-      
+
       setCredentials(prev => ({
         ...prev,
-        [field]: value
+        [field]: value,
       }));
 
       // Validate password strength in real-time
@@ -136,27 +153,51 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       }
     };
 
-  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setConfirmPassword(e.target.value);
   };
 
   const displayError = error || formError;
-  const passwordMatch = credentials.password && confirmPassword && credentials.password === confirmPassword;
-  const passwordMismatch = credentials.password && confirmPassword && credentials.password !== confirmPassword;
+  const passwordMatch =
+    credentials.password &&
+    confirmPassword &&
+    credentials.password === confirmPassword;
+  const passwordMismatch =
+    credentials.password &&
+    confirmPassword &&
+    credentials.password !== confirmPassword;
 
   const getStrengthColor = (score: number) => {
-    if (score <= 1) {return '#ff4444';}
-    if (score <= 2) {return '#ff8800';}
-    if (score <= 3) {return '#ffbb00';}
-    if (score <= 4) {return '#88cc00';}
+    if (score <= 1) {
+      return '#ff4444';
+    }
+    if (score <= 2) {
+      return '#ff8800';
+    }
+    if (score <= 3) {
+      return '#ffbb00';
+    }
+    if (score <= 4) {
+      return '#88cc00';
+    }
     return '#00cc44';
   };
 
   const getStrengthText = (score: number) => {
-    if (score <= 1) {return 'Very Weak';}
-    if (score <= 2) {return 'Weak';}
-    if (score <= 3) {return 'Fair';}
-    if (score <= 4) {return 'Good';}
+    if (score <= 1) {
+      return 'Very Weak';
+    }
+    if (score <= 2) {
+      return 'Weak';
+    }
+    if (score <= 3) {
+      return 'Fair';
+    }
+    if (score <= 4) {
+      return 'Good';
+    }
     return 'Strong';
   };
 
@@ -280,20 +321,22 @@ export const SignupForm: React.FC<SignupFormProps> = ({
             disabled={loading}
             autoComplete='new-password'
           />
-          
+
           {credentials.password && (
             <div className='password-strength'>
               <div className='password-strength__bar'>
-                <div 
+                <div
                   className='password-strength__fill'
                   style={{
                     width: `${(passwordStrength.score / 5) * 100}%`,
-                    backgroundColor: getStrengthColor(passwordStrength.score)
+                    backgroundColor: getStrengthColor(passwordStrength.score),
                   }}
                 />
               </div>
               <div className='password-strength__text'>
-                <span style={{ color: getStrengthColor(passwordStrength.score) }}>
+                <span
+                  style={{ color: getStrengthColor(passwordStrength.score) }}
+                >
                   {getStrengthText(passwordStrength.score)}
                 </span>
               </div>
@@ -318,7 +361,9 @@ export const SignupForm: React.FC<SignupFormProps> = ({
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
             placeholder='Confirm your password'
-            className={`form-input ${passwordMismatch ? 'form-input--error' : ''} ${passwordMatch ? 'form-input--success' : ''}`}
+            className={`form-input ${
+              passwordMismatch ? 'form-input--error' : ''
+            } ${passwordMatch ? 'form-input--success' : ''}`}
             required
             disabled={loading}
             autoComplete='new-password'
@@ -348,11 +393,21 @@ export const SignupForm: React.FC<SignupFormProps> = ({
               />
               <span className='checkbox-text'>
                 I agree to the{' '}
-                <a href='/terms' target='_blank' rel='noopener noreferrer' className='link'>
+                <a
+                  href='/terms'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='link'
+                >
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href='/privacy' target='_blank' rel='noopener noreferrer' className='link'>
+                <a
+                  href='/privacy'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='link'
+                >
                   Privacy Policy
                 </a>
               </span>
@@ -362,7 +417,9 @@ export const SignupForm: React.FC<SignupFormProps> = ({
 
         <button
           type='submit'
-          disabled={loading || (showTermsAndConditions && !credentials.acceptTerms)}
+          disabled={
+            loading || (showTermsAndConditions && !credentials.acceptTerms)
+          }
           className='auth-form__submit'
         >
           {loading ? 'Creating account...' : 'Create Account'}

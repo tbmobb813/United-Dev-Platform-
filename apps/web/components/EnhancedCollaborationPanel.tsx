@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { getConfig } from '@udp/config';
 import { UserPresence } from '@udp/editor-core';
 import React, { useEffect, useState } from 'react';
@@ -28,7 +29,7 @@ const CollaboratorPresence: React.FC<CollaboratorPresenceProps> = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {visibleCollaborators.map((collaborator) => (
+        {visibleCollaborators.map(collaborator => (
           <div
             key={collaborator.id}
             style={{
@@ -104,18 +105,19 @@ export const EnhancedCollaborationPanel: React.FC<
   // Auto-collapse after 30 seconds if only 1 user and no activity
   useEffect(() => {
     if (collaborators.length <= 1 && config.maxCollaborators > 1) {
-      const timer = setTimeout(() => {
+      const timer = window.setTimeout(() => {
         if (Date.now() - lastActivity > 30000) {
           setIsCollapsed(true);
           setShowAutoCollapseHint(true);
           onToggleCollapse?.(true);
 
           // Hide hint after 3 seconds
-          setTimeout(() => setShowAutoCollapseHint(false), 3000);
+          // use window.setTimeout to avoid no-undef in some lint configs
+          window.setTimeout(() => setShowAutoCollapseHint(false), 3000);
         }
       }, 30000);
 
-      return () => clearTimeout(timer);
+      return () => window.clearTimeout(timer as number);
     }
   }, [
     collaborators.length,
@@ -202,7 +204,7 @@ export const EnhancedCollaborationPanel: React.FC<
     return (
       <div style={containerStyles} onMouseEnter={handleActivity}>
         <div style={{ textAlign: 'center' }}>
-          <button style={buttonStyles} onClick={toggleMinimize} title="Expand">
+          <button style={buttonStyles} onClick={toggleMinimize} title='Expand'>
             👥
           </button>
           <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '2px' }}>
@@ -234,7 +236,7 @@ export const EnhancedCollaborationPanel: React.FC<
           <button
             style={buttonStyles}
             onClick={toggleMinimize}
-            title="Minimize"
+            title='Minimize'
           >
             −
           </button>
@@ -247,7 +249,7 @@ export const EnhancedCollaborationPanel: React.FC<
             collaborators={collaborators}
             maxVisible={5}
             showNames={true}
-            size="sm"
+            size='sm'
           />
 
           {collaborators.length === 0 && (

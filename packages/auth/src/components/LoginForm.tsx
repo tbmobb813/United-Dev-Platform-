@@ -1,3 +1,4 @@
+/* global HTMLInputElement */
 import React, { useState } from 'react';
 import type { AuthResult, LoginCredentials } from '../types';
 
@@ -57,11 +58,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof LoginCredentials) => 
+  const handleInputChange =
+    (field: keyof LoginCredentials) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setCredentials((prev: LoginCredentials) => ({
         ...prev,
-        [field]: field === 'rememberMe' ? e.target.checked : e.target.value
+        [field]: field === 'rememberMe' ? e.target.checked : e.target.value,
       }));
     };
 
@@ -143,11 +145,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           )}
         </div>
 
-        <button
-          type='submit'
-          disabled={loading}
-          className='auth-form__submit'
-        >
+        <button type='submit' disabled={loading} className='auth-form__submit'>
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>

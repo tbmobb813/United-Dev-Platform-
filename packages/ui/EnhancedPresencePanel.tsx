@@ -45,9 +45,10 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
     users.forEach(user => {
       if (user.id !== currentUserId) {
         const existingActivity = activityFeed.find(
-          a => a.userId === user.id && a.timestamp > new Date(Date.now() - 60000)
+          a =>
+            a.userId === user.id && a.timestamp > new Date(Date.now() - 60000)
         );
-        
+
         if (!existingActivity) {
           const newActivity: ActivityItem = {
             id: `${user.id}-${Date.now()}`,
@@ -56,7 +57,7 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
             action: user.isActive ? 'joined' : 'left',
             timestamp: new Date(),
           };
-          
+
           setActivityFeed(prev => [newActivity, ...prev].slice(0, 10)); // Keep last 10 items
         }
       }
@@ -83,12 +84,15 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
   };
 
   return (
-    <Card
-      title={`Collaboration (${users.length})`}
-      padding='medium'
-    >
+    <Card title={`Collaboration (${users.length})`} padding='medium'>
       <Stack gap='medium'>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Button
             variant='ghost'
             size='small'
@@ -103,7 +107,14 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
             {/* Active Users Section */}
             {activeUsers.length > 0 && (
               <div>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#333', marginBottom: '8px' }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    color: '#333',
+                    marginBottom: '8px',
+                  }}
+                >
                   Active Now ({activeUsers.length})
                 </div>
                 <Stack gap='small'>
@@ -129,7 +140,14 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
             {/* Recently Active Users */}
             {recentUsers.length > 0 && (
               <div>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#666', marginBottom: '8px' }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    color: '#666',
+                    marginBottom: '8px',
+                  }}
+                >
                   Recently Active ({recentUsers.length})
                 </div>
                 <Stack gap='small'>
@@ -155,7 +173,14 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
             {/* Activity Feed */}
             {showActivityFeed && activityFeed.length > 0 && (
               <div>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#666', marginBottom: '8px' }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    color: '#666',
+                    marginBottom: '8px',
+                  }}
+                >
                   Recent Activity
                 </div>
                 <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
@@ -180,7 +205,8 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
                           showStatus={false}
                         />
                         <span>
-                          <strong>{activity.userName}</strong> {activity.action} {getTimeAgo(activity.timestamp)}
+                          <strong>{activity.userName}</strong> {activity.action}{' '}
+                          {getTimeAgo(activity.timestamp)}
                         </span>
                       </div>
                     ))}
@@ -190,14 +216,16 @@ export const EnhancedPresencePanel: React.FC<EnhancedPresencePanelProps> = ({
             )}
 
             {/* Stats */}
-            <div style={{ 
-              fontSize: '11px', 
-              color: '#999', 
-              padding: '8px 0', 
-              borderTop: '1px solid #eee',
-              display: 'flex',
-              justifyContent: 'space-between'
-            }}>
+            <div
+              style={{
+                fontSize: '11px',
+                color: '#999',
+                padding: '8px 0',
+                borderTop: '1px solid #eee',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
               <span>{activeUsers.length} active</span>
               <span>{users.length} total</span>
             </div>

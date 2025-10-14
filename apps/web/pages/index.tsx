@@ -25,12 +25,12 @@ import { codeCompletionService } from '../components/CodeCompletionProvider';
 // Dynamic imports for client-side only components
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
-  loading: () => <Loading text="Loading editor..." />,
+  loading: () => <Loading text='Loading editor...' />,
 });
 
 const QRCode = dynamic(() => import('qrcode.react'), {
   ssr: false,
-  loading: () => <Loading text="Loading QR code..." />,
+  loading: () => <Loading text='Loading QR code...' />,
 });
 
 function generateColor() {
@@ -82,10 +82,16 @@ export default function Home() {
   }, []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // Generate both mobile app deeplink and fallback web URL
-  const webUrl = `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
+  const webUrl = `${
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'http://localhost:3000'
+  }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
-  )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}&fallback=${encodeURIComponent(webUrl)}`;
+  )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(
+    docName
+  )}&fallback=${encodeURIComponent(webUrl)}`;
 
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
@@ -117,7 +123,9 @@ export default function Home() {
   }, [router]);
 
   useEffect(() => {
-    if (!userName) return;
+    if (!userName) {
+      return;
+    }
 
     try {
       const docId = `${room}-${docName}`;
@@ -150,7 +158,9 @@ export default function Home() {
       }
 
       const handleChange = () => {
-        if (!awarenessRef.current) return;
+        if (!awarenessRef.current) {
+          return;
+        }
         try {
           const userStates = awarenessRef.current.getStates();
           const userList = Array.from(userStates.values())
@@ -224,7 +234,9 @@ export default function Home() {
       cursor: { line: number; column: number };
     }[]
   ) => {
-    if (!editorRef.current || typeof window === 'undefined') return;
+    if (!editorRef.current || typeof window === 'undefined') {
+      return;
+    }
 
     try {
       const decorations = usersWithCursors.map(user => ({
@@ -245,7 +257,9 @@ export default function Home() {
 
       // Add dynamic styles for cursors
       const styleId = 'user-cursor-styles';
-      let styleElement = document.getElementById(styleId) as HTMLStyleElement;
+      let styleElement = document.getElementById(
+        styleId
+      ) as HTMLStyleElement | null;
       if (!styleElement) {
         styleElement = document.createElement('style');
         styleElement.id = styleId;
@@ -285,7 +299,9 @@ export default function Home() {
   ) => {
     editorRef.current = editor;
     const model = editor.getModel();
-    if (!model || !ytextRef.current) return;
+    if (!model || !ytextRef.current) {
+      return;
+    }
 
     // Configure editor options
     editor.updateOptions({
@@ -318,7 +334,9 @@ export default function Home() {
     }
 
     const yObserver = () => {
-      if (!ytextRef.current || ignoreRef.current) return;
+      if (!ytextRef.current || ignoreRef.current) {
+        return;
+      }
       ignoreRef.current = true;
       model.setValue(ytextRef.current.toString());
       ignoreRef.current = false;
@@ -326,7 +344,9 @@ export default function Home() {
     ytextRef.current.observe(yObserver);
 
     const disposable = editor.onDidChangeModelContent(() => {
-      if (!ytextRef.current || ignoreRef.current) return;
+      if (!ytextRef.current || ignoreRef.current) {
+        return;
+      }
       ignoreRef.current = true;
       const val = model.getValue();
       ytextRef.current.doc?.transact(() => {
@@ -338,7 +358,9 @@ export default function Home() {
 
     // Track cursor position changes
     const cursorDisposable = editor.onDidChangeCursorPosition(e => {
-      if (!awarenessRef.current || ignoreRef.current) return;
+      if (!awarenessRef.current || ignoreRef.current) {
+        return;
+      }
 
       const position = e.position;
       awarenessRef.current.setLocalStateField('user', {
@@ -363,7 +385,9 @@ export default function Home() {
     });
 
     editor.onDidDispose(() => {
-      if (ytextRef.current) ytextRef.current.unobserve(yObserver);
+      if (ytextRef.current) {
+        ytextRef.current.unobserve(yObserver);
+      }
       disposable.dispose();
       cursorDisposable.dispose();
       selectionDisposable.dispose();
@@ -435,7 +459,9 @@ export default function Home() {
     },
   ]);
 
-  if (!userName || !isClient) return <div>Loading...</div>;
+  if (!userName || !isClient) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -444,13 +470,13 @@ export default function Home() {
       </Head>
       <h1>Unified Dev Platform (Web)</h1>
       <p>Logged in as: {userName ? String(userName) : 'Unknown'}</p>
-      <Stack direction="row" gap="small" wrap>
+      <Stack direction='row' gap='small' wrap>
         <Button onClick={handleSignOut}>Sign out</Button>
-        <Button variant="outline" onClick={() => setIsAIOpen(true)}>
+        <Button variant='outline' onClick={() => setIsAIOpen(true)}>
           🤖 AI Assistant
         </Button>
         <Button
-          variant="outline"
+          variant='outline'
           onClick={() => {
             setFileManagerMode('open');
             setIsFileManagerOpen(true);
@@ -459,7 +485,7 @@ export default function Home() {
           📁 Open File
         </Button>
         <Button
-          variant="outline"
+          variant='outline'
           onClick={() => {
             setFileManagerMode('save');
             setIsFileManagerOpen(true);
@@ -468,7 +494,7 @@ export default function Home() {
           💾 Save As
         </Button>
         <Button
-          variant="outline"
+          variant='outline'
           onClick={() => {
             setFileManagerMode('create');
             setIsFileManagerOpen(true);
@@ -477,42 +503,44 @@ export default function Home() {
           ➕ New File
         </Button>
         <Button
-          variant="ghost"
-          size="small"
+          variant='ghost'
+          size='small'
           onClick={() => setIsShortcutsHelpOpen(true)}
         >
           ❓ Help (F1)
         </Button>
         <Button
-          variant="ghost"
-          size="small"
+          variant='ghost'
+          size='small'
           onClick={() => setIsSettingsOpen(true)}
         >
           ⚙️ Settings
         </Button>
       </Stack>
 
-      <Card title="Document Navigation" style={{ margin: '20px 0' }}>
-        <Stack direction="row" gap="medium" align="center" wrap>
-          <Stack direction="row" gap="small" align="center">
+      <Card title='Document Navigation' style={{ margin: '20px 0' }}>
+        <Stack direction='row' gap='medium' align='center' wrap>
+          <Stack direction='row' gap='small' align='center'>
             <label>Room:</label>
             <Input
               value={roomInput}
               onChange={setRoomInput}
-              placeholder="Enter room name"
+              placeholder='Enter room name'
             />
           </Stack>
-          <Stack direction="row" gap="small" align="center">
+          <Stack direction='row' gap='small' align='center'>
             <label>Document:</label>
             <Input
               value={docInput}
               onChange={setDocInput}
-              placeholder="Enter document name"
+              placeholder='Enter document name'
             />
           </Stack>
           <Button
             onClick={() => {
-              const newUrl = `/?room=${encodeURIComponent(roomInput)}&doc=${encodeURIComponent(docInput)}`;
+              const newUrl = `/?room=${encodeURIComponent(
+                roomInput
+              )}&doc=${encodeURIComponent(docInput)}`;
               router.push(newUrl);
             }}
           >
@@ -528,7 +556,7 @@ export default function Home() {
         Collaborative editor powered by Yjs. Room: {room}, Document: {docName}
       </h2>
       {isClient && (
-        <Stack gap="small">
+        <Stack gap='small'>
           <div
             style={{
               border: '1px solid #e1e5e9',
@@ -563,10 +591,10 @@ export default function Home() {
               }
             `}</style>
             <MonacoEditor
-              height="40vh"
-              language="markdown"
+              height='40vh'
+              language='markdown'
               onMount={handleEditorDidMount}
-              theme="vs-light"
+              theme='vs-light'
               options={{
                 selectOnLineNumbers: true,
                 roundedSelection: false,
@@ -576,8 +604,8 @@ export default function Home() {
               }}
             />
           </div>
-          <Card padding="small">
-            <Stack direction="row" gap="medium" align="center" wrap>
+          <Card padding='small'>
+            <Stack direction='row' gap='medium' align='center' wrap>
               <div
                 style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
               >
@@ -618,7 +646,9 @@ export default function Home() {
           users
             .map((u, index) => {
               // Ensure all properties exist and are valid
-              if (!u || typeof u !== 'object') return null;
+              if (!u || typeof u !== 'object') {
+                return null;
+              }
               const id = u.id ? String(u.id) : `user-${index}`;
               const name = u.name ? String(u.name) : 'Unknown User';
               const color = u.color ? String(u.color) : '#000000';
@@ -642,9 +672,9 @@ export default function Home() {
       <h2>Mobile Handoff</h2>
       <p>Scan with your mobile device to join this collaboration session:</p>
       {isClient && deeplink ? (
-        <Stack gap="medium" align="center">
-          <Card padding="medium" style={{ textAlign: 'center' }}>
-            <Stack gap="small" align="center">
+        <Stack gap='medium' align='center'>
+          <Card padding='medium' style={{ textAlign: 'center' }}>
+            <Stack gap='small' align='center'>
               <QRCode value={webUrl} size={180} />
               <div style={{ fontSize: '12px', color: '#666' }}>
                 📱 Scan to open in mobile browser
@@ -652,17 +682,17 @@ export default function Home() {
             </Stack>
           </Card>
 
-          <Stack direction="row" gap="small" wrap>
+          <Stack direction='row' gap='small' wrap>
             <Button
-              variant="outline"
-              size="small"
+              variant='outline'
+              size='small'
               onClick={() => navigator.clipboard.writeText(webUrl)}
             >
               📋 Copy Web Link
             </Button>
             <Button
-              variant="outline"
-              size="small"
+              variant='outline'
+              size='small'
               onClick={() => navigator.clipboard.writeText(deeplink)}
             >
               📱 Copy App Link
@@ -670,11 +700,11 @@ export default function Home() {
           </Stack>
 
           <Card
-            title="Connection Details"
-            padding="medium"
+            title='Connection Details'
+            padding='medium'
             style={{ maxWidth: '400px' }}
           >
-            <Stack gap="small">
+            <Stack gap='small'>
               <div>
                 <strong>Room:</strong> {room}
               </div>
@@ -691,20 +721,20 @@ export default function Home() {
           </Card>
         </Stack>
       ) : (
-        <Loading text="Loading QR code and deep link..." />
+        <Loading text='Loading QR code and deep link...' />
       )}
 
       <Stack
-        direction="row"
-        gap="small"
-        align="center"
+        direction='row'
+        gap='small'
+        align='center'
         style={{ marginTop: '16px' }}
       >
         <label>File path:</label>
         <Input
           value={file}
           onChange={setFile}
-          placeholder="/README.md"
+          placeholder='/README.md'
           style={{ minWidth: '200px' }}
         />
       </Stack>

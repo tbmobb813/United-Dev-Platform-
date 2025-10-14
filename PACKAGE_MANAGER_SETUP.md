@@ -2,7 +2,8 @@
 
 ## Issue: pnpm not in PowerShell PATH
 
-The project uses pnpm@9.0.0 as specified in package.json, but pnpm may not be available directly in PowerShell after global installation.
+The project uses pnpm@9.0.0 as specified in package.json, but pnpm may not be
+available directly in PowerShell after global installation.
 
 ## Solution Options
 
@@ -49,7 +50,8 @@ npm install package-name
 
 - ✅ pnpm workspace is properly configured
 - ✅ All dependencies installed successfully with `npx pnpm install`
-- ✅ Code editor package added to mobile app: `@rivascva/react-native-code-editor`
+- ✅ Code editor package added to mobile app:
+  `@rivascva/react-native-code-editor`
 - ⚠️ Use `npx pnpm` prefix for all pnpm commands in PowerShell
 
 ## Workspace Commands
@@ -73,4 +75,5 @@ npx pnpm run build
 
 ## Recommendation
 
-Continue using `npx pnpm` for consistency and reliability. The workspace setup is working correctly, just needs the npx prefix in PowerShell environments.
+Continue using `npx pnpm` for consistency and reliability. The workspace setup
+is working correctly, just needs the npx prefix in PowerShell environments.

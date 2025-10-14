@@ -132,7 +132,6 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
         setStreamingContent('');
       } else {
-        // Fallback to placeholder if no AI manager
         const fallbackResponse = await simulateFallbackResponse(
           content,
           intent
@@ -146,7 +145,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
       }
     } catch (error) {
-      console.error('AI request failed:', error);
+      // Error logging removed to comply with linting rules
       const errorMessage =
         error instanceof Error ? error.message : 'AI request failed';
 
@@ -228,8 +227,8 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title='🤖 AI Assistant'
-      size='large'
+      title={'🤖 AI Assistant'}
+      size={'large'}
     >
       {/* @ts-ignore */}
       <div

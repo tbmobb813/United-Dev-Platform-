@@ -447,7 +447,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   projectId,
   currentFile,
   selectedCode,
-  onCodeInsert
+  onCodeInsert,
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -455,20 +455,17 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   const sendMessage = async (content: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [
-            ...messages,
-            { role: 'user', content }
-          ],
+          messages: [...messages, { role: "user", content }],
           context: {
             projectId,
             currentFile,
-            selectedCode
-          }
-        })
+            selectedCode,
+          },
+        }),
       });
 
       const data = await response.json();
@@ -480,11 +477,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
   return (
     <div className="ai-assistant">
-      <ChatInterface
-        messages={messages}
-        onSendMessage={sendMessage}
-        isLoading={isLoading}
-      />
+      <ChatInterface messages={messages} onSendMessage={sendMessage} isLoading={isLoading} />
       <QuickActions
         onExplainCode={() => sendMessage(`Explain this code: ${selectedCode}`)}
         onWriteTests={() => sendMessage(`Write unit tests for: ${selectedCode}`)}

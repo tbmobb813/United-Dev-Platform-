@@ -3,10 +3,17 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  },
   "pnpm": {
     "overrides": {
       "react": "18.3.1",
-      "react-dom": "18.3.1"
+      "react-dom": "18.3.1",
+      "prismjs": "1.30.0",
+      "refractor": "3.6.0",
+      "next": "14.2.32",
+      "dompurify": "^3.2.4"
     }
   },
   "scripts": {
@@ -23,6 +30,7 @@
     "fix": "pnpm lint:fix && pnpm format",
     "reset": "pnpm clean && pnpm install",
     "validate-env": "node scripts/validate-env.js",
+    "ci:validate-env": "node scripts/ci-validate-env.js",
     "validate-devops": "node scripts/validate-devops.js",
     "dev:web": "cd apps/web && pnpm dev",
     "dev:api": "cd apps/api && pnpm dev",
@@ -37,6 +45,7 @@
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "turbo": "^1.12.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "dotenv": "^16.1.4"
   }
 }

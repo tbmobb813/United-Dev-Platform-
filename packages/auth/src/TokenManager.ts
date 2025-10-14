@@ -1,3 +1,4 @@
+/* global Crypto, TextEncoder */
 import type {
   AuthConfig,
   TokenManager as ITokenManager,

@@ -1,0 +1,23 @@
+# Ignore node_modules and common build artifacts
+node_modules/
+**/node_modules/
+dist/
+build/
+.turbo/
+
+# Ignore generated Prisma runtime files in apps/web
+apps/web/generated/
+apps/web/generated/**
+
+# Ignore Prisma client runtime caches
+**/prisma/runtime/
+**/generated/prisma/**
+
+# Ignore .next and other Next.js build outputs
+apps/web/.next/
+apps/web/.next/**
+
+# Ignore temporary backups and local env files
+.backup/
+.env
+.env.*
