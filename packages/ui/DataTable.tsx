@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableColumn<T = any> {
+export interface DataTableColumn<T = unknown> {
   key: string;
   title: string;
   dataIndex?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  render?: (value: any, record: T, index: number) => React.ReactNode;
+  render?: (value: unknown, record: T, index: number) => React.ReactNode;
   sortable?: boolean;
   filterable?: boolean;
   width?: number | string;
@@ -17,15 +16,14 @@ export interface DataTableColumn<T = any> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableProps<T = any> {
+export interface DataTableProps<T = unknown> {
   columns: DataTableColumn<T>[];
   data: T[];
   loading?: boolean;
   pagination?: PaginationConfig | false;
   rowSelection?: RowSelectionConfig<T>;
   rowKey?: string | ((record: T) => string);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onRow?: (record: T, index: number) => React.HTMLAttributes<any>;
+  onRow?: (record: T, index: number) => React.HTMLAttributes<unknown>;
   className?: string;
   size?: 'small' | 'medium' | 'large';
   bordered?: boolean;
@@ -36,8 +34,7 @@ export interface DataTableProps<T = any> {
   sortable?: boolean;
   filterable?: boolean;
   onSort?: (field: string, direction: 'asc' | 'desc' | null) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFilter?: (filters: Record<string, any>) => void;
+  onFilter?: (filters: Record<string, unknown>) => void;
 }
 
 export interface PaginationConfig {
@@ -51,7 +48,7 @@ export interface PaginationConfig {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface RowSelectionConfig<T = any> {
+export interface RowSelectionConfig<T = unknown> {
   type?: 'checkbox' | 'radio';
   selectedRowKeys?: React.Key[];
   onChange?: (selectedRowKeys: React.Key[], selectedRows: T[]) => void;
@@ -60,11 +57,14 @@ export interface RowSelectionConfig<T = any> {
     record: T,
     selected: boolean,
     selectedRows: T[],
-    nativeEvent: any
+    nativeEvent: unknown
   ) => void;
   onSelectAll?: (selected: boolean, selectedRows: T[], changeRows: T[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCheckboxProps?: (record: T) => { disabled?: boolean; [key: string]: any };
+  getCheckboxProps?: (record: T) => {
+    disabled?: boolean;
+    [key: string]: unknown;
+  };
 }
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -74,8 +74,11 @@ interface SortState {
   direction: SortDirection;
 }
 
+// Minimal event shape to avoid depending on DOM lib types in the TS config
+type InputChangeEvent = { target: { checked: boolean }; nativeEvent?: unknown };
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const DataTable = <T extends Record<string, any>>({
+export const DataTable = <T extends Record<string, unknown>>({
   columns,
   data,
   loading = false,
@@ -107,7 +110,16 @@ export const DataTable = <T extends Record<string, any>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    return record[rowKey] || index;
+    // Safely access record using a string key with type guard and optional chaining.
+    const value = typeof rowKey === 'string' ? record?.[rowKey] : undefined;
+    if (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'symbol'
+    ) {
+      return value;
+    }
+    return index;
   };
 
   const handleSort = (field: string) => {
@@ -181,7 +193,7 @@ export const DataTable = <T extends Record<string, any>>({
   const handleRowSelection = (
     record: T,
     selected: boolean,
-    nativeEvent: React.ChangeEvent<any>
+    nativeEvent: InputChangeEvent
   ) => {
     const key = getRowKey(record, 0);
     let newSelectedKeys: React.Key[];
@@ -219,7 +231,7 @@ export const DataTable = <T extends Record<string, any>>({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelectAll = (
     selected: boolean,
-    _nativeEvent: React.ChangeEvent<any>
+    _nativeEvent: InputChangeEvent
   ) => {
     const newSelectedKeys = selected
       ? paginatedData.map((record, index) => getRowKey(record, index))
@@ -241,12 +253,16 @@ export const DataTable = <T extends Record<string, any>>({
 
   const renderCell = (column: DataTableColumn<T>, record: T, index: number) => {
     if (column.render) {
-      const value = column.dataIndex ? record[column.dataIndex] : record;
-      return column.render(value, record, index);
+      const value = column.dataIndex
+        ? (record as Record<string, unknown>)[column.dataIndex as string]
+        : record;
+      return column.render(value as unknown, record, index) as React.ReactNode;
     }
 
     if (column.dataIndex) {
-      return record[column.dataIndex];
+      return (record as Record<string, unknown>)[
+        column.dataIndex as string
+      ] as React.ReactNode;
     }
 
     return null;
@@ -261,7 +277,7 @@ export const DataTable = <T extends Record<string, any>>({
     const direction = isActive ? sortState.direction : null;
 
     return (
-      <span className="datatable__sort-icon">
+      <span className='datatable__sort-icon'>
         <span
           className={`datatable__sort-up ${
             direction === 'asc' ? 'datatable__sort-up--active' : ''
@@ -317,8 +333,8 @@ export const DataTable = <T extends Record<string, any>>({
   if (loading) {
     return (
       <div className={tableClasses}>
-        <div className="datatable__loading">
-          <div className="datatable__spinner" />
+        <div className='datatable__loading'>
+          <div className='datatable__spinner' />
           <span>Loading...</span>
         </div>
       </div>
@@ -327,15 +343,15 @@ export const DataTable = <T extends Record<string, any>>({
 
   return (
     <div className={tableClasses}>
-      <div className="datatable__wrapper">
-        <table className="datatable__table">
-          <thead className="datatable__head">
+      <div className='datatable__wrapper'>
+        <table className='datatable__table'>
+          <thead className='datatable__head'>
             <tr>
               {rowSelection && (
-                <th className="datatable__selection-cell">
+                <th className='datatable__selection-cell'>
                   {rowSelection.type !== 'radio' && (
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       checked={isAllSelected()}
                       ref={input => {
                         if (input) {
@@ -343,7 +359,7 @@ export const DataTable = <T extends Record<string, any>>({
                         }
                       }}
                       onChange={e => handleSelectAll(e.target.checked, e)}
-                      className="datatable__checkbox"
+                      className='datatable__checkbox'
                     />
                   )}
                 </th>
@@ -372,7 +388,7 @@ export const DataTable = <T extends Record<string, any>>({
                     }
                   }}
                 >
-                  <div className="datatable__header-content">
+                  <div className='datatable__header-content'>
                     <span>{column.title}</span>
                     {getSortIcon(column)}
                   </div>
@@ -380,14 +396,14 @@ export const DataTable = <T extends Record<string, any>>({
               ))}
             </tr>
           </thead>
-          <tbody className="datatable__body">
+          <tbody className='datatable__body'>
             {paginatedData.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length + (rowSelection ? 1 : 0)}
-                  className="datatable__empty-cell"
+                  className='datatable__empty-cell'
                 >
-                  <div className="datatable__empty">{emptyText}</div>
+                  <div className='datatable__empty'>{emptyText}</div>
                 </td>
               </tr>
             ) : (
@@ -407,14 +423,14 @@ export const DataTable = <T extends Record<string, any>>({
                     {...rowProps}
                   >
                     {rowSelection && (
-                      <td className="datatable__selection-cell">
+                      <td className='datatable__selection-cell'>
                         <input
                           type={rowSelection.type || 'checkbox'}
                           checked={selected}
                           onChange={e =>
                             handleRowSelection(record, e.target.checked, e)
                           }
-                          className="datatable__checkbox"
+                          className='datatable__checkbox'
                           {...(rowSelection.getCheckboxProps?.(record) || {})}
                         />
                       </td>
@@ -444,7 +460,7 @@ export const DataTable = <T extends Record<string, any>>({
       </div>
 
       {pagination && (
-        <div className="datatable__pagination">
+        <div className='datatable__pagination'>
           <DataTablePagination {...pagination} />
         </div>
       )}
@@ -517,19 +533,19 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
   };
 
   return (
-    <div className="datatable-pagination">
+    <div className='datatable-pagination'>
       {showTotal && (
-        <div className="datatable-pagination__total">
+        <div className='datatable-pagination__total'>
           {showTotal(total, [startIndex, endIndex])}
         </div>
       )}
 
-      <div className="datatable-pagination__controls">
+      <div className='datatable-pagination__controls'>
         <button
-          type="button"
+          type='button'
           disabled={current === 1}
           onClick={() => handlePageChange(current - 1)}
-          className="datatable-pagination__button"
+          className='datatable-pagination__button'
         >
           Previous
         </button>
@@ -537,7 +553,7 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
         {getPageNumbers().map((page, index) => (
           <button
             key={index}
-            type="button"
+            type='button'
             disabled={page === '...'}
             onClick={() => typeof page === 'number' && handlePageChange(page)}
             className={`
@@ -555,21 +571,21 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
         ))}
 
         <button
-          type="button"
+          type='button'
           disabled={current === totalPages}
           onClick={() => handlePageChange(current + 1)}
-          className="datatable-pagination__button"
+          className='datatable-pagination__button'
         >
           Next
         </button>
       </div>
 
       {showSizeChanger && (
-        <div className="datatable-pagination__size-changer">
+        <div className='datatable-pagination__size-changer'>
           <select
             value={pageSize}
             onChange={e => handlePageSizeChange(Number(e.target.value))}
-            className="datatable-pagination__size-select"
+            className='datatable-pagination__size-select'
           >
             {[10, 20, 50, 100].map(size => (
               <option key={size} value={size}>

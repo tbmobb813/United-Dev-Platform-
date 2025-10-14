@@ -1,0 +1,554 @@
+[
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/AIAssistant.tsx",
+    "messages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 149,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 149,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [3825, 3868], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 1,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/** @jsxImportSource react */\nimport React, { useState, useEffect, useRef } from 'react';\nimport { Modal, Card, Button, Input } from '@udp/ui';\nimport { AIManager, CodeContext } from './AIManager';\n\n// Types for the AI Assistant\nexport interface ChatMessage {\n  id: string;\n  role: 'user' | 'assistant' | 'system';\n  content: string;\n  timestamp: Date;\n  isStreaming?: boolean;\n}\n\nexport interface AIAssistantProps {\n  isOpen: boolean;\n  onClose: () => void;\n  projectId?: string;\n  currentFile?: string;\n  selectedCode?: string;\n  // @ts-ignore - parameter name needed for type definition\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars\n  onCodeInsert?: (code: string) => void;\n  aiManager?: AIManager; // Optional AI manager instance\n}\n\n// AI Assistant Component\nconst AIAssistant: React.FC<AIAssistantProps> = ({\n  isOpen,\n  onClose,\n  currentFile,\n  selectedCode,\n  onCodeInsert,\n  aiManager,\n}) => {\n  const [messages, setMessages] = useState<ChatMessage[]>([]);\n  const [input, setInput] = useState('');\n  const [isLoading, setIsLoading] = useState(false);\n  const [streamingContent, setStreamingContent] = useState('');\n  const messagesEndRef = useRef<React.ElementRef<'div'>>(null);\n\n  const scrollToBottom = () => {\n    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });\n  };\n\n  useEffect(() => {\n    scrollToBottom();\n  }, [messages, streamingContent]);\n\n  const getCodeContext = (): CodeContext => {\n    const fileExtension = currentFile?.split('.').pop()?.toLowerCase();\n    const languageMap: Record<string, string> = {\n      js: 'javascript',\n      jsx: 'javascript',\n      ts: 'typescript',\n      tsx: 'typescript',\n      py: 'python',\n      css: 'css',\n      html: 'html',\n      json: 'json',\n      md: 'markdown',\n      yml: 'yaml',\n      yaml: 'yaml',\n    };\n\n    return {\n      fileName: currentFile,\n      language: fileExtension\n        ? languageMap[fileExtension] || fileExtension\n        : undefined,\n      selectedCode: selectedCode,\n    };\n  };\n\n  const sendMessage = async (\n    content: string,\n    intent:\n      | 'chat'\n      | 'explain'\n      | 'generate'\n      | 'debug'\n      | 'optimize'\n      | 'test' = 'chat'\n  ) => {\n    if (!content.trim()) {\n      return;\n    }\n\n    const userMessage: ChatMessage = {\n      id: Date.now().toString(),\n      role: 'user',\n      content,\n      timestamp: new Date(),\n    };\n\n    setMessages(prev => [...prev, userMessage]);\n    setInput('');\n    setIsLoading(true);\n    setStreamingContent('');\n\n    // Create a placeholder assistant message for streaming\n    const assistantMessage: ChatMessage = {\n      id: (Date.now() + 1).toString(),\n      role: 'assistant',\n      content: '',\n      timestamp: new Date(),\n      isStreaming: true,\n    };\n\n    setMessages(prev => [...prev, assistantMessage]);\n\n    try {\n      if (aiManager && aiManager.isReady()) {\n        const context = getCodeContext();\n\n        const response = await aiManager.chat(\n          content,\n          context,\n          intent,\n          (chunk: string) => {\n            setStreamingContent(prev => prev + chunk);\n          }\n        );\n\n        // Update the final message\n        setMessages(prev =>\n          prev.map(msg =>\n            msg.id === assistantMessage.id\n              ? { ...msg, content: response.content, isStreaming: false }\n              : msg\n          )\n        );\n        setStreamingContent('');\n      } else {\n        // Fallback to placeholder if no AI manager\n        const fallbackResponse = await simulateFallbackResponse(\n          content,\n          intent\n        );\n        setMessages(prev =>\n          prev.map(msg =>\n            msg.id === assistantMessage.id\n              ? { ...msg, content: fallbackResponse, isStreaming: false }\n              : msg\n          )\n        );\n      }\n    } catch (error) {\n      console.error('AI request failed:', error);\n      const errorMessage =\n        error instanceof Error ? error.message : 'AI request failed';\n\n      setMessages(prev =>\n        prev.map(msg =>\n          msg.id === assistantMessage.id\n            ? {\n                ...msg,\n                content: `❌ Error: ${errorMessage}\\n\\nPlease check your AI configuration and try again.`,\n                isStreaming: false,\n              }\n            : msg\n        )\n      );\n    } finally {\n      setIsLoading(false);\n      setStreamingContent('');\n    }\n  };\n\n  const simulateFallbackResponse = async (\n    content: string,\n    intent: string\n  ): Promise<string> => {\n    return new Promise(resolve => {\n      window.setTimeout(() => {\n        const responses = {\n          explain: `I'd love to explain this code for you! However, I need to be connected to an AI service (like OpenAI or Anthropic) to provide detailed explanations.\\n\\n**What I would do:**\\n- Analyze the code structure and logic\\n- Explain each part in detail\\n- Identify patterns and best practices\\n- Suggest improvements\\n\\n**To enable AI features:**\\n1. Add your API key in settings\\n2. Select an AI provider (OpenAI/Anthropic)\\n3. Try again!`,\n\n          generate: `I'm ready to help generate code! But first, I need to be connected to an AI service.\\n\\n**What I would generate:**\\n- Clean, well-structured code based on your request\\n- Proper error handling\\n- Best practices and conventions\\n- Helpful comments\\n\\n**Setup needed:**\\nPlease configure an AI provider in the settings to unlock code generation.`,\n\n          debug: `I can help debug this code once connected to an AI service!\\n\\n**Debugging approach I'd take:**\\n- Identify potential issues and bugs\\n- Explain why problems occur\\n- Provide specific fixes\\n- Suggest preventive measures\\n\\nPlease set up AI integration to get real debugging assistance.`,\n\n          optimize: `I'd love to optimize this code for you!\\n\\n**Optimization areas I'd focus on:**\\n- Performance improvements\\n- Memory efficiency\\n- Code readability\\n- Best practices\\n\\nTo get real optimization suggestions, please configure an AI provider.`,\n\n          test: `I can generate comprehensive tests once connected to an AI service!\\n\\n**Test coverage I'd provide:**\\n- Unit tests for main functionality\\n- Edge cases and error scenarios\\n- Integration test suggestions\\n- Testing best practices\\n\\nConfigure AI integration to generate real test code.`,\n\n          chat: `Hello! I'm your AI assistant, ready to help with coding tasks.\\n\\n**Current status:** Not connected to AI service\\n\\n**What I can do once configured:**\\n- Explain code in detail\\n- Generate code from descriptions\\n- Debug and fix issues\\n- Optimize performance\\n- Write comprehensive tests\\n- Answer development questions\\n\\n**To get started:** Add your AI provider credentials in the settings.\\n\\nFor now, I can still help with basic questions about your request: \"${content}\"`,\n        };\n\n        resolve(responses[intent as keyof typeof responses] || responses.chat);\n      }, 800);\n    });\n  };\n\n  const quickActions = [\n    {\n      label: 'Explain Code',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Explain this code: \\n\\n${selectedCode}`, 'explain'),\n    },\n    {\n      label: 'Write Tests',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Write unit tests for: \\n\\n${selectedCode}`, 'test'),\n    },\n    {\n      label: 'Optimize',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Optimize this code: \\n\\n${selectedCode}`, 'optimize'),\n    },\n    {\n      label: 'Debug Issues',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Debug and fix issues in: \\n\\n${selectedCode}`, 'debug'),\n    },\n    {\n      label: 'Generate Code',\n      action: () =>\n        sendMessage(`Generate code based on the current context`, 'generate'),\n    },\n  ];\n\n  return (\n    <Modal\n      isOpen={isOpen}\n      onClose={onClose}\n      title='🤖 AI Assistant'\n      size='large'\n    >\n      {/* @ts-ignore */}\n      <div\n        style={{ height: '600px', display: 'flex', flexDirection: 'column' }}\n      >\n        {/* Messages Area */}\n        <div\n          style={{\n            flex: 1,\n            overflowY: 'auto',\n            padding: '16px',\n            border: '1px solid #e1e5e9',\n            borderRadius: '8px',\n            marginBottom: '16px',\n            backgroundColor: '#f8f9fa',\n          }}\n        >\n          {messages.length === 0 ? (\n            <div\n              style={{\n                textAlign: 'center',\n                color: '#6c757d',\n                marginTop: '50px',\n              }}\n            >\n              <h3>AI Assistant Ready</h3>\n              <p>\n                Ask me anything about your code or use the quick actions below.\n              </p>\n              {currentFile && (\n                <p>\n                  <strong>Current file:</strong> {currentFile}\n                </p>\n              )}\n            </div>\n          ) : (\n            messages.map(message => (\n              <Card\n                key={message.id}\n                style={{\n                  marginBottom: '12px',\n                  backgroundColor:\n                    message.role === 'user' ? '#e3f2fd' : '#f1f8e9',\n                }}\n              >\n                <div\n                  style={{\n                    display: 'flex',\n                    justifyContent: 'space-between',\n                    alignItems: 'center',\n                    marginBottom: '8px',\n                  }}\n                >\n                  <strong>\n                    {message.role === 'user' ? 'You' : 'AI Assistant'}\n                  </strong>\n                  <small style={{ color: '#6c757d' }}>\n                    {message.timestamp.toLocaleTimeString()}\n                  </small>\n                </div>\n                <div\n                  style={{\n                    whiteSpace: 'pre-wrap',\n                    fontFamily: 'monospace',\n                    fontSize: '14px',\n                  }}\n                >\n                  {message.content}\n                  {message.isStreaming && streamingContent && (\n                    <span style={{ backgroundColor: '#fff3cd' }}>\n                      {streamingContent}\n                    </span>\n                  )}\n                </div>\n                {message.role === 'assistant' && onCodeInsert && (\n                  <Button\n                    size='small'\n                    variant='outline'\n                    onClick={() => onCodeInsert(message.content)}\n                    style={{ marginTop: '8px' }}\n                  >\n                    Insert Code\n                  </Button>\n                )}\n              </Card>\n            ))\n          )}\n          {isLoading && (\n            <Card style={{ backgroundColor: '#f1f8e9' }}>\n              <div>🤔 AI Assistant is thinking...</div>\n            </Card>\n          )}\n          <div ref={messagesEndRef} />\n        </div>\n\n        {/* Quick Actions */}\n        {selectedCode && (\n          <Card title='Quick Actions' style={{ marginBottom: '16px' }}>\n            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>\n              {quickActions.map(action => (\n                <Button\n                  key={action.label}\n                  variant='outline'\n                  size='small'\n                  onClick={action.action}\n                  disabled={isLoading}\n                >\n                  {action.label}\n                </Button>\n              ))}\n            </div>\n            <div\n              style={{ marginTop: '8px', fontSize: '12px', color: '#6c757d' }}\n            >\n              Selected: {selectedCode.substring(0, 50)}...\n            </div>\n          </Card>\n        )}\n\n        {/* Input Area */}\n        <div style={{ display: 'flex', gap: '8px' }}>\n          <Input\n            value={input}\n            onChange={setInput}\n            placeholder='Ask me anything about your code...'\n            style={{ flex: 1 }}\n          />\n          <Button\n            onClick={() => sendMessage(input)}\n            disabled={!input.trim() || isLoading}\n          >\n            Send\n          </Button>\n        </div>\n      </div>\n    </Modal>\n  );\n};\n\nexport default AIAssistant;\n",
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/AIAssistantClass.tsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/AIAssistantSimple.tsx",
+    "messages": [
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 146,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 146,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [3663, 3706], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 1,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/** @jsxImportSource react */\nimport React, { useState, useEffect, useRef } from 'react';\nimport { AIManager, CodeContext } from './AIManager';\n\n// Types for the AI Assistant\nexport interface ChatMessage {\n  id: string;\n  role: 'user' | 'assistant' | 'system';\n  content: string;\n  timestamp: Date;\n  isStreaming?: boolean;\n}\n\nexport interface AIAssistantProps {\n  isOpen: boolean;\n  onClose: () => void;\n  projectId?: string;\n  currentFile?: string;\n  selectedCode?: string;\n  onCodeInsert?: (code: string) => void;\n  aiManager?: AIManager | null;\n}\n\n// Simple AI Assistant Component (without UI library dependencies)\nconst AIAssistant: React.FC<AIAssistantProps> = ({\n  isOpen,\n  onClose,\n  currentFile,\n  selectedCode,\n  onCodeInsert,\n  aiManager,\n}) => {\n  const [messages, setMessages] = useState<ChatMessage[]>([]);\n  const [input, setInput] = useState('');\n  const [isLoading, setIsLoading] = useState(false);\n  const [streamingContent, setStreamingContent] = useState('');\n  const messagesEndRef = useRef<React.ElementRef<'div'>>(null);\n\n  const scrollToBottom = () => {\n    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });\n  };\n\n  useEffect(() => {\n    scrollToBottom();\n  }, [messages, streamingContent]);\n\n  const getCodeContext = (): CodeContext => {\n    const fileExtension = currentFile?.split('.').pop()?.toLowerCase();\n    const languageMap: Record<string, string> = {\n      js: 'javascript',\n      jsx: 'javascript',\n      ts: 'typescript',\n      tsx: 'typescript',\n      py: 'python',\n      css: 'css',\n      html: 'html',\n      json: 'json',\n      md: 'markdown',\n      yml: 'yaml',\n      yaml: 'yaml',\n    };\n\n    return {\n      fileName: currentFile,\n      language: fileExtension\n        ? languageMap[fileExtension] || fileExtension\n        : undefined,\n      selectedCode: selectedCode,\n    };\n  };\n\n  const sendMessage = async (\n    content: string,\n    intent:\n      | 'chat'\n      | 'explain'\n      | 'generate'\n      | 'debug'\n      | 'optimize'\n      | 'test' = 'chat'\n  ) => {\n    if (!content.trim()) {\n      return;\n    }\n\n    const userMessage: ChatMessage = {\n      id: Date.now().toString(),\n      role: 'user',\n      content,\n      timestamp: new Date(),\n    };\n\n    setMessages(prev => [...prev, userMessage]);\n    setInput('');\n    setIsLoading(true);\n    setStreamingContent('');\n\n    // Create a placeholder assistant message for streaming\n    const assistantMessage: ChatMessage = {\n      id: (Date.now() + 1).toString(),\n      role: 'assistant',\n      content: '',\n      timestamp: new Date(),\n      isStreaming: true,\n    };\n\n    setMessages(prev => [...prev, assistantMessage]);\n\n    try {\n      if (aiManager && aiManager.isReady()) {\n        const context = getCodeContext();\n\n        const response = await aiManager.chat(\n          content,\n          context,\n          intent,\n          (chunk: string) => {\n            setStreamingContent(prev => prev + chunk);\n          }\n        );\n\n        // Update the final message\n        setMessages(prev =>\n          prev.map(msg =>\n            msg.id === assistantMessage.id\n              ? { ...msg, content: response.content, isStreaming: false }\n              : msg\n          )\n        );\n        setStreamingContent('');\n      } else {\n        // Fallback to placeholder if no AI manager\n        const fallbackResponse = await simulateFallbackResponse(\n          content,\n          intent\n        );\n        setMessages(prev =>\n          prev.map(msg =>\n            msg.id === assistantMessage.id\n              ? { ...msg, content: fallbackResponse, isStreaming: false }\n              : msg\n          )\n        );\n      }\n    } catch (error) {\n      console.error('AI request failed:', error);\n      const errorMessage =\n        error instanceof Error ? error.message : 'AI request failed';\n\n      setMessages(prev =>\n        prev.map(msg =>\n          msg.id === assistantMessage.id\n            ? {\n                ...msg,\n                content: `❌ Error: ${errorMessage}\\n\\nPlease check your AI configuration and try again.`,\n                isStreaming: false,\n              }\n            : msg\n        )\n      );\n    } finally {\n      setIsLoading(false);\n      setStreamingContent('');\n    }\n  };\n\n  const simulateFallbackResponse = async (\n    content: string,\n    intent: string\n  ): Promise<string> => {\n    return new Promise(resolve => {\n      window.setTimeout(() => {\n        const responses = {\n          explain: `I'd love to explain this code for you! However, I need to be connected to an AI service (like OpenAI or Anthropic) to provide detailed explanations.\\n\\n**What I would do:**\\n- Analyze the code structure and logic\\n- Explain each part in detail\\n- Identify patterns and best practices\\n- Suggest improvements\\n\\n**To enable AI features:**\\n1. Add your API key in settings\\n2. Select an AI provider (OpenAI/Anthropic)\\n3. Try again!`,\n\n          generate: `I'm ready to help generate code! But first, I need to be connected to an AI service.\\n\\n**What I would generate:**\\n- Clean, well-structured code based on your request\\n- Proper error handling\\n- Best practices and conventions\\n- Helpful comments\\n\\n**Setup needed:**\\nPlease configure an AI provider in the settings to unlock code generation.`,\n\n          debug: `I can help debug this code once connected to an AI service!\\n\\n**Debugging approach I'd take:**\\n- Identify potential issues and bugs\\n- Explain why problems occur\\n- Provide specific fixes\\n- Suggest preventive measures\\n\\nPlease set up AI integration to get real debugging assistance.`,\n\n          optimize: `I'd love to optimize this code for you!\\n\\n**Optimization areas I'd focus on:**\\n- Performance improvements\\n- Memory efficiency\\n- Code readability\\n- Best practices\\n\\nTo get real optimization suggestions, please configure an AI provider.`,\n\n          test: `I can generate comprehensive tests once connected to an AI service!\\n\\n**Test coverage I'd provide:**\\n- Unit tests for main functionality\\n- Edge cases and error scenarios\\n- Integration test suggestions\\n- Testing best practices\\n\\nConfigure AI integration to generate real test code.`,\n\n          chat: `Hello! I'm your AI assistant, ready to help with coding tasks.\\n\\n**Current status:** Not connected to AI service\\n\\n**What I can do once configured:**\\n- Explain code in detail\\n- Generate code from descriptions\\n- Debug and fix issues\\n- Optimize performance\\n- Write comprehensive tests\\n- Answer development questions\\n\\n**To get started:** Add your AI provider credentials in the settings.\\n\\nFor now, I can still help with basic questions about your request: \"${content}\"`,\n        };\n\n        resolve(responses[intent as keyof typeof responses] || responses.chat);\n      }, 800);\n    });\n  };\n\n  const quickActions = [\n    {\n      label: 'Explain Code',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Explain this code: \\n\\n${selectedCode}`, 'explain'),\n    },\n    {\n      label: 'Write Tests',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Write unit tests for: \\n\\n${selectedCode}`, 'test'),\n    },\n    {\n      label: 'Optimize',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Optimize this code: \\n\\n${selectedCode}`, 'optimize'),\n    },\n    {\n      label: 'Debug Issues',\n      action: () =>\n        selectedCode &&\n        sendMessage(`Debug and fix issues in: \\n\\n${selectedCode}`, 'debug'),\n    },\n    {\n      label: 'Generate Code',\n      action: () =>\n        sendMessage(`Generate code based on the current context`, 'generate'),\n    },\n  ];\n\n  if (!isOpen) {\n    return null;\n  }\n\n  return (\n    <div\n      style={{\n        position: 'fixed',\n        top: 0,\n        left: 0,\n        right: 0,\n        bottom: 0,\n        backgroundColor: 'rgba(0, 0, 0, 0.5)',\n        display: 'flex',\n        alignItems: 'center',\n        justifyContent: 'center',\n        zIndex: 1000,\n      }}\n    >\n      <div\n        style={{\n          backgroundColor: 'white',\n          borderRadius: '12px',\n          padding: '24px',\n          width: '90%',\n          maxWidth: '800px',\n          maxHeight: '80%',\n          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',\n        }}\n      >\n        {/* Header */}\n        <div\n          style={{\n            display: 'flex',\n            justifyContent: 'space-between',\n            alignItems: 'center',\n            marginBottom: '16px',\n            borderBottom: '1px solid #e1e5e9',\n            paddingBottom: '16px',\n          }}\n        >\n          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>\n            🤖 AI Assistant\n          </h2>\n          <button\n            onClick={onClose}\n            style={{\n              background: 'none',\n              border: 'none',\n              fontSize: '24px',\n              cursor: 'pointer',\n              padding: '4px',\n            }}\n          >\n            ×\n          </button>\n        </div>\n\n        <div\n          style={{ height: '600px', display: 'flex', flexDirection: 'column' }}\n        >\n          {/* Messages Area */}\n          <div\n            style={{\n              flex: 1,\n              overflowY: 'auto',\n              padding: '16px',\n              border: '1px solid #e1e5e9',\n              borderRadius: '8px',\n              marginBottom: '16px',\n              backgroundColor: '#f8f9fa',\n            }}\n          >\n            {messages.length === 0 ? (\n              <div\n                style={{\n                  textAlign: 'center',\n                  color: '#6c757d',\n                  marginTop: '50px',\n                }}\n              >\n                <h3>AI Assistant Ready</h3>\n                <p>\n                  Ask me anything about your code or use the quick actions\n                  below.\n                </p>\n                {currentFile && (\n                  <p>\n                    <strong>Current file:</strong> {currentFile}\n                  </p>\n                )}\n              </div>\n            ) : (\n              messages.map(message => (\n                <div\n                  key={message.id}\n                  style={{\n                    marginBottom: '12px',\n                    padding: '16px',\n                    borderRadius: '8px',\n                    backgroundColor:\n                      message.role === 'user' ? '#e3f2fd' : '#f1f8e9',\n                  }}\n                >\n                  <div\n                    style={{\n                      display: 'flex',\n                      justifyContent: 'space-between',\n                      alignItems: 'center',\n                      marginBottom: '8px',\n                    }}\n                  >\n                    <strong>\n                      {message.role === 'user' ? 'You' : 'AI Assistant'}\n                    </strong>\n                    <small style={{ color: '#6c757d' }}>\n                      {message.timestamp.toLocaleTimeString()}\n                    </small>\n                  </div>\n                  <div\n                    style={{\n                      whiteSpace: 'pre-wrap',\n                      fontFamily: 'monospace',\n                      fontSize: '14px',\n                    }}\n                  >\n                    {message.content}\n                    {message.isStreaming && streamingContent && (\n                      <span style={{ backgroundColor: '#fff3cd' }}>\n                        {streamingContent}\n                      </span>\n                    )}\n                  </div>\n                  {message.role === 'assistant' && onCodeInsert && (\n                    <button\n                      onClick={() => onCodeInsert(message.content)}\n                      style={{\n                        marginTop: '8px',\n                        padding: '4px 8px',\n                        border: '1px solid #ccc',\n                        borderRadius: '4px',\n                        backgroundColor: 'white',\n                        cursor: 'pointer',\n                        fontSize: '12px',\n                      }}\n                    >\n                      Insert Code\n                    </button>\n                  )}\n                </div>\n              ))\n            )}\n            {isLoading && (\n              <div\n                style={{\n                  padding: '16px',\n                  borderRadius: '8px',\n                  backgroundColor: '#f1f8e9',\n                }}\n              >\n                <div>🤔 AI Assistant is thinking...</div>\n              </div>\n            )}\n            <div ref={messagesEndRef} />\n          </div>\n\n          {/* Quick Actions */}\n          {selectedCode && (\n            <div\n              style={{\n                marginBottom: '16px',\n                padding: '16px',\n                border: '1px solid #e1e5e9',\n                borderRadius: '8px',\n                backgroundColor: '#f8f9fa',\n              }}\n            >\n              <h4 style={{ margin: '0 0 8px 0' }}>Quick Actions</h4>\n              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>\n                {quickActions.map(action => (\n                  <button\n                    key={action.label}\n                    onClick={action.action}\n                    disabled={isLoading}\n                    style={{\n                      padding: '6px 12px',\n                      border: '1px solid #ccc',\n                      borderRadius: '4px',\n                      backgroundColor: 'white',\n                      cursor: isLoading ? 'not-allowed' : 'pointer',\n                      fontSize: '12px',\n                      opacity: isLoading ? 0.6 : 1,\n                    }}\n                  >\n                    {action.label}\n                  </button>\n                ))}\n              </div>\n              <div\n                style={{ marginTop: '8px', fontSize: '12px', color: '#6c757d' }}\n              >\n                Selected: {selectedCode.substring(0, 50)}...\n              </div>\n            </div>\n          )}\n\n          {/* Input Area */}\n          <div style={{ display: 'flex', gap: '8px' }}>\n            <input\n              value={input}\n              onChange={e => setInput(e.target.value)}\n              placeholder='Ask me anything about your code...'\n              style={{\n                flex: 1,\n                padding: '8px 12px',\n                border: '1px solid #ccc',\n                borderRadius: '4px',\n                fontSize: '14px',\n              }}\n              onKeyPress={e => {\n                if (e.key === 'Enter' && !e.shiftKey) {\n                  e.preventDefault();\n                  sendMessage(input);\n                }\n              }}\n            />\n            <button\n              onClick={() => sendMessage(input)}\n              disabled={!input.trim() || isLoading}\n              style={{\n                padding: '8px 16px',\n                border: 'none',\n                borderRadius: '4px',\n                backgroundColor:\n                  !input.trim() || isLoading ? '#ccc' : '#007bff',\n                color: 'white',\n                cursor: !input.trim() || isLoading ? 'not-allowed' : 'pointer',\n                fontSize: '14px',\n              }}\n            >\n              Send\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default AIAssistant;\n",
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/AIManager.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/index.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/AIService.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/AIServiceFactory.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/AnthropicService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'TextEncoder' is defined but never used.",
+        "line": 1,
+        "column": 24,
+        "nodeType": "Program",
+        "messageId": "unusedVar",
+        "endLine": 1,
+        "endColumn": 35
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 70,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 70,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [2145, 2190], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'e' is defined but never used.",
+        "line": 174,
+        "column": 22,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 174,
+        "endColumn": 23
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 188,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 188,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [5535, 5590], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 228,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 228,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [6602, 6666], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-constant-condition",
+        "severity": 2,
+        "message": "Unexpected constant condition.",
+        "line": 130,
+        "column": 14,
+        "nodeType": "Literal",
+        "messageId": "unexpected",
+        "endLine": 130,
+        "endColumn": 18,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 5,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/* global TextDecoder, TextEncoder */\n/* eslint-disable no-constant-condition */\nimport { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';\n\nexport class AnthropicService extends AIService {\n  private baseUrl: string;\n\n  constructor(config: AIServiceConfig) {\n    super(config);\n    this.baseUrl = config.baseUrl || 'https://api.anthropic.com/v1';\n  }\n\n  async generateResponse(\n    messages: AIMessage[],\n    systemPrompt?: string\n  ): Promise<AIResponse> {\n    if (!this.config.apiKey) {\n      throw new Error('Anthropic API key is required');\n    }\n\n    // Anthropic uses a different message format\n    const anthropicMessages = messages\n      .filter(msg => msg.role !== 'system')\n      .map(msg => ({\n        role: msg.role,\n        content: msg.content,\n      }));\n\n    try {\n      const response = await fetch(`${this.baseUrl}/messages`, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          'x-api-key': this.config.apiKey,\n          'anthropic-version': '2023-06-01',\n        },\n        body: JSON.stringify({\n          model: this.config.model || 'claude-3-sonnet-20240229',\n          max_tokens: this.config.maxTokens || 2000,\n          temperature: this.config.temperature || 0.7,\n          system: systemPrompt,\n          messages: anthropicMessages,\n        }),\n      });\n\n      if (!response.ok) {\n        const errorData = await response.json().catch(() => null);\n        throw new Error(\n          `Anthropic API error: ${response.status} ${response.statusText}${\n            errorData ? ` - ${errorData.error?.message}` : ''\n          }`\n        );\n      }\n\n      const data = await response.json();\n\n      return {\n        content: data.content[0]?.text || 'No response generated',\n        usage: data.usage\n          ? {\n              prompt_tokens: data.usage.input_tokens,\n              completion_tokens: data.usage.output_tokens,\n              total_tokens: data.usage.input_tokens + data.usage.output_tokens,\n            }\n          : undefined,\n        model: data.model,\n        finish_reason: data.stop_reason,\n      };\n    } catch (error) {\n      console.error('Anthropic API error:', error);\n      throw error;\n    }\n  }\n\n  async generateStreamResponse(\n    messages: AIMessage[],\n    systemPrompt?: string,\n    onChunk?: (chunk: string) => void\n  ): Promise<AIResponse> {\n    if (!this.config.apiKey) {\n      throw new Error('Anthropic API key is required');\n    }\n\n    const anthropicMessages = messages\n      .filter(msg => msg.role !== 'system')\n      .map(msg => ({\n        role: msg.role,\n        content: msg.content,\n      }));\n\n    try {\n      const response = await fetch(`${this.baseUrl}/messages`, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          'x-api-key': this.config.apiKey,\n          'anthropic-version': '2023-06-01',\n        },\n        body: JSON.stringify({\n          model: this.config.model || 'claude-3-sonnet-20240229',\n          max_tokens: this.config.maxTokens || 2000,\n          temperature: this.config.temperature || 0.7,\n          system: systemPrompt,\n          messages: anthropicMessages,\n          stream: true,\n        }),\n      });\n\n      if (!response.ok) {\n        const errorData = await response.json().catch(() => null);\n        throw new Error(\n          `Anthropic API error: ${response.status} ${response.statusText}${\n            errorData ? ` - ${errorData.error?.message}` : ''\n          }`\n        );\n      }\n\n      let fullContent = '';\n      let usage = undefined;\n      let model = undefined;\n      let finishReason = undefined;\n\n      const reader = response.body?.getReader();\n      if (!reader) {\n        throw new Error('Failed to get response reader');\n      }\n\n      const decoder = new TextDecoder();\n\n      while (true) {\n        const { done, value } = await reader.read();\n        if (done) {\n          break;\n        }\n\n        const chunk = decoder.decode(value);\n        const lines = chunk.split('\\n').filter(line => line.trim());\n\n        for (const line of lines) {\n          if (line.startsWith('data: ')) {\n            const data = line.slice(6);\n            if (data === '[DONE]') {\n              continue;\n            }\n\n            try {\n              const parsed = JSON.parse(data);\n\n              if (parsed.type === 'content_block_delta' && parsed.delta?.text) {\n                fullContent += parsed.delta.text;\n                onChunk?.(parsed.delta.text);\n              }\n\n              if (parsed.type === 'message_start' && parsed.message) {\n                model = parsed.message.model;\n                usage = parsed.message.usage;\n              }\n\n              if (\n                parsed.type === 'message_delta' &&\n                parsed.delta?.stop_reason\n              ) {\n                finishReason = parsed.delta.stop_reason;\n              }\n\n              if (parsed.type === 'message_delta' && parsed.usage) {\n                usage = {\n                  prompt_tokens: parsed.usage.input_tokens,\n                  completion_tokens: parsed.usage.output_tokens,\n                  total_tokens:\n                    parsed.usage.input_tokens + parsed.usage.output_tokens,\n                };\n              }\n            } catch (e) {\n              // Ignore JSON parse errors for malformed chunks\n            }\n          }\n        }\n      }\n\n      return {\n        content: fullContent,\n        usage,\n        model,\n        finish_reason: finishReason,\n      };\n    } catch (error) {\n      console.error('Anthropic Streaming API error:', error);\n      throw error;\n    }\n  }\n\n  async getAvailableModels(): Promise<string[]> {\n    // Anthropic doesn't have a public models endpoint, so return known models\n    return [\n      'claude-3-opus-20240229',\n      'claude-3-sonnet-20240229',\n      'claude-3-haiku-20240307',\n      'claude-2.1',\n      'claude-2.0',\n      'claude-instant-1.2',\n    ];\n  }\n\n  async validateConnection(): Promise<boolean> {\n    if (!this.config.apiKey) {\n      return false;\n    }\n\n    try {\n      // Test with a minimal request\n      const response = await fetch(`${this.baseUrl}/messages`, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          'x-api-key': this.config.apiKey,\n          'anthropic-version': '2023-06-01',\n        },\n        body: JSON.stringify({\n          model: this.config.model || 'claude-3-haiku-20240307',\n          max_tokens: 1,\n          messages: [{ role: 'user', content: 'Hi' }],\n        }),\n      });\n\n      return response.ok;\n    } catch (error) {\n      console.error('Anthropic connection validation failed:', error);\n      return false;\n    }\n  }\n}\n",
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/CodeCompletionProvider.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/ContextAwareAssistant.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/OllamaService.ts",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "severity": 1,
+        "message": "Unexpected any. Specify a different type.",
+        "line": 133,
+        "column": 42,
+        "nodeType": "TSAnyKeyword",
+        "messageId": "unexpectedAny",
+        "endLine": 133,
+        "endColumn": 45,
+        "suggestions": [
+          {
+            "messageId": "suggestUnknown",
+            "fix": { "range": [3444, 3447], "text": "unknown" },
+            "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+          },
+          {
+            "messageId": "suggestNever",
+            "fix": { "range": [3444, 3447], "text": "never" },
+            "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+          }
+        ],
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-constant-condition",
+        "severity": 2,
+        "message": "Unexpected constant condition.",
+        "line": 137,
+        "column": 16,
+        "nodeType": "Literal",
+        "messageId": "unexpected",
+        "endLine": 137,
+        "endColumn": 20,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      },
+      {
+        "ruleId": "no-constant-condition",
+        "severity": 2,
+        "message": "Unexpected constant condition.",
+        "line": 260,
+        "column": 18,
+        "nodeType": "Literal",
+        "messageId": "unexpected",
+        "endLine": 260,
+        "endColumn": 22,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/OpenAIService.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'TextEncoder' is defined but never used.",
+        "line": 1,
+        "column": 24,
+        "nodeType": "Program",
+        "messageId": "unusedVar",
+        "endLine": 1,
+        "endColumn": 35
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 65,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 65,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [1882, 1924], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "message": "'e' is defined but never used.",
+        "line": 162,
+        "column": 22,
+        "nodeType": null,
+        "messageId": "unusedVar",
+        "endLine": 162,
+        "endColumn": 23
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 176,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 176,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [4819, 4871], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "severity": 1,
+        "message": "Unexpected any. Specify a different type.",
+        "line": 199,
+        "column": 25,
+        "nodeType": "TSAnyKeyword",
+        "messageId": "unexpectedAny",
+        "endLine": 199,
+        "endColumn": 28,
+        "suggestions": [
+          {
+            "messageId": "suggestUnknown",
+            "fix": { "range": [5420, 5423], "text": "unknown" },
+            "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+          },
+          {
+            "messageId": "suggestNever",
+            "fix": { "range": [5420, 5423], "text": "never" },
+            "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "severity": 1,
+        "message": "Unexpected any. Specify a different type.",
+        "line": 200,
+        "column": 22,
+        "nodeType": "TSAnyKeyword",
+        "messageId": "unexpectedAny",
+        "endLine": 200,
+        "endColumn": 25,
+        "suggestions": [
+          {
+            "messageId": "suggestUnknown",
+            "fix": { "range": [5475, 5478], "text": "unknown" },
+            "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+          },
+          {
+            "messageId": "suggestNever",
+            "fix": { "range": [5475, 5478], "text": "never" },
+            "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 203,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 203,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [5538, 5592], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      },
+      {
+        "ruleId": "no-console",
+        "severity": 1,
+        "message": "Unexpected console statement.",
+        "line": 223,
+        "column": 7,
+        "nodeType": "MemberExpression",
+        "messageId": "unexpected",
+        "endLine": 223,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "removeConsole",
+            "data": { "propertyName": "error" },
+            "fix": { "range": [6049, 6110], "text": "" },
+            "desc": "Remove the console.error()."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [
+      {
+        "ruleId": "no-constant-condition",
+        "severity": 2,
+        "message": "Unexpected constant condition.",
+        "line": 126,
+        "column": 14,
+        "nodeType": "Literal",
+        "messageId": "unexpected",
+        "endLine": 126,
+        "endColumn": 18,
+        "suppressions": [{ "kind": "directive", "justification": "" }]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 8,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/* global TextDecoder, TextEncoder */\n/* eslint-disable no-constant-condition */\nimport { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';\n\nexport class OpenAIService extends AIService {\n  private baseUrl: string;\n\n  constructor(config: AIServiceConfig) {\n    super(config);\n    this.baseUrl = config.baseUrl || 'https://api.openai.com/v1';\n  }\n\n  async generateResponse(\n    messages: AIMessage[],\n    systemPrompt?: string\n  ): Promise<AIResponse> {\n    if (!this.config.apiKey) {\n      throw new Error('OpenAI API key is required');\n    }\n\n    const requestMessages = [\n      ...(systemPrompt\n        ? [{ role: 'system' as const, content: systemPrompt }]\n        : []),\n      ...messages.map(msg => ({\n        role: msg.role,\n        content: msg.content,\n      })),\n    ];\n\n    try {\n      const response = await fetch(`${this.baseUrl}/chat/completions`, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          Authorization: `Bearer ${this.config.apiKey}`,\n        },\n        body: JSON.stringify({\n          model: this.config.model || 'gpt-4',\n          messages: requestMessages,\n          max_tokens: this.config.maxTokens || 2000,\n          temperature: this.config.temperature || 0.7,\n          stream: false,\n        }),\n      });\n\n      if (!response.ok) {\n        const errorData = await response.json().catch(() => null);\n        throw new Error(\n          `OpenAI API error: ${response.status} ${response.statusText}${\n            errorData ? ` - ${errorData.error?.message}` : ''\n          }`\n        );\n      }\n\n      const data = await response.json();\n\n      return {\n        content: data.choices[0]?.message?.content || 'No response generated',\n        usage: data.usage,\n        model: data.model,\n        finish_reason: data.choices[0]?.finish_reason,\n      };\n    } catch (error) {\n      console.error('OpenAI API error:', error);\n      throw error;\n    }\n  }\n\n  async generateStreamResponse(\n    messages: AIMessage[],\n    systemPrompt?: string,\n    onChunk?: (chunk: string) => void\n  ): Promise<AIResponse> {\n    if (!this.config.apiKey) {\n      throw new Error('OpenAI API key is required');\n    }\n\n    const requestMessages = [\n      ...(systemPrompt\n        ? [{ role: 'system' as const, content: systemPrompt }]\n        : []),\n      ...messages.map(msg => ({\n        role: msg.role,\n        content: msg.content,\n      })),\n    ];\n\n    try {\n      const response = await fetch(`${this.baseUrl}/chat/completions`, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          Authorization: `Bearer ${this.config.apiKey}`,\n        },\n        body: JSON.stringify({\n          model: this.config.model || 'gpt-4',\n          messages: requestMessages,\n          max_tokens: this.config.maxTokens || 2000,\n          temperature: this.config.temperature || 0.7,\n          stream: true,\n        }),\n      });\n\n      if (!response.ok) {\n        const errorData = await response.json().catch(() => null);\n        throw new Error(\n          `OpenAI API error: ${response.status} ${response.statusText}${\n            errorData ? ` - ${errorData.error?.message}` : ''\n          }`\n        );\n      }\n\n      let fullContent = '';\n      let usage = undefined;\n      let model = undefined;\n      let finishReason = undefined;\n\n      const reader = response.body?.getReader();\n      if (!reader) {\n        throw new Error('Failed to get response reader');\n      }\n\n      const decoder = new TextDecoder();\n\n      while (true) {\n        const { done, value } = await reader.read();\n        if (done) {\n          break;\n        }\n\n        const chunk = decoder.decode(value);\n        const lines = chunk.split('\\n').filter(line => line.trim());\n\n        for (const line of lines) {\n          if (line.startsWith('data: ')) {\n            const data = line.slice(6);\n            if (data === '[DONE]') {\n              continue;\n            }\n\n            try {\n              const parsed = JSON.parse(data);\n              const delta = parsed.choices[0]?.delta;\n\n              if (delta?.content) {\n                fullContent += delta.content;\n                onChunk?.(delta.content);\n              }\n\n              if (parsed.usage) {\n                usage = parsed.usage;\n              }\n\n              if (parsed.model) {\n                model = parsed.model;\n              }\n\n              if (parsed.choices[0]?.finish_reason) {\n                finishReason = parsed.choices[0].finish_reason;\n              }\n            } catch (e) {\n              // Ignore JSON parse errors for malformed chunks\n            }\n          }\n        }\n      }\n\n      return {\n        content: fullContent,\n        usage,\n        model,\n        finish_reason: finishReason,\n      };\n    } catch (error) {\n      console.error('OpenAI Streaming API error:', error);\n      throw error;\n    }\n  }\n\n  async getAvailableModels(): Promise<string[]> {\n    if (!this.config.apiKey) {\n      return ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo'];\n    }\n\n    try {\n      const response = await fetch(`${this.baseUrl}/models`, {\n        headers: {\n          Authorization: `Bearer ${this.config.apiKey}`,\n        },\n      });\n\n      if (!response.ok) {\n        throw new Error(`Failed to fetch models: ${response.status}`);\n      }\n\n      const data = await response.json();\n      return data.data\n        .filter((model: any) => model.id.includes('gpt'))\n        .map((model: any) => model.id)\n        .sort();\n    } catch (error) {\n      console.error('Error fetching OpenAI models:', error);\n      // Return default models if API call fails\n      return ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo'];\n    }\n  }\n\n  async validateConnection(): Promise<boolean> {\n    if (!this.config.apiKey) {\n      return false;\n    }\n\n    try {\n      const response = await fetch(`${this.baseUrl}/models`, {\n        headers: {\n          Authorization: `Bearer ${this.config.apiKey}`,\n        },\n      });\n\n      return response.ok;\n    } catch (error) {\n      console.error('OpenAI connection validation failed:', error);\n      return false;\n    }\n  }\n}\n",
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  },
+  {
+    "filePath": "/workspaces/United-Dev-Platform-/packages/ai/services/RefactoringProvider.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": [
+      { "ruleId": "no-extra-semi", "replacedBy": [] },
+      { "ruleId": "no-mixed-spaces-and-tabs", "replacedBy": [] },
+      { "ruleId": "@typescript-eslint/no-var-requires", "replacedBy": ["@typescript-eslint/no-require-imports"] },
+      { "ruleId": "jsx-quotes", "replacedBy": [] }
+    ]
+  }
+]
