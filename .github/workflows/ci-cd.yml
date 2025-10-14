@@ -370,6 +370,9 @@ jobs:
 
       - name: Upload Trivy scan results to GitHub Security tab (if present)
         if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -f trivy-results.sarif ]; then
             echo "Uploading trivy-results.sarif to Security tab"
