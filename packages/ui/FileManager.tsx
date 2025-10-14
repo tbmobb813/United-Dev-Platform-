@@ -81,7 +81,10 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
       onClose();
     } catch (error) {
-      console.error('File operation failed:', error);
+      // Intentionally use console here; suppress lint rule because this UI helper
+      // can surface runtime issues to the developer during local debugging.
+      // eslint-disable-next-line no-console
+      console.warn('File operation failed:', error);
     } finally {
       setIsLoading(false);
     }
@@ -105,13 +108,13 @@ export const FileManager: React.FC<FileManagerProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={getTitle()}
-      size="medium"
+      size='medium'
       actions={[
-        <Button key="cancel" variant="secondary" onClick={onClose}>
+        <Button key='cancel' variant='secondary' onClick={onClose}>
           Cancel
         </Button>,
         <Button
-          key="action"
+          key='action'
           onClick={handleAction}
           disabled={isLoading || (!filePath.trim() && !fileName.trim())}
         >
@@ -119,11 +122,11 @@ export const FileManager: React.FC<FileManagerProps> = ({
         </Button>,
       ]}
     >
-      <Stack gap="medium">
+      <Stack gap='medium'>
         {mode === 'open' && (
           <>
-            <Card title="Recent Files" padding="medium">
-              <Stack gap="small">
+            <Card title='Recent Files' padding='medium'>
+              <Stack gap='small'>
                 {fileList.map(file => (
                   <div
                     key={file}
@@ -142,12 +145,12 @@ export const FileManager: React.FC<FileManagerProps> = ({
               </Stack>
             </Card>
 
-            <Stack gap="small">
+            <Stack gap='small'>
               <label>File Path:</label>
               <Input
                 value={filePath}
                 onChange={setFilePath}
-                placeholder="/path/to/file.js"
+                placeholder='/path/to/file.js'
               />
             </Stack>
           </>
@@ -155,21 +158,21 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
         {mode === 'save' && (
           <>
-            <Stack gap="small">
+            <Stack gap='small'>
               <label>Save As:</label>
               <Input
                 value={filePath}
                 onChange={setFilePath}
-                placeholder="/path/to/file.js"
+                placeholder='/path/to/file.js'
               />
             </Stack>
 
-            <Stack gap="small">
+            <Stack gap='small'>
               <label>Content Preview:</label>
               <textarea
                 value={fileContent}
                 onChange={e => setFileContent(e.target.value)}
-                placeholder="File content..."
+                placeholder='File content...'
                 style={{
                   minHeight: '100px',
                   padding: '8px',
@@ -185,48 +188,48 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
         {mode === 'create' && (
           <>
-            <Stack gap="small">
+            <Stack gap='small'>
               <label>New File Name:</label>
               <Input
                 value={fileName}
                 onChange={setFileName}
-                placeholder="my-component.tsx"
+                placeholder='my-component.tsx'
               />
             </Stack>
 
-            <Card title="File Templates" padding="medium">
-              <Stack direction="row" gap="small" wrap>
+            <Card title='File Templates' padding='medium'>
+              <Stack direction='row' gap='small' wrap>
                 <Button
-                  size="small"
-                  variant="outline"
+                  size='small'
+                  variant='outline'
                   onClick={() => setFileName('component.tsx')}
                 >
                   React Component
                 </Button>
                 <Button
-                  size="small"
-                  variant="outline"
+                  size='small'
+                  variant='outline'
                   onClick={() => setFileName('utils.ts')}
                 >
                   TypeScript Utility
                 </Button>
                 <Button
-                  size="small"
-                  variant="outline"
+                  size='small'
+                  variant='outline'
                   onClick={() => setFileName('api.js')}
                 >
                   API Route
                 </Button>
                 <Button
-                  size="small"
-                  variant="outline"
+                  size='small'
+                  variant='outline'
                   onClick={() => setFileName('README.md')}
                 >
                   Documentation
                 </Button>
                 <Button
-                  size="small"
-                  variant="outline"
+                  size='small'
+                  variant='outline'
                   onClick={() => setFileName('test.spec.js')}
                 >
                   Test File

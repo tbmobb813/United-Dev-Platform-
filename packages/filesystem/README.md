@@ -2,27 +2,32 @@
 
 ## Overview
 
-We have successfully implemented a comprehensive file system backend for the United Dev Platform
-with the following key components:
+We have successfully implemented a comprehensive file system backend for the
+United Dev Platform with the following key components:
 
 ## 🏗️ Core Architecture
 
 ### 1. Dual Provider System
 
-- **VirtualFileSystem**: Browser-based implementation using IndexedDB for offline persistence
-- **NodeFileSystem**: Server-side implementation using the real file system with chokidar for file
-  watching
-- **Unified Interface**: Both providers implement the same `FileSystemProvider` interface
+- **VirtualFileSystem**: Browser-based implementation using IndexedDB for
+  offline persistence
+- **NodeFileSystem**: Server-side implementation using the real file system with
+  chokidar for file watching
+- **Unified Interface**: Both providers implement the same `FileSystemProvider`
+  interface
 
 ### 2. File Watching & Sync Integration
 
 - **FileWatcher**: Connects filesystem changes to collaborative editing system
-- **SyncManager**: Orchestrates synchronization between filesystem and Yjs documents
-- **Real-time Sync**: Bidirectional sync between file changes and collaborative documents
+- **SyncManager**: Orchestrates synchronization between filesystem and Yjs
+  documents
+- **Real-time Sync**: Bidirectional sync between file changes and collaborative
+  documents
 
 ### 3. Project Management
 
-- **ProjectTemplates**: Support for React, Next.js, Node.js, Python project scaffolding
+- **ProjectTemplates**: Support for React, Next.js, Node.js, Python project
+  scaffolding
 - **WorkspaceManager**: High-level workspace operations and project management
 - **Auto-detection**: Automatic framework detection and dependency management
 
@@ -36,14 +41,16 @@ with the following key components:
 
 ##
 
-packages/filesystem/ ├── types.ts # Type definitions and interfaces ├── VirtualFileSystem.ts #
-Browser-based virtual filesystem ├── NodeFileSystem.ts # Node.js filesystem implementation ├──
-FileWatcher.ts # File watching and event handling ├── SyncManager.ts # Sync orchestration for
-collaborative editing ├── ProjectTemplates.ts # Project scaffolding templates ├──
-WorkspaceManager.ts # High-level workspace operations ├── FileExplorer.tsx # React file explorer
-component ├── ProjectNavigator.tsx # React project tree component ├── FileManager.tsx # React file
-management component ├── index.ts # Main exports and factory functions ├── package.json #
-Dependencies and scripts └── tsconfig.json # TypeScript configuration
+packages/filesystem/ ├── types.ts # Type definitions and interfaces ├──
+VirtualFileSystem.ts # Browser-based virtual filesystem ├── NodeFileSystem.ts #
+Node.js filesystem implementation ├── FileWatcher.ts # File watching and event
+handling ├── SyncManager.ts # Sync orchestration for collaborative editing ├──
+ProjectTemplates.ts # Project scaffolding templates ├── WorkspaceManager.ts #
+High-level workspace operations ├── FileExplorer.tsx # React file explorer
+component ├── ProjectNavigator.tsx # React project tree component ├──
+FileManager.tsx # React file management component ├── index.ts # Main exports
+and factory functions ├── package.json # Dependencies and scripts └──
+tsconfig.json # TypeScript configuration
 
 ### Directory Structure
 
@@ -97,44 +104,56 @@ Dependencies and scripts └── tsconfig.json # TypeScript configuration
 ## Basic File System
 
 ```typescript
-import { createAutoFileSystem } from "@udp/filesystem";
+import { createAutoFileSystem } from '@udp/filesystem';
 
 const fs = createAutoFileSystem();
-await fs.writeFile("/project/src/app.js", 'console.log("Hello World");');
-const content = await fs.readFile("/project/src/app.js");
+await fs.writeFile('/project/src/app.js', 'console.log("Hello World");');
+const content = await fs.readFile('/project/src/app.js');
 ```
 
 ## Project Management API
 
 ```typescript
-import { createProjectManager } from "@udp/filesystem";
+import { createProjectManager } from '@udp/filesystem';
 
 const projectManager = createProjectManager();
-await projectManager.createProject("/workspace/my-app", "react");
+await projectManager.createProject('/workspace/my-app', 'react');
 ```
 
 ## File Watching & Sync
 
 ```typescript
-import { createAutoFileSystem, FileWatcher, SyncManager } from "@udp/filesystem";
+import {
+  createAutoFileSystem,
+  FileWatcher,
+  SyncManager,
+} from '@udp/filesystem';
 
 const fs = createAutoFileSystem();
 const syncManager = new SyncManager(fs);
 
-await syncManager.startSync("/workspace");
-syncManager.registerDocument("/workspace/src/App.tsx", yjsDocument);
+await syncManager.startSync('/workspace');
+syncManager.registerDocument('/workspace/src/App.tsx', yjsDocument);
 ```
 
 ## UI Components Usage
 
 ```tsx
-import { FileExplorer, ProjectNavigator } from "@udp/filesystem";
+import { FileExplorer, ProjectNavigator } from '@udp/filesystem';
 
 function App() {
   return (
     <div>
-      <ProjectNavigator fileSystem={fs} projectPath="/workspace" onFileSelect={handleFileSelect} />
-      <FileExplorer fileSystem={fs} onFileOpen={handleFileOpen} allowMultiSelect={true} />
+      <ProjectNavigator
+        fileSystem={fs}
+        projectPath='/workspace'
+        onFileSelect={handleFileSelect}
+      />
+      <FileExplorer
+        fileSystem={fs}
+        onFileOpen={handleFileOpen}
+        allowMultiSelect={true}
+      />
     </div>
   );
 }
@@ -148,7 +167,7 @@ function App() {
 syncManager.setConflictResolver(async (path, local, remote) => {
   // Custom conflict resolution logic
   return {
-    strategy: "merge",
+    strategy: 'merge',
     resolvedContent: mergeContent(local, remote),
   };
 });
@@ -161,16 +180,16 @@ syncManager.setConflictResolver(async (path, local, remote) => {
 const fs = createAutoFileSystem();
 
 // Or specify explicitly
-const virtualFs = createFileSystem({ type: "virtual", dbName: "myapp" });
-const nodeFs = createFileSystem({ type: "node", basePath: "/workspace" });
+const virtualFs = createFileSystem({ type: 'virtual', dbName: 'myapp' });
+const nodeFs = createFileSystem({ type: 'node', basePath: '/workspace' });
 ```
 
 ### Project Templates
 
 ```typescript
 const templates = new ProjectTemplates(fs);
-await templates.createFromTemplate("/new-project", "next-js", {
-  name: "My Next App",
+await templates.createFromTemplate('/new-project', 'next-js', {
+  name: 'My Next App',
   typescript: true,
   tailwind: true,
 });
@@ -208,6 +227,6 @@ All code follows ESLint rules with proper error handling and coding standards.
 - **Error Handling**: Comprehensive error handling and user feedback
 - **Resource Cleanup**: Proper disposal of watchers and databases
 
-This implementation provides a robust, scalable foundation for file system operations in the United
-Dev Platform, supporting both browser and Node.js environments with full collaborative editing
-integration.
+This implementation provides a robust, scalable foundation for file system
+operations in the United Dev Platform, supporting both browser and Node.js
+environments with full collaborative editing integration.

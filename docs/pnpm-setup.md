@@ -2,17 +2,18 @@
 
 ## ✅ **pnpm is Now Working!**
 
-Your pnpm installation has been successfully configured for VS Code. Here's what was fixed and how
-to maintain it.
+Your pnpm installation has been successfully configured for VS Code. Here's what
+was fixed and how to maintain it.
 
 ## 🔍 **What Was the Issue?**
 
-1. **Missing Administrator Privileges**: `corepack enable` requires admin rights to create symlinks
-   in Node.js directory
-2. **Broken PowerShell Alias**: PowerShell had an alias redirecting `pnpm` to `npx pnpm` which
-   doesn't work
+1. **Missing Administrator Privileges**: `corepack enable` requires admin rights
+   to create symlinks in Node.js directory
+2. **Broken PowerShell Alias**: PowerShell had an alias redirecting `pnpm` to
+   `npx pnpm` which doesn't work
 3. **PATH Issues**: npm global directory wasn't properly in the system PATH
-4. **Installation Method**: The standard `pnpm` package had corrupted installation files
+4. **Installation Method**: The standard `pnpm` package had corrupted
+   installation files
 
 ## 🔧 **What Was Fixed**
 

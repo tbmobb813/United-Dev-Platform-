@@ -28,7 +28,7 @@ Add a `seed.js` or `seed.ts` script if you want initial data.
 
 - Import Prisma client in your API code:
   ```js
-  import { PrismaClient } from "@prisma/client";
+  import { PrismaClient } from '@prisma/client';
   export const prisma = new PrismaClient();
   ```
 
