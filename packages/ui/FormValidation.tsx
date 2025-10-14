@@ -446,7 +446,6 @@ export const quickValidation = {
     message: message || `Value must be between ${min} and ${max}`,
   }),
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   custom: (
     validator: (value: unknown) => boolean | string,
     message?: string
