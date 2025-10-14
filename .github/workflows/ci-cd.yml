@@ -21,6 +21,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -71,6 +76,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -119,6 +129,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -164,6 +179,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -208,6 +228,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

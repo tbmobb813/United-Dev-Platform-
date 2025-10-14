@@ -14,6 +14,11 @@ jobs:
         with:
           persist-credentials: true
 
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -64,25 +69,31 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         uses: EndBug/add-and-commit@v9
         with:
-          message: "chore: apply ESLint/Prettier auto-fixes"
+          message: 'chore: apply ESLint/Prettier auto-fixes'
           add: '.'
           author_name: 'github-actions[bot]'
           author_email: 'github-actions[bot]@users.noreply.github.com'
+          push: true
+
+      - name: Ensure branch has upstream
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --set-upstream origin ${{ steps.newbranch.outputs.branch }}
 
       - name: Create Pull Request with fixes
         if: steps.changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: apply ESLint/Prettier auto-fixes"
-          title: "chore: auto-fix lint & format"
+          commit-message: 'chore: apply ESLint/Prettier auto-fixes'
+          title: 'chore: auto-fix lint & format'
           body: |
             This PR contains auto-applied ESLint and Prettier fixes produced by the `auto-fix` workflow.
-            
+
             The workflow runs `pnpm lint:fix` and `pnpm format`, commits any changes to a new branch, and opens this PR.
           labels: auto-fix
           base: main
-          head: ${{ steps.newbranch.outputs.branch }}
 
       - name: No changes
         if: steps.changes.outputs.changed == 'false'

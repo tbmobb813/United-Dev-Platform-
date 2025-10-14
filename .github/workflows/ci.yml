@@ -2,15 +2,20 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main, feat/* ]
+    branches: [main, feat/*]
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Setup Node
         uses: actions/setup-node@v4

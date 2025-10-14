@@ -158,7 +158,7 @@ class AIAssistant extends React.Component<AIAssistantProps, AIAssistantState> {
             }}
           >
             <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>
-              🤖 AI Assistant
+              {'🤖 AI Assistant'}
             </h2>
             <button
               onClick={onClose}

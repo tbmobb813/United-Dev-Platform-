@@ -145,8 +145,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('AI request failed:', error);
+      // Error logging removed to comply with linting rules
       const errorMessage =
         error instanceof Error ? error.message : 'AI request failed';
 
@@ -228,8 +227,8 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title='🤖 AI Assistant'
-      size='large'
+      title={'🤖 AI Assistant'}
+      size={'large'}
     >
       {/* @ts-ignore */}
       <div
