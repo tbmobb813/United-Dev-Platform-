@@ -36,7 +36,7 @@ export interface FileExplorerState {
  */
 export const FileExplorer: React.FC<FileExplorerProps> = ({
   fileSystem,
-  syncManager,
+  _syncManager,
   rootPath = '/',
   onFileSelect,
   onFileOpen,
@@ -180,7 +180,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     rename: async (file: FileSystemEntry) => {
-      const newName = prompt('Enter new name:', file.name);
+      const newName = window.prompt('Enter new name:', file.name);
       if (newName && newName !== file.name) {
         try {
           const newPath = fileSystem.join(
@@ -200,7 +200,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     delete: async (file: FileSystemEntry) => {
-      if (confirm(`Are you sure you want to delete "${file.name}"?`)) {
+      if (window.confirm(`Are you sure you want to delete "${file.name}"?`)) {
         try {
           if (file.type === 'directory') {
             await fileSystem.deleteDirectory(file.path, true);
@@ -219,7 +219,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     newFile: async () => {
-      const fileName = prompt('Enter file name:');
+      const fileName = window.prompt('Enter file name:');
       if (fileName) {
         try {
           const filePath = fileSystem.join(state.currentPath, fileName);
@@ -236,7 +236,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     },
 
     newFolder: async () => {
-      const folderName = prompt('Enter folder name:');
+      const folderName = window.prompt('Enter folder name:');
       if (folderName) {
         try {
           const folderPath = fileSystem.join(state.currentPath, folderName);
