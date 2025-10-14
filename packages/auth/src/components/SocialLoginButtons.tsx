@@ -1,5 +1,16 @@
 import React from 'react';
-import GitHubIcon from '@mui/icons-material/GitHub'; // or update the import path to where your GitHubIcon is defined
+// Inline GitHub SVG to avoid adding @mui/icons-material dependency
+const GitHubIcon: React.FC = () => (
+  <svg
+    width='20'
+    height='20'
+    viewBox='0 0 24 24'
+    fill='currentColor'
+    aria-hidden='true'
+  >
+    <path d='M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.207 11.387.6.113.793-.26.793-.577 0-.285-.01-1.04-.016-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.238 1.84 1.238 1.07 1.834 2.809 1.304 3.495.997.108-.775.418-1.305.76-1.605-2.665-.303-5.466-1.333-5.466-5.93 0-1.31.47-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 013.003-.404c1.02.005 2.047.137 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.243 2.873.12 3.176.77.84 1.235 1.91 1.235 3.221 0 4.61-2.803 5.624-5.475 5.92.43.37.815 1.102.815 2.222 0 1.606-.014 2.903-.014 3.297 0 .32.19.694.8.576C20.565 21.796 24 17.298 24 12c0-6.63-5.373-12-12-12z' />
+  </svg>
+);
 
 export interface SocialProvider {
   id: string;
@@ -24,9 +35,7 @@ const defaultProviders: SocialProvider[] = [
   {
     id: 'github',
     name: 'GitHub',
-    icon: (
-      <GitHubIcon />
-    ),
+    icon: <GitHubIcon />,
     className: 'social-button--github',
   },
   {
