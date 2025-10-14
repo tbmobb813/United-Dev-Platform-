@@ -21,7 +21,7 @@
     "isomorphic-git": "^1.25.10"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^24.7.2",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "@udp/types": "workspace:*",
