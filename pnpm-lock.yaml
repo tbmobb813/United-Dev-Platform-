@@ -9,6 +9,7 @@ overrides:
   react-dom: 18.3.1
   prismjs: 1.30.0
   refractor: 3.6.0
+  next: 14.2.32
 
 importers:
 
@@ -4778,7 +4779,7 @@ packages:
     resolution: {integrity: sha512-pCFXzIDQX7xmHFs4KVH4luCjaCbuPRtZ9oBUjUhOk84mZ9WVPf94n87TxYI4rSRf9HmfHEF8Yep3JrYDVOo3Cw==}
     peerDependencies:
       '@auth/core': 0.34.2
-      next: ^12.2.5 || ^13 || ^14 || ^15
+      next: 14.2.32
       nodemailer: ^6.6.5
       react: 18.3.1
       react-dom: 18.3.1
