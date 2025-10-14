@@ -19,7 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Enable Corepack & pnpm (early)
+      - name: Ensure pnpm is available
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Enable Corepack (fallback)
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
@@ -72,7 +77,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Enable Corepack & pnpm (early)
+      - name: Ensure pnpm is available
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Enable Corepack (fallback)
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
