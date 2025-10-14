@@ -132,7 +132,6 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
         setStreamingContent('');
       } else {
-        // Fallback to placeholder if no AI manager
         const fallbackResponse = await simulateFallbackResponse(
           content,
           intent
@@ -306,8 +305,8 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
                 </div>
                 {message.role === 'assistant' && onCodeInsert && (
                   <Button
-                    size="small"
-                    variant="outline"
+                    size='small'
+                    variant='outline'
                     onClick={() => onCodeInsert(message.content)}
                     style={{ marginTop: '8px' }}
                   >
@@ -327,13 +326,13 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
         {/* Quick Actions */}
         {selectedCode && (
-          <Card title="Quick Actions" style={{ marginBottom: '16px' }}>
+          <Card title='Quick Actions' style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {quickActions.map(action => (
                 <Button
                   key={action.label}
-                  variant="outline"
-                  size="small"
+                  variant='outline'
+                  size='small'
                   onClick={action.action}
                   disabled={isLoading}
                 >
@@ -354,7 +353,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
           <Input
             value={input}
             onChange={setInput}
-            placeholder="Ask me anything about your code..."
+            placeholder='Ask me anything about your code...'
             style={{ flex: 1 }}
           />
           <Button
