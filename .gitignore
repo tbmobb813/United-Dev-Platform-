@@ -169,6 +169,10 @@ lib/
 es/
 types/
 
+# Allow committed helper libs for specific apps
+!apps/web/lib/
+!apps/web/lib/**
+
 # Electron build
 electron-builder/
 release/

@@ -5,6 +5,30 @@ import React from 'react';
 
 const Client = dynamic(() => import('./login-native.client'), { ssr: false });
 
-export default function LoginNative() {
-  return <Client />;
+  return (
+    <div style={{ padding: 24 }}>
+      <h1>Login (Native Button)</h1>
+      <input
+        value={name}
+        onChange={e => setName(e.target.value)}
+        placeholder='Enter your name'
+        style={{ padding: 6, border: '1px solid #ddd', borderRadius: 6 }}
+      />
+      <div style={{ marginTop: 12 }}>
+        <button
+          onClick={handleLogin}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#0070f3',
+            borderRadius: 4,
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Enter
+        </button>
+      </div>
+    </div>
+  );
 }

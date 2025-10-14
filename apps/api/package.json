@@ -7,6 +7,7 @@
     "dev": "node server.js",
     "start": "NODE_ENV=production node server.js",
     "test": "jest"
+    "build": "echo 'no build step for api'"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",

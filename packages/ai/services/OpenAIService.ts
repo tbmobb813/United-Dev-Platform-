@@ -1,5 +1,5 @@
 /* global TextDecoder */
-
+/* eslint-disable no-constant-condition */
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
 export class OpenAIService extends AIService {
@@ -61,8 +61,10 @@ export class OpenAIService extends AIService {
         model: data.model,
         finish_reason: data.choices[0]?.finish_reason,
       };
-    } catch {
-      throw new Error('OpenAI API error');
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('OpenAI API error:', error);
+      throw error;
     }
   }
 
@@ -173,8 +175,10 @@ export class OpenAIService extends AIService {
         model,
         finish_reason: finishReason,
       };
-    } catch {
-      throw new Error('OpenAI Streaming API error');
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('OpenAI Streaming API error:', error);
+      throw error;
     }
   }
 
@@ -195,11 +199,20 @@ export class OpenAIService extends AIService {
       }
 
       const data = await response.json();
+      type OpenAIModel = { id: string };
       return data.data
-        .filter((model: { id: string }) => model.id.includes('gpt'))
-        .map((model: { id: string }) => model.id)
+        .filter(
+          (model: unknown): model is OpenAIModel =>
+            typeof model === 'object' &&
+            model !== null &&
+            'id' in model &&
+            typeof (model as { id?: unknown }).id === 'string'
+        )
+        .map(model => model.id)
         .sort();
-    } catch {
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching OpenAI models:', error);
       // Return default models if API call fails
       return ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo'];
     }
@@ -218,7 +231,9 @@ export class OpenAIService extends AIService {
       });
 
       return response.ok;
-    } catch {
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('OpenAI connection validation failed:', error);
       return false;
     }
   }

@@ -59,9 +59,11 @@ export interface RowSelectionConfig<T = Record<string, unknown>> {
     nativeEvent: unknown
   ) => void;
   onSelectAll?: (selected: boolean, selectedRows: T[], changeRows: T[]) => void;
-  getCheckboxProps?: (
-    record: T
-  ) => { disabled?: boolean } & Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getCheckboxProps?: (record: T) => {
+    disabled?: boolean;
+    [key: string]: unknown;
+  };
 }
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -70,6 +72,9 @@ interface SortState {
   field: string | null;
   direction: SortDirection;
 }
+
+// Minimal event shape to avoid depending on DOM lib types in the TS config
+type InputChangeEvent = { target: { checked: boolean }; nativeEvent?: unknown };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const DataTable = <T extends Record<string, unknown>>({
@@ -104,7 +109,16 @@ export const DataTable = <T extends Record<string, unknown>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    return record[rowKey] || index;
+    // Safely access record using a string key with type guard and optional chaining.
+    const value = typeof rowKey === 'string' ? record?.[rowKey] : undefined;
+    if (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'symbol'
+    ) {
+      return value;
+    }
+    return index;
   };
 
   const handleSort = (field: string) => {
@@ -177,7 +191,7 @@ export const DataTable = <T extends Record<string, unknown>>({
   const handleRowSelection = (
     record: T,
     selected: boolean,
-    nativeEvent: React.ChangeEvent<unknown>
+    nativeEvent: InputChangeEvent
   ) => {
     const key = getRowKey(record, 0);
     let newSelectedKeys: React.Key[];
@@ -214,7 +228,7 @@ export const DataTable = <T extends Record<string, unknown>>({
 
   const handleSelectAll = (
     selected: boolean,
-    _nativeEvent: React.ChangeEvent<unknown>
+    _nativeEvent: InputChangeEvent
   ) => {
     const newSelectedKeys = selected
       ? paginatedData.map((record, index) => getRowKey(record, index))
@@ -240,12 +254,16 @@ export const DataTable = <T extends Record<string, unknown>>({
     index: number
   ): ReactNode => {
     if (column.render) {
-      const value = column.dataIndex ? record[column.dataIndex] : record;
-      return column.render(value, record, index) as ReactNode;
+      const value = column.dataIndex
+        ? (record as Record<string, unknown>)[column.dataIndex as string]
+        : record;
+      return column.render(value as unknown, record, index) as React.ReactNode;
     }
 
     if (column.dataIndex) {
-      return record[column.dataIndex] as unknown as ReactNode;
+      return (record as Record<string, unknown>)[
+        column.dataIndex as string
+      ] as React.ReactNode;
     }
 
     return null;
