@@ -66,7 +66,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
       setIsSaved(true);
       window.setTimeout(() => setIsSaved(false), 2000);
     } catch (error) {
-      logger.error();
+      logger.error('Failed to save settings', error);
     } finally {
       setIsLoading(false);
     }
