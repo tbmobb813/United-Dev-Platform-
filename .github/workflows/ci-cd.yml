@@ -376,7 +376,11 @@ jobs:
         run: |
           if [ -f trivy-results.sarif ]; then
             echo "Uploading trivy-results.sarif to Security tab"
-            gh api -X POST /repos/${{ github.repository }}/code-scanning/sarifs -F sarif=@trivy-results.sarif
+            # Provide the required commit_sha and ref fields per the Code Scanning SARIF upload API
+            gh api -X POST /repos/${{ github.repository }}/code-scanning/sarifs \
+              -F sarif=@trivy-results.sarif \
+              -F commit_sha=${{ github.sha }} \
+              -F ref=${{ github.ref }}
           else
             echo "No trivy-results.sarif produced; skipping SARIF upload"
           fi
