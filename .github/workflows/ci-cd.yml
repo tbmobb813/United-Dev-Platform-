@@ -19,7 +19,12 @@ jobs:
       pnpm-cache-dir: ${{ steps.pnpm-cache.outputs.pnpm-cache-dir }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Enable Corepack & pnpm (early)
         run: |
@@ -34,12 +39,21 @@ jobs:
       - name: Enable Corepack & pnpm
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -48,7 +62,7 @@ jobs:
           echo "pnpm-cache-dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - name: Setup pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -65,7 +79,12 @@ jobs:
     needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Enable Corepack & pnpm (early)
         run: |
@@ -77,13 +96,27 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Restore pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ needs.setup.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -135,7 +168,12 @@ jobs:
     needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Enable Corepack & pnpm (early)
         run: |
@@ -147,13 +185,27 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Restore pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ needs.setup.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -171,7 +223,12 @@ jobs:
     needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Enable Corepack & pnpm (early)
         run: |
@@ -183,13 +240,27 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
 
       - name: Restore pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ needs.setup.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -207,7 +278,12 @@ jobs:
     needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Enable Corepack & pnpm (early)
         run: |
@@ -219,13 +295,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
 
       - name: Restore pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ needs.setup.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -256,20 +333,20 @@ jobs:
         app: [web, api]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
       - name: Restore pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ needs.setup.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -288,7 +365,7 @@ jobs:
         run: cd apps/${{ matrix.app }} && pnpm build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.app }}-build
           path: apps/${{ matrix.app }}/.next/
@@ -304,13 +381,13 @@ jobs:
         service: [web, api]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Cache Docker layers
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ matrix.service }}-${{ github.sha }}
@@ -318,7 +395,7 @@ jobs:
             ${{ runner.os }}-buildx-${{ matrix.service }}-
 
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           target: ${{ matrix.service }}
@@ -339,20 +416,21 @@ jobs:
     needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
 
       - name: Restore pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ needs.setup.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -371,11 +449,28 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload Trivy scan results to GitHub Security tab (if present)
         if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f trivy-results.sarif ]; then
+            echo "Uploading trivy-results.sarif to Security tab"
+            # The Code Scanning SARIF upload API expects the SARIF content to be
+            # gzip-compressed and Base64-encoded. Compress and encode first,
+            # then post the encoded payload along with commit_sha and ref.
+            set -o pipefail
+            BASE64_SARIF=$(gzip -c trivy-results.sarif | base64 -w0) || {
+              echo "Failed to gzip+base64 encode trivy-results.sarif"; exit 1;
+            }
+            gh api -X POST /repos/${{ github.repository }}/code-scanning/sarifs \
+              -F sarif="$BASE64_SARIF" \
+              -F commit_sha=${{ github.sha }} \
+              -F ref=${{ github.ref }}
+          else
+            echo "No trivy-results.sarif produced; skipping SARIF upload"
+          fi
 
   deploy-staging:
     name: Deploy to Staging
@@ -384,7 +479,7 @@ jobs:
     if: ${{ github.actor != 'github-actions[bot]' && github.ref == 'refs/heads/develop' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Deploy to staging
         run: |
@@ -402,7 +497,7 @@ jobs:
     if: ${{ github.actor != 'github-actions[bot]' && github.ref == 'refs/heads/main' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Deploy to production
         run: |

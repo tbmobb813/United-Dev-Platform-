@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableColumn<T = any> {
+export interface DataTableColumn<T = unknown> {
   key: string;
   title: string;
   dataIndex?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  render?: (value: any, record: T, index: number) => React.ReactNode;
+  render?: (value: unknown, record: T, index: number) => React.ReactNode;
   sortable?: boolean;
   filterable?: boolean;
   width?: number | string;
@@ -17,15 +16,14 @@ export interface DataTableColumn<T = any> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableProps<T = any> {
+export interface DataTableProps<T = unknown> {
   columns: DataTableColumn<T>[];
   data: T[];
   loading?: boolean;
   pagination?: PaginationConfig | false;
   rowSelection?: RowSelectionConfig<T>;
   rowKey?: string | ((record: T) => string);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onRow?: (record: T, index: number) => React.HTMLAttributes<any>;
+  onRow?: (record: T, index: number) => React.HTMLAttributes<unknown>;
   className?: string;
   size?: 'small' | 'medium' | 'large';
   bordered?: boolean;
@@ -36,8 +34,7 @@ export interface DataTableProps<T = any> {
   sortable?: boolean;
   filterable?: boolean;
   onSort?: (field: string, direction: 'asc' | 'desc' | null) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFilter?: (filters: Record<string, any>) => void;
+  onFilter?: (filters: Record<string, unknown>) => void;
 }
 
 export interface PaginationConfig {
@@ -51,7 +48,7 @@ export interface PaginationConfig {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface RowSelectionConfig<T = any> {
+export interface RowSelectionConfig<T = unknown> {
   type?: 'checkbox' | 'radio';
   selectedRowKeys?: React.Key[];
   onChange?: (selectedRowKeys: React.Key[], selectedRows: T[]) => void;
@@ -60,11 +57,14 @@ export interface RowSelectionConfig<T = any> {
     record: T,
     selected: boolean,
     selectedRows: T[],
-    nativeEvent: any
+    nativeEvent: unknown
   ) => void;
   onSelectAll?: (selected: boolean, selectedRows: T[], changeRows: T[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCheckboxProps?: (record: T) => { disabled?: boolean; [key: string]: any };
+  getCheckboxProps?: (record: T) => {
+    disabled?: boolean;
+    [key: string]: unknown;
+  };
 }
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -74,8 +74,11 @@ interface SortState {
   direction: SortDirection;
 }
 
+// Minimal event shape to avoid depending on DOM lib types in the TS config
+type InputChangeEvent = { target: { checked: boolean }; nativeEvent?: unknown };
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const DataTable = <T extends Record<string, any>>({
+export const DataTable = <T extends Record<string, unknown>>({
   columns,
   data,
   loading = false,
@@ -107,7 +110,16 @@ export const DataTable = <T extends Record<string, any>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    return record[rowKey] || index;
+    // Safely access record using a string key with type guard and optional chaining.
+    const value = typeof rowKey === 'string' ? record?.[rowKey] : undefined;
+    if (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'symbol'
+    ) {
+      return value;
+    }
+    return index;
   };
 
   const handleSort = (field: string) => {
@@ -181,7 +193,7 @@ export const DataTable = <T extends Record<string, any>>({
   const handleRowSelection = (
     record: T,
     selected: boolean,
-    nativeEvent: React.ChangeEvent<any>
+    nativeEvent: InputChangeEvent
   ) => {
     const key = getRowKey(record, 0);
     let newSelectedKeys: React.Key[];
@@ -219,7 +231,7 @@ export const DataTable = <T extends Record<string, any>>({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelectAll = (
     selected: boolean,
-    _nativeEvent: React.ChangeEvent<any>
+    _nativeEvent: InputChangeEvent
   ) => {
     const newSelectedKeys = selected
       ? paginatedData.map((record, index) => getRowKey(record, index))
@@ -241,12 +253,16 @@ export const DataTable = <T extends Record<string, any>>({
 
   const renderCell = (column: DataTableColumn<T>, record: T, index: number) => {
     if (column.render) {
-      const value = column.dataIndex ? record[column.dataIndex] : record;
-      return column.render(value, record, index);
+      const value = column.dataIndex
+        ? (record as Record<string, unknown>)[column.dataIndex as string]
+        : record;
+      return column.render(value as unknown, record, index) as React.ReactNode;
     }
 
     if (column.dataIndex) {
-      return record[column.dataIndex];
+      return (record as Record<string, unknown>)[
+        column.dataIndex as string
+      ] as React.ReactNode;
     }
 
     return null;

@@ -165,6 +165,8 @@ module.exports = {
         'warn',
         { props: 'never', children: 'never' },
       ],
+      // Enforce single quotes in JSX attributes to match Prettier
+      'jsx-quotes': ['error', 'prefer-single'],
 
       // Import rules
       'import/order': [
