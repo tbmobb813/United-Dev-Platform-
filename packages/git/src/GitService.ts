@@ -500,7 +500,14 @@ export class GitService implements GitServiceInterface {
       return result;
     } catch (error: unknown) {
       // Handle merge conflicts that occur during merge operation
-      const err = error as { message?: string; code?: string } | undefined;
+      function isMergeError(e: unknown): e is { message?: string; code?: string } {
+      return (
+        typeof e === 'object' &&
+        e !== null &&
+        ('message' in e || 'code' in e)
+      );
+      }
+      const err = isMergeError(error) ? error : undefined;
       if (
         err?.code === 'MergeNotSupportedError' ||
         err?.message?.includes('conflict')

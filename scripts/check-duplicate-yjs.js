@@ -252,10 +252,12 @@ async function mapMatchesToSources(matches) {
           // we pass the generated line and column computed above
           // wrap in a callback
           // eslint-disable-next-line no-await-in-loop
-          const orig = await SourceMapConsumer.with(rawMap, null, consumer => {
+            // Note: This uses await inside a for loop for simplicity.
+            // For large numbers of source maps, consider batching with Promise.all for performance.
+            const orig = await SourceMapConsumer.with(rawMap, null, consumer => {
             return consumer.originalPositionFor({ line, column });
-          });
-          if (orig && orig.source) {
+            });
+            if (orig && orig.source) {
             entry.source = orig.source;
             entry.sourceLine = orig.line;
             entry.sourceColumn = orig.column;
