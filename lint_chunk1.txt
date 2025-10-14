@@ -1,0 +1,181 @@
+Lint and Format Check	Install dependencies	2025-10-13T20:55:57.3197367Z Progress: resolved 1, reused 0, downloaded 0, added 0
+Lint and Format Check	Install dependencies	2025-10-13T20:55:57.5490210Z Packages: +1346
+Lint and Format Check	Install dependencies	2025-10-13T20:55:57.5490888Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Lint and Format Check	Install dependencies	2025-10-13T20:55:58.3213297Z Progress: resolved 1346, reused 1211, downloaded 0, added 0
+Lint and Format Check	Install dependencies	2025-10-13T20:55:59.3214755Z Progress: resolved 1346, reused 1341, downloaded 0, added 828
+Lint and Format Check	Install dependencies	2025-10-13T20:55:59.9897978Z Progress: resolved 1346, reused 1341, downloaded 0, added 1346, done
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9533950Z 
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9534480Z devDependencies:
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9534947Z + @udp/eslint-config 0.0.1 <- packages/eslint-config
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9535423Z + @udp/prettier-config 0.0.1 <- packages/prettier-config
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9535773Z + eslint 8.57.1
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9536039Z + prettier 3.6.2
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9536281Z + turbo 1.13.4
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9536561Z + typescript 5.9.2
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9536726Z 
+Lint and Format Check	Install dependencies	2025-10-13T20:56:00.9746687Z packages/db prepare$ pnpm run generate && pnpm build
+Lint and Format Check	Install dependencies	2025-10-13T20:56:01.3330417Z packages/db prepare: > @udp/db@0.0.1 generate /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/db
+Lint and Format Check	Install dependencies	2025-10-13T20:56:01.3335809Z packages/db prepare: > prisma generate --schema ../../apps/api/prisma/schema.prisma
+Lint and Format Check	Install dependencies	2025-10-13T20:56:02.6400244Z packages/db prepare: Prisma schema loaded from ../../apps/api/prisma/schema.prisma
+Lint and Format Check	Install dependencies	2025-10-13T20:56:03.4093447Z packages/db prepare: ✔ Generated Prisma Client (v6.16.2) to ./../../node_modules/.pnpm/@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2/node_modules/@prisma/client in 160ms
+Lint and Format Check	Install dependencies	2025-10-13T20:56:03.4094947Z packages/db prepare: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Lint and Format Check	Install dependencies	2025-10-13T20:56:03.4097297Z packages/db prepare: Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+Lint and Format Check	Install dependencies	2025-10-13T20:56:03.7927173Z packages/db prepare: > @udp/db@0.0.1 build /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/db
+Lint and Format Check	Install dependencies	2025-10-13T20:56:03.7928878Z packages/db prepare: > tsc -p tsconfig.json
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.3950003Z packages/db prepare: Done
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.4300375Z . postinstall$ pnpm type-check
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.7988304Z . postinstall: > unified-dev-platform@ type-check /home/runner/work/United-Dev-Platform-/United-Dev-Platform-
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.7990654Z . postinstall: > turbo type-check
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.8473724Z . postinstall: Attention:
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.8476886Z . postinstall: Turborepo now collects completely anonymous telemetry regarding usage.
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.8478343Z . postinstall: This information is used to shape the Turborepo roadmap and prioritize features.
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.8482431Z . postinstall: You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.8491604Z . postinstall: https://turbo.build/repo/docs/telemetry
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.9093325Z . postinstall: • Packages in scope: @udp/ai, @udp/api, @udp/auth, @udp/config, @udp/db, @udp/desktop, @udp/editor-core, @udp/eslint-config, @udp/filesystem, @udp/git, @udp/logger, @udp/mobile, @udp/prettier-config, @udp/types, @udp/ui, @udp/ui-native, @udp/web
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.9095755Z . postinstall: • Running type-check in 17 packages
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.9100436Z . postinstall: • Remote caching disabled
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.9675196Z . postinstall: No tasks were executed as part of this run.
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.9679754Z . postinstall:  Tasks:    0 successful, 0 total
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.9680793Z . postinstall: Cached:    0 cached, 0 total
+Lint and Format Check	Install dependencies	2025-10-13T20:56:05.9683828Z . postinstall:   Time:    116ms 
+Lint and Format Check	Install dependencies	2025-10-13T20:56:06.0580636Z . postinstall: Done
+Lint and Format Check	Install dependencies	2025-10-13T20:56:06.0853514Z apps/web postinstall$ prisma generate
+Lint and Format Check	Install dependencies	2025-10-13T20:56:07.2146103Z apps/web postinstall: Prisma schema loaded from prisma/schema.prisma
+Lint and Format Check	Install dependencies	2025-10-13T20:56:07.5498795Z apps/web postinstall: ✔ Generated Prisma Client (v6.16.2) to ./generated/prisma in 166ms
+Lint and Format Check	Install dependencies	2025-10-13T20:56:07.5500046Z apps/web postinstall: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Lint and Format Check	Install dependencies	2025-10-13T20:56:07.5501814Z apps/web postinstall: Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+Lint and Format Check	Install dependencies	2025-10-13T20:56:07.5704410Z apps/web postinstall: Done
+Lint and Format Check	Install dependencies	2025-10-13T20:56:07.5720309Z Done in 10.8s
+Lint and Format Check	Run ESLint	﻿2025-10-13T20:56:07.6232998Z ##[group]Run pnpm lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.6233276Z [36;1mpnpm lint[0m
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.6265026Z shell: /usr/bin/bash -e {0}
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.6265259Z env:
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.6265431Z   NODE_VERSION: 18
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.6265636Z   PNPM_VERSION: latest
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.6265846Z ##[endgroup]
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.9806854Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.9807631Z > unified-dev-platform@ lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.9808106Z > turbo lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:07.9808229Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:08.0859735Z • Packages in scope: @udp/ai, @udp/api, @udp/auth, @udp/config, @udp/db, @udp/desktop, @udp/editor-core, @udp/eslint-config, @udp/filesystem, @udp/git, @udp/logger, @udp/mobile, @udp/prettier-config, @udp/types, @udp/ui, @udp/ui-native, @udp/web
+Lint and Format Check	Run ESLint	2025-10-13T20:56:08.0861935Z • Running lint in 17 packages
+Lint and Format Check	Run ESLint	2025-10-13T20:56:08.0862458Z • Remote caching disabled
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0434621Z ##[group]@udp/config:lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0472516Z cache miss, executing cbe24a972432a797
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0473360Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0474378Z > @udp/config@0.0.1 lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/config
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0475492Z > eslint .
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0475855Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0476678Z ##[endgroup]
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0551517Z ##[group]@udp/types:lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0557659Z cache miss, executing 50ca9850bf8f8eb8
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0561950Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0565986Z > @udp/types@0.0.1 lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/types
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0570281Z > eslint .
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0573783Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0577584Z ##[endgroup]
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0990754Z ##[group]@udp/editor-core:lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.0991428Z cache miss, executing 7c4aeaf7a81eec5b
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.1008998Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.1009934Z > @udp/editor-core@0.0.1 lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/editor-core
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.1010848Z > eslint .
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.1011073Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:11.1011773Z ##[endgroup]
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.1534719Z ##[group]@udp/ui:lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.1535377Z cache miss, executing 2a2df144e816b781
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.1535707Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.1536312Z > @udp/ui@0.0.1 lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/ui
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.1537010Z > eslint .
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.1537194Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.1537570Z ##[endgroup]
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.2354210Z ##[group]@udp/auth:lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.2356414Z cache miss, executing 8ff965643e90e38c
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.2358143Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.2360338Z > @udp/auth@0.0.1 lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/auth
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.2362466Z > eslint .
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.2365240Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:12.2366997Z ##[endgroup]
+Lint and Format Check	Run ESLint	2025-10-13T20:56:13.4595904Z ##[group]@udp/mobile:lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:13.4596745Z cache miss, executing 1b12f4599b89311c
+Lint and Format Check	Run ESLint	2025-10-13T20:56:13.4596989Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:13.4597443Z > @udp/mobile@0.0.1 lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/apps/mobile
+Lint and Format Check	Run ESLint	2025-10-13T20:56:13.4597975Z > eslint .
+Lint and Format Check	Run ESLint	2025-10-13T20:56:13.4598097Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:13.4598364Z ##[endgroup]
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3003122Z [;31m@udp/ai:lint[;0m
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3022918Z ##[error]@udp/ai#lint: command (/home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/ai) /opt/hostedtoolcache/node/18.20.8/x64/bin/pnpm run lint exited (1)
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3031877Z cache miss, executing 23c7db996e4545d0
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3032112Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3032478Z > @udp/ai@0.0.1 lint /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/ai
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3032899Z > eslint .
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3033008Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3033015Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3033378Z /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/ai/AIAssistant.tsx
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3047436Z ##[error]  232:13  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3048813Z ##[error]  233:12  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3050138Z ##[error]  310:26  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3051168Z ##[error]  311:29  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3052172Z ##[error]  331:23  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3053097Z ##[error]  336:27  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3054004Z ##[error]  337:24  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3054919Z ##[error]  358:25  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3055507Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3055900Z /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/ai/AIAssistantClass.tsx
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3056611Z ##[error]  363:29  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3057231Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3057605Z /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/ai/AIAssistantSimple.tsx
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3058368Z ##[error]  436:27  error  Unexpected usage of doublequote  jsx-quotes
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3059345Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3059642Z ✖ 10 problems (10 errors, 0 warnings)
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3060075Z   10 errors and 0 warnings potentially fixable with the `--fix` option.
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3060476Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3061037Z  ELIFECYCLE  Command failed with exit code 1.
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3062633Z [ERROR] command finished with error: command (/home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/ai) /opt/hostedtoolcache/node/18.20.8/x64/bin/pnpm run lint exited (1)
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3063583Z  ERROR  run failed: command  exited (1)
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3063779Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3063901Z  Tasks:    6 successful, 7 total
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3064177Z Cached:    0 cached, 7 total
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3064429Z   Time:    6.268s 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3064649Z Failed:    @udp/ai#lint
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3064783Z 
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3699071Z  ELIFECYCLE  Command failed with exit code 1.
+Lint and Format Check	Run ESLint	2025-10-13T20:56:14.3914978Z ##[error]Process completed with exit code 1.
+Lint and Format Check	Post Checkout code	﻿2025-10-13T20:56:14.4009048Z Post job cleanup.
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.4937639Z [command]/usr/bin/git version
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.4979451Z git version 2.51.0
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5022926Z Temporarily overriding HOME='/home/runner/work/_temp/3aa3e2e2-140f-4cf2-996d-a0c62c68246f' before making global git config changes
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5023881Z Adding repository directory to the temporary git global config as a safe directory
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5030534Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/United-Dev-Platform-/United-Dev-Platform-
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5070802Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5106392Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5334728Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5356562Z http.https://github.com/.extraheader
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5371362Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Lint and Format Check	Post Checkout code	2025-10-13T20:56:14.5401677Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Lint and Format Check	Complete job	﻿2025-10-13T20:56:14.5724724Z Cleaning up orphan processes
+Validate Environment	Set up job	﻿2025-10-13T20:55:46.6081980Z Current runner version: '2.328.0'
+Validate Environment	Set up job	2025-10-13T20:55:46.6106645Z ##[group]Runner Image Provisioner
+Validate Environment	Set up job	2025-10-13T20:55:46.6107588Z Hosted Compute Agent
+Validate Environment	Set up job	2025-10-13T20:55:46.6108121Z Version: 20250912.392
+Validate Environment	Set up job	2025-10-13T20:55:46.6108871Z Commit: d921fda672a98b64f4f82364647e2f10b2267d0b
+Validate Environment	Set up job	2025-10-13T20:55:46.6109635Z Build Date: 2025-09-12T15:23:14Z
+Validate Environment	Set up job	2025-10-13T20:55:46.6110250Z ##[endgroup]
+Validate Environment	Set up job	2025-10-13T20:55:46.6110802Z ##[group]Operating System
+Validate Environment	Set up job	2025-10-13T20:55:46.6111392Z Ubuntu
+Validate Environment	Set up job	2025-10-13T20:55:46.6111874Z 24.04.3
+Validate Environment	Set up job	2025-10-13T20:55:46.6112314Z LTS
+Validate Environment	Set up job	2025-10-13T20:55:46.6112821Z ##[endgroup]
+Validate Environment	Set up job	2025-10-13T20:55:46.6113283Z ##[group]Runner Image
+Validate Environment	Set up job	2025-10-13T20:55:46.6113859Z Image: ubuntu-24.04
+Validate Environment	Set up job	2025-10-13T20:55:46.6114367Z Version: 20250929.60.1
+Validate Environment	Set up job	2025-10-13T20:55:46.6115382Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250929.60/images/ubuntu/Ubuntu2404-Readme.md
+Validate Environment	Set up job	2025-10-13T20:55:46.6116748Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250929.60
+Validate Environment	Set up job	2025-10-13T20:55:46.6118010Z ##[endgroup]
+Validate Environment	Set up job	2025-10-13T20:55:46.6119365Z ##[group]GITHUB_TOKEN Permissions
+Validate Environment	Set up job	2025-10-13T20:55:46.6121140Z Contents: read
+Validate Environment	Set up job	2025-10-13T20:55:46.6121704Z Metadata: read
+Validate Environment	Set up job	2025-10-13T20:55:46.6122274Z Packages: read
+Validate Environment	Set up job	2025-10-13T20:55:46.6122770Z ##[endgroup]
+Validate Environment	Set up job	2025-10-13T20:55:46.6124831Z Secret source: Actions
+Validate Environment	Set up job	2025-10-13T20:55:46.6125737Z Prepare workflow directory
+Validate Environment	Set up job	2025-10-13T20:55:46.6523937Z Prepare all required actions
