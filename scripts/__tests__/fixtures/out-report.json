@@ -1,10 +1,10 @@
 {
-  "dir": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture",
+  "dir": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture",
   "scannedFiles": 2,
   "rawMatches": 7,
   "matches": [
     {
-      "generatedFile": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
+      "generatedFile": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
       "generatedIndex": 43,
       "generatedMatch": "Yjs",
       "generatedLine": 1,
@@ -13,12 +13,12 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "snippet": "// Simulated application chunk referencing Yjs\nconst Y = { Doc: function() {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init }",
+      "snippet": "// Simulated application chunk referencing Yjs\nconst Y = { Doc: function () {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init ",
       "strong": false,
       "mapError": "no-source-map"
     },
     {
-      "generatedFile": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
+      "generatedFile": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
       "generatedIndex": 53,
       "generatedMatch": "Y",
       "generatedLine": 2,
@@ -27,13 +27,13 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "snippet": "// Simulated application chunk referencing Yjs\nconst Y = { Doc: function() {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
+      "snippet": "// Simulated application chunk referencing Yjs\nconst Y = { Doc: function () {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
       "strong": false,
       "mapError": "no-source-map"
     },
     {
-      "generatedFile": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
-      "generatedIndex": 115,
+      "generatedFile": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
+      "generatedIndex": 116,
       "generatedMatch": "Y",
       "generatedLine": 4,
       "generatedColumn": 16,
@@ -41,13 +41,13 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "snippet": "rencing Yjs\nconst Y = { Doc: function() {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
+      "snippet": "encing Yjs\nconst Y = { Doc: function () {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
       "strong": false,
       "mapError": "no-source-map"
     },
     {
-      "generatedFile": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
-      "generatedIndex": 111,
+      "generatedFile": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
+      "generatedIndex": 112,
       "generatedMatch": "new Y.Doc",
       "generatedLine": 4,
       "generatedColumn": 12,
@@ -55,13 +55,13 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "snippet": "referencing Yjs\nconst Y = { Doc: function() {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
+      "snippet": "eferencing Yjs\nconst Y = { Doc: function () {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
       "strong": true,
       "mapError": "no-source-map"
     },
     {
-      "generatedFile": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
-      "generatedIndex": 115,
+      "generatedFile": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-app.js",
+      "generatedIndex": 116,
       "generatedMatch": "Y.Doc",
       "generatedLine": 4,
       "generatedColumn": 16,
@@ -69,12 +69,12 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "snippet": "rencing Yjs\nconst Y = { Doc: function() {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
+      "snippet": "encing Yjs\nconst Y = { Doc: function () {} };\nfunction init() {\n  const d = new Y.Doc();\n  return d;\n}\nmodule.exports = { init };\n",
       "strong": true,
       "mapError": "no-source-map"
     },
     {
-      "generatedFile": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-vendor-yjs.js",
+      "generatedFile": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-vendor-yjs.js",
       "generatedIndex": 21,
       "generatedMatch": "yjs",
       "generatedLine": 1,
@@ -83,12 +83,12 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "snippet": "// Simulated hoisted yjs runtime file in node_modules\n// yjs runtime marker\nexport const YDoc = function() {};\nexport function applyUpdate() ",
+      "snippet": "// Simulated hoisted yjs runtime file in node_modules\n// yjs runtime marker\nexport const YDoc = function () {};\nexport function applyUpdate()",
       "strong": false,
       "mapError": "no-source-map"
     },
     {
-      "generatedFile": "/home/jason/Projects/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-vendor-yjs.js",
+      "generatedFile": "/workspaces/United-Dev-Platform-/scripts/__tests__/fixtures/duplicate-yjs-fixture/chunk-vendor-yjs.js",
       "generatedIndex": 57,
       "generatedMatch": "yjs",
       "generatedLine": 2,
@@ -97,7 +97,7 @@
       "sourceLine": null,
       "sourceColumn": null,
       "sourceName": null,
-      "snippet": "// Simulated hoisted yjs runtime file in node_modules\n// yjs runtime marker\nexport const YDoc = function() {};\nexport function applyUpdate() {}\n",
+      "snippet": "// Simulated hoisted yjs runtime file in node_modules\n// yjs runtime marker\nexport const YDoc = function () {};\nexport function applyUpdate() {}\n",
       "strong": false,
       "mapError": "no-source-map"
     }
