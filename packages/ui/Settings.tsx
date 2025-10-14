@@ -73,7 +73,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
   };
 
   const handleReset = () => {
-    logger.warn("Settings reset to defaults.");
+    logger.warn('Settings reset to defaults.');
     setSettings(defaultSettings);
     localStorage.removeItem('udp-settings');
   };
