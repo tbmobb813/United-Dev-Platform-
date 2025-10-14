@@ -368,11 +368,15 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload Trivy scan results to GitHub Security tab (if present)
         if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
+        run: |
+          if [ -f trivy-results.sarif ]; then
+            echo "Uploading trivy-results.sarif to Security tab"
+            gh api -X POST /repos/${{ github.repository }}/code-scanning/sarifs -F sarif=@trivy-results.sarif
+          else
+            echo "No trivy-results.sarif produced; skipping SARIF upload"
+          fi
 
   deploy-staging:
     name: Deploy to Staging
