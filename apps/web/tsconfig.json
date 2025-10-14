@@ -15,7 +15,8 @@
     "target": "ES2017",
     "baseUrl": ".",
     "paths": {
-      "@udp/*": ["../../packages/*/index.ts", "../../packages/*/src/index.ts", "../../packages/*"]
+      "@udp/*": ["../../packages/*/index.ts", "../../packages/*/src/index.ts", "../../packages/*"],
+      "lib/*": ["./lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
