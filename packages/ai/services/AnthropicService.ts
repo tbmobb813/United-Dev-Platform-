@@ -128,9 +128,11 @@ export class AnthropicService extends AIService {
 
       const decoder = new TextDecoder();
 
-      while (true) {
+      let finished = false;
+      while (!finished) {
         const { done, value } = await reader.read();
         if (done) {
+          finished = true;
           break;
         }
 
