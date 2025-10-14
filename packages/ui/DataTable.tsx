@@ -110,12 +110,16 @@ export const DataTable = <T extends Record<string, unknown>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    // Accessing record using a string key is unsafe for unknown records.
-    // Coerce to any for lookup but guard fallback to index.
-    const key = (record as Record<string, unknown>)[rowKey as string] as
-      | React.Key
-      | undefined;
-    return key ?? index;
+    // Safely access record using a string key with type guard and optional chaining.
+    const value = typeof rowKey === 'string' ? record?.[rowKey] : undefined;
+    if (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'symbol'
+    ) {
+      return value;
+    }
+    return index;
   };
 
   const handleSort = (field: string) => {
