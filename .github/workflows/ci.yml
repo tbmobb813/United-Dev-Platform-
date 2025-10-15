@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Enable Corepack & pnpm
         run: |
@@ -50,9 +50,11 @@ jobs:
           echo "--- PATH ---"
           echo "$PATH"
 
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Validate environment (main only)
         if: github.ref == 'refs/heads/main'
