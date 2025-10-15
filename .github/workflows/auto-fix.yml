@@ -1,21 +1,15 @@
-name: Auto-fix code style
+name: auto-fix-disabled
 
-on:
-  workflow_dispatch: {}
-  pull_request:
-    types: [opened, synchronize, reopened]
-  schedule:
-    - cron: '0 3 * * 0' # weekly on Sunday at 03:00 UTC
+# Intentionally disabled for local `act` runs. Restore original workflow
+# in the remote repo to enable GitHub Actions.
 
-permissions:
-  contents: write
+on: [workflow_dispatch]
 
 jobs:
-  auto-fix:
-    name: Run auto-fix (Prettier + ESLint)
+  noop:
     runs-on: ubuntu-latest
-
     steps:
+<<<<<<< HEAD
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -67,54 +61,19 @@ permissions:
   pull-requests: write
 
 jobs:
-  autofix:
-    runs-on: ubuntu-latest
-    if: ${{ github.actor != 'github-actions[bot]' }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+  name: auto-fix-disabled
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20"
+  # Minimal disabled placeholder for local runs; the full auto-fix workflow
+  # is enabled in the remote repository. Keeping a local no-op avoids accidental
+  # workflow updates while running CI locally.
+  on: [workflow_dispatch]
 
-      - name: Enable Corepack & pnpm (pinned)
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          # Use latest pnpm for speed/bugfixes during setup, then pin for reproducibility
-          corepack prepare pnpm@latest --activate
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20"
-
-      - name: Enable Corepack & pnpm (pinned)
-        run: |
-          corepack enable
-          # Pin to the repo's packageManager / pnpm version to ensure reproducible CI
-          corepack prepare pnpm@9.0.0 --activate
-
-      - name: Detect changes
-        id: changes
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then echo "changed=true" >> $GITHUB_OUTPUT; else echo "changed=false" >> $GITHUB_OUTPUT; fi
-
-      - name: Create branch for fixes
-        id: newbranch
-        if: steps.changes.outputs.changed == 'true'
-        run: |
-          BRANCH="auto-fix/eslint-prettier-$(date +%s)"
-          git checkout -b "$BRANCH"
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-
-      - name: Configure git remote for authenticated push
+  jobs:
+    noop:
+      runs-on: ubuntu-latest
+      steps:
+        - name: no-op
+          run: echo "auto-fix workflow disabled for local testing"
         if: steps.changes.outputs.changed == 'true'
         run: |
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
@@ -171,3 +130,7 @@ jobs:
       - name: No changes
         if: steps.changes.outputs.changed == 'false'
         run: echo "No auto-fix changes detected; nothing to commit."
+=======
+      - name: no-op
+        run: echo "auto-fix workflow disabled for local testing"
+>>>>>>> 2070329 (Disable auto-fix workflows for local testing)
