@@ -6,16 +6,16 @@
   "scripts": {
     "dev": "node server.js",
     "start": "NODE_ENV=production node server.js",
-    "test": "jest"
+    "test": "jest",
     "build": "echo 'no build step for api'"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2",
+    "@prisma/client": "^6.17.1",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "morgan": "^1.10.0",
-    "ws": "^8.18.0",
-    "y-websocket": "^1.5.4",
+    "fastify": "^4.23.2",
+    "morgan": "^1.10.1",
+    "ws": "^8.18.3",
+    "y-websocket": "^3.0.0",
     "yjs": "^13.6.27"
   }
 }
