@@ -2,29 +2,17 @@
 
 import React from 'react';
 import styles from './styles/DemoPages.module.css';
+import dynamic from 'next/dynamic';
 
-// Mock OfflineEditor component for now
-interface OfflineEditorProps {
-  room: string;
-  serverUrl: string;
-  children: (
-    doc: unknown,
-    status: { isConnected: boolean; pendingChanges: number; lastSync?: Date }
-  ) => React.ReactNode;
-}
-
-const OfflineEditor: React.FC<OfflineEditorProps> = props => {
-  const { children } = props;
-  // Mock document and status
-  const mockDoc = {};
-  const mockStatus = {
-    isConnected: false,
-    pendingChanges: 0,
-    lastSync: new Date(),
-  };
-
-  return <>{children(mockDoc, mockStatus)}</>;
-};
+// Import the heavy Yjs-based editor only on the client. Use dynamic import
+// to keep the demo fast and avoid any SSR issues.
+const OfflineEditorClient = dynamic(
+  () =>
+    import('../components/OfflineEditorClient').then(
+      m => m.default || m.OfflineEditorClient
+    ),
+  { ssr: false }
+);
 
 /**
  * Complete demonstration of offline-enabled collaborative editing
@@ -73,7 +61,10 @@ const OfflineCollaborationDemo: React.FC = () => {
           📝 Live Collaborative Editor with Offline Support
         </div>
 
-        <OfflineEditor room='platform-demo' serverUrl='ws://localhost:1234'>
+        <OfflineEditorClient
+          room='platform-demo'
+          serverUrl='ws://localhost:1234'
+        >
           {(doc, status) => (
             <div className={styles.cardPadding}>
               <div
@@ -122,7 +113,7 @@ const OfflineCollaborationDemo: React.FC = () => {
               </div>
             </div>
           )}
-        </OfflineEditor>
+        </OfflineEditorClient>
       </div>
       <div className={styles.footerSection}>
         <h3 className={styles.footerTitle}>🚀 Platform Status:</h3>
