@@ -7,8 +7,8 @@ on:
     branches: [main, develop]
 
 env:
-  NODE_VERSION: '18'
-  PNPM_VERSION: 'latest'
+  NODE_VERSION: "18"
+  PNPM_VERSION: "latest"
 
 jobs:
   setup:
@@ -20,21 +20,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -58,7 +43,6 @@ jobs:
           which pnpm || true
           echo "--- PATH ---"
           echo "$PATH"
-
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -119,7 +103,6 @@ jobs:
           echo "--- PATH ---"
           echo "$PATH"
 
-
       - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
@@ -148,37 +131,6 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Restore pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ needs.setup.outputs.pnpm-cache-dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run Prettier for apps/web
-        run: pnpm --filter ./apps/web format:check
-
-  format-web:
-    name: Prettier Check (apps/web)
-    if: ${{ github.actor != 'github-actions[bot]' }}
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -249,7 +201,6 @@ jobs:
           echo "--- PATH ---"
           echo "$PATH"
 
-
       - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
@@ -309,7 +260,6 @@ jobs:
           echo "--- PATH ---"
           echo "$PATH"
 
-
       - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
@@ -355,7 +305,6 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
-
 
       - name: Restore pnpm cache
         uses: actions/cache@v4
@@ -484,7 +433,6 @@ jobs:
           corepack enable
           corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
-
       - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
@@ -500,10 +448,10 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
 
       - name: Upload Trivy scan results to GitHub Security tab (if present)
         if: always()
