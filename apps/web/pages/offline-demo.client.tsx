@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import styles from './styles/DemoPages.module.css';
 
 // Mock OfflineEditor component for now
 interface OfflineEditorProps {
@@ -30,7 +31,7 @@ const OfflineEditor: React.FC<OfflineEditorProps> = props => {
  */
 const OfflineCollaborationDemo: React.FC = () => {
   return (
-    <div style={{ padding: '20px', fontFamily: 'system-ui, sans-serif' }}>
+    <div className={styles.container}>
       <h1>🔗 Offline-Enabled Collaborative Platform</h1>
 
       <div style={{ marginBottom: '20px' }}>
@@ -67,97 +68,54 @@ const OfflineCollaborationDemo: React.FC = () => {
         </ul>
       </div>
 
-      <div
-        style={{
-          border: '2px solid #e5e7eb',
-          borderRadius: '8px',
-          overflow: 'hidden',
-          backgroundColor: '#f9fafb',
-        }}
-      >
-        <div
-          style={{
-            padding: '12px 16px',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            fontWeight: '600',
-          }}
-        >
+      <div className={styles.cardContainer}>
+        <div className={styles.cardHeader}>
           📝 Live Collaborative Editor with Offline Support
         </div>
 
         <OfflineEditor room='platform-demo' serverUrl='ws://localhost:1234'>
           {(doc, status) => (
-            <div style={{ padding: '16px' }}>
+            <div className={styles.cardPadding}>
               <div
+                className={styles.mb20}
                 style={{
-                  marginBottom: '16px',
-                  padding: '12px',
                   backgroundColor: status.isConnected ? '#ecfdf5' : '#fef3c7',
+                  border: `1px solid ${status.isConnected ? '#d1fae5' : '#fde68a'}`,
                   borderRadius: '6px',
-                  border: `1px solid ${
-                    status.isConnected ? '#d1fae5' : '#fde68a'
-                  }`,
                 }}
               >
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>
+                <h3 className={styles.statusHeaderTitle}>
                   {status.isConnected ? '🌐 Online Mode' : '📱 Offline Mode'}
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
+                <p className={styles.statusParagraph}>
                   {status.isConnected
                     ? 'Real-time collaboration active. Changes sync instantly with other users.'
                     : 'Working offline. Your changes are being saved locally and will sync when you reconnect.'}
                 </p>
                 {status.pendingChanges > 0 && (
-                  <p
-                    style={{
-                      margin: '8px 0 0 0',
-                      fontSize: '12px',
-                      color: '#f59e0b',
-                      fontWeight: '500',
-                    }}
-                  >
+                  <p className={styles.pendingChanges}>
                     📋 {status.pendingChanges} changes pending sync
                   </p>
                 )}
               </div>
 
-              <div
-                style={{
-                  height: '300px',
-                  backgroundColor: 'white',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  padding: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                }}
-              >
-                <div style={{ fontSize: '48px', marginBottom: '16px' }}>
+              <div className={styles.statusBox}>
+                <div className={styles.bigIcon}>
                   {status.isConnected ? '⚡' : '💾'}
                 </div>
-                <h3 style={{ margin: '0 0 8px 0', color: '#374151' }}>
+                <h3 className={styles.statusTitle}>
                   {status.isConnected
                     ? 'Connected & Synced'
                     : 'Offline Mode Active'}
                 </h3>
-                <p style={{ margin: 0, color: '#6b7280', maxWidth: '300px' }}>
+                <p className={styles.statusParaSmall}>
                   {status.isConnected
                     ? 'Your document is live and syncing with collaborators in real-time.'
                     : 'Continue editing! All changes are saved locally and will automatically sync when you reconnect.'}
                 </p>
 
                 {status.lastSync && (
-                  <p
-                    style={{
-                      margin: '12px 0 0 0',
-                      fontSize: '12px',
-                      color: '#9ca3af',
-                    }}
-                  >
+                  <p className={styles.pendingChanges}>
                     Last sync: {status.lastSync.toLocaleString()}
                   </p>
                 )}
@@ -166,12 +124,9 @@ const OfflineCollaborationDemo: React.FC = () => {
           )}
         </OfflineEditor>
       </div>
-
-      <div style={{ marginTop: '24px', fontSize: '14px', color: '#6b7280' }}>
-        <h3 style={{ margin: '0 0 8px 0', color: '#374151' }}>
-          🚀 Platform Status:
-        </h3>
-        <ul style={{ margin: 0 }}>
+      <div className={styles.footerSection}>
+        <h3 className={styles.footerTitle}>🚀 Platform Status:</h3>
+        <ul className={styles.footerList}>
           <li>✅ AI Integration Complete (OpenAI, Anthropic, Ollama)</li>
           <li>✅ Code Completion & Refactoring Tools</li>
           <li>✅ Context-Aware AI Assistant</li>
