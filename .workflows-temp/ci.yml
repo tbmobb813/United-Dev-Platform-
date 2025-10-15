@@ -1,0 +1,42 @@
+name: CI (temp)
+
+on:
+  pull_request:
+    branches: [main, feat/*]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test

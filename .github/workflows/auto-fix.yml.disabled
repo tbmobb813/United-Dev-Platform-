@@ -1,0 +1,11 @@
+name: Auto-fix code style (disabled)
+
+# This file replaces the original `auto-fix.yml` while running act locally.
+# The original file contained duplicate top-level keys (two workflows in one
+# file) which causes `act` to fail to parse workflows. If you want to re-
+# enable the workflow, please fix the YAML by splitting it into two separate
+# workflow files or remove the duplicated sections.
+
+on: {}
+
+jobs: {}
