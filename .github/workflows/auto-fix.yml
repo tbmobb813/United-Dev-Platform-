@@ -10,5 +10,87 @@ jobs:
       - name: noop
         run: echo "auto-fix workflow disabled for local testing"
 
-# Intentionally disabled for local act runs. Restore original workflow
-# in the remote repo to enable GitHub Actions.
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '18'
+
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Debug pnpm availability
+        run: |
+          echo "--- env ---"
+          env | sort
+          echo "--- versions ---"
+          node --version
+          npm --version
+          corepack --version 2>/dev/null || echo 'corepack not found'
+          pnpm --version 2>/dev/null || echo 'pnpm not found'
+          which pnpm || true
+          echo "--- PATH ---"
+          echo "$PATH"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint auto-fix
+        run: pnpm lint:fix || true
+
+      - name: Run Prettier format
+        run: pnpm format || true
+
+      - name: Create branch for fixes
+        id: newbranch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="auto-fix/${{ github.run_id }}"
+          git checkout -b "$BRANCH"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then echo "changed=true" >> $GITHUB_OUTPUT; else echo "changed=false" >> $GITHUB_OUTPUT; fi
+
+      - name: Commit and push fixes
+        if: steps.changes.outputs.changed == 'true'
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'chore: apply ESLint/Prettier auto-fixes'
+          add: '.'
+          author_name: 'github-actions[bot]'
+          author_email: 'github-actions[bot]@users.noreply.github.com'
+          push: true
+
+      - name: Ensure branch has upstream
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --set-upstream origin ${{ steps.newbranch.outputs.branch }}
+
+      - name: Create Pull Request with fixes
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: apply ESLint/Prettier auto-fixes'
+          title: 'chore: auto-fix lint & format'
+          body: |
+            This PR contains auto-applied ESLint and Prettier fixes produced by the `auto-fix` workflow.
+
+            The workflow runs `pnpm lint:fix` and `pnpm format`, commits any changes to a new branch, and opens this PR.
+          labels: auto-fix
+          base: main
+
+      - name: No changes
+        if: steps.changes.outputs.changed == 'false'
+        run: echo "No auto-fix changes detected; nothing to commit."
