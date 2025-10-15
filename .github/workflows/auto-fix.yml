@@ -1,23 +1,14 @@
 name: auto-fix-disabled
 
-# Intentionally disabled for local act runs. Restore original workflow
-# in the remote repo to enable GitHub Actions.
-
+# Minimal disabled workflow used for local `act` runs.
 on: [workflow_dispatch]
 
 jobs:
   noop:
     runs-on: ubuntu-latest
     steps:
-      - name: no-op
+      - name: noop
         run: echo "auto-fix workflow disabled for local testing"
 
-name: Auto-fix code style (disabled)
-
-# Disabled placeholder: original file contained two concatenated workflows
-# which broke local `act` parsing. Re-enable by restoring a valid workflow
-# YAML in the remote repository when ready.
-
-on: {}
-
-jobs: {}
+# Intentionally disabled for local act runs. Restore original workflow
+# in the remote repo to enable GitHub Actions.

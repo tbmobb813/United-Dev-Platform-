@@ -22,9 +22,9 @@ const OfflineCollaborationDemo: React.FC = () => {
     <div className={styles.container}>
       <h1>🔗 Offline-Enabled Collaborative Platform</h1>
 
-      <div style={{ marginBottom: '20px' }}>
+      <div className={styles.marginBottom20}>
         <h2>✨ Key Features Implemented:</h2>
-        <ul style={{ lineHeight: '1.6' }}>
+        <ul className={styles.lineHeight16}>
           <li>
             <strong>🤖 Complete AI Integration Suite</strong>
             <ul>
@@ -68,12 +68,7 @@ const OfflineCollaborationDemo: React.FC = () => {
           {(doc, status) => (
             <div className={styles.cardPadding}>
               <div
-                className={styles.mb20}
-                style={{
-                  backgroundColor: status.isConnected ? '#ecfdf5' : '#fef3c7',
-                  border: `1px solid ${status.isConnected ? '#d1fae5' : '#fde68a'}`,
-                  borderRadius: '6px',
-                }}
+                className={`${styles.mb20} ${status.isConnected ? styles.onlineBox : styles.offlineBox}`}
               >
                 <h3 className={styles.statusHeaderTitle}>
                   {status.isConnected ? '🌐 Online Mode' : '📱 Offline Mode'}
