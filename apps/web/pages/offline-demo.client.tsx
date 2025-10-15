@@ -29,9 +29,7 @@ const OfflineCollaborationDemo: React.FC = () => {
             <strong>🤖 Complete AI Integration Suite</strong>
             <ul>
               <li>Local Model Support (Ollama) for offline AI capabilities</li>
-              <li>
-                Intelligent Code Completion with caching and context awareness
-              </li>
+              <li>Intelligent Code Completion with caching and context awareness</li>
               <li>13+ Refactoring Tools with safety analysis</li>
               <li>Context-Aware Assistant with codebase understanding</li>
             </ul>
@@ -68,7 +66,12 @@ const OfflineCollaborationDemo: React.FC = () => {
           {(doc, status) => (
             <div className={styles.cardPadding}>
               <div
-                className={`${styles.mb20} ${status.isConnected ? styles.onlineBox : styles.offlineBox}`}
+                className={styles.mb20}
+                style={{
+                  backgroundColor: status.isConnected ? '#ecfdf5' : '#fef3c7',
+                  border: `1px solid ${status.isConnected ? '#d1fae5' : '#fde68a'}`,
+                  borderRadius: '6px',
+                }}
               >
                 <h3 className={styles.statusHeaderTitle}>
                   {status.isConnected ? '🌐 Online Mode' : '📱 Offline Mode'}
