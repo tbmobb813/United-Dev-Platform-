@@ -1,4 +1,3 @@
-// Type guard for merge errors
 import * as git from 'isomorphic-git';
 import { getHttpClient } from './http.js';
 import { FileSystemInterface } from './GitServiceFactory';
