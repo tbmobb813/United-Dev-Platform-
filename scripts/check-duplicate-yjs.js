@@ -27,6 +27,7 @@ function findFiles(dir, exts = ['.js', '.map']) {
   return out;
 }
 
+
 function indexToLineColumn(content, index) {
   const prefix = content.slice(0, index);
   const lines = prefix.split('\n');
