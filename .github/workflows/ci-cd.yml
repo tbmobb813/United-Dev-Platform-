@@ -150,7 +150,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Restore pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ needs.setup.outputs.pnpm-cache-dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
