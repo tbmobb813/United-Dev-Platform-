@@ -31,9 +31,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
       - name: Validate environment (main only)
         if: github.ref == 'refs/heads/main'
         run: pnpm ci:validate-env
