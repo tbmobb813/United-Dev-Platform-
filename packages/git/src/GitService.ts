@@ -1328,7 +1328,9 @@ export class GitService implements GitServiceInterface {
 }
 
 // Type guard for merge errors
-function isMergeError(e: unknown): e is { message: string; code: GitErrorCode } {
+function isMergeError(
+  e: unknown
+): e is { message: string; code: GitErrorCode } {
   if (
     typeof e === 'object' &&
     e !== null &&
@@ -1336,7 +1338,9 @@ function isMergeError(e: unknown): e is { message: string; code: GitErrorCode } 
     typeof (e as { code?: unknown }).code === 'string'
   ) {
     const code = (e as { code: string }).code;
-    return code === GitErrorCode.MERGE_CONFLICT || code === GitErrorCode.MERGE_FAILED;
+    return (
+      code === GitErrorCode.MERGE_CONFLICT || code === GitErrorCode.MERGE_FAILED
+    );
   }
   return false;
 }
