@@ -287,6 +287,14 @@ jobs:
           NEXT_PUBLIC_WS_URL: wss://api.udp.example.com
         run: cd apps/${{ matrix.app }} && pnpm build
 
+      - name: Diagnose .next contents
+        if: always()
+        run: |
+          echo "== Listing apps/${{ matrix.app }}/.next =="
+          ls -la apps/${{ matrix.app }}/.next || true
+          echo "== Disk usage (human) for apps/${{ matrix.app }}/.next =="
+          du -sh apps/${{ matrix.app }}/.next || true
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
