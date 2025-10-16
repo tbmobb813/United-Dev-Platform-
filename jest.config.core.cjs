@@ -10,7 +10,11 @@ const isCI = !!(
 // coverage while preserving the ability to enable enforcement from CI.
 const enforceCoverage =
   isCI &&
-  !!(globalThis.process && globalThis.process.env && globalThis.process.env.ENFORCE_GLOBAL_COVERAGE === 'true');
+  !!(
+    globalThis.process &&
+    globalThis.process.env &&
+    globalThis.process.env.ENFORCE_GLOBAL_COVERAGE === 'true'
+  );
 
 module.exports = {
   ...base,
