@@ -295,13 +295,22 @@ jobs:
           echo "== Disk usage (human) for apps/${{ matrix.app }}/.next =="
           du -sh apps/${{ matrix.app }}/.next || true
 
-      - name: Upload build artifacts
+      - name: Archive .next (if exists)
+        run: |
+          if [ -d "apps/${{ matrix.app }}/.next" ]; then
+            tar -czf /tmp/${{ matrix.app }}-next.tgz -C apps/${{ matrix.app }} .next
+            echo "ARCHIVE_CREATED=/tmp/${{ matrix.app }}-next.tgz" >> $GITHUB_OUTPUT
+          else
+            echo "No .next directory for ${{ matrix.app }}; skipping archive" >&2
+          fi
+        shell: bash
+
+      - name: Upload archived build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.app }}-build
-          path: apps/${{ matrix.app }}/.next/**
+          name: ${{ matrix.app }}-build-tarball
+          path: /tmp/${{ matrix.app }}-next.tgz
           if-no-files-found: warn
-          include-hidden-files: true
           retention-days: 7
 
   docker-build:
