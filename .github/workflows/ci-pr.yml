@@ -60,9 +60,17 @@ jobs:
         if: github.actor == 'dependabot[bot]' || startsWith(github.actor, 'user-agent-') || env.AGENT_CHECK_STRICT == 'true'
         run: |
           echo 'Running duplicate-yjs check (early) (strict enabled)'
-          pnpm run check:duplicate-yjs -- --strict || (
-            echo 'duplicate-yjs check failed'; exit 1
-          )
+          # Only run the early strict check if the web build output exists.
+          # The validate job runs before the build job in some workflows, so
+          # apps/web/.next may not exist yet. If the directory is missing,
+          # skip the early strict check to avoid failing the whole workflow.
+          if [ -d "apps/web/.next" ]; then
+            pnpm run check:duplicate-yjs -- --strict || (
+              echo 'duplicate-yjs check failed'; exit 1
+            )
+          else
+            echo "Skipping early duplicate-yjs check: apps/web/.next not found"
+          fi
 
   build-and-detect:
     runs-on: ubuntu-latest
