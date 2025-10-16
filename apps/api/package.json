@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "build": "echo 'No build required for @udp/api'",
     "dev": "node server.js",
     "start": "NODE_ENV=production node server.js",
     "test": "jest --config ./jest.config.cjs --runInBand --passWithNoTests"
