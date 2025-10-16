@@ -10,7 +10,7 @@
     "test": "jest --config ./jest.config.cjs --runInBand --passWithNoTests"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2",
+  "@prisma/client": "^6.17.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "morgan": "^1.10.0",
