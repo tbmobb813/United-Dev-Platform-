@@ -19,15 +19,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Ensure pnpm is available
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Enable Corepack (fallback)
+      - name: Enable Corepack and prepare pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -76,15 +71,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Ensure pnpm is available
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Enable Corepack (fallback)
+      - name: Enable Corepack and prepare pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

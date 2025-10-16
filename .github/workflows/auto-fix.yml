@@ -18,10 +18,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Enable Corepack & pnpm
+      - name: Enable Corepack & pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v6

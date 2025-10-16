@@ -18,16 +18,11 @@ jobs:
         with:
           node-version: 18
 
-      # Solution: ensure pnpm is available in the runner before any pnpm commands
-      # You can use Corepack (recommended) or install pnpm globally.
-      # The step below installs pnpm globally to guarantee availability.
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Enable Corepack and prepare pnpm
+      # Ensure pnpm is available and pinned to the repo's packageManager version
+      - name: Enable Corepack and prepare pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
