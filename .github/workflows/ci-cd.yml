@@ -24,7 +24,7 @@ jobs:
       - name: Enable Corepack & pnpm (early)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -34,12 +34,12 @@ jobs:
       - name: Enable Corepack & pnpm
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: ${{ env.PNPM_VERSION }}
+          version: 9.0.0
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -70,7 +70,7 @@ jobs:
       - name: Enable Corepack & pnpm (early)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -80,7 +80,7 @@ jobs:
       - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
-          version: ${{ env.PNPM_VERSION }}
+          version: 9.0.0
 
       - name: Restore pnpm cache
         uses: actions/cache@v3
@@ -140,7 +140,7 @@ jobs:
       - name: Enable Corepack & pnpm (early)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -150,7 +150,7 @@ jobs:
       - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
-          version: ${{ env.PNPM_VERSION }}
+          version: 9.0.0
 
       - name: Restore pnpm cache
         uses: actions/cache@v3
@@ -176,7 +176,7 @@ jobs:
       - name: Enable Corepack & pnpm (early)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -186,7 +186,7 @@ jobs:
       - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
         with:
-          version: ${{ env.PNPM_VERSION }}
+          version: 9.0.0
 
       - name: Restore pnpm cache
         uses: actions/cache@v3
@@ -349,7 +349,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: ${{ env.PNPM_VERSION }}
+          version: 9.0.0
 
       - name: Restore pnpm cache
         uses: actions/cache@v3
