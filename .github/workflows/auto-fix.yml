@@ -24,7 +24,7 @@ jobs:
           corepack prepare pnpm@latest --activate
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "18"
 
@@ -33,5 +33,53 @@ jobs:
 
       - name: Run ESLint auto-fix and Prettier
         run: |
+          # run auto-fixers; allow non-zero exit so workflow continues
           pnpm lint:fix || true
           pnpm format || true
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then echo "changed=true" >> $GITHUB_OUTPUT; else echo "changed=false" >> $GITHUB_OUTPUT; fi
+
+      - name: Create branch for fixes
+        id: newbranch
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          BRANCH="auto-fix/eslint-prettier-$(date +%s)"
+          git checkout -b "$BRANCH"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Configure git remote for authenticated push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+
+      - name: Commit and push fixes
+        if: steps.changes.outputs.changed == 'true'
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: apply ESLint/Prettier auto-fixes"
+          add: "."
+          author_name: "github-actions[bot]"
+          author_email: "github-actions[bot]@users.noreply.github.com"
+          push: true
+
+      - name: Create Pull Request with fixes
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.newbranch.outputs.branch }}
+          commit-message: "chore: apply ESLint/Prettier auto-fixes"
+          title: "chore: auto-fix lint & format"
+          body: |
+            This PR contains auto-applied ESLint and Prettier fixes produced by the `auto-fix` workflow.
+
+            The workflow runs `pnpm lint:fix` and `pnpm format`, commits any changes to a new branch, and opens this PR.
+          labels: auto-fix
+          base: main
+
+      - name: No changes
+        if: steps.changes.outputs.changed == 'false'
+        run: echo "No auto-fix changes detected; nothing to commit."
