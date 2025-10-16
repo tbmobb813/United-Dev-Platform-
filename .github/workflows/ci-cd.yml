@@ -297,8 +297,13 @@ jobs:
 
       - name: Archive .next (if exists)
         run: |
+          echo "Working directory: $(pwd)"
+          echo "Contents of apps/${{ matrix.app }} (top-level):"
+          ls -la apps/${{ matrix.app }} || true
           if [ -d "apps/${{ matrix.app }}/.next" ]; then
-            tar -czf /tmp/${{ matrix.app }}-next.tgz -C apps/${{ matrix.app }} .next
+            echo "Creating tarball /tmp/${{ matrix.app }}-next.tgz (verbose)..."
+            tar -cvzf /tmp/${{ matrix.app }}-next.tgz -C apps/${{ matrix.app }} .next
+            echo "Tarball created:"; ls -lh /tmp/${{ matrix.app }}-next.tgz || true
             echo "ARCHIVE_CREATED=/tmp/${{ matrix.app }}-next.tgz" >> $GITHUB_OUTPUT
           else
             echo "No .next directory for ${{ matrix.app }}; skipping archive" >&2
