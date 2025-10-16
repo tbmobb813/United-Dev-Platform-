@@ -19,6 +19,12 @@ jobs:
           node-version: 18
           cache: 'pnpm'
 
+      # Solution: ensure pnpm is available in the runner before any pnpm commands
+      # You can use Corepack (recommended) or install pnpm globally.
+      # The step below installs pnpm globally to guarantee availability.
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Enable Corepack and prepare pnpm
         run: |
           corepack enable
