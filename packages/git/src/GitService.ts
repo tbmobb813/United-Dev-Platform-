@@ -1329,12 +1329,14 @@ export class GitService implements GitServiceInterface {
 
 // Type guard for merge errors
 function isMergeError(e: unknown): e is { message: string; code: GitErrorCode } {
-  return (
+  if (
     typeof e === 'object' &&
     e !== null &&
     'code' in e &&
-    typeof (e as any).code === 'string' &&
-    ((e as any).code === GitErrorCode.MERGE_CONFLICT ||
-     (e as any).code === GitErrorCode.MERGE_FAILED)
-  );
+    typeof (e as { code?: unknown }).code === 'string'
+  ) {
+    const code = (e as { code: string }).code;
+    return code === GitErrorCode.MERGE_CONFLICT || code === GitErrorCode.MERGE_FAILED;
+  }
+  return false;
 }
