@@ -1,7 +1,7 @@
 # Contributing to United Dev Platform
 
-Thank you for your interest in contributing to United Dev Platform! This
-document provides guidelines and information for contributing to this project.
+Thank you for your interest in contributing to United Dev Platform! This document provides
+guidelines and information for contributing to this project.
 
 ## Table of Contents
 
@@ -16,7 +16,9 @@ document provides guidelines and information for contributing to this project.
 
 ## Note about CI artifacts and file ownership
 
-Sometimes CI runs or containers may create files in the repo (for example, Turbo's `.turbo` cache or logs) as root. If you see permission errors when running workspace scripts locally (for example `pnpm -w run type-check` or `turbo`), check for root-owned artifacts and clean them up:
+Sometimes CI runs or containers may create files in the repo (for example, Turbo's `.turbo` cache or
+logs) as root. If you see permission errors when running workspace scripts locally (for example
+`pnpm -w run type-check` or `turbo`), check for root-owned artifacts and clean them up:
 
 - Inspect for root-owned files:
 
@@ -34,22 +36,22 @@ rm -rf apps/*/.turbo ./.turbo
 sudo chown -R "$(id -un):$(id -gn)" apps/*/.turbo ./.turbo
 ```
 
-Avoid running workspace CI/test scripts as root or inside long-lived containers that leave artifacts in the repository workspace. If CI must run in containers, ensure the container cleans up or runs with an unprivileged user.
-
+Avoid running workspace CI/test scripts as root or inside long-lived containers that leave artifacts
+in the repository workspace. If CI must run in containers, ensure the container cleans up or runs
+with an unprivileged user.
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by our Code of
-Conduct. By participating, you are expected to uphold this code. Please report
-unacceptable behavior to conduct@udp.example.com.
+This project and everyone participating in it is governed by our Code of Conduct. By participating,
+you are expected to uphold this code. Please report unacceptable behavior to
+conduct@udp.example.com.
 
 ### Our Pledge
 
-We pledge to make participation in our project a harassment-free experience for
-everyone, regardless of age, body size, disability, ethnicity, sex
-characteristics, gender identity and expression, level of experience, education,
-socio-economic status, nationality, personal appearance, race, religion, or
-sexual identity and orientation.
+We pledge to make participation in our project a harassment-free experience for everyone, regardless
+of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level
+of experience, education, socio-economic status, nationality, personal appearance, race, religion,
+or sexual identity and orientation.
 
 ## Getting Started
 
@@ -181,8 +183,7 @@ pnpm format         # Format with Prettier
 
 ## Commit Guidelines
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/)
-specification:
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
 ### Format
 
