@@ -14,6 +14,29 @@ document provides guidelines and information for contributing to this project.
 - [Pull Request Process](#pull-request-process)
 - [Issue Guidelines](#issue-guidelines)
 
+## Note about CI artifacts and file ownership
+
+Sometimes CI runs or containers may create files in the repo (for example, Turbo's `.turbo` cache or logs) as root. If you see permission errors when running workspace scripts locally (for example `pnpm -w run type-check` or `turbo`), check for root-owned artifacts and clean them up:
+
+- Inspect for root-owned files:
+
+```bash
+find . -uid 0 -maxdepth 4 -printf '%u %g %m %p\n'
+```
+
+- Safely remove or reown `.turbo` artifacts:
+
+```bash
+# remove old turbo artifacts (will be recreated)
+rm -rf apps/*/.turbo ./.turbo
+
+# or reown to current user
+sudo chown -R "$(id -un):$(id -gn)" apps/*/.turbo ./.turbo
+```
+
+Avoid running workspace CI/test scripts as root or inside long-lived containers that leave artifacts in the repository workspace. If CI must run in containers, ensure the container cleans up or runs with an unprivileged user.
+
+
 ## Code of Conduct
 
 This project and everyone participating in it is governed by our Code of

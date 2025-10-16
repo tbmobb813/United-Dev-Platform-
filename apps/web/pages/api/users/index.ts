@@ -75,7 +75,9 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
 
     // Handle unique constraint violations
     if (isPrismaError(error) && error.code === 'P2002') {
-      const field = error.meta?.target?.[0] ?? 'field';
+      const field = Array.isArray(error.meta?.target)
+        ? (error.meta.target as any)[0]
+        : 'field';
       return res.status(400).json({
         error: `${field} already exists`,
       });
