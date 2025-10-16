@@ -10,11 +10,13 @@
     "overrides": {
       "react": "18.3.1",
       "react-dom": "18.3.1",
+      // yjs is pinned here to ensure all sub-dependencies use the same version and to prevent duplicate runtimes.
+      // Newer versions (13.6.28+) have not yet been tested with our platform. Update with caution.
       "yjs": "13.6.27",
       "y-protocols": "1.0.6"
-    }
   },
   "dependencies": {
+    // yjs is pinned here to match the override and ensure a single runtime version. See above for details.
     "yjs": "13.6.27"
   },
   "scripts": {
