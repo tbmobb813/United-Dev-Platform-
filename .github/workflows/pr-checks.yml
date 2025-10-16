@@ -27,6 +27,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Diagnostic: Prisma versions & resolved paths
+        if: always()
+        run: |
+          node -e 'const fs=require("fs"), path=require("path");
+          try{ console.log("prisma:", require("prisma/package.json").version) }catch(e){ console.log("prisma: not found -", e.message) }
+          try{ console.log("@prisma/client:", require("@prisma/client/package.json").version) }catch(e){ console.log("@prisma/client: not found -", e.message) }
+          try{ const p=require.resolve("@prisma/client"); console.log("@prisma/client resolved:", p); const dir=path.dirname(p); console.log("dir listing:\n"+fs.readdirSync(dir).join("\n")) }catch(e){ console.log("resolve failed:", e.message) }'
+
       - name: Run lint
         run: pnpm lint
 
