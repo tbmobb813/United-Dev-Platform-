@@ -124,6 +124,7 @@ jobs:
         with:
           name: duplicate-yjs-report
           path: artifacts/duplicate-yjs/pr-report.json
+          if-no-files-found: warn
 
       - name: read_report
         id: read_report
