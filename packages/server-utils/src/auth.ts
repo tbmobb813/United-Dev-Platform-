@@ -16,7 +16,7 @@ export async function requireAuth(
     const session = (await getServerSession(
       req as any,
       res as any,
-      authOptions as any
+      authOptions
     )) as Session | null;
     return session;
   } catch {
