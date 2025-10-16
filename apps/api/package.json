@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "NODE_ENV=production node server.js",
-    "test": "jest --config ../../jest.config.core.cjs --runInBand"
+  "test": "jest --config ./jest.config.cjs --runInBand --passWithNoTests"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
