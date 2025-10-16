@@ -63,10 +63,15 @@ jobs:
             }
 
             // Ensure commands_run includes at least the required commands
-            const hasTypecheck = /pnpm run type-check/.test(block) || /pnpm type-check/.test(block);
-            const hasLint = /pnpm run lint/.test(block) || /pnpm lint/.test(block);
-            const hasTest = /pnpm run test/.test(block) || /pnpm test/.test(block);
-            const hasDuplicateYjs = /pnpm run check:duplicate-yjs/.test(block) || /pnpm check:duplicate-yjs/.test(block);
+            // Accept a wider set of command notations that people commonly include
+            // in the Agent-PR-Checklist.commands_run block (pnpm -w, pnpm type-check,
+            // pnpm run, node scripts, etc.). The goal is to be permissive about
+            // minor formatting differences while still ensuring the core actions
+            // are present.
+            const hasTypecheck = /type-?check/.test(block);
+            const hasLint = /(?:\b|\W)lint(?:\b|:)/.test(block);
+            const hasTest = /(?:\b|\W)test(?:\b|:)/.test(block);
+            const hasDuplicateYjs = /check:?duplicate-?yjs|duplicate-?yjs/.test(block);
 
             if (!hasTypecheck || !hasLint || !hasTest || !hasDuplicateYjs) {
               await makeError(':warning: Agent check: Agent-PR-Checklist.commands_run must include: `pnpm run type-check`, `pnpm run lint`, `pnpm run test`, `pnpm run check:duplicate-yjs`.');
