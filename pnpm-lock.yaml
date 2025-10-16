@@ -209,6 +209,9 @@ importers:
       '@types/react':
         specifier: 18.2.79
         version: 18.2.79
+      '@types/uuid':
+        specifier: 8.3.4
+        version: 8.3.4
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.44.0
         version: 8.44.0(@typescript-eslint/parser@8.44.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2)
@@ -2730,6 +2733,9 @@ packages:
 
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
+
+  '@types/uuid@8.3.4':
+    resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -10743,6 +10749,8 @@ snapshots:
   '@types/stack-utils@2.0.3': {}
 
   '@types/unist@2.0.11': {}
+
+  '@types/uuid@8.3.4': {}
 
   '@types/yargs-parser@21.0.3': {}
 

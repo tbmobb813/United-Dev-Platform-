@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@types/react": "18.2.79",
+    "@types/uuid": "8.3.4",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
     "@udp/eslint-config": "workspace:*",
