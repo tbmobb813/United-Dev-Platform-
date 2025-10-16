@@ -301,6 +301,7 @@ jobs:
           name: ${{ matrix.app }}-build
           path: apps/${{ matrix.app }}/.next/**
           if-no-files-found: warn
+          include-hidden-files: true
           retention-days: 7
 
   docker-build:
