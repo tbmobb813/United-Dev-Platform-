@@ -11,6 +11,7 @@ export interface ValidationRule {
   url?: boolean;
   number?: boolean;
   integer?: boolean;
+  // Custom validator receives an unknown value and should narrow/convert as needed
   custom?: (value: unknown) => boolean | string;
   message?: string;
 }
@@ -37,6 +38,7 @@ export interface FormValidationHookResult {
 export interface FormValidationProps {
   children: ReactNode;
   validation: FieldValidation;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, unknown>;
   onValidationChange?: (isValid: boolean, errors: ValidationErrors) => void;
   showErrorsOnMount?: boolean;
@@ -53,8 +55,7 @@ export interface FieldErrorProps {
 
 // Built-in validation rules
 const defaultValidators = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  required: (value: any, rule: ValidationRule): string | null => {
+  required: (value: unknown, rule: ValidationRule): string | null => {
     if (
       rule.required &&
       (value === null || value === undefined || value === '')
@@ -64,10 +65,9 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  min: (value: any, rule: ValidationRule): string | null => {
+  min: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.min !== undefined && value !== null && value !== undefined) {
-      const numValue = Number(value);
+      const numValue = Number(value as number | string);
       if (!isNaN(numValue) && numValue < rule.min) {
         return rule.message || `Value must be at least ${rule.min}`;
       }
@@ -75,10 +75,9 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  max: (value: any, rule: ValidationRule): string | null => {
+  max: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.max !== undefined && value !== null && value !== undefined) {
-      const numValue = Number(value);
+      const numValue = Number(value as unknown as number | string);
       if (!isNaN(numValue) && numValue > rule.max) {
         return rule.message || `Value must be at least ${rule.max}`;
       }
@@ -86,10 +85,9 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  minLength: (value: any, rule: ValidationRule): string | null => {
+  minLength: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.minLength !== undefined && value !== null && value !== undefined) {
-      const strValue = String(value);
+      const strValue = String(value as unknown as string | number);
       if (strValue.length < rule.minLength) {
         return rule.message || `Must be at least ${rule.minLength} characters`;
       }
@@ -97,10 +95,9 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  maxLength: (value: any, rule: ValidationRule): string | null => {
+  maxLength: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.maxLength !== undefined && value !== null && value !== undefined) {
-      const strValue = String(value);
+      const strValue = String(value as unknown as string | number);
       if (strValue.length > rule.maxLength) {
         return rule.message || `Must be at most ${rule.maxLength} characters`;
       }
@@ -108,10 +105,9 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pattern: (value: any, rule: ValidationRule): string | null => {
+  pattern: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.pattern && value !== null && value !== undefined && value !== '') {
-      const strValue = String(value);
+      const strValue = String(value as unknown as string | number);
       if (!rule.pattern.test(strValue)) {
         return rule.message || 'Invalid format';
       }
@@ -119,11 +115,10 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  email: (value: any, rule: ValidationRule): string | null => {
+  email: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.email && value !== null && value !== undefined && value !== '') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const strValue = String(value);
+      const strValue = String(value as unknown as string | number);
       if (!emailRegex.test(strValue)) {
         return rule.message || 'Invalid email address';
       }
@@ -131,11 +126,10 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  url: (value: any, rule: ValidationRule): string | null => {
+  url: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.url && value !== null && value !== undefined && value !== '') {
       try {
-        new URL(String(value));
+        new URL(String(value as unknown as string | number));
       } catch {
         return rule.message || 'Invalid URL';
       }
@@ -143,10 +137,9 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  number: (value: any, rule: ValidationRule): string | null => {
+  number: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.number && value !== null && value !== undefined && value !== '') {
-      const numValue = Number(value);
+      const numValue = Number(value as unknown as number | string);
       if (isNaN(numValue)) {
         return rule.message || 'Must be a valid number';
       }
@@ -154,10 +147,9 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  integer: (value: any, rule: ValidationRule): string | null => {
+  integer: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.integer && value !== null && value !== undefined && value !== '') {
-      const numValue = Number(value);
+      const numValue = Number(value as unknown as number | string);
       if (isNaN(numValue) || !Number.isInteger(numValue)) {
         return rule.message || 'Must be a valid integer';
       }
@@ -165,8 +157,7 @@ const defaultValidators = {
     return null;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  custom: (value: any, rule: ValidationRule): string | null => {
+  custom: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.custom) {
       const result = rule.custom(value);
       if (typeof result === 'string') {
@@ -181,6 +172,7 @@ const defaultValidators = {
 };
 
 // Utility function to validate a single field
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateField = (
   value: unknown,
   rules: ValidationRule[]
@@ -204,6 +196,7 @@ export const validateField = (
 };
 
 // Utility function to validate all fields
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateForm = (
   data: Record<string, unknown>,
   validation: FieldValidation

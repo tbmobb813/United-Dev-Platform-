@@ -1,5 +1,5 @@
 /* global TextDecoder */
-/* eslint-disable no-constant-condition */
+
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
 export class OpenAIService extends AIService {
@@ -61,10 +61,8 @@ export class OpenAIService extends AIService {
         model: data.model,
         finish_reason: data.choices[0]?.finish_reason,
       };
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('OpenAI API error:', error);
-      throw error;
+    } catch {
+      throw new Error('OpenAI API error');
     }
   }
 
@@ -124,9 +122,11 @@ export class OpenAIService extends AIService {
 
       const decoder = new TextDecoder();
 
-      while (true) {
+      let finished = false;
+      while (!finished) {
         const { done, value } = await reader.read();
         if (done) {
+          finished = true;
           break;
         }
 
@@ -173,10 +173,8 @@ export class OpenAIService extends AIService {
         model,
         finish_reason: finishReason,
       };
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('OpenAI Streaming API error:', error);
-      throw error;
+    } catch {
+      throw new Error('OpenAI Streaming API error');
     }
   }
 
@@ -197,20 +195,11 @@ export class OpenAIService extends AIService {
       }
 
       const data = await response.json();
-      type OpenAIModel = { id: string };
       return data.data
-        .filter(
-          (model: unknown): model is OpenAIModel =>
-            typeof model === 'object' &&
-            model !== null &&
-            'id' in model &&
-            typeof (model as { id?: unknown }).id === 'string'
-        )
-        .map(model => model.id)
+        .filter((model: { id: string }) => model.id.includes('gpt'))
+        .map((model: { id: string }) => model.id)
         .sort();
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error fetching OpenAI models:', error);
+    } catch {
       // Return default models if API call fails
       return ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo'];
     }
@@ -229,9 +218,7 @@ export class OpenAIService extends AIService {
       });
 
       return response.ok;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('OpenAI connection validation failed:', error);
+    } catch {
       return false;
     }
   }

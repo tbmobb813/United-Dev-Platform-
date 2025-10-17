@@ -10,36 +10,18 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+      - uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
+          node-version: "18"
 
-      - name: Enable Corepack & pnpm
+      - name: Enable Corepack and install pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
-
-      - name: Debug pnpm availability
-        run: |
-          echo "--- env ---"
-          env | sort
-          echo "--- versions ---"
-          node --version
-          npm --version
-          corepack --version 2>/dev/null || echo 'corepack not found'
-          pnpm --version 2>/dev/null || echo 'pnpm not found'
-          which pnpm || true
-          echo "--- PATH ---"
-          echo "$PATH"
-
+          # Pin to the repo's packageManager / pnpm version to ensure reproducible CI
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -48,8 +30,17 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: pnpm ci:validate-env
 
-      - name: Run checks (lint, type, test)
-        run: pnpm check
+      - name: Check Prettier formatting
+        run: pnpm format:check
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Run TypeScript type check
+        run: pnpm type-check
+
+      - name: Run tests
+        run: pnpm test:ci
 
       - name: Build web
         run: pnpm --filter @udp/web build

@@ -19,7 +19,7 @@ export interface AIAssistantProps {
   currentFile?: string;
   selectedCode?: string;
   // @ts-ignore - parameter name needed for type definition
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   onCodeInsert?: (code: string) => void;
   aiManager?: AIManager; // Optional AI manager instance
 }
@@ -70,6 +70,21 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         : undefined,
       selectedCode: selectedCode,
     };
+  };
+
+  // Normalize unknown errors into a readable message for UI
+  const getErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    if (typeof error === 'string') {
+      return error;
+    }
+    try {
+      return JSON.stringify(error ?? 'AI request failed');
+    } catch {
+      return 'AI request failed';
+    }
   };
 
   const sendMessage = async (
@@ -132,6 +147,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
         setStreamingContent('');
       } else {
+        // Fallback to placeholder if no AI manager
         const fallbackResponse = await simulateFallbackResponse(
           content,
           intent
@@ -144,10 +160,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
           )
         );
       }
-    } catch (error) {
+    } catch (error: unknown) {
       // Error logging removed to comply with linting rules
-      const errorMessage =
-        error instanceof Error ? error.message : 'AI request failed';
+      const errorMessage = getErrorMessage(error);
 
       setMessages(prev =>
         prev.map(msg =>
