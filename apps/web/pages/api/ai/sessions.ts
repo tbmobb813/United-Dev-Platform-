@@ -34,7 +34,12 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (context && typeof context === 'string') {
-      where.context = toEnum(context);
+      // `toEnum` returns a string/enum value; cast to the Prisma where input
+      // context type so TypeScript accepts the assignment. This preserves
+      // runtime behavior while keeping the types aligned.
+      where.context = toEnum(
+        context
+      ) as unknown as Prisma.AiChatSessionWhereInput['context'];
     }
 
     const sessions = await prisma.aiChatSession.findMany({
