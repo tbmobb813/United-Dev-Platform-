@@ -1,5 +1,5 @@
 /* global TextDecoder */
-/* eslint-disable no-constant-condition */
+
 import { AIService, AIMessage, AIResponse, AIServiceConfig } from './AIService';
 
 export class AnthropicService extends AIService {
@@ -66,10 +66,8 @@ export class AnthropicService extends AIService {
         model: data.model,
         finish_reason: data.stop_reason,
       };
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Anthropic API error:', error);
-      throw error;
+    } catch {
+      throw new Error('Anthropic API error');
     }
   }
 
@@ -187,10 +185,8 @@ export class AnthropicService extends AIService {
         model,
         finish_reason: finishReason,
       };
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Anthropic Streaming API error:', error);
-      throw error;
+    } catch {
+      throw new Error('Anthropic Streaming API error');
     }
   }
 
@@ -228,9 +224,7 @@ export class AnthropicService extends AIService {
       });
 
       return response.ok;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Anthropic connection validation failed:', error);
+    } catch {
       return false;
     }
   }
