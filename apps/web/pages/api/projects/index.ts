@@ -1,9 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@udp/db';
+<<<<<<< HEAD
 import { requireAuth } from 'lib/auth';
 import logger from '@udp/logger';
 import { getErrorMessage, isPrismaError } from 'lib/utils';
+=======
+import { requireAuth } from '@udp/server-utils';
+import logger from '@udp/logger';
+import { getErrorMessage, isPrismaError } from '@udp/server-utils';
+>>>>>>> origin/main
 
 export default async function handler(
   req: NextApiRequest,

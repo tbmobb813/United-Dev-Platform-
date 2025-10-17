@@ -2,7 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
 import type { Prisma } from '@prisma/client';
 import logger from '@udp/logger';
+<<<<<<< HEAD
 import { getErrorMessage, toEnum, isPrismaError } from 'lib/utils';
+=======
+import { getErrorMessage, toEnum, isPrismaError } from '@udp/server-utils';
+>>>>>>> origin/main
 
 export default async function handler(
   req: NextApiRequest,
@@ -42,7 +46,11 @@ async function getProjectFiles(
 
     // Filter by file type
     if (type && typeof type === 'string') {
-      where.type = toEnum(type);
+      // Cast to the Prisma where-input type to satisfy TypeScript while
+      // preserving the runtime conversion performed by `toEnum`.
+      where.type = toEnum(
+        type
+      ) as unknown as Prisma.ProjectFileWhereInput['type'];
     }
 
     const files = await prisma.projectFile.findMany({
