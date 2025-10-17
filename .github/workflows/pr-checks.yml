@@ -1,4 +1,5 @@
 name: PR checks (lint & type-check)
+name: PR checks (lint & type-check)
 
 on:
   pull_request:
@@ -17,41 +18,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          # avoid invoking pnpm from setup-node before pnpm is installed
-      - name: Setup pnpm (action)
-        uses: pnpm/action-setup@v2
-        with:
-          version: "latest"
 
-      - name: Enable Corepack and prepare pnpm
+      # Ensure pnpm is available and pinned to the repo's packageManager version
+      - name: Enable Corepack and prepare pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
-
-      - name: Debug pnpm availability
-        run: |
-          echo "--- PATH ---"
-          echo "$PATH"
-          echo "which pnpm: $(which pnpm || echo 'not found')"
-          pnpm --version || echo 'pnpm not available'
-
-      - name: Ensure pnpm via installer (fallback)
-        if: always()
-        run: |
-          if ! command -v pnpm >/dev/null 2>&1; then
-            echo "Installing pnpm via official installer"
-            curl -fsSL https://get.pnpm.io/install.sh | sh -
-            # Persist pnpm binary path across subsequent steps
-            echo "$HOME/.local/share/pnpm" >> $GITHUB_PATH
-          fi
-          echo "pnpm: $(which pnpm || echo 'not found')"
-          pnpm --version || true
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Diagnostic: Prisma versions & resolved paths
+        run: node .github/scripts/prisma-diagnostic.js
 
       - name: Run lint
         run: pnpm lint
 
       - name: Run type-check
         run: pnpm type-check
+name: PR checks (lint & type-check)
