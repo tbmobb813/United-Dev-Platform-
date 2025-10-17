@@ -13,6 +13,7 @@
     "@prisma/client": "^6.17.1",
     "cors": "^2.8.5",
     "fastify": "^4.23.2",
+    "@fastify/cors": "^8.4.1",
     "morgan": "^1.10.1",
     "ws": "^8.18.3",
     "y-websocket": "^3.0.0",
