@@ -19,11 +19,6 @@ jobs:
         with:
           node-version: 18
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.0.0
-
       # Ensure pnpm is available and pinned to the repo's packageManager version
       - name: Enable Corepack and prepare pnpm (pinned)
         run: |
