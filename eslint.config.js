@@ -98,6 +98,27 @@ const config = [
       'react/react-in-jsx-scope': 'off', // Not needed in React 17+
     },
   },
+  // Test files configuration
+  {
+    files: [
+      '**/__tests__/**/*.{ts,tsx,js,jsx}',
+      '**/*.test.{ts,tsx,js,jsx}',
+      '**/*.spec.{ts,tsx,js,jsx}',
+    ],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        jest: 'readonly',
+      },
+    },
+  },
 ];
 
 export default config;

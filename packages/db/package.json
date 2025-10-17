@@ -7,14 +7,15 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "generate": "prisma generate --schema ../../apps/api/prisma/schema.prisma",
-    "prepare": "pnpm run generate && pnpm build"
+    "prepare": "pnpm run generate && pnpm build",
+    "test": "jest --config ../../jest.config.core.cjs --runInBand"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2"
+    "@prisma/client": "^6.17.1"
   },
   "devDependencies": {
     "typescript": "^5.3.3",
-    "prisma": "^6.16.2",
+    "prisma": "^6.17.1",
     "@types/node": "^20.11.2"
   }
 }
