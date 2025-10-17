@@ -6,16 +6,21 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "jest --config ./jest.config.cjs --runInBand --passWithNoTests"
   },
   "dependencies": {
-    "y-indexeddb": "^9.0.12",
+    "y-indexeddb": "^9.0.12"
+  },
+  "peerDependencies": {
+    "yjs": "^13.6.27",
     "y-protocols": "^1.0.6",
-    "y-websocket": "^1.5.0",
-    "yjs": "^13.6.27"
+    "y-websocket": "^1.5.4"
   },
   "devDependencies": {
+    "y-protocols": "^1.0.6",
+    "y-websocket": "^1.5.4",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "eslint": "^8.57.0",

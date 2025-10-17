@@ -15,8 +15,8 @@ module.exports = {
     setTimeout: 'readonly',
     clearTimeout: 'readonly',
     HTMLDivElement: 'readonly',
-  HTMLStyleElement: 'readonly',
-  HTMLElement: 'readonly',
+    HTMLStyleElement: 'readonly',
+    HTMLElement: 'readonly',
   },
   extends: ['@udp/eslint-config/react'],
   rules: {

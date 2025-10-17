@@ -1,0 +1,21 @@
+{
+  "name": "@udp/server-utils",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node ./scripts/run-vitest.js"
+  },
+  "dependencies": {
+    "next-auth": "^4.24.11",
+    "@udp/db": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.0",
+    "@types/node": "^20.11.2",
+    "@prisma/client": "^6.17.1"
+  }
+}
