@@ -7,39 +7,8 @@
   "prettier.configPath": "packages/prettier-config/index.js",
   // Recommended default formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-
-  // Format & lint on save
+  // Enable format on save for the main languages
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.fixAll.eslint": "explicit"
-  },
-
-  // TypeScript SDK pinned to workspace
-  "typescript.tsdk": "node_modules/typescript/lib",
-
-  // Editor preferences
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "editor.detectIndentation": false,
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-
-  // Exclusions to keep the explorer and search fast
-  "files.exclude": {
-    "**/.DS_Store": true,
-    "**/node_modules": true,
-    "**/.next": true,
-    "**/dist": true,
-    "**/build": true
-  },
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/.next": true,
-    "**/dist": true
-  },
-
-  // Per-language format on save (explicit)
   "[javascript]": {
     "editor.formatOnSave": true
   },
@@ -52,8 +21,7 @@
   "[javascriptreact]": {
     "editor.formatOnSave": true
   },
-
-  // Disable telemetry for VS Code extension consistency
-  "telemetry.enableTelemetry": false,
-  "telemetry.enableCrashReporter": false
+  // Ensure VS Code runs Jest with the workspace Node and the installed jest binary
+  "jest.jestCommandLine": "/home/jason/.nvm/versions/node/v18.20.8/bin/node ./node_modules/jest/bin/jest.js --runInBand",
+  "jest.pathToJest": "./node_modules/jest/bin/jest.js"
 }

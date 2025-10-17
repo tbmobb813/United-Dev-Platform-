@@ -1,120 +1,68 @@
-name: Auto-fix code style
+name: Auto Fix (ESLint + Prettier)
 
 on:
   workflow_dispatch: {}
+  schedule:
+    - cron: "0 3 * * 0"
   pull_request:
     types: [opened, synchronize, reopened]
-  schedule:
-    - cron: '0 3 * * 0' # weekly on Sunday at 03:00 UTC
 
 permissions:
   contents: write
 
 jobs:
-  auto-fix:
-    name: Run auto-fix (Prettier + ESLint)
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Use Node.js 18
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'pnpm'
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run auto-fix (lint:fix + format)
-        # Use root `fix` script which runs lint:fix and prettier --write across the repo
-        run: pnpm -w fix
-
-      - name: Show git status (diagnostics)
-        run: |
-          git --no-pager status --porcelain
-          git --no-pager --no-color diff --staged || true
-
-      - name: Commit & push fixes
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: "chore: auto-fix (eslint & prettier)"
-          add: "."
-          author_name: "github-actions[bot]"
-          author_email: "41898282+github-actions[bot]@users.noreply.github.com"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-name: Auto Fix (ESLint + Prettier)
-
-on:
-  workflow_dispatch: {}
-
-jobs:
   autofix:
-    name: Run auto-fixes and open PR
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'github-actions[bot]' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
+        uses: actions/checkout@v5
 
-      - name: Enable Corepack & pnpm (early)
+      - name: Enable Corepack & pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 'latest'
+          node-version: "18"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run ESLint auto-fix
-        run: pnpm lint:fix || true
-
-      - name: Run Prettier format
-        run: pnpm format || true
-
-      - name: Create branch for fixes
-        id: newbranch
+      - name: Run ESLint auto-fix and Prettier
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          BRANCH="auto-fix/${{ github.run_id }}"
-          git checkout -b "$BRANCH"
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          # run auto-fixers; allow non-zero exit so workflow continues
+          pnpm lint:fix || true
+          pnpm format || true
 
       - name: Detect changes
         id: changes
         run: |
           if [ -n "$(git status --porcelain)" ]; then echo "changed=true" >> $GITHUB_OUTPUT; else echo "changed=false" >> $GITHUB_OUTPUT; fi
 
+      - name: Create branch for fixes
+        id: newbranch
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          BRANCH="auto-fix/eslint-prettier-$(date +%s)"
+          git checkout -b "$BRANCH"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Configure git remote for authenticated push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+
       - name: Commit and push fixes
         if: steps.changes.outputs.changed == 'true'
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: apply ESLint/Prettier auto-fixes'
-          add: '.'
-          author_name: 'github-actions[bot]'
-          author_email: 'github-actions[bot]@users.noreply.github.com'
+          message: "chore: apply ESLint/Prettier auto-fixes"
+          add: "."
+          author_name: "github-actions[bot]"
+          author_email: "github-actions[bot]@users.noreply.github.com"
           push: true
 
       - name: Ensure branch has upstream
@@ -125,11 +73,12 @@ jobs:
 
       - name: Create Pull Request with fixes
         if: steps.changes.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore: apply ESLint/Prettier auto-fixes'
-          title: 'chore: auto-fix lint & format'
+          branch: ${{ steps.newbranch.outputs.branch }}
+          commit-message: "chore: apply ESLint/Prettier auto-fixes"
+          title: "chore: auto-fix lint & format"
           body: |
             This PR contains auto-applied ESLint and Prettier fixes produced by the `auto-fix` workflow.
 
