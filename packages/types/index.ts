@@ -29,5 +29,5 @@ export type ProjectGraph = {
 
 // Export filesystem types
 export * from './ai';
-export * from './filesystem';
+// export * from './filesystem'; // TODO: Create filesystem types file
 export * from './project';
