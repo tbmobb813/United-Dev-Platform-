@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-. "$(dirname -- "$0")/_/husky.sh"
 
 echo "Pre-commit: lint-staged is disabled by default in this environment to avoid ESM/Path issues."
 echo "To enable lint-staged on commit, set ENABLE_PRECOMMIT_LINT=1 in your shell before committing."

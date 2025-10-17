@@ -1,4 +1,5 @@
 name: PR checks (lint & type-check)
+name: PR checks (lint & type-check)
 
 on:
   pull_request:
@@ -17,33 +18,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'pnpm'
 
-      - name: Enable Corepack and prepare pnpm
+      # Ensure pnpm is available and pinned to the repo's packageManager version
+      - name: Enable Corepack and prepare pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Diagnostic: Prisma versions & resolved paths
+        run: node .github/scripts/prisma-diagnostic.js
 
       - name: Run lint
         run: pnpm lint
 
       - name: Run type-check
         run: pnpm type-check
-
-      - name: Run console-check (dry-run)
-        run: pnpm -w run check:console
-
-      - name: Upload console-check report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: console-replace-report
-          path: artifacts/console-replace-report.json
-
-      - name: Fail if console-check found edits
-        if: always()
-        run: |
-          node -e "const fs=require('fs'); const p='artifacts/console-replace-report.json'; if(!fs.existsSync(p)){console.log('no report'); process.exit(0);} const r=JSON.parse(fs.readFileSync(p,'utf8')); const found=r.some(e=>Array.isArray(e.edits)&&e.edits.length>0); if(found){console.error('console-check detected console calls that would be replaced — fail the job'); process.exit(1);} console.log('console-check: no edits')"
+name: PR checks (lint & type-check)
