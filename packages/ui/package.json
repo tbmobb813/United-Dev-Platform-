@@ -6,11 +6,13 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "jest --config ../../jest.config.core.cjs --runInBand"
   },
   "peerDependencies": {
-    "react": "^18.3.1"
+    "react": "^18.3.1",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "@types/react": "18.2.79",
@@ -20,9 +22,7 @@
     "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   },
-  "dependencies": {
-    "yjs": "^13.6.27"
-  },
+  "dependencies": {},
   "eslintConfig": {
     "extends": [
       "@udp/eslint-config/react"

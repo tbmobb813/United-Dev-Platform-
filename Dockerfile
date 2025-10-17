@@ -2,7 +2,7 @@
 # Supports building web, api, and desktop applications
 
 # Base image with Node.js and pnpm
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 RUN corepack enable
 RUN corepack prepare pnpm@latest --activate
 WORKDIR /app

@@ -1,0 +1,55 @@
+{
+  "dir": "apps/web/.next",
+  "scannedFiles": 258,
+  "rawMatches": 600,
+  "matches": [
+    {
+      "generatedFile": "apps/web/.next/static/chunks/main-879086181929b93b.js",
+      "generatedIndex": 7490,
+      "generatedMatch": "Y",
+      "generatedLine": 1,
+      "generatedColumn": 7490,
+      "source": "webpack://_N_E/src/client/index.tsx",
+      "sourceLine": 189,
+      "sourceColumn": 22,
+      "sourceName": "initialize",
+      "snippet": "function(){return z},hydrate:function(){return ef},initialize:function(){return Y},router:function(){return n},version:function(){return G}});let _=r(97940),g=r(31549);r(74829);let y=_._(r(44194)),b=_",
+      "strong": false
+    },
+    {
+      "generatedFile": "apps/web/.next/static/chunks/main-879086181929b93b.js",
+      "generatedIndex": 8663,
+      "generatedMatch": "Y",
+      "generatedLine": 1,
+      "generatedColumn": 8663,
+      "source": "webpack://_N_E/src/client/index.tsx",
+      "sourceLine": 189,
+      "sourceColumn": 22,
+      "sourceName": "initialize",
+      "snippet": "t(()=>t.scrollIntoView(),0)}render(){return this.props.children}}async function Y(e){void 0===e&&(e={}),W.default.onSpanEnd(q.default),o=JSON.parse(document.getElementById(\"__NEXT_DATA__\").textContent",
+      "strong": false
+    }
+  ],
+  "uniqueKeysCount": 1,
+  "yjsRuntimeCandidates": [],
+  "allowlist": [
+    "monaco-editor",
+    "@monaco-editor/react",
+    "jose",
+    "lib0",
+    "vendors-yjs-",
+    "static/chunks/vendors-yjs-",
+    "middleware-build-manifest",
+    "middleware-react-loadable-manifest",
+    "_buildManifest.js",
+    "webpack/runtime/get%20javascript%20chunk%20filename",
+    "webpack://udp/web/pages",
+    "webpack://_N_E/pages",
+    "webpack://udp/src/shared/lib",
+    "webpack://_N_E/src/shared/lib",
+    "polyfills-"
+  ],
+  "strict": false,
+  "flaggedFiles": 1,
+  "severity": "warning"
+}
