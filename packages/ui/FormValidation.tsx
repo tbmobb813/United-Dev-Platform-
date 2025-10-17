@@ -67,6 +67,7 @@ const defaultValidators = {
 
   min: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.min !== undefined && value !== null && value !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const numValue = Number(value as any);
       if (!isNaN(numValue) && numValue < rule.min) {
         return rule.message || `Value must be at least ${rule.min}`;
