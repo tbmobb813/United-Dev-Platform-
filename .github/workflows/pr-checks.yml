@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "pnpm"
+          # avoid invoking pnpm from setup-node before pnpm is installed
       - name: Setup pnpm (action)
         uses: pnpm/action-setup@v2
         with:
