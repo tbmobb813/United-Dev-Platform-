@@ -23,6 +23,11 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.0.0 --activate
 
+      - name: Setup pnpm (action)
+        uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
