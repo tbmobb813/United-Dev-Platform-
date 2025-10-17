@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-/* global __dirname */
-/* eslint-env node */
 const base = require('../../jest.config.base.cjs');
 module.exports = {
   ...base,

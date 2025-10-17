@@ -38,7 +38,6 @@ export interface FormValidationHookResult {
 export interface FormValidationProps {
   children: ReactNode;
   validation: FieldValidation;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, unknown>;
   onValidationChange?: (isValid: boolean, errors: ValidationErrors) => void;
   showErrorsOnMount?: boolean;
@@ -67,8 +66,7 @@ const defaultValidators = {
 
   min: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.min !== undefined && value !== null && value !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const numValue = Number(value as any);
+      const numValue = Number(String(value));
       if (!isNaN(numValue) && numValue < rule.min) {
         return rule.message || `Value must be at least ${rule.min}`;
       }
