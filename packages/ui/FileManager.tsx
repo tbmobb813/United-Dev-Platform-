@@ -81,7 +81,10 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
       onClose();
     } catch (error) {
-      console.error('File operation failed:', error);
+      // Intentionally use console here; suppress lint rule because this UI helper
+      // can surface runtime issues to the developer during local debugging.
+      // eslint-disable-next-line no-console
+      console.warn('File operation failed:', error);
     } finally {
       setIsLoading(false);
     }

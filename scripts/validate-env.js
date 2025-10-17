@@ -48,6 +48,7 @@ function validateEnvironment() {
   const env = process.env.NODE_ENV || 'development';
   const required = requiredVars[env] || requiredVars.development;
 
+  /* eslint-disable no-console */
   console.log(`🔍 Validating ${env} environment configuration...`);
 
   const missing = [];
