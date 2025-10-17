@@ -1,4 +1,5 @@
 name: PR checks (lint & type-check)
+name: PR checks (lint & type-check)
 
 on:
   pull_request:
@@ -28,11 +29,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Diagnostic: Prisma versions & resolved paths
-        run: |
-          node .github/scripts/prisma-diagnostic.js
+        run: node .github/scripts/prisma-diagnostic.js
 
       - name: Run lint
         run: pnpm lint
 
       - name: Run type-check
         run: pnpm type-check
+name: PR checks (lint & type-check)
