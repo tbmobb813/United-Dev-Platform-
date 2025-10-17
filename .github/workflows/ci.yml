@@ -12,26 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "18"
-          cache: "pnpm"
 
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: Enable Corepack & pnpm
+      - name: Enable Corepack and install pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          # Pin to the repo's packageManager / pnpm version to ensure reproducible CI
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
