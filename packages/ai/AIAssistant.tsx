@@ -19,7 +19,7 @@ export interface AIAssistantProps {
   currentFile?: string;
   selectedCode?: string;
   // @ts-ignore - parameter name needed for type definition
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   onCodeInsert?: (code: string) => void;
   aiManager?: AIManager; // Optional AI manager instance
 }

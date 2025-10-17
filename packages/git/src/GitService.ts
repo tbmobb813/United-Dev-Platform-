@@ -1,5 +1,6 @@
 import * as git from 'isomorphic-git';
 import { getHttpClient } from './http.js';
+import { FileSystemInterface } from './GitServiceFactory';
 
 import type {
   Branch,
@@ -28,18 +29,6 @@ import type {
 } from './types';
 
 import { GitError, GitErrorCode } from './types';
-
-/**
- * File System Abstraction Interface
- * This allows the GitService to work with different file system implementations
- */
-interface FileSystemInterface {
-  readFile(path: string): Promise<Uint8Array>;
-  writeFile(path: string, data: Uint8Array): Promise<void>;
-  readdir(path: string): Promise<string[]>;
-  stat(path: string): Promise<{ isDirectory(): boolean; isFile(): boolean }>;
-  exists(path: string): Promise<boolean>;
-}
 
 /**
  * Isomorphic-git compatible file system adapter
@@ -474,38 +463,35 @@ export class GitService implements GitServiceInterface {
         return result;
       }
 
-      // Perform merge
+      // Proceed with merge
       await git.merge({
         fs: this.gitFS,
         dir: repositoryPath,
         ours: currentBranch,
         theirs: branch,
-        message: message || `Merged ${branch} into ${currentBranch}`,
+        message,
       });
 
-      const result: MergeResult = {
-        success: true,
-        conflicts: [],
-        message:
-          message || `Successfully merged ${branch} into ${currentBranch}`,
-      };
+      // Ensure `commit` is a string by using the `hash` property from `CommitInfo`
+      const mergedCommit =
+        (await this.getLastCommit(repositoryPath))?.hash || '';
 
       this.emit({
         type: 'merge:completed',
         repositoryPath,
         timestamp: new Date(),
-        data: result,
+        data: { success: true, commit: mergedCommit },
       });
 
-      return result;
-    } catch (error: any) {
-      // Handle merge conflicts that occur during merge operation
-      if (
-        error.code === 'MergeNotSupportedError' ||
-        error.message?.includes('conflict')
-      ) {
+      return {
+        success: true,
+        commit: mergedCommit,
+        conflicts: [],
+      };
+    } catch (error) {
+      // Enhanced error handling for merge conflicts
+      if (isMergeError(error)) {
         const conflicts = await this.detectMergeConflicts(repositoryPath);
-
         const result: MergeResult = {
           success: false,
           conflicts: conflicts.map(path => ({
@@ -513,72 +499,28 @@ export class GitService implements GitServiceInterface {
             reason: 'content' as const,
             resolved: false,
           })),
-          message: `Merge conflict occurred: ${error.message}`,
+          message: `Merge conflict detected between branches`,
         };
 
         this.emit({
           type: 'conflict:detected',
           repositoryPath,
           timestamp: new Date(),
-          data: { conflicts: result.conflicts, error: error.message },
+          data: {
+            conflicts: result.conflicts,
+            branches: [],
+          },
         });
 
         return result;
       }
 
-      throw this.handleError(error, GitErrorCode.MERGE_CONFLICT);
+      throw this.handleError(error, GitErrorCode.UNKNOWN_ERROR);
     }
   }
 
   /**
-   * Check for potential conflicts before merge
-   */
-  private async checkForConflicts(
-    repositoryPath: string,
-    baseBranch: string,
-    targetBranch: string
-  ): Promise<string[]> {
-    try {
-      // Get files changed in both branches
-      const baseStatus = await git.statusMatrix({
-        fs: this.gitFS,
-        dir: repositoryPath,
-        ref: baseBranch,
-      });
-
-      const targetStatus = await git.statusMatrix({
-        fs: this.gitFS,
-        dir: repositoryPath,
-        ref: targetBranch,
-      });
-
-      const conflicts: string[] = [];
-      const baseFiles = new Map(
-        baseStatus.map(([file, ...status]) => [file, status])
-      );
-
-      for (const [file, headStatus, workdirStatus] of targetStatus) {
-        if (baseFiles.has(file)) {
-          const baseFileStatus = baseFiles.get(file)!;
-          // Simple conflict detection - if both branches modified the same file
-          if (
-            headStatus !== baseFileStatus[0] &&
-            workdirStatus !== baseFileStatus[1]
-          ) {
-            conflicts.push(file);
-          }
-        }
-      }
-
-      return conflicts;
-    } catch {
-      // If we can't check for conflicts, assume none
-      return [];
-    }
-  }
-
-  /**
-   * Detect conflicts after a merge attempt
+   * Check for merge conflicts
    */
   private async detectMergeConflicts(
     repositoryPath: string
@@ -618,7 +560,7 @@ export class GitService implements GitServiceInterface {
   }
 
   /**
-   * Resolve merge conflicts by accepting one side
+   * Resolve a merge conflict
    */
   async resolveConflict(
     repositoryPath: string,
@@ -1342,4 +1284,63 @@ export class GitService implements GitServiceInterface {
     const message = errorObj?.message || 'Unknown git error';
     return new GitError(message, defaultCode, error);
   }
+
+  /**
+   * Check for potential conflicts before merge
+   */
+  private async checkForConflicts(
+    repositoryPath: string,
+    baseBranch: string,
+    targetBranch: string
+  ): Promise<string[]> {
+    try {
+      // Get files changed in both branches
+      const baseStatus = await git.statusMatrix({
+        fs: this.gitFS,
+        dir: repositoryPath,
+        ref: baseBranch,
+      });
+
+      const targetStatus = await git.statusMatrix({
+        fs: this.gitFS,
+        dir: repositoryPath,
+        ref: targetBranch,
+      });
+
+      const conflicts: string[] = [];
+
+      // Compare status matrices to detect conflicts
+      baseStatus.forEach(([filepath, , baseWorktree]) => {
+        const targetEntry = targetStatus.find(([path]) => path === filepath);
+        if (targetEntry) {
+          const [, , targetWorktree] = targetEntry;
+          if (baseWorktree !== targetWorktree) {
+            conflicts.push(filepath);
+          }
+        }
+      });
+
+      return conflicts;
+    } catch (error) {
+      throw this.handleError(error, GitErrorCode.UNKNOWN_ERROR);
+    }
+  }
+}
+
+// Type guard for merge errors
+function isMergeError(
+  e: unknown
+): e is { message: string; code: GitErrorCode } {
+  if (
+    typeof e === 'object' &&
+    e !== null &&
+    'code' in e &&
+    typeof (e as { code?: unknown }).code === 'string'
+  ) {
+    const code = (e as { code: string }).code;
+    return (
+      code === GitErrorCode.MERGE_CONFLICT || code === GitErrorCode.MERGE_FAILED
+    );
+  }
+  return false;
 }

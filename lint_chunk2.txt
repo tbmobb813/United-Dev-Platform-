@@ -1,0 +1,241 @@
+Validate Environment	Set up job	2025-10-13T20:55:46.6523937Z Prepare all required actions
+Validate Environment	Set up job	2025-10-13T20:55:46.6562858Z Getting action download info
+Validate Environment	Set up job	2025-10-13T20:55:47.1074904Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+Validate Environment	Set up job	2025-10-13T20:55:47.2862490Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Validate Environment	Set up job	2025-10-13T20:55:47.4443663Z Download action repository 'actions/cache@v3' (SHA:6f8efc29b200d32929f49075959781ed54ec270c)
+Validate Environment	Set up job	2025-10-13T20:55:48.1148341Z Complete job name: Validate Environment
+Validate Environment	Checkout code	﻿2025-10-13T20:55:48.2003667Z ##[group]Run actions/checkout@v4
+Validate Environment	Checkout code	2025-10-13T20:55:48.2005014Z with:
+Validate Environment	Checkout code	2025-10-13T20:55:48.2005887Z   repository: tbmobb813/United-Dev-Platform-
+Validate Environment	Checkout code	2025-10-13T20:55:48.2007289Z   token: ***
+Validate Environment	Checkout code	2025-10-13T20:55:48.2008045Z   ssh-strict: true
+Validate Environment	Checkout code	2025-10-13T20:55:48.2009034Z   ssh-user: git
+Validate Environment	Checkout code	2025-10-13T20:55:48.2009850Z   persist-credentials: true
+Validate Environment	Checkout code	2025-10-13T20:55:48.2010738Z   clean: true
+Validate Environment	Checkout code	2025-10-13T20:55:48.2011535Z   sparse-checkout-cone-mode: true
+Validate Environment	Checkout code	2025-10-13T20:55:48.2012499Z   fetch-depth: 1
+Validate Environment	Checkout code	2025-10-13T20:55:48.2013274Z   fetch-tags: false
+Validate Environment	Checkout code	2025-10-13T20:55:48.2014074Z   show-progress: true
+Validate Environment	Checkout code	2025-10-13T20:55:48.2014879Z   lfs: false
+Validate Environment	Checkout code	2025-10-13T20:55:48.2015614Z   submodules: false
+Validate Environment	Checkout code	2025-10-13T20:55:48.2016462Z   set-safe-directory: true
+Validate Environment	Checkout code	2025-10-13T20:55:48.2017632Z env:
+Validate Environment	Checkout code	2025-10-13T20:55:48.2018356Z   NODE_VERSION: 18
+Validate Environment	Checkout code	2025-10-13T20:55:48.2019521Z   PNPM_VERSION: latest
+Validate Environment	Checkout code	2025-10-13T20:55:48.2020364Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:48.3180172Z Syncing repository: tbmobb813/United-Dev-Platform-
+Validate Environment	Checkout code	2025-10-13T20:55:48.3185090Z ##[group]Getting Git version info
+Validate Environment	Checkout code	2025-10-13T20:55:48.3187185Z Working directory is '/home/runner/work/United-Dev-Platform-/United-Dev-Platform-'
+Validate Environment	Checkout code	2025-10-13T20:55:48.3189987Z [command]/usr/bin/git version
+Validate Environment	Checkout code	2025-10-13T20:55:48.3245113Z git version 2.51.0
+Validate Environment	Checkout code	2025-10-13T20:55:48.3273972Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:48.3291729Z Temporarily overriding HOME='/home/runner/work/_temp/be501ca4-2303-4ffd-9eed-d642c807c3f4' before making global git config changes
+Validate Environment	Checkout code	2025-10-13T20:55:48.3296557Z Adding repository directory to the temporary git global config as a safe directory
+Validate Environment	Checkout code	2025-10-13T20:55:48.3299589Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/United-Dev-Platform-/United-Dev-Platform-
+Validate Environment	Checkout code	2025-10-13T20:55:48.3337908Z Deleting the contents of '/home/runner/work/United-Dev-Platform-/United-Dev-Platform-'
+Validate Environment	Checkout code	2025-10-13T20:55:48.3342518Z ##[group]Initializing the repository
+Validate Environment	Checkout code	2025-10-13T20:55:48.3347934Z [command]/usr/bin/git init /home/runner/work/United-Dev-Platform-/United-Dev-Platform-
+Validate Environment	Checkout code	2025-10-13T20:55:48.3455781Z hint: Using 'master' as the name for the initial branch. This default branch name
+Validate Environment	Checkout code	2025-10-13T20:55:48.3458929Z hint: is subject to change. To configure the initial branch name to use in all
+Validate Environment	Checkout code	2025-10-13T20:55:48.3461409Z hint: of your new repositories, which will suppress this warning, call:
+Validate Environment	Checkout code	2025-10-13T20:55:48.3463399Z hint:
+Validate Environment	Checkout code	2025-10-13T20:55:48.3465065Z hint: 	git config --global init.defaultBranch <name>
+Validate Environment	Checkout code	2025-10-13T20:55:48.3467129Z hint:
+Validate Environment	Checkout code	2025-10-13T20:55:48.3469356Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Validate Environment	Checkout code	2025-10-13T20:55:48.3472475Z hint: 'development'. The just-created branch can be renamed via this command:
+Validate Environment	Checkout code	2025-10-13T20:55:48.3475023Z hint:
+Validate Environment	Checkout code	2025-10-13T20:55:48.3476407Z hint: 	git branch -m <name>
+Validate Environment	Checkout code	2025-10-13T20:55:48.3477906Z hint:
+Validate Environment	Checkout code	2025-10-13T20:55:48.3480103Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Validate Environment	Checkout code	2025-10-13T20:55:48.3483487Z Initialized empty Git repository in /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/.git/
+Validate Environment	Checkout code	2025-10-13T20:55:48.3487177Z [command]/usr/bin/git remote add origin https://github.com/tbmobb813/United-Dev-Platform-
+Validate Environment	Checkout code	2025-10-13T20:55:48.3515712Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:48.3518175Z ##[group]Disabling automatic garbage collection
+Validate Environment	Checkout code	2025-10-13T20:55:48.3520611Z [command]/usr/bin/git config --local gc.auto 0
+Validate Environment	Checkout code	2025-10-13T20:55:48.3551551Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:48.3553925Z ##[group]Setting up auth
+Validate Environment	Checkout code	2025-10-13T20:55:48.3559649Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Validate Environment	Checkout code	2025-10-13T20:55:48.3592785Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Validate Environment	Checkout code	2025-10-13T20:55:48.3919943Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Validate Environment	Checkout code	2025-10-13T20:55:48.3951780Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Validate Environment	Checkout code	2025-10-13T20:55:48.4181879Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Validate Environment	Checkout code	2025-10-13T20:55:48.4218431Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:48.4220076Z ##[group]Fetching the repository
+Validate Environment	Checkout code	2025-10-13T20:55:48.4229328Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ff3c54d4298a39e03114342ff6460ac04ddb7b83:refs/remotes/pull/4/merge
+Validate Environment	Checkout code	2025-10-13T20:55:48.9912285Z From https://github.com/tbmobb813/United-Dev-Platform-
+Validate Environment	Checkout code	2025-10-13T20:55:48.9913384Z  * [new ref]         ff3c54d4298a39e03114342ff6460ac04ddb7b83 -> pull/4/merge
+Validate Environment	Checkout code	2025-10-13T20:55:48.9944581Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:48.9945349Z ##[group]Determining the checkout info
+Validate Environment	Checkout code	2025-10-13T20:55:48.9947279Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:48.9952643Z [command]/usr/bin/git sparse-checkout disable
+Validate Environment	Checkout code	2025-10-13T20:55:48.9991842Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Validate Environment	Checkout code	2025-10-13T20:55:49.0018310Z ##[group]Checking out the ref
+Validate Environment	Checkout code	2025-10-13T20:55:49.0022042Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/4/merge
+Validate Environment	Checkout code	2025-10-13T20:55:49.0410540Z Note: switching to 'refs/remotes/pull/4/merge'.
+Validate Environment	Checkout code	2025-10-13T20:55:49.0411117Z 
+Validate Environment	Checkout code	2025-10-13T20:55:49.0411520Z You are in 'detached HEAD' state. You can look around, make experimental
+Validate Environment	Checkout code	2025-10-13T20:55:49.0412379Z changes and commit them, and you can discard any commits you make in this
+Validate Environment	Checkout code	2025-10-13T20:55:49.0413219Z state without impacting any branches by switching back to a branch.
+Validate Environment	Checkout code	2025-10-13T20:55:49.0413704Z 
+Validate Environment	Checkout code	2025-10-13T20:55:49.0414048Z If you want to create a new branch to retain commits you create, you may
+Validate Environment	Checkout code	2025-10-13T20:55:49.0414847Z do so (now or later) by using -c with the switch command. Example:
+Validate Environment	Checkout code	2025-10-13T20:55:49.0415309Z 
+Validate Environment	Checkout code	2025-10-13T20:55:49.0415454Z   git switch -c <new-branch-name>
+Validate Environment	Checkout code	2025-10-13T20:55:49.0415671Z 
+Validate Environment	Checkout code	2025-10-13T20:55:49.0415794Z Or undo this operation with:
+Validate Environment	Checkout code	2025-10-13T20:55:49.0416030Z 
+Validate Environment	Checkout code	2025-10-13T20:55:49.0416130Z   git switch -
+Validate Environment	Checkout code	2025-10-13T20:55:49.0416590Z 
+Validate Environment	Checkout code	2025-10-13T20:55:49.0416894Z Turn off this advice by setting config variable advice.detachedHead to false
+Validate Environment	Checkout code	2025-10-13T20:55:49.0417231Z 
+Validate Environment	Checkout code	2025-10-13T20:55:49.0417607Z HEAD is now at ff3c54d Merge 8a5cafe1dd82258f8eae03238d0be4487fc53f4d into 205337c40d9aab783a0bd519a74f0f882d268ecb
+Validate Environment	Checkout code	2025-10-13T20:55:49.0454146Z ##[endgroup]
+Validate Environment	Checkout code	2025-10-13T20:55:49.0457649Z [command]/usr/bin/git log -1 --format=%H
+Validate Environment	Checkout code	2025-10-13T20:55:49.0480535Z ff3c54d4298a39e03114342ff6460ac04ddb7b83
+Validate Environment	Setup Node.js	﻿2025-10-13T20:55:49.0704463Z ##[group]Run actions/setup-node@v4
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0704816Z with:
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0705035Z   node-version: 18
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0705266Z   always-auth: false
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0705505Z   check-latest: false
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0705880Z   token: ***
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0706097Z env:
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0706296Z   NODE_VERSION: 18
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0706531Z   PNPM_VERSION: latest
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.0706773Z ##[endgroup]
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.3192744Z Found in cache @ /opt/hostedtoolcache/node/18.20.8/x64
+Validate Environment	Setup Node.js	2025-10-13T20:55:49.3199381Z ##[group]Environment details
+Validate Environment	Setup Node.js	2025-10-13T20:55:51.5431637Z node: v18.20.8
+Validate Environment	Setup Node.js	2025-10-13T20:55:51.5432380Z npm: 10.8.2
+Validate Environment	Setup Node.js	2025-10-13T20:55:51.5432694Z yarn: 1.22.22
+Validate Environment	Setup Node.js	2025-10-13T20:55:51.5433707Z ##[endgroup]
+Validate Environment	Enable Corepack & pnpm	﻿2025-10-13T20:55:51.5570096Z ##[group]Run corepack enable
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:51.5570450Z [36;1mcorepack enable[0m
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:51.5570737Z [36;1mcorepack prepare pnpm@latest --activate[0m
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:51.5742742Z shell: /usr/bin/bash -e {0}
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:51.5743172Z env:
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:51.5743516Z   NODE_VERSION: 18
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:51.5743882Z   PNPM_VERSION: latest
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:51.5744290Z ##[endgroup]
+Validate Environment	Enable Corepack & pnpm	2025-10-13T20:55:52.1609906Z Preparing pnpm@latest for immediate activation...
+Validate Environment	Restore pnpm cache	﻿2025-10-13T20:55:53.0015206Z ##[group]Run actions/cache@v3
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0015497Z with:
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0015717Z   path: /home/runner/.local/share/pnpm/store/v3
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0016167Z   key: Linux-pnpm-store-fda6ff651ab81e17da1b62ef6a441d75559599e699632cca8b238f00da01ce7a
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0016700Z   enableCrossOsArchive: false
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0016928Z   fail-on-cache-miss: false
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0017135Z   lookup-only: false
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0017308Z env:
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0017471Z   NODE_VERSION: 18
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0017641Z   PNPM_VERSION: latest
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.0017824Z ##[endgroup]
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:53.3107429Z Cache hit for: Linux-pnpm-store-fda6ff651ab81e17da1b62ef6a441d75559599e699632cca8b238f00da01ce7a
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:54.4657548Z Received 113246208 of 436530670 (25.9%), 107.9 MBs/sec
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:55.4661906Z Received 268435456 of 436530670 (61.5%), 127.9 MBs/sec
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:56.3267940Z Received 436530670 of 436530670 (100.0%), 145.5 MBs/sec
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:56.3270675Z Cache Size: ~416 MB (436530670 B)
+Validate Environment	Restore pnpm cache	2025-10-13T20:55:56.3316666Z [command]/usr/bin/tar -xf /home/runner/work/_temp/8ec9fa97-609e-4551-b2a3-f3784dab0e88/cache.tzst -P -C /home/runner/work/United-Dev-Platform-/United-Dev-Platform- --use-compress-program unzstd
+Validate Environment	Restore pnpm cache	2025-10-13T20:56:00.2333925Z Cache restored successfully
+Validate Environment	Restore pnpm cache	2025-10-13T20:56:00.3210846Z Cache restored from key: Linux-pnpm-store-fda6ff651ab81e17da1b62ef6a441d75559599e699632cca8b238f00da01ce7a
+Validate Environment	Install dependencies	﻿2025-10-13T20:56:00.3339522Z ##[group]Run pnpm install --frozen-lockfile
+Validate Environment	Install dependencies	2025-10-13T20:56:00.3339911Z [36;1mpnpm install --frozen-lockfile[0m
+Validate Environment	Install dependencies	2025-10-13T20:56:00.3373300Z shell: /usr/bin/bash -e {0}
+Validate Environment	Install dependencies	2025-10-13T20:56:00.3373536Z env:
+Validate Environment	Install dependencies	2025-10-13T20:56:00.3373729Z   NODE_VERSION: 18
+Validate Environment	Install dependencies	2025-10-13T20:56:00.3373916Z   PNPM_VERSION: latest
+Validate Environment	Install dependencies	2025-10-13T20:56:00.3374121Z ##[endgroup]
+Validate Environment	Install dependencies	2025-10-13T20:56:00.4172161Z ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-9.0.0.tgz
+Validate Environment	Install dependencies	2025-10-13T20:56:01.6872925Z Scope: all 18 workspace projects
+Validate Environment	Install dependencies	2025-10-13T20:56:01.7698168Z Lockfile is up to date, resolution step is skipped
+Validate Environment	Install dependencies	2025-10-13T20:56:01.8875677Z Progress: resolved 1, reused 0, downloaded 0, added 0
+Validate Environment	Install dependencies	2025-10-13T20:56:02.1113968Z Packages: +1346
+Validate Environment	Install dependencies	2025-10-13T20:56:02.1114958Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Validate Environment	Install dependencies	2025-10-13T20:56:02.8882666Z Progress: resolved 1346, reused 1208, downloaded 0, added 0
+Validate Environment	Install dependencies	2025-10-13T20:56:03.8903593Z Progress: resolved 1346, reused 1341, downloaded 0, added 721
+Validate Environment	Install dependencies	2025-10-13T20:56:04.8452815Z Progress: resolved 1346, reused 1341, downloaded 0, added 1346, done
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8894315Z 
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8894922Z devDependencies:
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8895569Z + @udp/eslint-config 0.0.1 <- packages/eslint-config
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8896287Z + @udp/prettier-config 0.0.1 <- packages/prettier-config
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8896801Z + eslint 8.57.1
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8897140Z + prettier 3.6.2
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8897467Z + turbo 1.13.4
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8897822Z + typescript 5.9.2
+Validate Environment	Install dependencies	2025-10-13T20:56:05.8898057Z 
+Validate Environment	Install dependencies	2025-10-13T20:56:05.9133049Z packages/db prepare$ pnpm run generate && pnpm build
+Validate Environment	Install dependencies	2025-10-13T20:56:06.3750820Z packages/db prepare: > @udp/db@0.0.1 generate /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/db
+Validate Environment	Install dependencies	2025-10-13T20:56:06.3755035Z packages/db prepare: > prisma generate --schema ../../apps/api/prisma/schema.prisma
+Validate Environment	Install dependencies	2025-10-13T20:56:07.4097449Z packages/db prepare: Prisma schema loaded from ../../apps/api/prisma/schema.prisma
+Validate Environment	Install dependencies	2025-10-13T20:56:08.3051731Z packages/db prepare: ✔ Generated Prisma Client (v6.16.2) to ./../../node_modules/.pnpm/@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2/node_modules/@prisma/client in 162ms
+Validate Environment	Install dependencies	2025-10-13T20:56:08.3053526Z packages/db prepare: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Validate Environment	Install dependencies	2025-10-13T20:56:08.3055097Z packages/db prepare: Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+Validate Environment	Install dependencies	2025-10-13T20:56:08.6796488Z packages/db prepare: > @udp/db@0.0.1 build /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/db
+Validate Environment	Install dependencies	2025-10-13T20:56:08.6798104Z packages/db prepare: > tsc -p tsconfig.json
+Validate Environment	Install dependencies	2025-10-13T20:56:10.1893381Z packages/db prepare: Done
+Validate Environment	Install dependencies	2025-10-13T20:56:10.2200531Z . postinstall$ pnpm type-check
+Validate Environment	Install dependencies	2025-10-13T20:56:10.5753067Z . postinstall: > unified-dev-platform@ type-check /home/runner/work/United-Dev-Platform-/United-Dev-Platform-
+Validate Environment	Install dependencies	2025-10-13T20:56:10.5754320Z . postinstall: > turbo type-check
+Validate Environment	Install dependencies	2025-10-13T20:56:10.6375634Z . postinstall: Attention:
+Validate Environment	Install dependencies	2025-10-13T20:56:10.6380648Z . postinstall: Turborepo now collects completely anonymous telemetry regarding usage.
+Validate Environment	Install dependencies	2025-10-13T20:56:10.6381843Z . postinstall: This information is used to shape the Turborepo roadmap and prioritize features.
+Validate Environment	Install dependencies	2025-10-13T20:56:10.6383101Z . postinstall: You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+Validate Environment	Install dependencies	2025-10-13T20:56:10.6383777Z . postinstall: https://turbo.build/repo/docs/telemetry
+Validate Environment	Install dependencies	2025-10-13T20:56:10.7061355Z . postinstall: • Packages in scope: @udp/ai, @udp/api, @udp/auth, @udp/config, @udp/db, @udp/desktop, @udp/editor-core, @udp/eslint-config, @udp/filesystem, @udp/git, @udp/logger, @udp/mobile, @udp/prettier-config, @udp/types, @udp/ui, @udp/ui-native, @udp/web
+Validate Environment	Install dependencies	2025-10-13T20:56:10.7063437Z . postinstall: • Running type-check in 17 packages
+Validate Environment	Install dependencies	2025-10-13T20:56:10.7064388Z . postinstall: • Remote caching disabled
+Validate Environment	Install dependencies	2025-10-13T20:56:10.7673295Z . postinstall: No tasks were executed as part of this run.
+Validate Environment	Install dependencies	2025-10-13T20:56:10.7675989Z . postinstall:  Tasks:    0 successful, 0 total
+Validate Environment	Install dependencies	2025-10-13T20:56:10.7676593Z . postinstall: Cached:    0 cached, 0 total
+Validate Environment	Install dependencies	2025-10-13T20:56:10.7677056Z . postinstall:   Time:    125ms 
+Validate Environment	Install dependencies	2025-10-13T20:56:10.9448209Z . postinstall: Done
+Validate Environment	Install dependencies	2025-10-13T20:56:10.9693836Z apps/web postinstall$ prisma generate
+Validate Environment	Install dependencies	2025-10-13T20:56:12.0613270Z apps/web postinstall: Prisma schema loaded from prisma/schema.prisma
+Validate Environment	Install dependencies	2025-10-13T20:56:12.3979318Z apps/web postinstall: ✔ Generated Prisma Client (v6.16.2) to ./generated/prisma in 174ms
+Validate Environment	Install dependencies	2025-10-13T20:56:12.3980728Z apps/web postinstall: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Validate Environment	Install dependencies	2025-10-13T20:56:12.3981979Z apps/web postinstall: Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+Validate Environment	Install dependencies	2025-10-13T20:56:12.4175224Z apps/web postinstall: Done
+Validate Environment	Install dependencies	2025-10-13T20:56:12.4191824Z Done in 11.2s
+Validate Environment	Install dotenv for validation script	﻿2025-10-13T20:56:12.4738419Z ##[group]Run pnpm add -Dw dotenv
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:12.4739136Z [36;1mpnpm add -Dw dotenv[0m
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:12.4785809Z shell: /usr/bin/bash -e {0}
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:12.4786211Z env:
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:12.4786512Z   NODE_VERSION: 18
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:12.4786830Z   PNPM_VERSION: latest
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:12.4787179Z ##[endgroup]
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:13.2410859Z Progress: resolved 0, reused 1, downloaded 0, added 0
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:13.2854418Z  WARN  deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:14.2459761Z Progress: resolved 261, reused 259, downloaded 0, added 0
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:15.2615503Z Progress: resolved 884, reused 858, downloaded 1, added 0
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:16.2631405Z Progress: resolved 1373, reused 1295, downloaded 1, added 0
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:17.4188355Z Progress: resolved 1424, reused 1337, downloaded 6, added 0
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:17.8748102Z  WARN  32 deprecated subdependencies found: @babel/plugin-proposal-async-generator-functions@7.20.7, @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-logical-assignment-operators@7.20.7, @babel/plugin-proposal-nullish-coalescing-operator@7.18.6, @babel/plugin-proposal-numeric-separator@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @babel/plugin-proposal-optional-catch-binding@7.18.6, @babel/plugin-proposal-optional-chaining@7.21.0, @humanwhocodes/config-array@0.13.0, @humanwhocodes/object-schema@2.0.3, @xmldom/xmldom@0.7.13, abstract-leveldown@6.2.3, abstract-leveldown@6.3.0, boolean@3.2.0, deferred-leveldown@5.3.0, encoding-down@6.3.0, glob@7.1.6, glob@7.2.3, inflight@1.0.6, level-codec@9.0.2, level-concat-iterator@2.0.1, level-errors@2.0.1, level-js@5.0.2, level-packager@5.1.1, leveldown@5.6.0, levelup@4.4.0, osenv@0.1.5, querystring@0.2.1, rimraf@2.6.3, rimraf@3.0.2, source-map@0.8.0-beta.0, sudo-prompt@9.2.1
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:17.9544604Z Packages: +1
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:17.9545024Z +
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:17.9919995Z Progress: resolved 1428, reused 1341, downloaded 6, added 1, done
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:18.8864825Z packages/db prepare$ pnpm run generate && pnpm build
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:19.2439603Z packages/db prepare: > @udp/db@0.0.1 generate /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/db
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:19.2443448Z packages/db prepare: > prisma generate --schema ../../apps/api/prisma/schema.prisma
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.3198905Z packages/db prepare: Prisma schema loaded from ../../apps/api/prisma/schema.prisma
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6415040Z packages/db prepare: ┌─────────────────────────────────────────────────────────┐
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6416192Z packages/db prepare: │  Update available 6.16.2 -> 6.17.1                      │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6417939Z packages/db prepare: │  Run the following to update                            │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6421701Z packages/db prepare: │    npm i --save-dev prisma@latest                       │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6423232Z packages/db prepare: │    npm i @prisma/client@latest                          │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6425043Z packages/db prepare: └─────────────────────────────────────────────────────────┘
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6428870Z packages/db prepare: ✔ Generated Prisma Client (v6.16.2) to ./../../node_modules/.pnpm/@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2/node_modules/@prisma/client in 165ms
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6430535Z packages/db prepare: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:20.6432405Z packages/db prepare: Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:21.0193115Z packages/db prepare: > @udp/db@0.0.1 build /home/runner/work/United-Dev-Platform-/United-Dev-Platform-/packages/db
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:21.0194858Z packages/db prepare: > tsc -p tsconfig.json
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:22.4192959Z packages/db prepare: Done
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:22.4684001Z apps/web postinstall$ prisma generate
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.5604614Z apps/web postinstall: Prisma schema loaded from prisma/schema.prisma
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8907175Z apps/web postinstall: ┌─────────────────────────────────────────────────────────┐
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8908244Z apps/web postinstall: │  Update available 6.16.2 -> 6.17.1                      │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8909475Z apps/web postinstall: │  Run the following to update                            │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8910442Z apps/web postinstall: │    npm i --save-dev prisma@latest                       │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8911636Z apps/web postinstall: │    npm i @prisma/client@latest                          │
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8912844Z apps/web postinstall: └─────────────────────────────────────────────────────────┘
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8915243Z apps/web postinstall: ✔ Generated Prisma Client (v6.16.2) to ./generated/prisma in 185ms
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8916758Z apps/web postinstall: Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.8918445Z apps/web postinstall: Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+Validate Environment	Install dotenv for validation script	2025-10-13T20:56:23.9112320Z apps/web postinstall: Done
