@@ -33,6 +33,7 @@ jobs:
 
       - name: "Diagnostic: Prisma versions & resolved paths"
         run: node .github/scripts/prisma-diagnostic.js
+
       - name: Run lint
         run: pnpm lint
 
