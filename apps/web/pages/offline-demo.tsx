@@ -1,14 +1,14 @@
+'use client';
+
+import dynamic from 'next/dynamic';
 import React from 'react';
 
-// Mock OfflineEditor component for now
-interface OfflineEditorProps {
-  room: string;
-  serverUrl: string;
-  children: (
-    doc: unknown,
-    status: { isConnected: boolean; pendingChanges: number; lastSync?: Date }
-  ) => React.ReactNode;
+const Client = dynamic(() => import('./offline-demo.client'), { ssr: false });
+
+export default function OfflineDemo() {
+  return <Client />;
 }
+<<<<<<< HEAD
 
 const OfflineEditor: React.FC<OfflineEditorProps> = props => {
   const { children } = props;
@@ -183,3 +183,5 @@ const OfflineCollaborationDemo: React.FC = () => {
 };
 
 export default OfflineCollaborationDemo;
+=======
+>>>>>>> origin/main

@@ -1,27 +1,9 @@
-import Head from 'next/head';
-import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
-import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
-import { Awareness } from 'y-protocols/awareness';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  Button,
-  Input,
-  Card,
-  Stack,
-  Loading,
-  FileManager,
-  useKeyboardShortcuts,
-  commonShortcuts,
-  ShortcutsHelp,
-  Settings,
-  CollaborationPanel,
-} from '@udp/ui';
-import { AIAssistant, AIManager } from '@udp/ai';
-import { codeCompletionService } from '../components/CodeCompletionProvider';
+'use client';
 
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+<<<<<<< HEAD
 // Dynamic imports for client-side only components
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
@@ -809,4 +791,10 @@ export default function Home() {
       </div>
     </div>
   );
+=======
+const ClientIndex = dynamic(() => import('./index.client'), { ssr: false });
+
+export default function IndexWrapper() {
+  return <ClientIndex />;
+>>>>>>> origin/main
 }

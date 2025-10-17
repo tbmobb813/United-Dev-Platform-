@@ -12,12 +12,21 @@
     "./node": "./node.js"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
     "eslint-config-next": "^14.2.32",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.35.4",
   "eslint-plugin-react-hooks": "^5.2.0",
+=======
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "eslint-config-next": "^14.2.32",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.35.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+>>>>>>> origin/main
     "eslint-plugin-import": "^2.29.4",
     "eslint-import-resolver-typescript": "^3.6.1"
   },

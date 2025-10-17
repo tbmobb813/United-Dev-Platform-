@@ -1,3 +1,28 @@
+<<<<<<< HEAD
+=======
+# Ignore artifacts and generated reports
+artifacts/
+artifacts/**
+
+# Next build output
+apps/web/.next/
+
+# Node artifacts
+node_modules/
+dist/
+build/
+
+# Lockfiles
+pnpm-lock.yaml
+
+# Misc generated files
+.turbo/
+*.tsbuildinfo
+
+# detector outputs
+scripts/__tests__/fixtures/out-report.json
+scripts/__tests__/fixtures/*.json
+>>>>>>> origin/main
 node_modules/
 **/node_modules/
 dist/

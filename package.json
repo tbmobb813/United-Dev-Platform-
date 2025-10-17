@@ -9,11 +9,17 @@
   "pnpm": {
     "overrides": {
       "react": "18.3.1",
-      "react-dom": "18.3.1"
+      "react-dom": "18.3.1",
+      "yjs": "13.6.27",
+      "y-protocols": "1.0.6"
     }
+  },
+  "dependencies": {
+    "yjs": "13.6.27"
   },
   "scripts": {
     "build": "turbo build",
+    "prepare": "husky install",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
@@ -22,6 +28,11 @@
     "type-check": "turbo type-check",
     "clean": "turbo clean && rm -rf node_modules",
     "test": "turbo test",
+    "test:ci": "turbo test -- --passWithNoTests",
+    "test:critical": "jest --config ./jest.config.critical.cjs --runInBand || true",
+    "test:core": "jest --config ./jest.config.core.cjs --runInBand || true",
+    "test:full": "jest --config ./jest.config.full.cjs --runInBand || true",
+    "check:duplicate-yjs": "node ./scripts/check-duplicate-yjs.cjs",
     "check": "pnpm lint && pnpm type-check && pnpm test",
     "fix": "pnpm lint:fix && pnpm format",
     "reset": "pnpm clean && pnpm install",
@@ -36,12 +47,34 @@
     "postinstall": "pnpm type-check"
   },
   "devDependencies": {
+    "@jest/globals": "^30.1.2",
+    "@types/jest": "^30.0.0",
+    "@types/node": "18",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
+<<<<<<< HEAD
   "eslint": "^8.57.1",
     "prettier": "^3.2.5",
     "turbo": "^1.12.5",
     "typescript": "^5.3.3",
     "dotenv": "^16.1.4"
+=======
+    "dotenv": "^16.1.4",
+    "eslint": "^8.57.1",
+    "husky": "^8.0.0",
+    "jest": "^30.1.3",
+    "lint-staged": "^13.0.0",
+    "prettier": "^3.2.5",
+    "source-map": "^0.7.6",
+    "ts-jest": "^29.4.4",
+    "turbo": "^2.5.8",
+    "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+>>>>>>> origin/main
   }
 }

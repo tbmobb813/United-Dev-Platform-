@@ -1,8 +1,12 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Button } from '@udp/ui';
+'use client';
+
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+const Client = dynamic(() => import('./login.client'), { ssr: false });
 
 export default function Login() {
+<<<<<<< HEAD
   const router = useRouter();
   const [name, setName] = useState('');
 
@@ -27,4 +31,7 @@ export default function Login() {
       </div>
     </div>
   );
+=======
+  return <Client />;
+>>>>>>> origin/main
 }

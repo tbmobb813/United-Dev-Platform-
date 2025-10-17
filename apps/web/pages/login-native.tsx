@@ -1,7 +1,12 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+const Client = dynamic(() => import('./login-native.client'), { ssr: false });
 
 export default function LoginNative() {
+<<<<<<< HEAD
   const router = useRouter();
   const [name, setName] = useState('');
 
@@ -38,4 +43,7 @@ export default function LoginNative() {
       </div>
     </div>
   );
+=======
+  return <Client />;
+>>>>>>> origin/main
 }
