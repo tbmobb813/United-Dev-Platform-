@@ -6,14 +6,15 @@ import fs from 'fs';
 import path from 'path';
 let SourceMapConsumer = null;
 // try dynamic import of source-map in case it's available
-try {
-  // top-level await is allowed in ESM
-  // eslint-disable-next-line no-await-in-loop
-  const sm = await import('source-map');
-  SourceMapConsumer = sm.SourceMapConsumer;
-} catch (err) {
-  SourceMapConsumer = null;
-}
+(async () => {
+  try {
+    // eslint-disable-next-line no-await-in-loop
+    const sm = await import('source-map');
+    SourceMapConsumer = sm.SourceMapConsumer;
+  } catch (err) {
+    SourceMapConsumer = null;
+  }
+})();
 
 function findFiles(dir, exts = ['.js', '.map']) {
   const out = [];
