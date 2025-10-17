@@ -28,6 +28,13 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
+      - name: Debug pnpm availability
+        run: |
+          echo "--- PATH ---"
+          echo "$PATH"
+          echo "which pnpm: $(which pnpm || echo 'not found')"
+          pnpm --version || echo 'pnpm not available'
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
