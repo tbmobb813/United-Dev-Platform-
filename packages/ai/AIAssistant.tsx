@@ -147,6 +147,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
         );
         setStreamingContent('');
       } else {
+        // Fallback to placeholder if no AI manager
         const fallbackResponse = await simulateFallbackResponse(
           content,
           intent
@@ -159,10 +160,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
           )
         );
       }
-    } catch (error) {
+    } catch (error: unknown) {
       // Error logging removed to comply with linting rules
-      const errorMessage =
-        error instanceof Error ? error.message : 'AI request failed';
+      const errorMessage = getErrorMessage(error);
 
       setMessages(prev =>
         prev.map(msg =>
