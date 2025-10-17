@@ -17,11 +17,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Setup pnpm (action)
         uses: pnpm/action-setup@v2
         with:
-          version: 'latest'
+          version: "latest"
 
       - name: Enable Corepack and prepare pnpm
         run: |
@@ -34,6 +34,17 @@ jobs:
           echo "$PATH"
           echo "which pnpm: $(which pnpm || echo 'not found')"
           pnpm --version || echo 'pnpm not available'
+
+      - name: Ensure pnpm via installer (fallback)
+        if: always()
+        run: |
+          if ! command -v pnpm >/dev/null 2>&1; then
+            echo "Installing pnpm via official installer"
+            curl -fsSL https://get.pnpm.io/install.sh | sh -
+            export PATH="$HOME/.local/share/pnpm:$PATH"
+          fi
+          echo "pnpm: $(which pnpm || echo 'not found')"
+          pnpm --version || true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
