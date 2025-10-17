@@ -18,51 +18,6 @@ export interface ProjectFile {
   content: string;
   encoding?: 'utf8' | 'base64' | 'binary';
   template?: boolean; // Whether this is a template file with placeholders
-}
-
-export interface ProjectDependency {
-  name: string;
-  version: string;
-  type: 'dependency' | 'devDependency' | 'peerDependency';
-}
-
-export interface WorkspaceConfig {
-  name: string;
-  version: string;
-  description?: string;
-  type: ProjectTemplate['type'];
-  framework: string;
-  language: ProjectTemplate['language'];
-  rootPath: string;
-  srcPath: string;
-  buildPath: string;
-  testPath: string;
-  configFiles: string[];
-  ignorePatterns: string[];
-  dependencies: ProjectDependency[];
-  scripts: Record<string, string>;
-  metadata: Record<string, unknown>;
-}
-
-export interface ProjectStructureAnalysis {
-  totalFiles: number;
-  totalDirectories: number;
-  languages: Record<string, number>;
-  frameworks: string[];
-  hasTests: boolean;
-  hasDocumentation: boolean;
-  hasConfig: boolean;
-  dependencies: ProjectDependency[];
-  structure: FileTreeNode[];
-}
-
-export interface FileTreeNode {
-  name: string;
-  path: string;
-  type: 'file' | 'directory';
-  children?: FileTreeNode[];
-  size?: number;
-  lastModified: Date;
   language?: string;
   isGenerated?: boolean;
   isConfigFile?: boolean;
@@ -375,6 +330,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
+// Prefer the monorepo logger in generated projects
+import logger from '@udp/logger';
+
 dotenv.config();
 
 const app = express();
@@ -401,7 +359,7 @@ app.get('/health', (req, res) => {
 
 // Error handling
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
+  logger.error(err.stack);
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
@@ -411,7 +369,7 @@ app.use('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(\`🚀 Server running on port \${PORT}\`);
+  logger.info(\`🚀 Server running on port \${PORT}\`);
 });
 `,
           template: true,

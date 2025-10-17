@@ -24,13 +24,24 @@ const candidates = [
   'apps/web/pages/presence-demo.client.tsx',
   'packages/filesystem/ProjectManager.ts',
   'packages/logger/index.ts',
-  'packages/filesystem/FileWatcher.ts'
+  'packages/filesystem/FileWatcher.ts',
 ].map(p => path.join(repoRoot, p));
 
-const methodMap = { log: 'info', warn: 'warn', error: 'error', info: 'info', debug: 'info' };
+const methodMap = {
+  log: 'info',
+  warn: 'warn',
+  error: 'error',
+  info: 'info',
+  debug: 'info',
+};
 
 function findConsoleCalls(sourceText, filePath) {
-  const sf = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true);
+  const sf = ts.createSourceFile(
+    filePath,
+    sourceText,
+    ts.ScriptTarget.Latest,
+    true
+  );
   const calls = [];
   function visit(node) {
     if (ts.isCallExpression(node)) {
@@ -38,7 +49,10 @@ function findConsoleCalls(sourceText, filePath) {
       if (ts.isPropertyAccessExpression(expr)) {
         const objText = expr.expression.getText(sf);
         const propName = expr.name.getText(sf);
-        if (objText === 'console' && Object.keys(methodMap).includes(propName)) {
+        if (
+          objText === 'console' &&
+          Object.keys(methodMap).includes(propName)
+        ) {
           const start = node.getStart(sf);
           const end = node.getEnd();
           calls.push({ node, start, end, propName });
@@ -52,7 +66,10 @@ function findConsoleCalls(sourceText, filePath) {
 }
 
 function hasLoggerImport(text) {
-  return /from\s+['"]@udp\/logger['"]/.test(text) || /require\(\s*['"]@udp\/logger['"]\s*\)/.test(text);
+  return (
+    /from\s+['"]@udp\/logger['"]/.test(text) ||
+    /require\(\s*['"]@udp\/logger['"]\s*\)/.test(text)
+  );
 }
 
 const summary = [];
@@ -62,7 +79,11 @@ for (const filePath of candidates) {
   const src = fs.readFileSync(filePath, 'utf8');
   const calls = findConsoleCalls(src, filePath);
   if (calls.length === 0) {
-    summary.push({ file: filePath, changed: false, reason: 'no-console-call-expr-found' });
+    summary.push({
+      file: filePath,
+      changed: false,
+      reason: 'no-console-call-expr-found',
+    });
     continue;
   }
 
@@ -82,11 +103,21 @@ for (const filePath of candidates) {
     const newCallee = oldCallee.replace(/^console\./, 'logger.');
     // safety: if replacement would be identical (e.g., logger already present), skip
     if (oldCallee.startsWith('logger.')) continue;
-    edits.push({ calleeStart, calleeEnd, oldCallee, newCallee, propName: c.propName });
+    edits.push({
+      calleeStart,
+      calleeEnd,
+      oldCallee,
+      newCallee,
+      propName: c.propName,
+    });
   }
 
   if (edits.length === 0) {
-    summary.push({ file: filePath, changed: false, reason: 'no-editable-console-calls' });
+    summary.push({
+      file: filePath,
+      changed: false,
+      reason: 'no-editable-console-calls',
+    });
     continue;
   }
 
@@ -105,7 +136,9 @@ for (const filePath of candidates) {
     const importRegex = /^(import\s.+;\s*\n)/gm;
     let lastImportMatch;
     let m;
-    while ((m = importRegex.exec(out)) !== null) { lastImportMatch = m; }
+    while ((m = importRegex.exec(out)) !== null) {
+      lastImportMatch = m;
+    }
     if (lastImportMatch) {
       const insertPos = lastImportMatch.index + lastImportMatch[0].length;
       out = out.slice(0, insertPos) + importStmt + out.slice(insertPos);
@@ -115,7 +148,11 @@ for (const filePath of candidates) {
   }
 
   fs.writeFileSync(filePath, out, 'utf8');
-  summary.push({ file: filePath, changed: true, edits: edits.map(e => ({ old: e.oldCallee, new: e.newCallee })) });
+  summary.push({
+    file: filePath,
+    changed: true,
+    edits: edits.map(e => ({ old: e.oldCallee, new: e.newCallee })),
+  });
 }
 
 console.log(JSON.stringify(summary, null, 2));

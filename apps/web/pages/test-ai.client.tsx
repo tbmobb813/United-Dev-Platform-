@@ -10,7 +10,7 @@ export default function TestAIAssistantClient() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [currentFile] = useState('test-file.tsx');
   const [selectedCode] = useState(
-    'function testFunction() {\n  console.log("Hello world!");\n}'
+    'function testFunction() {\n  logger.info("Hello world!");\n}'
   );
 
   const handleCodeInsert = (code: string) => {
