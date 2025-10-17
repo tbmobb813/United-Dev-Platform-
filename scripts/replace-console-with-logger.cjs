@@ -116,8 +116,8 @@ for (const filePath of candidates) {
     out = out.slice(0, e.calleeStart) + e.newCallee + out.slice(e.calleeEnd);
   }
   if (!hasLoggerImport(out)) {
-    const importStmt = "import logger from '@udp/logger';\\n";
-    const importRegex = /^(import\\s.+;\\s*\\n)/gm;
+    const importStmt = "import logger from '@udp/logger';\n";
+    const importRegex = /^(import\s.+;\s*\n)/gm;
     let lastImportMatch;
     let m;
     while ((m = importRegex.exec(out)) !== null) { lastImportMatch = m; }
