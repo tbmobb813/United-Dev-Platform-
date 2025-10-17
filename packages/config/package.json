@@ -19,7 +19,7 @@
     "test": "jest --config ../../jest.config.core.cjs --runInBand"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^24.8.0",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "typescript": "^5.0.0"

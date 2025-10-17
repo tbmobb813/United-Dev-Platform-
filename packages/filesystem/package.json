@@ -10,15 +10,15 @@
     "test": "jest --config ../../jest.config.core.cjs --runInBand"
   },
   "dependencies": {
-    "@types/node": "^24.5.2",
-    "chokidar": "^3.6.0",
-    "mime-types": "^2.1.35",
-    "react": "18.3.1"
+    "@types/node": "^24.8.0",
+    "chokidar": "^4.0.3",
+    "mime-types": "^3.0.1",
+    "react": "19.2.0"
   },
   "devDependencies": {
-    "@types/mime-types": "^2.1.4",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^18.2.25",
+    "@types/mime-types": "^3.0.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "typescript": "^5.0.0"
   },
   "peerDependencies": {
