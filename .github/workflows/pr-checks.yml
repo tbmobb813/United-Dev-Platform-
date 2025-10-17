@@ -41,7 +41,8 @@ jobs:
           if ! command -v pnpm >/dev/null 2>&1; then
             echo "Installing pnpm via official installer"
             curl -fsSL https://get.pnpm.io/install.sh | sh -
-            export PATH="$HOME/.local/share/pnpm:$PATH"
+            # Persist pnpm binary path across subsequent steps
+            echo "$HOME/.local/share/pnpm" >> $GITHUB_PATH
           fi
           echo "pnpm: $(which pnpm || echo 'not found')"
           pnpm --version || true
