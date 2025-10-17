@@ -20,5 +20,8 @@
   },
   "[javascriptreact]": {
     "editor.formatOnSave": true
-  }
+  },
+  // Ensure VS Code runs Jest with the workspace Node and the installed jest binary
+  "jest.jestCommandLine": "/home/jason/.nvm/versions/node/v18.20.8/bin/node ./node_modules/jest/bin/jest.js --runInBand",
+  "jest.pathToJest": "./node_modules/jest/bin/jest.js"
 }

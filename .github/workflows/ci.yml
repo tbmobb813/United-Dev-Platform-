@@ -18,20 +18,15 @@ jobs:
           corepack prepare pnpm@latest --activate
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
-          cache: 'pnpm'
+          node-version: "18"
 
-      - name: Setup pnpm (after setup-node)
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: Enable Corepack & pnpm
+      - name: Enable Corepack and install pnpm (pinned)
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          # Pin to the repo's packageManager / pnpm version to ensure reproducible CI
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -40,8 +35,17 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: pnpm ci:validate-env
 
-      - name: Run checks (lint, type, test)
-        run: pnpm check
+      - name: Check Prettier formatting
+        run: pnpm format:check
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Run TypeScript type check
+        run: pnpm type-check
+
+      - name: Run tests
+        run: pnpm test:ci
 
       - name: Build web
         run: pnpm --filter @udp/web build
