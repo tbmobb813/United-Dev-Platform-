@@ -16,7 +16,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-  "test": "env -u NODE_OPTIONS jest --runInBand"
+    "test": "env -u NODE_OPTIONS jest --runInBand"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
