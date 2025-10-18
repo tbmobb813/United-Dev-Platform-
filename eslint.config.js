@@ -74,7 +74,11 @@ const config = [
       '@typescript-eslint/no-var-requires': 'error',
 
       // General rules
-      'no-console': 'warn',
+      // Treat runtime console usage in application/library code as errors so
+      // the CI / console-check tooling can enforce replacement with the
+      // shared logger. CLI scripts and the logger's browser entrypoint are
+      // explicitly exempted via overrides below.
+      'no-console': 'error',
       'no-debugger': 'error',
       'no-unused-vars': 'off', // Handled by TypeScript
       'prefer-const': 'error',
@@ -88,6 +92,19 @@ const config = [
       curly: ['error', 'all'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
+    },
+  },
+  // Allow console in CLI scripts and in the logger browser entrypoint which
+  // intentionally delegates to the platform console for small bundles.
+  {
+    files: [
+      'scripts/**/*',
+      'bin/**/*',
+      '**/*.cjs',
+      'packages/logger/browser.*',
+    ],
+    rules: {
+      'no-console': 'off',
     },
   },
   // React-specific config for .tsx files

@@ -3,6 +3,7 @@
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
+import logger from '@udp/logger';
 import { useRouter } from 'next/router';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
@@ -78,7 +79,7 @@ export default function Home() {
       });
       setAiManager(manager);
     } catch (error) {
-      console.warn('AI Manager initialization failed:', error);
+      logger.warn('AI Manager initialization failed:', error);
       // Component will work without AI manager (shows fallback responses)
     }
   }, []);
@@ -141,11 +142,11 @@ export default function Home() {
 
       // Add error handling for WebSocket
       provider.on('status', (event: { status: string }) => {
-        console.log('WebSocket status:', event.status);
+        logger.info('WebSocket status:', event.status);
       });
 
       provider.on('connection-error', (error: Error) => {
-        console.error('WebSocket connection error:', error);
+        logger.error('WebSocket connection error:', error);
       });
 
       const ytext = doc.getText(docName);
@@ -199,7 +200,7 @@ export default function Home() {
             updateCursorDecorations(userList.filter(u => u.cursor));
           }
         } catch (error) {
-          console.error('Error updating user list:', error);
+          logger.error('Error updating user list:', error);
           setUsers([]);
         }
       };
@@ -224,7 +225,7 @@ export default function Home() {
         doc.destroy();
       };
     } catch (error) {
-      console.error('Error setting up Yjs:', error);
+      logger.error('Error setting up Yjs:', error);
     }
   }, [room, docName, userName, userId]);
 
@@ -292,7 +293,7 @@ export default function Home() {
 
       styleElement.textContent = styles;
     } catch (error) {
-      console.warn('Failed to update cursor decorations:', error);
+      logger.warn('Failed to update cursor decorations:', error);
     }
   };
 
@@ -330,9 +331,9 @@ export default function Home() {
     try {
       await codeCompletionService.registerCompletionProviders();
       await codeCompletionService.registerHoverProvider();
-      console.log('✅ Code completion initialized');
+      logger.info('✅ Code completion initialized');
     } catch (error) {
-      console.warn('Failed to initialize code completion:', error);
+      logger.warn('Failed to initialize code completion:', error);
     }
 
     const yObserver = () => {
@@ -428,7 +429,7 @@ export default function Home() {
     {
       ...commonShortcuts.SAVE,
       action: () => {
-        console.log('Save shortcut triggered');
+        logger.info('Save shortcut triggered');
         // Implement save logic here
       },
     },

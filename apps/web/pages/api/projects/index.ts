@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import type { Prisma } from '@prisma/client';
 import { prisma } from '@udp/db';
 import { requireAuth } from '@udp/server-utils';
 import logger from '@udp/logger';
@@ -10,7 +9,22 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Require authentication for all project operations
-  const session = await requireAuth(req, res);
+  type AuthSession = { user?: { id?: string } | null } | null | undefined;
+  function isAuthSession(value: unknown): value is AuthSession {
+    if (typeof value !== 'object' || value === null) return false;
+    const user = (value as AuthSession | undefined)?.user;
+    if (typeof user === 'undefined' || user === null) return true;
+    if (typeof user === 'object') {
+      const id = (user as { id?: unknown }).id;
+      return typeof id === 'string' || typeof id === 'undefined';
+    }
+    return false;
+  }
+
+  const maybeSession = await requireAuth(req, res);
+  const session: AuthSession = isAuthSession(maybeSession)
+    ? maybeSession
+    : undefined;
   if (!session || !session.user) {
     return;
   }
@@ -42,13 +56,12 @@ async function getProjects(
     const limitNum = parseInt(limit as string);
     const skip = (pageNum - 1) * limitNum;
 
-    const where = {} as Prisma.ProjectWhereInput;
+    const where: Record<string, unknown> = {};
 
     // Filter by visibility with access control
     if (visibility && typeof visibility === 'string') {
       // pass-through: query param string -> Prisma enum value
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      where.visibility = visibility as any;
+      where.visibility = visibility;
     } else {
       // Default: show public projects and projects user has access to
       where.OR = [
