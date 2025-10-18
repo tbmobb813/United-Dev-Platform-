@@ -116,8 +116,8 @@ async function updateUser(
         Array.isArray(metaTarget) && metaTarget.length > 0
           ? (metaTarget as string[])[0]
           : typeof metaTarget === 'string'
-          ? metaTarget
-          : 'field';
+            ? metaTarget
+            : 'field';
       return res.status(400).json({
         error: `${field} already exists`,
       });
