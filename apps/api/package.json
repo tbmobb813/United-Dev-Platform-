@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "NODE_ENV=production node server.js",
-    "test": "env -u NODE_OPTIONS jest --runInBand",
+  "test": "env -u NODE_OPTIONS jest --runInBand",
     "build": "echo 'no build step for api'"
   },
   "dependencies": {
