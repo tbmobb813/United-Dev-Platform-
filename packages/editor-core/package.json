@@ -6,9 +6,9 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "test": "jest --config ./jest.config.cjs --runInBand --passWithNoTests"
+    "test": "jest"
   },
   "dependencies": {
     "y-indexeddb": "^9.0.12"

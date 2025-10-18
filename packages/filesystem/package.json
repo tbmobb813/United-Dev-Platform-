@@ -6,8 +6,8 @@
   "types": "index.ts",
   "scripts": {
     "build": "tsc",
-    "type-check": "tsc -p tsconfig.test.json --noEmit",
-    "test": "jest --config ../../jest.config.core.cjs --runInBand"
+    "typecheck": "tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
     "@types/node": "^24.5.2",

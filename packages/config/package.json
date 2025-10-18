@@ -15,8 +15,8 @@
     "clean": "rm -rf dist",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc -p tsconfig.test.json --noEmit",
-    "test": "jest --config ../../jest.config.core.cjs --runInBand"
+    "typecheck": "tsc --noEmit",
+    "test": "env -u NODE_OPTIONS jest --runInBand"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

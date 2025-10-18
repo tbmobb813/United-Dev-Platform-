@@ -1,7 +1,6 @@
-import cors from 'cors';
-import express from 'express';
+import Fastify from 'fastify';
+import fastifyCors from '@fastify/cors';
 import http from 'http';
-import morgan from 'morgan';
 import { WebSocketServer } from 'ws';
 import { setupWSConnection } from 'y-websocket/bin/utils.js';
 import { prisma } from '@udp/db';
@@ -317,35 +316,34 @@ function broadcastToSession(sessionId, message, _excludeUserId) {
 }
 
 const PORT = process.env.PORT || 3030;
-const app = express();
+const app = Fastify({ logger: true });
 
-// Middleware
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? ['https://your-domain.com']
-        : ['http://localhost:3000', 'http://localhost:3001'],
-    credentials: true,
-  })
-);
-app.use(morgan('dev'));
-app.use(express.json());
+app.register(fastifyCors, {
+  origin:
+    process.env.NODE_ENV === 'production'
+      ? ['https://your-domain.com']
+      : ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+});
+
+app.addHook('onRequest', async (request, _reply) => {
+  // Morgan-like logging
+  logger.info(`${request.method} ${request.url}`);
+});
 
 // Health check
-app.get('/health', (_req, res) =>
-  res.json({
+app.get('/health', async (request, reply) => {
+  reply.send({
     ok: true,
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV || 'development',
-  })
-);
+  });
+});
 
 // API endpoints
-app.get('/api/sessions/:sessionId', async (req, res) => {
+app.get('/api/sessions/:sessionId', async (request, reply) => {
   try {
-    const sessionId = req.params.sessionId;
-
+    const sessionId = request.params.sessionId;
     const session = await prisma.collaborationSession.findUnique({
       where: { id: sessionId },
       include: {
@@ -370,38 +368,31 @@ app.get('/api/sessions/:sessionId', async (req, res) => {
         },
       },
     });
-
     if (!session) {
-      return res.status(404).json({ error: 'Session not found' });
+      reply.code(404).send({ error: 'Session not found' });
+      return;
     }
-
-    res.json({ session });
+    reply.send({ session });
   } catch (error) {
     logger.error('Error fetching session:', error);
-    res.status(500).json({ error: 'Failed to fetch session' });
+    reply.code(500).send({ error: 'Failed to fetch session' });
   }
 });
 
 // AI stub endpoint (enhanced)
-app.post('/ai/run', async (req, res) => {
+app.post('/ai/run', async (request, reply) => {
   try {
-    const { tool, filePath, prompt, projectId, userId } = req.body || {};
-
-    // In a real implementation, this would integrate with AI services
+    const { tool, filePath, prompt, projectId, userId } = request.body || {};
     const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${
       prompt || ''
     }`;
-
-    // Log AI interaction if projectId and userId provided
     if (projectId && userId) {
-      // This could create an AI chat session and log the interaction
       logger.info(`AI interaction: ${userId} in project ${projectId}`);
     }
-
-    res.json({ result, timestamp: new Date().toISOString() });
+    reply.send({ result, timestamp: new Date().toISOString() });
   } catch (error) {
     logger.error('Error in AI endpoint:', error);
-    res.status(500).json({ error: 'AI service error' });
+    reply.code(500).send({ error: 'AI service error' });
   }
 });
 
@@ -420,10 +411,10 @@ server.on('upgrade', (request, socket, head) => {
   });
 });
 
-// Error handling middleware
-app.use((err, req, res, _next) => {
-  logger.error('Express error:', err);
-  res.status(500).json({
+// Error handling
+app.setErrorHandler((error, request, reply) => {
+  logger.error('Fastify error:', error);
+  reply.code(500).send({
     error: 'Internal Server Error',
     timestamp: new Date().toISOString(),
   });
@@ -444,14 +435,14 @@ process.on('SIGTERM', async () => {
 });
 
 // Start server
-server.listen(PORT, () => {
-  logger.info(
-    `[api] WebSocket collaboration server listening on http://localhost:${PORT}`
-  );
+app.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
+  if (err) {
+    logger.error('Fastify failed to start:', err);
+    process.exit(1);
+  }
+  logger.info(`[api] Fastify server listening on ${address}`);
   logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
   logger.info(
-    `[api] Database: ${
-      process.env.DATABASE_URL ? 'Connected' : 'Using default'
-    }`
+    `[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`
   );
 });
