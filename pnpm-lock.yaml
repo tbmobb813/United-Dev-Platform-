@@ -127,7 +127,7 @@ importers:
         specifier: 18.3.1
         version: 18.3.1
       react-native:
-        specifier: 0.74.0
+        specifier: ^0.74.0
         version: 0.74.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3(@babel/core@7.28.4))(@types/react@18.2.79)(react@18.3.1)
       y-websocket:
         specifier: 1.5.4
