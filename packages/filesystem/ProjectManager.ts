@@ -1,5 +1,54 @@
 import { FileSystemEntry, FileSystemProvider } from './types';
 
+// Shared types used by ProjectManager and other filesystem modules
+export interface ProjectDependency {
+  name: string;
+  version: string;
+  type: 'dependency' | 'devDependency' | 'peerDependency' | 'optionalDependency' | string;
+}
+
+export interface FileTreeNode {
+  name: string;
+  path: string;
+  type: 'file' | 'directory';
+  size?: number;
+  lastModified?: Date;
+  language?: string;
+  isConfigFile?: boolean;
+  isTestFile?: boolean;
+  children?: FileTreeNode[];
+}
+
+export interface ProjectStructureAnalysis {
+  totalFiles: number;
+  totalDirectories: number;
+  languages: Record<string, number>;
+  frameworks: string[];
+  hasTests: boolean;
+  hasDocumentation: boolean;
+  hasConfig: boolean;
+  dependencies: ProjectDependency[];
+  structure: FileTreeNode[];
+}
+
+export interface WorkspaceConfig {
+  name: string;
+  version: string;
+  description?: string;
+  type: string;
+  framework?: string;
+  language?: string;
+  rootPath: string;
+  srcPath?: string;
+  buildPath?: string;
+  testPath?: string;
+  configFiles?: string[];
+  ignorePatterns?: string[];
+  dependencies?: ProjectDependency[];
+  scripts?: Record<string, string>;
+  metadata?: Record<string, unknown>;
+}
+
 export interface ProjectTemplate {
   id: string;
   name: string;
