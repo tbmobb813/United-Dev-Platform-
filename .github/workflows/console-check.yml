@@ -15,13 +15,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '18'
-          cache: 'pnpm'
-
-      - name: Enable corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+          node-version: "18"
+          cache: "pnpm"
 
       - name: Setup pnpm (ensure pnpm binary exists)
         uses: pnpm/action-setup@v2
