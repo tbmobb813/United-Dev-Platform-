@@ -7161,8 +7161,4 @@
   "allowlist": [],
   "strict": false,
   "severity": "error"
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d4f5ceb (chore: pin ts-jest in pnpm.overrides (#42))
