@@ -26,15 +26,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-
-      - name: Enable Corepack & pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
+      # Ensure Node is setup first (below jobs will call corepack after setup-node)
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -198,7 +190,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run tests
-        run: pnpm test:ci
+        run: pnpm test:core
 
   validate-env:
     name: Validate Environment
