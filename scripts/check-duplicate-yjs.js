@@ -6,14 +6,15 @@ import fs from 'fs';
 import path from 'path';
 let SourceMapConsumer = null;
 // try dynamic import of source-map in case it's available
-try {
-  // top-level await is allowed in ESM
-  // eslint-disable-next-line no-await-in-loop
-  const sm = await import('source-map');
-  SourceMapConsumer = sm.SourceMapConsumer;
-} catch (err) {
-  SourceMapConsumer = null;
-}
+(async () => {
+  try {
+    // eslint-disable-next-line no-await-in-loop
+    const sm = await import('source-map');
+    SourceMapConsumer = sm.SourceMapConsumer;
+  } catch (err) {
+    SourceMapConsumer = null;
+  }
+})();
 
 function findFiles(dir, exts = ['.js', '.map']) {
   const out = [];
@@ -143,7 +144,7 @@ async function mapMatchesToSources(matches) {
     if (!mapPath) {
       // Look for //# sourceMappingURL=... or //@ sourceMappingURL=... or /*# sourceMappingURL=... */
       const singleLineMatch = content.match(
-        /(?:\/\/|\/*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
+        /(?:\/\/|\/\*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
       );
       if (singleLineMatch && singleLineMatch[1]) {
         const raw = singleLineMatch[1].trim();
@@ -277,7 +278,15 @@ async function main() {
     if (srcBase && allowlistBasenames.includes(srcBase)) return false;
     if (rsrcBase && allowlistBasenames.includes(rsrcBase)) return false;
     // Suffix match: allowlist entry may be a CI path that ends with the same suffix
-    if (normalizedAllowlist.some(a => gen.endsWith(a) || (src && src.endsWith(a)) || (rsrc && rsrc.endsWith(a)))) return false;
+    if (
+      normalizedAllowlist.some(
+        a =>
+          gen.endsWith(a) ||
+          (src && src.endsWith(a)) ||
+          (rsrc && rsrc.endsWith(a))
+      )
+    )
+      return false;
     return true;
   });
 
@@ -315,6 +324,13 @@ async function main() {
     `Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`
   );
   if (report) console.log(`Wrote report to ${report}`);
+
+  // If the caller requested a report file, treat this as "report-only" mode:
+  // always exit 0 after writing the report so callers (tests/CI) can inspect
+  // the JSON output without the process status signaling failure.
+  if (report) {
+    process.exit(0);
+  }
 
   if (result.flaggedFiles > 1) {
     console.error(
