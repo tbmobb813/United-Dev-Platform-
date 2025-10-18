@@ -4,7 +4,12 @@ import { FileSystemEntry, FileSystemProvider } from './types';
 export interface ProjectDependency {
   name: string;
   version: string;
-  type: 'dependency' | 'devDependency' | 'peerDependency' | 'optionalDependency' | string;
+  type:
+    | 'dependency'
+    | 'devDependency'
+    | 'peerDependency'
+    | 'optionalDependency'
+    | string;
 }
 
 export interface FileTreeNode {
