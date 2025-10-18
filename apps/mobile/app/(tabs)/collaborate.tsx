@@ -6,7 +6,7 @@ import { CollaborativeEditor } from '../../components/CollaborativeEditor';
 export default function CollaborateScreen() {
   const [userId, setUserId] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
-  const [roomId, setRoomId] = useState<string>('default-room');
+  const roomId = 'default-room';
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {

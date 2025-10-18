@@ -111,9 +111,13 @@ async function updateUser(
     }
 
     if (isPrismaError(error) && error.code === 'P2002') {
-      const field = Array.isArray(error.meta?.target)
-        ? (error.meta.target as any)[0]
-        : 'field';
+      const metaTarget = error.meta?.target;
+      const field =
+        Array.isArray(metaTarget) && metaTarget.length > 0
+          ? (metaTarget as string[])[0]
+          : typeof metaTarget === 'string'
+          ? metaTarget
+          : 'field';
       return res.status(400).json({
         error: `${field} already exists`,
       });
