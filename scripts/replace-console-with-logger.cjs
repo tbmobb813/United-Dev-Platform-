@@ -25,7 +25,6 @@ const ignorePatterns = [
 
 // allow an explicit --files=absPath1,relPath2,... for testing/targeted runs
 const args = process.argv.slice(2);
-const args = process.argv.slice(2);
 const filesArg = args.find(a => a.startsWith('--files='));
 let candidates;
 if (filesArg) {
