@@ -18,10 +18,12 @@ jobs:
           node-version: "18"
           cache: "pnpm"
 
-      - name: Setup pnpm (ensure pnpm binary exists)
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.0.0
+      - name: Ensure pnpm (via corepack)
+        run: |
+          # Enable corepack and install/activate the requested pnpm version
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
