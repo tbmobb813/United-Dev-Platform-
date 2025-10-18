@@ -7,7 +7,7 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "jsx": "preserve",
     "declaration": true,
     "outDir": "dist",
