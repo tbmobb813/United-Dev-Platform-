@@ -9,7 +9,12 @@ module.exports = {
     '^.+\\.[tj]sx?$': ['ts-jest', { useESM: true }],
   },
   // Ignore common build folders and the repository-level jest.setup.ts under __tests__
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '<rootDir>/__tests__/jest.setup.ts'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/build/',
+    '<rootDir>/__tests__/jest.setup.ts',
+  ],
   extensionsToTreatAsEsm: ['.ts'],
   // ts-jest options are provided per-transform (see `transform` above).
 };

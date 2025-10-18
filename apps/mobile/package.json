@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-  "test": "env -u NODE_OPTIONS jest --runInBand"
+    "test": "env -u NODE_OPTIONS jest --runInBand"
   },
   "dependencies": {
     "@rivascva/react-native-code-editor": "^1.2.2",

@@ -125,17 +125,17 @@ const nextConfig = {
             // Match yjs, y-protocols, y-websocket in either hoisted
             // node_modules or pnpm virtual-store nested paths.
             return /[\\/]node_modules[\\/](?:\\.pnpm[\\/].*?[\\/])?(?:yjs|y-protocols|y-websocket)(?:[\\/]|$)/.test(
-              p
-            );
-          } catch (e) {
-            return false;
-          }
-        },
-  name: 'vendors-yjs',
-  chunks: 'all',
-  enforce: true,
-  priority: 200,
-  // Allow very small modules (like a single CJS file) to be pulled
+                  p
+                );
+              } catch (e) {
+                return false;
+              }
+            },
+            "name": "vendors-yjs",
+            "chunks": "all",
+            "enforce": true,
+            "priority": 200,
+      // Allow very small modules (like a single CJS file) to be pulled
   // into the vendors-yjs chunk and prefer reusing an existing
   // vendors-yjs chunk rather than creating a separate one.
   minSize: 0,
