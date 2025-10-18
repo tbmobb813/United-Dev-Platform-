@@ -55,6 +55,12 @@ jobs:
         run: |
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
+      - name: Configure git to set upstream on first push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          # Ensure git will automatically set the remote tracking branch on first push
+          git config --global push.autoSetupRemote true
+
       - name: Commit and push fixes
         if: steps.changes.outputs.changed == 'true'
         uses: EndBug/add-and-commit@v9
