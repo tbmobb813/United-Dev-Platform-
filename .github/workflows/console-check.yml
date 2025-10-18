@@ -18,15 +18,30 @@ jobs:
           node-version: "18"
           cache: "pnpm"
 
-      - name: Ensure pnpm (via corepack)
-        run: |
-          # Enable corepack and install/activate the requested pnpm version
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-          pnpm --version
+      - name: Setup pnpm via action (best-effort)
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Fallback: Ensure pnpm (via corepack)
+        run: |
+          set -euxo pipefail
+          # Enable corepack and install/activate the requested pnpm version if action didn't provide it
+          corepack enable || true
+          corepack prepare pnpm@9.0.0 --activate || true
+
+      - name: Diagnostics: environment and pnpm
+        run: |
+          echo "--- PATH ---"
+          echo "$PATH"
+          echo "--- which pnpm ---"
+          which pnpm || true
+          echo "--- node/pnpm versions ---"
+          node --version || true
+          pnpm --version || true
+
+      - name: Install dependencies (verbose)
+        run: pnpm install --frozen-lockfile --reporter=ndjson
 
       - name: Run console-check (dry-run)
         run: pnpm -w run check:console
