@@ -196,18 +196,7 @@ export default function Home() {
 
           // Update cursor decorations in editor
           if (editorRef.current) {
-            updateCursorDecorations(
-              userList.filter(
-                (
-                  u
-                ): u is {
-                  id: string;
-                  name: string;
-                  color: string;
-                  cursor: { line: number; column: number };
-                } => Boolean(u.cursor)
-              )
-            );
+            updateCursorDecorations(userList.filter(u => u.cursor));
           }
         } catch (error) {
           console.error('Error updating user list:', error);
@@ -764,7 +753,7 @@ export default function Home() {
         onClose={() => setIsAIOpen(false)}
         currentFile={file}
         selectedCode={selectedCode}
-        aiManager={aiManager ?? undefined}
+        aiManager={aiManager}
         onCodeInsert={(code: string) => {
           // Insert code at cursor position in editor
           if (editorRef.current && typeof window !== 'undefined') {

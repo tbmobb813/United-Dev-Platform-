@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit",
-    "test": "jest --config ../../jest.config.core.cjs --runInBand"
+    "typecheck": "tsc --noEmit",
+    "test": "jest"
   }
 }

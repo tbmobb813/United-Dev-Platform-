@@ -11,7 +11,7 @@
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
-    "types": ["node", "vitest"],
+    "types": ["node"],
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*", "src/**/*.ts", "src/**/*.tsx"],

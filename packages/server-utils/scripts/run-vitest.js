@@ -1,19 +1,25 @@
 #!/usr/bin/env node
-const { spawnSync } = require('child_process');
+// Filter out Jest/Turbo flags that Vitest doesn't understand and forward others
+import { spawn } from 'child_process';
 
-// Deduplicate flags (vitest errors on duplicate --passWithNoTests)
-const rawArgs = process.argv.slice(2);
-const seen = new Set();
-const args = [];
-for (const a of rawArgs) {
-  if (a.startsWith('--')) {
-    if (seen.has(a)) continue;
-    seen.add(a);
+// Filter arguments to remove Jest-only flags
+const args = process.argv.slice(2).filter(a => {
+  if (
+    a.startsWith('--runInBand') ||
+    a.startsWith('--no-cache') ||
+    a.startsWith('--testLocationInResults') ||
+    a.startsWith('--passWithNoTests') ||
+    a === '--debug' ||
+    a === '--showConfig'
+  ) {
+    return false;
   }
-  args.push(a);
-}
+  return true;
+});
 
-// Always run vitest in run mode
-const cmdArgs = ['exec', 'vitest', '--run', ...args];
-const res = spawnSync('pnpm', cmdArgs, { stdio: 'inherit', shell: false });
-process.exit(res.status === null ? 1 : res.status);
+const child = spawn('npx', ['vitest', ...args], { stdio: 'inherit' });
+child.on('exit', code => process.exit(code));
+child.on('error', _err => {
+  // Exit with non-zero if spawning fails
+  process.exit(1);
+});
