@@ -45,13 +45,11 @@ describe('duplicate-yjs detector - integration', () => {
     );
 
     // Surface stdout/stderr to help debug CI flakes
-    // eslint-disable-next-line no-console
     if (res.stdout) {
-      logger.log('detector stdout:', res.stdout);
+      logger.info('detector stdout:', res.stdout);
     }
-    // eslint-disable-next-line no-console
     if (res.stderr) {
-      logger.log('detector stderr:', res.stderr);
+      logger.info('detector stderr:', res.stderr);
     }
 
     if (res.error) {
