@@ -144,7 +144,7 @@ async function mapMatchesToSources(matches) {
     if (!mapPath) {
       // Look for //# sourceMappingURL=... or //@ sourceMappingURL=... or /*# sourceMappingURL=... */
       const singleLineMatch = content.match(
-        /(?:\/\/|\/*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
+        /(?:\/\/|\/\*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
       );
       if (singleLineMatch && singleLineMatch[1]) {
         const raw = singleLineMatch[1].trim();
