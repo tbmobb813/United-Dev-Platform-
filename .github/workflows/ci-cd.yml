@@ -59,15 +59,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
@@ -129,15 +129,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
@@ -165,15 +165,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
@@ -201,15 +201,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Enable Corepack & pnpm (early)
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Setup pnpm (after setup-node)
         uses: pnpm/action-setup@v2
