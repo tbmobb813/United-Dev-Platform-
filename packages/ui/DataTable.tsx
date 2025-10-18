@@ -110,7 +110,6 @@ export const DataTable = <T extends Record<string, React.Key>>({
     }
     return index;
   };
-  };
 
   const handleSort = (field: string) => {
     if (!sortable) {
