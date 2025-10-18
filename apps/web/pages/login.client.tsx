@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button } from '@udp/ui';
+import styles from './styles/DemoPages.module.css';
 
 export default function LoginClient() {
   const router = useRouter();
@@ -16,15 +17,15 @@ export default function LoginClient() {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className={styles.container}>
       <h1>Login</h1>
       <input
         value={name}
         onChange={e => setName(e.target.value)}
         placeholder='Enter your name'
-        style={{ padding: 6, border: '1px solid #ddd', borderRadius: 6 }}
+        className={styles.input}
       />
-      <div style={{ marginTop: 12 }}>
+      <div className={styles.buttonSpacing}>
         <Button onClick={handleLogin}>Enter</Button>
       </div>
     </div>
