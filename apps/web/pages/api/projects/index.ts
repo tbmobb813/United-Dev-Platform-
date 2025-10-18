@@ -10,9 +10,7 @@ export default async function handler(
 ) {
   // Require authentication for all project operations
   type AuthSession = { user?: { id?: string } | null } | null | undefined;
-  function isAuthSession(
-    value: unknown
-  ): value is AuthSession {
+  function isAuthSession(value: unknown): value is AuthSession {
     if (typeof value !== 'object' || value === null) return false;
     const user = (value as AuthSession | undefined)?.user;
     if (typeof user === 'undefined' || user === null) return true;
