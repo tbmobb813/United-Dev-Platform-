@@ -2,6 +2,7 @@
 
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
+import logger from '@udp/logger';
 import { useRouter } from 'next/router';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
@@ -89,7 +90,7 @@ export default function MinimalHomeClient() {
             }));
           setUsers(userList);
         } catch (error) {
-          console.error('Error updating user list:', error);
+          logger.error('Error updating user list:', error);
           setUsers([]);
         }
       };
@@ -114,7 +115,7 @@ export default function MinimalHomeClient() {
         doc.destroy();
       };
     } catch (error) {
-      console.error('Error setting up Yjs:', error);
+      logger.error('Error setting up Yjs:', error);
     }
   }, [room, userName, isClient]);
 

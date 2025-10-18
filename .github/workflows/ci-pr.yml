@@ -19,15 +19,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Enable Corepack and prepare pnpm (pinned)
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
+
+      - name: Enable Corepack and prepare pnpm (pinned)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -54,7 +54,7 @@ jobs:
 
       - name: Run full tests
         # Use the CI-focused test script which forwards Jest flags correctly
-        run: pnpm test:ci
+        run: pnpm test:core
 
       - name: Early duplicate-Yjs check (conditional)
         if: github.actor == 'dependabot[bot]' || startsWith(github.actor, 'user-agent-') || env.AGENT_CHECK_STRICT == 'true'

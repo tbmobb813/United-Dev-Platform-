@@ -16,6 +16,7 @@ import {
   MoveOptions,
   ReadFileOptions,
 } from './types';
+import logger from '@udp/logger';
 
 /**
  * Node.js file system implementation
@@ -294,8 +295,7 @@ export class NodeFileSystem implements FileSystemProvider {
 
         callback(watchEvent);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error in file watcher:', error);
+        logger.error('Error in file watcher:', error);
       }
     };
 
@@ -350,8 +350,7 @@ export class NodeFileSystem implements FileSystemProvider {
 
         callback(watchEvent);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error in directory watcher:', error);
+        logger.error('Error in directory watcher:', error);
       }
     };
 
@@ -460,8 +459,7 @@ export class NodeFileSystem implements FileSystemProvider {
       .on('unlinkDir', eventPath => adapter('unlinkDir', eventPath))
       .on('ready', () => adapter('ready', normalizedPath))
       .on('error', error => {
-        // eslint-disable-next-line no-console
-        console.error('File watcher error:', error);
+        logger.error('File watcher error:', error);
         adapter('error', normalizedPath);
       });
 

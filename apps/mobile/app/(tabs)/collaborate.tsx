@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
+import logger from '@udp/logger';
 import { CollaborativeEditor } from '../../components/CollaborativeEditor';
 
 export default function CollaborateScreen() {
   const [userId, setUserId] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
-  // roomId is used below; we keep the setter name but it may be unused in some flows
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [roomId, setRoomId] = useState<string>('default-room');
+  const roomId = 'default-room';
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -25,17 +24,13 @@ export default function CollaborateScreen() {
       setIsReady(true);
     } catch (error) {
       Alert.alert('Error', 'Failed to load user data');
-      // Keep error logging but avoid lint noise if rules vary between configs
-      // eslint-disable-next-line no-console
-      console.error('Error loading user data:', error);
+      logger.error('Error loading user data:', error);
     }
   };
 
   const handleContentChange = (content: string) => {
     // Handle content changes (e.g., save to local storage)
-    // Use warn level to satisfy lint rules that may disallow console.log
-    // eslint-disable-next-line no-console
-    console.warn('Content updated:', content.length, 'characters');
+    logger.info('Content updated:', content.length, 'characters');
   };
 
   if (!isReady) {

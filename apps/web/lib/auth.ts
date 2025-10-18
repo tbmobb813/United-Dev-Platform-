@@ -6,6 +6,9 @@ export async function requireAuth(
   _req: NextApiRequest,
   _res: NextApiResponse
 ): Promise<{ user?: { id?: string } } | null> {
+  // Silence unused parameter warnings in environments where this stub is used.
+  void _req;
+  void _res;
   // For build-time and simple local development we return a dummy session.
   return { user: { id: process.env.DEV_USER_ID || 'dev-user' } };
 }

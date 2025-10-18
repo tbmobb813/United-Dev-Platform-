@@ -131,10 +131,10 @@ const nextConfig = {
             return false;
           }
         },
-        "name": "vendors-yjs",
-        "chunks": "all",
-        "enforce": true,
-        "priority": 200,
+  name: 'vendors-yjs',
+  chunks: 'all',
+  enforce: true,
+  priority: 200,
   // Allow very small modules (like a single CJS file) to be pulled
   // into the vendors-yjs chunk and prefer reusing an existing
   // vendors-yjs chunk rather than creating a separate one.
