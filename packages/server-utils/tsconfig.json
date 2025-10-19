@@ -8,11 +8,11 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
+    "jsx": "preserve",
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
-    "types": ["node"],
-    "forceConsistentCasingInFileNames": true
+    "types": ["node"]
   },
   "include": ["src/**/*", "src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]

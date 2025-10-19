@@ -131,15 +131,15 @@ const nextConfig = {
             return false;
           }
         },
-        name: 'vendors-yjs',
-        chunks: 'all',
-        enforce: true,
-        priority: 200,
-        // Allow very small modules (like a single CJS file) to be pulled
-        // into the vendors-yjs chunk and prefer reusing an existing
-        // vendors-yjs chunk rather than creating a separate one.
-        minSize: 0,
-        reuseExistingChunk: true,
+  name: 'vendors-yjs',
+  chunks: 'all',
+  enforce: true,
+  priority: 200,
+  // Allow very small modules (like a single CJS file) to be pulled
+  // into the vendors-yjs chunk and prefer reusing an existing
+  // vendors-yjs chunk rather than creating a separate one.
+  minSize: 0,
+  reuseExistingChunk: true,
       },
     };
 
@@ -178,32 +178,23 @@ const nextConfig = {
       // to the installed package entry so webpack treats them as the same
       // module across different pnpm/hoisted layouts.
       config.plugins.push(
-        new webpackPkg.NormalModuleReplacementPlugin(
-          /^y-protocols(\/.*)?$/,
-          resource => {
-            // Map common y-protocols import variants to the explicit dist CJS
-            // files which are guaranteed to exist in the package. Avoid
-            // resolving the package root (which has no "." export) to
-            // prevent ERR_PACKAGE_PATH_NOT_EXPORTED during build.
-            const req = resource.request || '';
-            if (
-              req === 'y-protocols' ||
-              req === 'y-protocols/sync' ||
-              req === 'y-protocols/sync.js'
-            ) {
-              resource.request = require.resolve('y-protocols/dist/sync.cjs');
-            } else if (req.includes('awareness')) {
-              resource.request = require.resolve(
-                'y-protocols/dist/awareness.cjs'
-              );
-            } else if (req.includes('auth')) {
-              resource.request = require.resolve('y-protocols/dist/auth.cjs');
-            } else {
-              // Fallback to the sync CJS bundle.
-              resource.request = require.resolve('y-protocols/dist/sync.cjs');
-            }
+        new webpackPkg.NormalModuleReplacementPlugin(/^y-protocols(\/.*)?$/, resource => {
+          // Map common y-protocols import variants to the explicit dist CJS
+          // files which are guaranteed to exist in the package. Avoid
+          // resolving the package root (which has no "." export) to
+          // prevent ERR_PACKAGE_PATH_NOT_EXPORTED during build.
+          const req = resource.request || '';
+          if (req === 'y-protocols' || req === 'y-protocols/sync' || req === 'y-protocols/sync.js') {
+            resource.request = require.resolve('y-protocols/dist/sync.cjs');
+          } else if (req.includes('awareness')) {
+            resource.request = require.resolve('y-protocols/dist/awareness.cjs');
+          } else if (req.includes('auth')) {
+            resource.request = require.resolve('y-protocols/dist/auth.cjs');
+          } else {
+            // Fallback to the sync CJS bundle.
+            resource.request = require.resolve('y-protocols/dist/sync.cjs');
           }
-        )
+        })
       );
       // Also rewrite the specific nested pnpm y-protocols dist paths we observed
       // in source maps back to the canonical installed dist files.
@@ -231,12 +222,9 @@ const nextConfig = {
       );
       // Canonicalize y-websocket imports to the resolved package entry too.
       config.plugins.push(
-        new webpackPkg.NormalModuleReplacementPlugin(
-          /^y-websocket$/,
-          resource => {
-            resource.request = require.resolve('y-websocket');
-          }
-        )
+        new webpackPkg.NormalModuleReplacementPlugin(/^y-websocket$/, resource => {
+          resource.request = require.resolve('y-websocket');
+        })
       );
       // As a safety-net, also rewrite bare 'yjs' requests to the canonical file
       // (alias already exists above, but NormalModuleReplacementPlugin ensures
@@ -247,14 +235,8 @@ const nextConfig = {
           // y-websocket, rewrite the request to the canonical yjs ESM file
           // to avoid CJS/ESM interop causing multiple runtime instances.
           try {
-            const issuer =
-              (resource.contextInfo && resource.contextInfo.issuer) ||
-              resource.context ||
-              '';
-            if (
-              typeof issuer === 'string' &&
-              /(?:y-protocols|y-websocket)(?:[\\/]|$)/.test(issuer)
-            ) {
+            const issuer = (resource.contextInfo && resource.contextInfo.issuer) || resource.context || '';
+            if (typeof issuer === 'string' && /(?:y-protocols|y-websocket)(?:[\\/]|$)/.test(issuer)) {
               resource.request = yjsEsm;
             } else {
               // If issuer info isn't available, still apply the canonical

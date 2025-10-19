@@ -4,7 +4,15 @@
   "type": "module",
   "main": "index.ts",
   "types": "index.ts",
+  "browser": "browser.ts",
+  "exports": {
+    ".": {
+      "import": "./index.ts",
+      "default": "./index.ts",
+      "browser": "./browser.ts"
+    }
+  },
   "scripts": {
-    "test": "env -u NODE_OPTIONS jest --runInBand"
+    "test": "jest --config ../../jest.config.cjs"
   }
 }

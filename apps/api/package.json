@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "node server.js",
     "start": "NODE_ENV=production node server.js",
-    "test": "env -u NODE_OPTIONS jest --runInBand",
-    "build": "echo 'no build step for api'"
+    "build": "echo \"No build step for api\"",
+    "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^6.16.2",
     "cors": "^2.8.5",
     "fastify": "^4.23.2",
     "@fastify/cors": "^8.4.1",

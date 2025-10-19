@@ -8,14 +8,14 @@
     "build": "tsc -p tsconfig.json",
     "generate": "prisma generate --schema ../../apps/api/prisma/schema.prisma",
     "prepare": "pnpm run generate && pnpm build",
-    "test": "jest"
+    "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.1"
+    "@prisma/client": "^6.16.2"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "prisma": "^6.17.1",
-    "@types/node": "^24.7.2"
+    "typescript": "^5.3.3",
+    "prisma": "^6.16.2",
+    "@types/node": "^20.11.2"
   }
 }

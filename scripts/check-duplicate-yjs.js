@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 // Simple heuristic detector for duplicate Yjs runtime in Next.js `.next` output.
 // Usage: node scripts/check-duplicate-yjs.js --dir apps/web/.next --report out.json
 
@@ -324,13 +325,6 @@ async function main() {
     `Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`
   );
   if (report) console.log(`Wrote report to ${report}`);
-
-  // If the caller requested a report file, treat this as "report-only" mode:
-  // always exit 0 after writing the report so callers (tests/CI) can inspect
-  // the JSON output without the process status signaling failure.
-  if (report) {
-    process.exit(0);
-  }
 
   if (result.flaggedFiles > 1) {
     console.error(
