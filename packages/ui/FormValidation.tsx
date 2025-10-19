@@ -38,7 +38,6 @@ export interface FormValidationHookResult {
 export interface FormValidationProps {
   children: ReactNode;
   validation: FieldValidation;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, unknown>;
   onValidationChange?: (isValid: boolean, errors: ValidationErrors) => void;
   showErrorsOnMount?: boolean;
@@ -175,7 +174,6 @@ const defaultValidators = {
 };
 
 // Utility function to validate a single field
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateField = (
   value: unknown,
   rules: ValidationRule[]
@@ -199,7 +197,6 @@ export const validateField = (
 };
 
 // Utility function to validate all fields
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateForm = (
   data: Record<string, unknown>,
   validation: FieldValidation
