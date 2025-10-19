@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
 import type { Prisma } from '@prisma/client';
 import logger from '@udp/logger';
-import { getErrorMessage, toEnum, isPrismaError } from '@udp/server-utils';
+import { getErrorMessage, toEnum, isPrismaError } from 'lib/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,12 +34,10 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (context && typeof context === 'string') {
-      // `toEnum` returns a string/enum value; cast to the Prisma where input
-      // context type so TypeScript accepts the assignment. This preserves
-      // runtime behavior while keeping the types aligned.
-      where.context = toEnum(
-        context
-      ) as unknown as Prisma.AiChatSessionWhereInput['context'];
+      // Use explicit enum typing and a filter object to avoid fragile casts.
+      where.context = {
+        equals: toEnum<Prisma.AiChatSessionContext>(context),
+      };
     }
 
     const sessions = await prisma.aiChatSession.findMany({

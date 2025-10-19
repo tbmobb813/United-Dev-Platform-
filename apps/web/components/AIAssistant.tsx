@@ -1,6 +1,7 @@
 /* global TextDecoder */
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Card, Stack, Input, Button, Loading } from '@udp/ui';
+import logger from '@udp/logger';
 
 export interface ChatMessage {
   id: string;
@@ -158,7 +159,7 @@ Please provide helpful, accurate coding assistance with explanations.`;
         }
       }
     } catch (error) {
-      console.error('AI request failed:', error);
+      logger.error('AI request failed:', error);
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',

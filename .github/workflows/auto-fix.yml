@@ -18,15 +18,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Enable Corepack & pnpm (pinned)
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.0.0 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: "18"
+
+      - name: Enable Corepack & pnpm (pinned)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -54,6 +54,12 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         run: |
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+
+      - name: Configure git to set upstream on first push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          # Ensure git will automatically set the remote tracking branch on first push
+          git config --global push.autoSetupRemote true
 
       - name: Commit and push fixes
         if: steps.changes.outputs.changed == 'true'

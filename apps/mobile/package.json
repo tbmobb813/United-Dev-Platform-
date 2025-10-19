@@ -10,18 +10,18 @@
     "web": "expo start --web",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit",
-    "test": "jest --config ../../jest.config.core.cjs --runInBand"
+    "typecheck": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
     "@rivascva/react-native-code-editor": "^1.2.2",
     "@udp/editor-core": "workspace:*",
     "@udp/ui-native": "workspace:*",
-    "expo": "^54.0.13",
-    "expo-linking": "~8.0.8",
-    "react": "19.2.0",
-    "react-native": "0.74.0",
-    "y-websocket": "^3.0.0",
+    "expo": "^51.0.0",
+    "expo-linking": "~6.3.1",
+    "react": "18.2.0",
+    "react-native": "^0.74.0",
+    "y-websocket": "^1.5.4",
     "yjs": "^13.6.27"
   },
   "devDependencies": {
