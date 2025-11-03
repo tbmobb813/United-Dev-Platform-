@@ -395,7 +395,9 @@ export default function Home() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('userName');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('userName');
+    }
     router.push('/login');
   };
 
@@ -467,7 +469,7 @@ export default function Home() {
     <div>
       <Head>
         <title>Unified Dev Platform</title>
-      </Head>
+      <p>Logged in as: {String(userName)}</p>
       <h1>Unified Dev Platform (Web)</h1>
       <p>Logged in as: {userName ? String(userName) : 'Unknown'}</p>
       <Stack direction='row' gap='small' wrap>

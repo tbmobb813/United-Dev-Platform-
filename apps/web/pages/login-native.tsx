@@ -7,7 +7,9 @@ export default function LoginNative() {
 
   const handleLogin = () => {
     if (name.trim()) {
-      localStorage.setItem('userName', name.trim());
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userName', name.trim());
+      }
       router.push('/');
     }
   };
