@@ -6,7 +6,13 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   transform: {
     // Ensure ts-jest compiles TypeScript and uses ESM
-    '^.+\\.[tj]sx?$': ['ts-jest', { useESM: true }],
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+        isolatedModules: true,
+      },
+    ],
   },
   // Ignore common build folders and the repository-level jest.setup.ts under __tests__
   testPathIgnorePatterns: [

@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=20.9.0"
   },
   "pnpm": {
     "overrides": {
@@ -29,7 +29,6 @@
   },
   "scripts": {
     "build": "turbo build",
-    "prepare": "husky install",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",

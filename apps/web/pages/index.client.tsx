@@ -31,10 +31,14 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   loading: () => <Loading text='Loading editor...' />,
 });
 
-const QRCode = dynamic(() => import('qrcode.react'), {
-  ssr: false,
-  loading: () => <Loading text='Loading QR code...' />,
-});
+const QRCode = dynamic<any>(
+  () =>
+    import('qrcode.react').then(mod => (mod && (mod as any).default) || mod),
+  {
+    ssr: false,
+    loading: () => <Loading text='Loading QR code...' />,
+  }
+);
 
 function generateColor() {
   const letters = '0123456789ABCDEF';
@@ -408,12 +412,10 @@ export default function Home() {
     setIsFileManagerOpen(false);
   };
 
-  // _content is intentionally unused for now; keep the parameter as a placeholder
-  // for future save logic. Suppress the unused-vars rule for this line only.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleFileSave = (filePath: string, _content: string) => {
+  const handleFileSave = (filePath: string, content: string) => {
+    // Save file content to localStorage as a placeholder for actual save logic
+    localStorage.setItem(`file:${filePath}`, content);
     // Implement save logic here
-    // _content is intentionally unused for now; kept for future save logic
     setFile(filePath);
     setIsFileManagerOpen(false);
   };
