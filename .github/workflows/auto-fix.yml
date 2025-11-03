@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   autofix:
@@ -18,15 +19,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
       - name: Enable Corepack & pnpm (pinned)
         run: |
           corepack enable
           corepack prepare pnpm@9.0.0 --activate
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "18"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -55,24 +56,42 @@ jobs:
         run: |
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
-      - name: Commit and push fixes
+      - name: Discard workflow file changes
         if: steps.changes.outputs.changed == 'true'
+        run: |
+          # Ensure no changes under .github/workflows are staged or present in the working tree
+          if [ -n "$(git status --porcelain .github/workflows || true)" ]; then
+            echo "Reverting changes under .github/workflows to avoid workflows permission issues"
+            git restore --staged .github/workflows || true
+            git checkout -- .github/workflows || true
+          fi
+
+      - name: Re-evaluate changes after discard
+        id: changes2
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then echo "changed=true" >> $GITHUB_OUTPUT; else echo "changed=false" >> $GITHUB_OUTPUT; fi
+
+      - name: Commit fixes
+        if: steps.changes2.outputs.changed == 'true'
         uses: EndBug/add-and-commit@v9
         with:
           message: "chore: apply ESLint/Prettier auto-fixes"
-          add: "."
+          # Exclude workflow files to avoid permission issues when GITHUB_TOKEN
+          # doesn't have `workflows:write`, and to prevent auto-formatting CI configs.
+          # Uses git's pathspec exclusion syntax.
+          add: ". ':(exclude).github/workflows/**'"
           author_name: "github-actions[bot]"
           author_email: "github-actions[bot]@users.noreply.github.com"
-          push: true
+          push: false
 
-      - name: Ensure branch has upstream
-        if: steps.changes.outputs.changed == 'true'
+      - name: Push fixes branch (set upstream)
+        if: steps.changes2.outputs.changed == 'true'
         run: |
-          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-          git push --set-upstream origin ${{ steps.newbranch.outputs.branch }}
+          git push --set-upstream origin "${{ steps.newbranch.outputs.branch }}"
 
       - name: Create Pull Request with fixes
-        if: steps.changes.outputs.changed == 'true'
+        if: steps.changes2.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -4,6 +4,7 @@ import * as os from 'os';
 import { spawnSync } from 'child_process';
 import { describe, it, expect, beforeAll } from '@jest/globals';
 
+import logger from '@udp/logger';
 describe('duplicate-yjs detector - integration', () => {
   const fixtureDir = path.resolve(
     __dirname,
@@ -44,13 +45,11 @@ describe('duplicate-yjs detector - integration', () => {
     );
 
     // Surface stdout/stderr to help debug CI flakes
-    // eslint-disable-next-line no-console
     if (res.stdout) {
-      console.log('detector stdout:', res.stdout);
+      logger.info('detector stdout:', res.stdout);
     }
-    // eslint-disable-next-line no-console
     if (res.stderr) {
-      console.log('detector stderr:', res.stderr);
+      logger.info('detector stderr:', res.stderr);
     }
 
     if (res.error) {

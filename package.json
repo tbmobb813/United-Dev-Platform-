@@ -4,12 +4,13 @@
   "type": "module",
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=20.9.0"
   },
   "pnpm": {
     "overrides": {
       "react": "18.3.1",
-      "react-dom": "18.3.1"
+      "react-dom": "18.3.1",
+      "yjs": "13.6.27"
     }
   },
   "scripts": {
@@ -20,8 +21,12 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "turbo type-check",
+    "typecheck": "pnpm -w run type-check",
     "clean": "turbo clean && rm -rf node_modules",
     "test": "turbo test",
+    "test:critical": "jest --config jest.config.critical.cjs",
+    "test:core": "jest --config jest.config.core.cjs",
+    "test:full": "jest --config jest.config.full.cjs",
     "check": "pnpm lint && pnpm type-check && pnpm test",
     "fix": "pnpm lint:fix && pnpm format",
     "reset": "pnpm clean && pnpm install",
@@ -33,15 +38,30 @@
     "dev:mobile": "cd apps/mobile && pnpm start",
     "dev:all": "turbo dev --parallel",
     "prebuild": "pnpm check && pnpm validate-env",
-    "postinstall": "pnpm type-check"
+    "postinstall": "pnpm type-check",
+    "check:console": "node scripts/replace-console-with-logger.cjs --dry-run --report=artifacts/console-replace-report.json",
+    "apply:console": "node scripts/replace-console-with-logger.cjs --apply --report=artifacts/console-replace-report.json",
+    "mark:cli": "node scripts/mark-cli-no-console.cjs",
+    "test:scripts": "node scripts/__tests__/replace-console.test.cjs"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.13",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "turbo": "^2.0.0",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
-    "eslint": "^8.57.1",
-    "prettier": "^3.2.5",
-    "turbo": "^1.12.5",
-    "typescript": "^5.3.3",
+    "eslint": "^9.17.0",
+    "prettier": "^3.6.2",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.0",
+    "typescript": "^5.9.3",
     "dotenv": "^16.1.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

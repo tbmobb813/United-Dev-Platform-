@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+ 
 // Simple CommonJS shim that ensures a single Yjs instance is used across bundles.
 // This file intentionally uses CommonJS so it can be resolved consistently by webpack.
 let yjsInstance;

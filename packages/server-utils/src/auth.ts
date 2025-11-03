@@ -8,7 +8,7 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: 'jwt' },
 };
 
-export async function requireAuth(req: NextApiRequest, res: NextApiResponse) {
+export async function requireAuth(req: IncomingMessage, res: ServerResponse) {
   try {
     const session = await getServerSession(
       req as any,
