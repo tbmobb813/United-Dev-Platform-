@@ -2,6 +2,9 @@ import { resolve } from 'path';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
+// Resolve the canonical yjs ESM entry point once for reuse in aliases and plugins
+const yjsEsm = require.resolve('yjs');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
