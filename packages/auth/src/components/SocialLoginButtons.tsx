@@ -1,4 +1,5 @@
 import React from 'react';
+import logger from '@udp/logger';
 
 export interface SocialProvider {
   id: string;
