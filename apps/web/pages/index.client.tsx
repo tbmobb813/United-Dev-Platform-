@@ -408,12 +408,10 @@ export default function Home() {
     setIsFileManagerOpen(false);
   };
 
-  // _content is intentionally unused for now; keep the parameter as a placeholder
-  // for future save logic. Suppress the unused-vars rule for this line only.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleFileSave = (filePath: string, _content: string) => {
+  const handleFileSave = (filePath: string, content: string) => {
+    // Save file content to localStorage as a placeholder for actual save logic
+    localStorage.setItem(`file:${filePath}`, content);
     // Implement save logic here
-    // _content is intentionally unused for now; kept for future save logic
     setFile(filePath);
     setIsFileManagerOpen(false);
   };

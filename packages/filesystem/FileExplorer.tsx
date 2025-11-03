@@ -72,7 +72,6 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const dragCounter = useRef(0);
   // reference to the drop zone element
   const dropZoneRef = useRef<HTMLDivElement>(null);
-
   // Load directory contents
   const loadDirectory = useCallback(
     async (path: string) => {
