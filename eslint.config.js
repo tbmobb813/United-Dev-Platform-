@@ -74,7 +74,11 @@ const config = [
       '@typescript-eslint/no-var-requires': 'error',
 
       // General rules
-      'no-console': 'warn',
+      // Treat runtime console usage in application/library code as errors so
+      // the CI / console-check tooling can enforce replacement with the
+      // shared logger. CLI scripts and the logger's browser entrypoint are
+      // explicitly exempted via overrides below.
+      'no-console': 'error',
       'no-debugger': 'error',
       'no-unused-vars': 'off', // Handled by TypeScript
       'prefer-const': 'error',
@@ -90,6 +94,19 @@ const config = [
       'no-implied-eval': 'error',
     },
   },
+  // Allow console in CLI scripts and in the logger browser entrypoint which
+  // intentionally delegates to the platform console for small bundles.
+  {
+    files: [
+      'scripts/**/*',
+      'bin/**/*',
+      '**/*.cjs',
+      'packages/logger/browser.*',
+    ],
+    rules: {
+      'no-console': 'off',
+    },
+  },
   // React-specific config for .tsx files
   {
     files: ['**/*.{tsx,jsx}'],
@@ -98,25 +115,26 @@ const config = [
       'react/react-in-jsx-scope': 'off', // Not needed in React 17+
     },
   },
-  // Test files configuration
+  // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts
   {
-    files: [
-      '**/__tests__/**/*.{ts,tsx,js,jsx}',
-      '**/*.test.{ts,tsx,js,jsx}',
-      '**/*.spec.{ts,tsx,js,jsx}',
-    ],
+    files: ['**/jest.config.*', '**/*.cjs'],
     languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
       globals: {
-        describe: 'readonly',
-        it: 'readonly',
-        test: 'readonly',
-        expect: 'readonly',
-        beforeEach: 'readonly',
-        afterEach: 'readonly',
-        beforeAll: 'readonly',
-        afterAll: 'readonly',
-        jest: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        process: 'readonly',
       },
+    },
+    rules: {
+      // Allow require-style imports and var requires in config files
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      // Node config files may reference globals like __dirname
+      'no-undef': 'off',
     },
   },
 ];

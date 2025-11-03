@@ -1,0 +1,1248 @@
+[
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/test-import.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/next.config.mjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/middleware.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/eslint.config.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/src/shims/yjs-shim.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/test-ai.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/test-ai.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/simple.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/simple.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/presence-demo.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/presence-demo.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/offline-demo.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/offline-demo.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/minimal.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/minimal.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/login.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/login.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/login-native.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/login-native.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/index.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/index.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/debug.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/debug.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/button-test.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/button-test.client.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/_document.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/_app.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/OfflineEditor.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/auth/signin.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/auth/error.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/ai.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/users/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/users/[id].ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/projects/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/projects/[id].ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/projects/[id]/sessions.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/projects/[id]/files.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/projects/[id]/files/[fileId].ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/auth/[...nextauth].ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/pages/api/ai/sessions.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/lib/utils.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/lib/prisma.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/lib/authOptions.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/lib/auth.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/components/OfflineEditorClient.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/components/ErrorBoundary.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/components/EnhancedCollaborationPanel.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/components/CodeCompletionProvider.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/components/AIAssistant.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/web/__tests__/critical/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/config.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/App.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/services/types.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/services/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/services/ApiService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/services/AIService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/components/MobileHome.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/components/FileViewer.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/components/FileNavigator.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/components/FileBrowser.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/components/CollaborativeEditor.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/app/(tabs)/collaborate.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/mobile/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/desktop/main.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/api/server.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/api/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/api/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/api/lib/prisma.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/api/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/api/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/apps/api/__tests__/critical/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/index.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/Loading.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/Layout.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/Input.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/Card.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/Button.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui-native/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/useKeyboardShortcuts.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/UserAvatar.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Tooltip.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Stack.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/ShortcutsHelp.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Settings.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/PresenceIndicator.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Notification.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Modal.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Loading.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Layout.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Input.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/FormValidation.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/FileManager.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/EnhancedPresencePanel.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/DataTable.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/CollaborationPanel.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Card.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Button.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/Breadcrumb.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ui/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/types/project.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/types/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/types/filesystem.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/types/ai.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/server-utils/src/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/server-utils/src/errors.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/server-utils/src/auth.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/server-utils/src/__tests__/errors.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/server-utils/scripts/run-vitest.js",
+    "changed": false,
+    "reason": "skipped-cli-or-shebang"
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/prettier-config/index.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/src/types.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/src/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/src/http.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/src/GitServiceFactory.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/src/GitService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/git/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/types.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/WorkspaceManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/VirtualFileSystem.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/SyncManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/ProjectNavigator.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/ProjectManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/NodeFileSystem.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/FileWatcher.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/FileManager.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/FileExplorer.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/scripts/check-duplicate-yjs.cjs",
+    "changed": false,
+    "reason": "skipped-cli-or-shebang"
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/__tests__/duplicate-yjs.integration.test.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/__tests__/virtual/virtualfilesystem.utils.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/__tests__/node/nodefilesystem.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/__tests__/core/filesystem.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/filesystem/__tests__/core/filesystem.api.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/eslint-config/react.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/eslint-config/react-native.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/eslint-config/node.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/eslint-config/index.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/eslint-config/base.js",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/types.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/awareness.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/OfflinePersistence.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/DocumentManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/editor-core/__tests__/critical/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/db/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/db/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/db/src/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/db/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/db/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/config/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/config/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/config/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/config/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/config/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/config/__tests__/core/config.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/config/__tests__/core/config.api.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/types.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/providers.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/TokenManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/SessionRepository.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/PasswordManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/AuthorizationManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/AuthService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/components/SocialLoginButtons.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/components/SignupForm.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/components/PasswordResetForm.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/components/LoginForm.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/auth/src/components/AuthGuard.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/jest.config.cjs",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/index.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/AIManager.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/AIAssistantSimple.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/AIAssistantClass.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/AIAssistant.tsx",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/RefactoringProvider.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/OpenAIService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/OllamaService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/ContextAwareAssistant.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/CodeCompletionProvider.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/AnthropicService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/AIServiceFactory.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/services/AIService.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/__tests__/smoke.test.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  },
+  {
+    "file": "/home/jsnni/projects/web-apps/United-Dev-Platform/packages/ai/__tests__/jest.setup.ts",
+    "changed": false,
+    "reason": "no-console-call-expr-found",
+    "aliasIssues": []
+  }
+]

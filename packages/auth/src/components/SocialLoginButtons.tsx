@@ -89,7 +89,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
     try {
       await onSocialLogin(providerId);
     } catch (error) {
-      console.error(`Social login failed for ${providerId}:`, error);
+      logger.error(`Social login failed for ${providerId}:`, error);
     }
   };
 
