@@ -31,10 +31,14 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   loading: () => <Loading text='Loading editor...' />,
 });
 
-const QRCode = dynamic(() => import('qrcode.react'), {
-  ssr: false,
-  loading: () => <Loading text='Loading QR code...' />,
-});
+const QRCode = dynamic<any>(
+  () =>
+    import('qrcode.react').then(mod => (mod && (mod as any).default) || mod),
+  {
+    ssr: false,
+    loading: () => <Loading text='Loading QR code...' />,
+  }
+);
 
 function generateColor() {
   const letters = '0123456789ABCDEF';
