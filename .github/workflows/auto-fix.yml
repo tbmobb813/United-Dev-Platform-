@@ -56,6 +56,16 @@ jobs:
         run: |
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
+      - name: Discard workflow file changes
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          # Ensure no changes under .github/workflows are staged or present in the working tree
+          if [ -n "$(git status --porcelain .github/workflows || true)" ]; then
+            echo "Reverting changes under .github/workflows to avoid workflows permission issues"
+            git restore --staged .github/workflows || true
+            git checkout -- .github/workflows || true
+          fi
+
       - name: Commit and push fixes
         if: steps.changes.outputs.changed == 'true'
         uses: EndBug/add-and-commit@v9
