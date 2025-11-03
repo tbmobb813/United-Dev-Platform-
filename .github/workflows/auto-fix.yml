@@ -66,8 +66,14 @@ jobs:
             git checkout -- .github/workflows || true
           fi
 
-      - name: Commit and push fixes
+      - name: Re-evaluate changes after discard
+        id: changes2
         if: steps.changes.outputs.changed == 'true'
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then echo "changed=true" >> $GITHUB_OUTPUT; else echo "changed=false" >> $GITHUB_OUTPUT; fi
+
+      - name: Commit fixes
+        if: steps.changes2.outputs.changed == 'true'
         uses: EndBug/add-and-commit@v9
         with:
           message: "chore: apply ESLint/Prettier auto-fixes"
@@ -77,10 +83,15 @@ jobs:
           add: ". ':(exclude).github/workflows/**'"
           author_name: "github-actions[bot]"
           author_email: "github-actions[bot]@users.noreply.github.com"
-          push: true
+          push: false
+
+      - name: Push fixes branch (set upstream)
+        if: steps.changes2.outputs.changed == 'true'
+        run: |
+          git push --set-upstream origin "${{ steps.newbranch.outputs.branch }}"
 
       - name: Create Pull Request with fixes
-        if: steps.changes.outputs.changed == 'true'
+        if: steps.changes2.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
