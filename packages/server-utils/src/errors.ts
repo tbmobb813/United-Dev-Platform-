@@ -15,7 +15,9 @@ export function getErrorMessage(error: unknown): string {
 }
 
 // Narrow Prisma error detection to the Prisma client known error shape
-export function isPrismaError(error: unknown): error is Prisma.PrismaClientKnownRequestError {
+export function isPrismaError(
+  error: unknown
+): error is Prisma.PrismaClientKnownRequestError {
   if (typeof error !== 'object' || error === null) {
     return false;
   }
