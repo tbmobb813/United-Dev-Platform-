@@ -469,6 +469,7 @@ export default function Home() {
     <div>
       <Head>
         <title>Unified Dev Platform</title>
+      </Head>
       <p>Logged in as: {String(userName)}</p>
       <h1>Unified Dev Platform (Web)</h1>
       <p>Logged in as: {userName ? String(userName) : 'Unknown'}</p>
