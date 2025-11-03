@@ -408,7 +408,8 @@ export default function Home() {
     setIsFileManagerOpen(false);
   };
 
-  const handleFileSave = (filePath: string, content: string) => {
+    // Save file content to localStorage as a placeholder for actual save logic
+    localStorage.setItem(`file:${filePath}`, content);
     // Implement save logic here
     setFile(filePath);
     setIsFileManagerOpen(false);
