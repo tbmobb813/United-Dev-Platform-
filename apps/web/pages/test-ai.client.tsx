@@ -4,16 +4,17 @@
 import React, { useState } from 'react';
 import { AIAssistant } from '@udp/ai';
 import { Button } from '@udp/ui';
+import logger from '@udp/logger';
 
 export default function TestAIAssistantClient() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [currentFile] = useState('test-file.tsx');
   const [selectedCode] = useState(
-    'function testFunction() {\n  console.log("Hello world!");\n}'
+    'function testFunction() {\n  logger.info("Hello world!");\n}'
   );
 
   const handleCodeInsert = (code: string) => {
-    console.log('Inserting code:', code);
+    logger.info('Inserting code:', code);
     window.alert(`Code would be inserted: ${code.substring(0, 50)}...`);
   };
 

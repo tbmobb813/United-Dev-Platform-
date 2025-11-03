@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=20.9.0"
   },
   "pnpm": {
     "overrides": {
@@ -15,15 +15,18 @@
   },
   "scripts": {
     "build": "turbo build",
-    "prepare": "husky install",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "turbo type-check",
+    "typecheck": "pnpm -w run type-check",
     "clean": "turbo clean && rm -rf node_modules",
     "test": "turbo test",
+    "test:critical": "jest --config jest.config.critical.cjs",
+    "test:core": "jest --config jest.config.core.cjs",
+    "test:full": "jest --config jest.config.full.cjs",
     "check": "pnpm lint && pnpm type-check && pnpm test",
     "fix": "pnpm lint:fix && pnpm format",
     "reset": "pnpm clean && pnpm install",
@@ -35,7 +38,11 @@
     "dev:mobile": "cd apps/mobile && pnpm start",
     "dev:all": "turbo dev --parallel",
     "prebuild": "pnpm check && pnpm validate-env",
-    "postinstall": "pnpm type-check"
+    "postinstall": "pnpm type-check",
+    "check:console": "node scripts/replace-console-with-logger.cjs --dry-run --report=artifacts/console-replace-report.json",
+    "apply:console": "node scripts/replace-console-with-logger.cjs --apply --report=artifacts/console-replace-report.json",
+    "mark:cli": "node scripts/mark-cli-no-console.cjs",
+    "test:scripts": "node scripts/__tests__/replace-console.test.cjs"
   },
   "devDependencies": {
     "@udp/eslint-config": "workspace:*",
