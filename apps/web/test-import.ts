@@ -3,7 +3,6 @@ import { AIAssistant } from '@udp/ai';
 import { Button, Card, Modal } from '@udp/ui';
 import logger from '@udp/logger';
 
- 
 logger.info('✅ All imports successful!');
 logger.info('AIAssistant:', typeof AIAssistant);
 logger.info('Button:', typeof Button);
