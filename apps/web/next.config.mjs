@@ -138,8 +138,8 @@ const nextConfig = {
   // Allow very small modules (like a single CJS file) to be pulled
   // into the vendors-yjs chunk and prefer reusing an existing
   // vendors-yjs chunk rather than creating a separate one.
-  minSize: 0,
-  reuseExistingChunk: true,
+  "minSize": 0,
+  "reuseExistingChunk": true,
       },
     };
 
