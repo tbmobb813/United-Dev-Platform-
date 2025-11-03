@@ -12,12 +12,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: "18"
+      - name: Enable Corepack & pnpm (early)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
-      - name: Enable Corepack and install pnpm (pinned)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Enable Corepack and prepare pnpm (pinned)
         run: |
           corepack enable
           # Pin to the repo's packageManager / pnpm version to ensure reproducible CI
@@ -40,7 +45,7 @@ jobs:
         run: pnpm type-check
 
       - name: Run tests
-        run: pnpm test:ci
+        run: pnpm test:core
 
       - name: Build web
         run: pnpm --filter @udp/web build
