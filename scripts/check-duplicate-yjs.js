@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 // Simple heuristic detector for duplicate Yjs runtime in Next.js `.next` output.
 // Usage: node scripts/check-duplicate-yjs.js --dir apps/web/.next --report out.json
 
@@ -143,7 +144,7 @@ async function mapMatchesToSources(matches) {
     if (!mapPath) {
       // Look for //# sourceMappingURL=... or //@ sourceMappingURL=... or /*# sourceMappingURL=... */
       const singleLineMatch = content.match(
-        /(?:\/\/|\/*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
+        /(?:\/\/|\/\*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
       );
       if (singleLineMatch && singleLineMatch[1]) {
         const raw = singleLineMatch[1].trim();
@@ -277,7 +278,15 @@ async function main() {
     if (srcBase && allowlistBasenames.includes(srcBase)) return false;
     if (rsrcBase && allowlistBasenames.includes(rsrcBase)) return false;
     // Suffix match: allowlist entry may be a CI path that ends with the same suffix
-    if (normalizedAllowlist.some(a => gen.endsWith(a) || (src && src.endsWith(a)) || (rsrc && rsrc.endsWith(a)))) return false;
+    if (
+      normalizedAllowlist.some(
+        a =>
+          gen.endsWith(a) ||
+          (src && src.endsWith(a)) ||
+          (rsrc && rsrc.endsWith(a))
+      )
+    )
+      return false;
     return true;
   });
 

@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import logger from '@udp/logger';
 import type {
   FileSystemEvent,
   FileSystemEventType,
@@ -59,8 +60,7 @@ export class FileWatcher extends EventEmitter {
       );
       this.watchedPaths.add(path);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(`Failed to watch path ${path}:`, error);
+      logger.error(`Failed to watch path ${path}:`, error);
       throw error;
     }
   }
@@ -77,8 +77,7 @@ export class FileWatcher extends EventEmitter {
       await this.fs.unwatch(path);
       this.watchedPaths.delete(path);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(`Failed to unwatch path ${path}:`, error);
+      logger.error(`Failed to unwatch path ${path}:`, error);
       throw error;
     }
   }
@@ -136,8 +135,7 @@ export class FileWatcher extends EventEmitter {
 
       this.emit('file:changed', filePath, fileContent as string);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(`Failed to sync file ${filePath}:`, error);
+      logger.error(`Failed to sync file ${filePath}:`, error);
     }
   }
 
@@ -176,8 +174,7 @@ export class FileWatcher extends EventEmitter {
           this.addToSyncQueue(operation);
         })
         .catch((error: Error) => {
-          // eslint-disable-next-line no-console
-          console.error(
+          logger.error(
             `Failed to read file content for sync: ${event.path}`,
             error
           );
@@ -205,8 +202,7 @@ export class FileWatcher extends EventEmitter {
         await this.processSyncOperation(operation);
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error processing sync queue:', error);
+      logger.error('Error processing sync queue:', error);
     } finally {
       this.isProcessing = false;
     }
@@ -241,8 +237,7 @@ export class FileWatcher extends EventEmitter {
 
       this.emit('sync:required', path, type);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(`Failed to process sync operation for ${path}:`, error);
+      logger.error(`Failed to process sync operation for ${path}:`, error);
     }
   }
 
@@ -284,8 +279,7 @@ export class FileWatcher extends EventEmitter {
       // Write changes back to filesystem
       await this.fs.writeFile(filePath, content);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(
+      logger.error(
         `Failed to sync document changes to filesystem for ${filePath}:`,
         error
       );
@@ -325,8 +319,7 @@ export class FileWatcher extends EventEmitter {
       try {
         await this.fs.unwatch(path);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(`Failed to cleanup watcher for ${path}:`, error);
+        logger.error(`Failed to cleanup watcher for ${path}:`, error);
       }
     }
 

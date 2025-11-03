@@ -66,7 +66,10 @@ const defaultValidators = {
 
   min: (value: unknown, rule: ValidationRule): string | null => {
     if (rule.min !== undefined && value !== null && value !== undefined) {
-      const numValue = Number(String(value));
+      const numValue =
+        typeof value === 'string' || typeof value === 'number'
+          ? Number(value)
+          : NaN;
       if (!isNaN(numValue) && numValue < rule.min) {
         return rule.message || `Value must be at least ${rule.min}`;
       }

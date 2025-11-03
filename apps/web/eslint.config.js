@@ -1,13 +1,8 @@
-import { FlatCompat } from '@eslint/eslintrc';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import globals from 'globals';
 
 const config = [
   {
@@ -25,16 +20,87 @@ const config = [
       'generated/prisma/**/wasm-*.js',
     ],
   },
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     ignores: ['next-env.d.ts'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.es2021,
+      },
+    },
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
-      // Disable crashing Next.js rule locally
-      '@next/next/no-duplicate-head': 'off',
       '@typescript-eslint/triple-slash-reference': 'off',
+      'react/jsx-uses-react': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+  // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts
+  {
+    files: ['**/jest.config.*', '**/*.cjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
+      globals: {
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        process: 'readonly',
+      },
+    },
+    rules: {
+      // Allow require-style imports and var requires in config files
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      // Node config files may reference globals like __dirname
+      'no-undef': 'off',
+    },
+  },
+  // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts
+  {
+    files: ['**/jest.config.*', '**/*.cjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
+      globals: {
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        process: 'readonly',
+      },
+    },
+    rules: {
+      // Allow require-style imports and var requires in config files
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      // Node config files may reference globals like __dirname
+      'no-undef': 'off',
     },
   },
   // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts
