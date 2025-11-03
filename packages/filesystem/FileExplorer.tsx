@@ -71,8 +71,8 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
 
   const dragCounter = useRef(0);
   // reference to the drop zone element
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dropZoneRef = useRef<any>(null);
+  // Use a union type for DOM elements to preserve type safety
+  const dropZoneRef = useRef<HTMLDivElement | HTMLElement | null>(null);
 
   // Load directory contents
   const loadDirectory = useCallback(
