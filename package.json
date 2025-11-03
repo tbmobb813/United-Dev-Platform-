@@ -44,7 +44,7 @@
     "mark:cli": "node scripts/mark-cli-no-console.cjs",
     "test:scripts": "node scripts/__tests__/replace-console.test.cjs"
   },
-  "devDependencies": {
+    "turbo": "^2.5.8",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "eslint": "^8.57.1",
