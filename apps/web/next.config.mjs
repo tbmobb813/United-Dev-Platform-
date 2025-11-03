@@ -11,9 +11,10 @@ const nextConfig = {
   // we identify the offending package/file and apply a permanent fix.
   productionBrowserSourceMaps: true,
   transpilePackages: ['@udp/editor-core', '@udp/ui', '@udp/ai'],
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // Empty turbopack config to silence Next.js 16 warning about webpack config
+  // without corresponding turbopack config. The webpack config below is still
+  // used when building with webpack (via --webpack flag).
+  turbopack: {},
   typescript: {
     ignoreBuildErrors: true,
   },
