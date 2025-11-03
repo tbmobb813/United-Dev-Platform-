@@ -1,0 +1,54 @@
+name: Console check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  console-check:
+    name: Run console policy check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "18"
+          cache: "pnpm"
+
+      - name: Setup pnpm via action (best-effort)
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+
+      - name: Fallback: Ensure pnpm (via corepack)
+        run: |
+          set -euxo pipefail
+          # Enable corepack and install/activate the requested pnpm version if action didn't provide it
+          corepack enable || true
+          corepack prepare pnpm@9.0.0 --activate || true
+
+      - name: Diagnostics: environment and pnpm
+        run: |
+          echo "--- PATH ---"
+          echo "$PATH"
+          echo "--- which pnpm ---"
+          which pnpm || true
+          echo "--- node/pnpm versions ---"
+          node --version || true
+          pnpm --version || true
+
+      - name: Install dependencies (verbose)
+        run: pnpm install --frozen-lockfile --reporter=ndjson
+
+      - name: Run console-check (dry-run)
+        run: pnpm -w run check:console
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: console-replace-report
+          path: artifacts/console-replace-report.json

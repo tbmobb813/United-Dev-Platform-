@@ -1,5 +1,6 @@
 // Import monaco types only for TypeScript, not runtime
 import type * as Monaco from 'monaco-editor';
+import logger from '@udp/logger';
 
 export interface CodeSuggestion {
   label: string;
@@ -114,9 +115,9 @@ export class CodeCompletionProvider {
         provideCompletionItems,
       });
 
-      console.log('✅ Code completion providers registered');
+      logger.info('✅ Code completion providers registered');
     } catch (error) {
-      console.warn('❌ Could not register code completion providers:', error);
+      logger.warn('❌ Could not register code completion providers:', error);
     }
   }
 
@@ -157,9 +158,9 @@ export class CodeCompletionProvider {
       monaco.languages.registerHoverProvider('javascript', jsHoverProvider);
       monaco.languages.registerHoverProvider('typescript', jsHoverProvider);
 
-      console.log('✅ Hover providers registered');
+      logger.info('✅ Hover providers registered');
     } catch (error) {
-      console.warn('❌ Could not register hover providers:', error);
+      logger.warn('❌ Could not register hover providers:', error);
     }
   }
 

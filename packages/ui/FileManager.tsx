@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logger from '@udp/logger';
 import { Modal } from './Modal';
 import { Card } from './Card';
 import { Input } from './Input';
@@ -81,10 +82,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
       onClose();
     } catch (error) {
-      // Intentionally use console here; suppress lint rule because this UI helper
-      // can surface runtime issues to the developer during local debugging.
-      // eslint-disable-next-line no-console
-      console.warn('File operation failed:', error);
+      logger.error('File operation failed:', error);
     } finally {
       setIsLoading(false);
     }

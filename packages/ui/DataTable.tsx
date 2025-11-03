@@ -1,7 +1,7 @@
 import React, { useMemo, useState, ReactNode } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableColumn<T = Record<string, unknown>> {
+export interface DataTableColumn<T = Record<string, React.Key>> {
   key: string;
   title: string;
   dataIndex?: string;
@@ -16,13 +16,14 @@ export interface DataTableColumn<T = Record<string, unknown>> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataTableProps<T = Record<string, unknown>> {
+export interface DataTableProps<T = Record<string, React.Key>> {
   columns: DataTableColumn<T>[];
   data: T[];
   loading?: boolean;
   pagination?: PaginationConfig | false;
   rowSelection?: RowSelectionConfig<T>;
-  rowKey?: string | ((record: T) => string);
+  // rowKey can be a key of T or a function that returns a React.Key
+  rowKey?: keyof T | ((record: T) => React.Key);
   onRow?: (record: T, index: number) => React.HTMLAttributes<unknown>;
   className?: string;
   size?: 'small' | 'medium' | 'large';
@@ -48,7 +49,7 @@ export interface PaginationConfig {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface RowSelectionConfig<T = Record<string, unknown>> {
+export interface RowSelectionConfig<T = Record<string, React.Key>> {
   type?: 'checkbox' | 'radio';
   selectedRowKeys?: React.Key[];
   onChange?: (selectedRowKeys: React.Key[], selectedRows: T[]) => void;
@@ -70,15 +71,14 @@ interface SortState {
   field: string | null;
   direction: SortDirection;
 }
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const DataTable = <T extends Record<string, unknown>>({
+export const DataTable = <T extends Record<string, React.Key>>({
   columns,
   data,
   loading = false,
   pagination = false,
   rowSelection,
-  rowKey = 'id',
+  rowKey,
   onRow,
   className = '',
   size = 'medium',
@@ -104,10 +104,11 @@ export const DataTable = <T extends Record<string, unknown>>({
     if (typeof rowKey === 'function') {
       return rowKey(record);
     }
-    return (
-      ((record as Record<string, unknown>)[rowKey as string] as React.Key) ||
-      index
-    );
+    if (rowKey) {
+      // rowKey is a keyof T and T's values are constrained to React.Key, so direct access is safe
+      return record[rowKey as keyof T];
+    }
+    return index;
   };
 
   const handleSort = (field: string) => {
@@ -248,7 +249,7 @@ export const DataTable = <T extends Record<string, unknown>>({
     }
 
     if (column.dataIndex) {
-      return record[column.dataIndex] as React.ReactNode;
+      return record[column.dataIndex] as unknown as ReactNode;
     }
 
     return null;

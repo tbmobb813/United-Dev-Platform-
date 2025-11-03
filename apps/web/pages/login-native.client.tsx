@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import styles from './styles/DemoPages.module.css';
 
 export default function LoginNativeClient() {
   const router = useRouter();
@@ -15,26 +16,16 @@ export default function LoginNativeClient() {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className={styles.container}>
       <h1>Login (Native Button)</h1>
       <input
         value={name}
         onChange={e => setName(e.target.value)}
         placeholder='Enter your name'
-        style={{ padding: 6, border: '1px solid #ddd', borderRadius: 6 }}
+        className={styles.input}
       />
-      <div style={{ marginTop: 12 }}>
-        <button
-          onClick={handleLogin}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#0070f3',
-            borderRadius: 4,
-            color: '#fff',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
+      <div className={styles.buttonSpacing}>
+        <button onClick={handleLogin} className={styles.primaryButton}>
           Enter
         </button>
       </div>
