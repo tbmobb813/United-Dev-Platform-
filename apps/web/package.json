@@ -21,7 +21,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.10.0",
+    "@auth/prisma-adapter": "^2.11.0",
     "@monaco-editor/react": "^4.6.0",
     "@prisma/client": "^6.16.2",
     "@tanstack/react-query": "^5.51.0",
@@ -38,7 +38,7 @@
     "react-dom": "^18.3.1",
     "uuid": "^9.0.0",
     "y-protocols": "^1.0.6",
-    "y-websocket": "^1.5.4",
+    "y-websocket": "^3.0.0",
     "yjs": "^13.6.27"
   },
   "devDependencies": {
@@ -47,10 +47,14 @@
     "@typescript-eslint/parser": "^8.44.0",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^14.2.32",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^16.0.1",
+    "eslint-plugin-react": "^7.35.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2"
   },
   "eslintConfig": {
     "extends": [

@@ -15,7 +15,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noUncheckedIndexedAccess": true,
-    "types": ["node"]
+    "baseUrl": ".",
+    "paths": {
+      "@udp/*": ["../*/index.ts", "../*/src/index.ts", "../*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]

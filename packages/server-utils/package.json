@@ -2,15 +2,16 @@
   "name": "@udp/server-utils",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node ./scripts/run-vitest.js"
+    "test": "vitest --run"
   },
   "dependencies": {
-    "next-auth": "^4.24.11",
-    "@udp/db": "workspace:*"
+    "@udp/db": "workspace:*",
+    "next-auth": "^4.24.11"
   },
   "devDependencies": {
     "typescript": "^5.3.3",

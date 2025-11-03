@@ -1,9 +1,10 @@
 {
   "name": "@udp/logger",
   "version": "0.1.0",
+  "type": "module",
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
-    "test": "jest --config ../../jest.config.core.cjs --runInBand"
+    "test": "jest --config ../../jest.config.cjs"
   }
 }
