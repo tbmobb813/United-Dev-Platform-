@@ -1,5 +1,3 @@
-import type { Prisma } from '@prisma/client';
-
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
@@ -17,7 +15,7 @@ export function getErrorMessage(error: unknown): string {
 // Narrow Prisma error detection to the Prisma client known error shape
 export function isPrismaError(
   error: unknown
-): error is Prisma.PrismaClientKnownRequestError {
+): error is { code: string; meta?: Record<string, unknown> } {
   if (typeof error !== 'object' || error === null) {
     return false;
   }
