@@ -89,11 +89,10 @@ export default function Home() {
   }, []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // Generate both mobile app deeplink and fallback web URL
-  const webUrl = `${
-    typeof window !== 'undefined'
+  const webUrl = `${typeof window !== 'undefined'
       ? window.location.origin
       : 'http://localhost:3000'
-  }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
+    }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
   )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(
