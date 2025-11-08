@@ -106,7 +106,8 @@ export default function Home() {
   const editorRef = useRef<
     import('monaco-editor').editor.IStandaloneCodeEditor | null
   >(null);
-  const ignoreRef = useRef(false);
+  type MonacoBindingType = { destroy: () => void };
+  const bindingRef = useRef<MonacoBindingType | null>(null);
   const [users, setUsers] = useState<
     {
       id: string;
@@ -230,7 +231,7 @@ export default function Home() {
     } catch (error) {
       logger.error('Error setting up Yjs:', error);
     }
-  }, [room, docName, userName, userId]);
+  }, [room, docName, session, userId, status, effectiveUserName, fileId, router]);
 
   const updateCursorDecorations = (
     usersWithCursors: {
