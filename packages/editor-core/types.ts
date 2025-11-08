@@ -2,6 +2,7 @@ export interface UserPresence {
   id: string;
   name: string;
   color: string;
+  cursor?: { x: number; y: number };
   lastSeen: Date;
   isActive: boolean;
 }

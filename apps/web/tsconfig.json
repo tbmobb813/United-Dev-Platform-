@@ -17,7 +17,8 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@udp/*": ["../../packages/*/index.ts", "../../packages/*/src/index.ts", "../../packages/*"],
-      "lib/*": ["./lib/*"]
+      "lib/*": ["./lib/*"],
+      "~/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
