@@ -9,6 +9,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Require authentication for all project operations
+<<<<<<< HEAD
   type AuthSession = { user?: { id?: string } | null } | null | undefined;
   function isAuthSession(value: unknown): value is AuthSession {
     if (typeof value !== 'object' || value === null) return false;
@@ -28,7 +29,7 @@ export default async function handler(
   if (!session || !session.user) {
     return;
   }
-  const userId = (session.user as { id?: string } | undefined)?.id;
+  const userId = ((session as any).user as { id?: string } | undefined)?.id;
   if (!userId) {
     return;
   }
