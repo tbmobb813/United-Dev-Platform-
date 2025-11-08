@@ -1,20 +1,27 @@
-
 describe('Yjs Duplication Check', () => {
   it('should not have multiple Yjs instances', () => {
-    // Use Record<string, unknown> for globalScope to avoid 'any' warnings
-    const globalScope: Record<string, unknown> = typeof globalThis !== 'undefined'
-      ? (globalThis as unknown as Record<string, unknown>)
-      : (typeof window !== 'undefined' ? (window as unknown as Record<string, unknown>) : {});
+    // This is a simplified check. In a real environment, we would need to
+    // check across different modules and bundles.
+    // The original yjs.mjs file has a check like this:
+    // if (glo['__ $YJS$ __'] === true) { ... }
+    // We can simulate a similar check here.
+
+    const globalScope = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : {});
     const yjsMarker = '__YJS_DUPLICATION_CHECK__';
 
-    if (globalScope[yjsMarker]) {
+    // do a guarded check for an existing marker
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if ((globalScope as any)[yjsMarker]) {
       console.error('Yjs has already been imported. This indicates a duplication issue.');
     }
 
-    globalScope[yjsMarker] = true;
+    // assign marker on global scope for test (use any because global shape varies in test env)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    (globalScope as any)[yjsMarker] = true;
 
     // The real test is whether this assertion fails.
     // If it does, it means the marker was already set.
-    expect(globalScope[yjsMarker]).toBe(true);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  expect((globalScope as any)[yjsMarker]).toBe(true);
   });
 });
