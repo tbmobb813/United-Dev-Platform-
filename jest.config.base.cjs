@@ -22,5 +22,11 @@ module.exports = {
     '<rootDir>/__tests__/jest.setup.ts',
   ],
   extensionsToTreatAsEsm: ['.ts'],
+  // Allow transforming ESM-only node_modules that Jest otherwise ignores.
+  // Some dependencies (yjs, y-websocket, y-monaco, y-protocols, y-indexeddb) ship ESM and
+  // must be transformed so Jest can run them in this monorepo setup.
+  transformIgnorePatterns: [
+    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)'
+  ],
   // ts-jest options are provided per-transform (see `transform` above).
 };
