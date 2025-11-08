@@ -6,8 +6,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+<<<<<<< HEAD
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "test": "pnpm run build && vitest --run \"dist/**/__tests__/*.js\""
+=======
+  "build": "rm -rf dist && tsc -p tsconfig.json",
+  "test": "pnpm run build && node test-runner.js"
+>>>>>>> e666900 (test(server-utils): add lightweight node test-runner and run compiled checks to avoid Vitest transform issues)
   },
   "dependencies": {
     "@udp/db": "workspace:*",
