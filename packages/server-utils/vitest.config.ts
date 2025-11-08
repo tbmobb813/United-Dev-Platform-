@@ -8,5 +8,9 @@ export default (defineConfig as any)({
     transformMode: {
       ssr: [/\.ts$/],
     },
+    // Avoid dependency pre-bundling which can affect transformers
+    deps: {
+      inline: [],
+    },
   },
 });
