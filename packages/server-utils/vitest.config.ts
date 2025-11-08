@@ -12,5 +12,8 @@ export default (defineConfig as any)({
     deps: {
       inline: [],
     },
+    // When running compiled tests, include dist test files explicitly
+    include: ['dist/**/__tests__/*.js'],
+    exclude: [],
   },
 });
