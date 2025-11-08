@@ -1,4 +1,4 @@
-const { chromium } = require('playwright');
+import { chromium } from 'playwright';
 
 (async () => {
     const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
