@@ -21,7 +21,9 @@ module.exports = {
     '/build/',
     '<rootDir>/__tests__/jest.setup.ts',
   ],
-  extensionsToTreatAsEsm: ['.ts'],
+  // Treat TypeScript and JS files as ESM so test files and built dist/*.js that use
+  // `import` are executed as ESM by ts-jest / Jest runtime.
+  extensionsToTreatAsEsm: ['.ts', '.js'],
   // Allow transforming ESM-only node_modules that Jest otherwise ignores.
   // Some dependencies (yjs, y-websocket, y-monaco, y-protocols, y-indexeddb) ship ESM and
   // must be transformed so Jest can run them in this monorepo setup.
