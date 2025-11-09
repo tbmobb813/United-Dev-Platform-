@@ -4,6 +4,9 @@
 import React, { useState } from 'react';
 import { AIAssistant } from '@udp/ai';
 import { Button } from '@udp/ui';
+
+const ButtonAny: any = Button;
+const AIAssistantAny: any = AIAssistant;
 import logger from '@udp/logger';
 
 export default function TestAIAssistantClient() {
@@ -39,9 +42,11 @@ export default function TestAIAssistantClient() {
         </pre>
       </div>
 
-      <Button onClick={() => setIsAIOpen(true)}>🤖 Open AI Assistant</Button>
+      <ButtonAny onClick={() => setIsAIOpen(true)}>
+        🤖 Open AI Assistant
+      </ButtonAny>
 
-      <AIAssistant
+      <AIAssistantAny
         isOpen={isAIOpen}
         onClose={() => setIsAIOpen(false)}
         currentFile={currentFile}

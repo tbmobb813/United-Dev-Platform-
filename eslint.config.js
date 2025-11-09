@@ -18,6 +18,7 @@ const config = [
     ignores: [
       'dist/**',
       '.next/**',
+      'apps/web/**',
       'node_modules/**',
       'apps/*/dist/**',
       'apps/*/.next/**',
@@ -113,6 +114,28 @@ const config = [
     rules: {
       'react/prop-types': 'off', // Not needed with TypeScript
       'react/react-in-jsx-scope': 'off', // Not needed in React 17+
+    },
+  },
+  // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts
+  {
+    files: ['**/jest.config.*', '**/*.cjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
+      globals: {
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        process: 'readonly',
+      },
+    },
+    rules: {
+      // Allow require-style imports and var requires in config files
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      // Node config files may reference globals like __dirname
+      'no-undef': 'off',
     },
   },
   // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts

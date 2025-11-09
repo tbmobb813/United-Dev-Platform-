@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
-import type { Prisma } from '@prisma/client';
+import type * as Prisma from '@prisma/client';
 import logger from '@udp/logger';
 import { getErrorMessage, isPrismaError } from '@udp/server-utils';
 
@@ -89,7 +89,7 @@ async function updateFile(
   try {
     const { path, name, content, userId } = req.body;
 
-    const updateData = {} as Prisma.ProjectFileUpdateInput;
+    const updateData: any = {};
 
     if (path) {
       updateData.path = path;

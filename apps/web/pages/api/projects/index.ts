@@ -28,7 +28,7 @@ export default async function handler(
   if (!session || !session.user) {
     return;
   }
-  const userId = (session.user as { id?: string } | undefined)?.id;
+  const userId = ((session as any).user as { id?: string } | undefined)?.id;
   if (!userId) {
     return;
   }

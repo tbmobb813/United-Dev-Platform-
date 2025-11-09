@@ -31,14 +31,14 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   loading: () => <Loading text='Loading editor...' />,
 });
 
-const QRCode = dynamic<any>(
-  () =>
-    import('qrcode.react').then(mod => (mod && (mod as any).default) || mod),
+const QRCode = dynamic(
+  () => import('qrcode.react').then(mod => (mod as any).default || mod),
   {
     ssr: false,
     loading: () => <Loading text='Loading QR code...' />,
   }
 );
+const QRCodeAny: any = QRCode;
 
 function generateColor() {
   const letters = '0123456789ABCDEF';
@@ -104,10 +104,12 @@ export default function Home() {
   const providerRef = useRef<WebsocketProvider | null>(null);
   const ytextRef = useRef<Y.Text | null>(null);
   const awarenessRef = useRef<Awareness | null>(null);
+  const ignoreRef = useRef<boolean>(false);
   const editorRef = useRef<
     import('monaco-editor').editor.IStandaloneCodeEditor | null
   >(null);
-  const ignoreRef = useRef(false);
+  type MonacoBindingType = { destroy: () => void };
+  const bindingRef = useRef<MonacoBindingType | null>(null);
   const [users, setUsers] = useState<
     {
       id: string;
@@ -199,9 +201,20 @@ export default function Home() {
             }));
           setUsers(userList);
 
-          // Update cursor decorations in editor
+          // Update cursor decorations in editor (narrow to users with cursor)
+          const usersWithCursors = userList.filter(
+            (
+              u
+            ): u is {
+              id: string;
+              name: string;
+              color: string;
+              cursor: { line: number; column: number };
+            } => Boolean(u.cursor)
+          );
+
           if (editorRef.current) {
-            updateCursorDecorations(userList.filter(u => u.cursor));
+            updateCursorDecorations(usersWithCursors);
           }
         } catch (error) {
           logger.error('Error updating user list:', error);
@@ -231,7 +244,7 @@ export default function Home() {
     } catch (error) {
       logger.error('Error setting up Yjs:', error);
     }
-  }, [room, docName, userName, userId]);
+  }, [room, docName, userId, router, userName]);
 
   const updateCursorDecorations = (
     usersWithCursors: {
@@ -686,7 +699,7 @@ export default function Home() {
         <Stack gap='medium' align='center'>
           <Card padding='medium' style={{ textAlign: 'center' }}>
             <Stack gap='small' align='center'>
-              <QRCode value={webUrl} size={180} />
+              <QRCodeAny value={webUrl} size={180} />
               <div style={{ fontSize: '12px', color: '#666' }}>
                 📱 Scan to open in mobile browser
               </div>
@@ -756,7 +769,7 @@ export default function Home() {
         onClose={() => setIsAIOpen(false)}
         currentFile={file}
         selectedCode={selectedCode}
-        aiManager={aiManager}
+        aiManager={aiManager ?? undefined}
         onCodeInsert={(code: string) => {
           // Insert code at cursor position in editor
           if (editorRef.current && typeof window !== 'undefined') {

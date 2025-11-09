@@ -1,6 +1,4 @@
-import type { Prisma } from '@prisma/client';
-
-export function getErrorMessage(error: unknown): string {
+export const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
   }
@@ -12,25 +10,32 @@ export function getErrorMessage(error: unknown): string {
   } catch {
     return 'Unknown error';
   }
-}
+};
 
 // Narrow Prisma error detection to the Prisma client known error shape
-export function isPrismaError(
+export const isPrismaError = (
   error: unknown
-): error is Prisma.PrismaClientKnownRequestError {
+): error is { code: string; meta?: Record<string, unknown> } => {
   if (typeof error !== 'object' || error === null) {
     return false;
   }
   // Use safe indexing to check for 'code' property
   const e = error as Record<string, unknown>;
   return typeof e.code === 'string';
-}
+};
 
-export function toEnum<T extends string | number | undefined>(
+export const toEnum = <T extends string | number | undefined>(
   value: unknown
-): T | undefined {
+): T | undefined => {
   if (value === null || value === undefined) {
     return undefined;
   }
   return value as T;
-}
+};
+
+// Provide a default export object to avoid certain ESM transform shapes
+export default {
+  getErrorMessage,
+  isPrismaError,
+  toEnum,
+};

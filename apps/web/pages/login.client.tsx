@@ -1,8 +1,8 @@
 'use client';
-
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button } from '@udp/ui';
+import { signIn } from 'next-auth/react';
 import styles from './styles/DemoPages.module.css';
 
 export default function LoginClient() {
@@ -10,9 +10,12 @@ export default function LoginClient() {
   const [name, setName] = useState('');
 
   const handleLogin = () => {
-    if (name.trim()) {
+    if (name && name.trim()) {
       localStorage.setItem('userName', name.trim());
       router.push('/');
+    } else {
+      // fallback to GitHub sign-in when no local name provided
+      signIn('github', { callbackUrl: '/' });
     }
   };
 
@@ -22,7 +25,7 @@ export default function LoginClient() {
       <input
         value={name}
         onChange={e => setName(e.target.value)}
-        placeholder='Enter your name'
+        placeholder='Enter your name (or leave blank to sign in with GitHub)'
         className={styles.input}
       />
       <div className={styles.buttonSpacing}>

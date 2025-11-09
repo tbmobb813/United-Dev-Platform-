@@ -52,8 +52,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const showTimeoutRef = useRef<number>();
-  const hideTimeoutRef = useRef<number>();
+  const showTimeoutRef = useRef<number | undefined>(undefined);
+  const hideTimeoutRef = useRef<number | undefined>(undefined);
 
   const isVisible = visible !== undefined ? visible : internalVisible;
 

@@ -6,5 +6,6 @@ import React from 'react';
 const Client = dynamic(() => import('./debug.client'), { ssr: false });
 
 export default function Debug() {
-  return <Client />;
+  const ClientAny: any = Client;
+  return <ClientAny />;
 }

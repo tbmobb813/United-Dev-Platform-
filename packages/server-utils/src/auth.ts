@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { getServerSession } from 'next-auth/next';
 import type { NextAuthOptions } from 'next-auth';
 

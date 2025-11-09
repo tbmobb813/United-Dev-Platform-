@@ -1,0 +1,21 @@
+# Playwright test container
+# Uses the official Playwright image which includes browsers and necessary deps
+FROM mcr.microsoft.com/playwright:focal
+
+WORKDIR /workspace
+
+# Copy package configs first for a better cache
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Copy the rest of the repo
+COPY . .
+
+# Enable corepack (pnpm) and install workspace dependencies
+RUN npm i -g pnpm@latest \
+    && pnpm -w install --frozen-lockfile=false
+
+# Ensure browsers are installed (Playwright images usually include them but keep this idempotent)
+RUN pnpm -w exec playwright install --with-deps || true
+
+# Default command runs the single smoke spec in the web app
+CMD ["pnpm", "-w", "exec", "playwright", "test", "apps/web/playwright-smoke.spec.ts", "--reporter=list"]

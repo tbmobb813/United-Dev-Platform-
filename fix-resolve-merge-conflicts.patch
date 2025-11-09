@@ -1,0 +1,28 @@
+From e6ed9e95e5dec056074b7319e3d433137d5789f4 Mon Sep 17 00:00:00 2001
+From: tbmobb813 <jsn.nix@gmail.com>
+Date: Fri, 7 Nov 2025 22:31:27 -0500
+Subject: [PATCH] chore: resolve merge conflicts (accept ours)
+
+---
+ apps/web/pages/index.tsx | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/apps/web/pages/index.tsx b/apps/web/pages/index.tsx
+index d8d42df..143c833 100644
+--- a/apps/web/pages/index.tsx
++++ b/apps/web/pages/index.tsx
+@@ -3,8 +3,8 @@
+ import dynamic from 'next/dynamic';
+ import React from 'react';
+ 
+-const ClientIndex = dynamic(() => import('./index.client'), { ssr: false });
++const Client = dynamic(() => import('./index.client'), { ssr: false });
+ 
+-export default function IndexWrapper() {
+-  return <ClientIndex />;
++export default function Home() {
++  return <Client />;
+ }
+-- 
+2.34.1
+
