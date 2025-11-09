@@ -62,8 +62,10 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@playwright/test": "^1.56.1",
-    "@types/jest": "^29.5.13",
-    "@types/node": "18",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^18.19.130",
+    "@types/react": "18.2.79",
+    "@types/react-dom": "18.3.7",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "dotenv": "^16.1.4",
