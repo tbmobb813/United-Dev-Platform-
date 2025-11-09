@@ -1,28 +1,34 @@
 import { jest } from '@jest/globals';
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, afterEach, beforeAll } from '@jest/globals';
 
-// Use ESM-aware mocking. We must register the mock before importing the
-// module under test so that the module's import of 'y-websocket' is replaced.
-await jest.unstable_mockModule('y-websocket', async () => ({
-  WebsocketProvider: jest.fn().mockImplementation(() => ({
-    on: jest.fn(
-      (event: string, callback: (event: { status: string }) => void) => {
-        if (event === 'status') {
-          callback({ status: 'connected' });
-        }
-      }
-    ),
-    destroy: jest.fn(),
-  })),
-}));
-
-// Import the type for compile-time annotations, and import the runtime class
-// after registering the ESM mock above.
+// We avoid top-level await so this test file can run under either CJS or
+// ESM Jest runtimes. Register the ESM mock and load the runtime module inside
+// a beforeAll lifecycle hook where async/await is permitted.
 import type { DocumentManager as DocumentManagerType } from '../../DocumentManager';
 import type { UserPresence } from '../../types';
-const { DocumentManager } = await import('../../DocumentManager');
+let DocumentManager: any;
 
 describe('DocumentManager', () => {
+  beforeAll(async () => {
+    // Register an ESM mock for the y-websocket dependency before importing
+    // the module under test. Doing this inside beforeAll avoids top-level
+    // await so the file can run as CJS under Jest when necessary.
+    await jest.unstable_mockModule('y-websocket', async () => ({
+      WebsocketProvider: jest.fn().mockImplementation(() => ({
+        on: jest.fn(
+          (event: string, callback: (event: { status: string }) => void) => {
+            if (event === 'status') {
+              callback({ status: 'connected' });
+            }
+          }
+        ),
+        destroy: jest.fn(),
+      })),
+    }));
+
+    const mod = await import('../../DocumentManager');
+    DocumentManager = mod.DocumentManager;
+  });
   let docManager: DocumentManagerType;
   const mockUser = {
     id: 'user-1',

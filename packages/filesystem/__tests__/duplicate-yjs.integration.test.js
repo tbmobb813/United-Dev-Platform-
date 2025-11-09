@@ -5,28 +5,31 @@ import { spawnSync } from 'child_process';
 import { describe, it, expect, beforeAll } from '@jest/globals';
 
 // Provide __dirname in ESM tests
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 import logger from '@udp/logger';
 describe('duplicate-yjs detector - integration', () => {
-  const fixtureDir = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    'scripts',
-    '__tests__',
-    'fixtures',
-    'duplicate-yjs-fixture'
-  );
-  const reportPath = path.resolve(
-    fs.mkdtempSync(path.join(os.tmpdir(), 'duplicate-yjs-')),
-    'out-report.json'
-  );
+  // We'll compute fixtureDir/reportPath at runtime in beforeAll so this test
+  // works under both CJS and ESM Jest runtimes (avoid import.meta at top-level).
+  let fixtureDir;
+  let reportPath;
 
   beforeAll(() => {
+    // Prefer __dirname when available; otherwise fall back to process.cwd().
+    // Use `typeof` to avoid ReferenceError in ESM contexts.
+    const anchor = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+
+    fixtureDir = path.resolve(
+      anchor,
+      '..',
+      '..',
+      '..',
+      'scripts',
+      '__tests__',
+      'fixtures',
+      'duplicate-yjs-fixture'
+    );
+
+    reportPath = path.resolve(fs.mkdtempSync(path.join(os.tmpdir(), 'duplicate-yjs-')), 'out-report.json');
+
     if (fs.existsSync(reportPath)) {
       fs.unlinkSync(reportPath);
     }

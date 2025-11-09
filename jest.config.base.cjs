@@ -13,11 +13,9 @@ module.exports = {
   // Treat TypeScript files as ESM so test files and built dist/*.js that use
   // `import` are executed as ESM by ts-jest / Jest runtime. Do NOT explicitly
   // include '.js' here — Jest will infer .js from the nearest package.json
-  // "type": "module" when appropriate.
-  // Treat both TypeScript and JS files as ESM so test files and built
-  // `dist/*.js` that use `import` are executed as ESM by ts-jest / Jest runtime.
-  // This is required for several packages that publish ESM artifacts.
-  extensionsToTreatAsEsm: ['.ts', '.js'],
+  // "type": "module" when appropriate. Keep only '.ts' to avoid validation
+  // issues in some Jest versions and rely on package.json type fields for .js.
+  extensionsToTreatAsEsm: ['.ts'],
   // Allow transforming ESM-only node_modules that Jest otherwise ignores.
   // Some dependencies (yjs, y-websocket, y-monaco, y-protocols, y-indexeddb) ship ESM and
   // must be transformed so Jest can run them in this monorepo setup.
@@ -25,15 +23,13 @@ module.exports = {
   globals: {
     'ts-jest': {
       useESM: true,
-      // Ensure ts-jest compiles JS/TS with module settings that allow
-      // top-level await and modern ESM features used in tests.
-      tsconfig: {
-        compilerOptions: {
-          module: 'es2022',
-          target: 'es2017',
-          allowJs: true,
-        },
-      },
     },
+  },
+  // Prefer the CommonJS mock for y-websocket in environments that execute
+  // Jest in CJS mode (some core runs use the core config which extends this
+  // base). This prevents parsing `export` from upstream ESM mocks and avoids
+  // trying to establish real websocket connections during unit tests.
+  moduleNameMapper: {
+    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs'
   },
 };
