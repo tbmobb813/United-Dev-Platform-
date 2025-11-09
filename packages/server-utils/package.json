@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@udp/db": "workspace:*",
-    "next-auth": "^4.24.11"
+    "next-auth": "^4.24.12"
   },
   "devDependencies": {
     "@prisma/client": "^6.16.2",
