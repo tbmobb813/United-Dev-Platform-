@@ -1,6 +1,9 @@
-const path = require('path');
-const fs = require('fs');
-const { execFileSync } = require('child_process');
+import { createRequire } from 'module';
+import path from 'path';
+import fs from 'fs';
+import { execFileSync } from 'child_process';
+
+const require = createRequire(import.meta.url);
 
 describe('duplicate-yjs detector - fixture', () => {
   const fixtureDir = path.resolve(
@@ -15,9 +18,10 @@ describe('duplicate-yjs detector - fixture', () => {
   });
 
   it('detects a vendor yjs runtime and application reference', () => {
-    // Run the detector script pointing at the fixture directory
+    // Run the detector script pointing at the fixture directory. Use an
+    // absolute path to the script so it runs correctly regardless of Jest cwd.
     const detector = path.resolve(
-      process.cwd(),
+      path.resolve(__dirname, '..', '..'),
       'scripts',
       'check-duplicate-yjs.cjs'
     );
