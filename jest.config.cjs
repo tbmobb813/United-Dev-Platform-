@@ -23,7 +23,7 @@ module.exports = {
   // For some ESM packages used at runtime (y-websocket), prefer the published
   // CJS bundle in tests to avoid transforming upstream ESM source files.
   moduleNameMapper: {
-    '^y-websocket$': 'y-websocket/dist/y-websocket.cjs'
+    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.mjs'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };

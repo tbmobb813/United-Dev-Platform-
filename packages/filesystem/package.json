@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "File system backend for United Development Platform",
   "main": "index.ts",
+  "type": "module",
   "types": "index.ts",
   "scripts": {
     "build": "tsc",
