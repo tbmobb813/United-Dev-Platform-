@@ -9,8 +9,6 @@ const OfflineDemoClient = dynamic(() => import('./offline-demo.client'), {
 });
 
 export default function OfflineEditorPage() {
-  const OfflineDemoClientComp = OfflineDemoClient as unknown as React.ComponentType<
-    Record<string, unknown>
-  >;
-  return <OfflineDemoClientComp />;
+  const OfflineDemoClientAny: any = OfflineDemoClient;
+  return <OfflineDemoClientAny />;
 }

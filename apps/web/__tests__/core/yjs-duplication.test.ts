@@ -14,20 +14,21 @@ describe('Yjs Duplication Check', () => {
           : {};
     const yjsMarker = '__YJS_DUPLICATION_CHECK__';
 
-    const scopeRecord = globalScope as Record<string, unknown>;
-
     // do a guarded check for an existing marker
-    if (scopeRecord[yjsMarker]) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if ((globalScope as any)[yjsMarker]) {
       console.error(
         'Yjs has already been imported. This indicates a duplication issue.'
       );
     }
 
-    // assign marker on global scope for test
-    scopeRecord[yjsMarker] = true;
+    // assign marker on global scope for test (use any because global shape varies in test env)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    (globalScope as any)[yjsMarker] = true;
 
     // The real test is whether this assertion fails.
     // If it does, it means the marker was already set.
-    expect(scopeRecord[yjsMarker]).toBe(true);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    expect((globalScope as any)[yjsMarker]).toBe(true);
   });
 });

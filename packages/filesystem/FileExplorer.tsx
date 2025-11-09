@@ -36,7 +36,7 @@ export interface FileExplorerState {
  */
 export const FileExplorer: React.FC<FileExplorerProps> = ({
   fileSystem,
-  _syncManager,
+  syncManager: _syncManager,
   rootPath = '/',
   onFileSelect,
   onFileOpen,

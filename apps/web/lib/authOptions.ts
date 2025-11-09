@@ -2,19 +2,14 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import * as PrismaPkg from '@prisma/client';
 import type { NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
-import type { PrismaClient } from '@prisma/client';
 
 // Resolve PrismaClient constructor robustly to handle variations in how the
 // generated client is exported across environments.
-const PrismaClientCtor =
-  ((PrismaPkg as unknown) as {
-    PrismaClient?: new (...args: unknown[]) => PrismaClient;
-    default?: new (...args: unknown[]) => PrismaClient;
-  }).PrismaClient ??
-  ((PrismaPkg as unknown) as { default?: new (...args: unknown[]) => PrismaClient }).default ??
-  ((PrismaPkg as unknown) as new (...args: unknown[]) => PrismaClient);
-
-const prisma = new PrismaClientCtor();
+const PrismaClientCtor: any =
+  (PrismaPkg as any).PrismaClient ??
+  (PrismaPkg as any).default ??
+  (PrismaPkg as any);
+const prisma: any = new PrismaClientCtor();
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),

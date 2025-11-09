@@ -10,19 +10,6 @@ const yjsEsm = (() => {
   }
 })();
 
-// Prefer the CJS build when available to avoid ESM/CJS dual-evaluation at runtime
-const yjsCjs = (() => {
-  try {
-    return require.resolve('yjs/dist/yjs.cjs');
-  } catch (e) {
-    try {
-      return require.resolve('yjs');
-    } catch (e2) {
-      return undefined;
-    }
-  }
-})();
-
 const webpackPkg = (() => {
   try {
     return require('webpack');
@@ -43,19 +30,12 @@ const nextConfig = {
     config.resolve = config.resolve || {};
     config.resolve.alias = { ...(config.resolve.alias || {}) };
 
-    if (yjsCjs || yjsEsm) {
-      // Prefer the CJS bundle if available, otherwise fall back to the package entry
-      const yjsTarget = yjsCjs || yjsEsm;
+    if (yjsEsm) {
       config.resolve.alias = {
         ...config.resolve.alias,
-        // direct imports
-        yjs: yjsTarget,
-        // explicit internal paths
-        'yjs/dist/yjs.mjs': yjsTarget,
-        'yjs/dist/yjs.cjs': yjsTarget,
-        // some consumers import deep or platform-specific entrypoints
-        'yjs/yjs.cjs': yjsTarget,
-        'yjs/yjs.mjs': yjsTarget,
+        yjs: yjsEsm,
+        'yjs/dist/yjs.mjs': yjsEsm,
+        'yjs/dist/yjs.cjs': yjsEsm,
       };
     }
 
@@ -111,11 +91,10 @@ const nextConfig = {
         )
       );
 
-      if (yjsCjs || yjsEsm) {
-        const yjsTarget = yjsCjs || yjsEsm;
+      if (yjsEsm) {
         config.plugins.push(
           new webpackPkg.NormalModuleReplacementPlugin(/^yjs$/, (resource) => {
-            resource.request = yjsTarget;
+            resource.request = yjsEsm;
           })
         );
       }

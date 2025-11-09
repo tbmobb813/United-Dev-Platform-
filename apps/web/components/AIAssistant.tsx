@@ -27,14 +27,15 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
   editorContent,
   cursorPosition,
 }) => {
-  // Aliases to avoid cross-package React type incompatibilities during rebase.
-  // Use a generic component type with unknown props to avoid `any` usage.
-  const ModalComp = Modal as React.ComponentType<Record<string, unknown>>;
-  const CardComp = Card as React.ComponentType<Record<string, unknown>>;
-  const StackComp = Stack as React.ComponentType<Record<string, unknown>>;
-  const InputComp = Input as React.ComponentType<Record<string, unknown>>;
-  const ButtonComp = Button as React.ComponentType<Record<string, unknown>>;
-  const LoadingComp = Loading as React.ComponentType<Record<string, unknown>>;
+  // Aliases to avoid cross-package React type incompatibilities during rebase
+  // (cast UI components to any for now to unblock type-check). We'll
+  // remove these casts once workspace React types are unified.
+  const ModalAny: any = Modal;
+  const CardAny: any = Card;
+  const StackAny: any = Stack;
+  const InputAny: any = Input;
+  const ButtonAny: any = Button;
+  const LoadingAny: any = Loading;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -75,16 +76,18 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
         editorContent: editorContent?.slice(0, 2000), // First 2000 chars for context
       };
 
-      const enhancedSystemPrompt = `${systemPrompt || 'You are a helpful coding assistant.'
-        } 
+      const enhancedSystemPrompt = `${
+        systemPrompt || 'You are a helpful coding assistant.'
+      } 
       
 Context:
 - File: ${fileName || 'unknown'}
 - Selected code: ${selectedCode ? 'Available' : 'None'}
-- Cursor position: ${cursorPosition
+- Cursor position: ${
+        cursorPosition
           ? `Line ${cursorPosition.line}, Column ${cursorPosition.column}`
           : 'Unknown'
-        }
+      }
 - This is a collaborative coding environment with real-time editing.
 
 Please provide helpful, accurate coding assistance with explanations.`;
@@ -200,8 +203,9 @@ Please provide a clear explanation of what this code does, how it works, and any
     if (!selectedCode) {
       return;
     }
-    const prompt = `Write comprehensive unit tests for this code${fileName ? ` from ${fileName}` : ''
-      }:
+    const prompt = `Write comprehensive unit tests for this code${
+      fileName ? ` from ${fileName}` : ''
+    }:
 
 \`\`\`
 ${selectedCode}
@@ -222,8 +226,9 @@ Please include:
     if (!selectedCode) {
       return;
     }
-    const prompt = `Optimize and improve this code${fileName ? ` from ${fileName}` : ''
-      }:
+    const prompt = `Optimize and improve this code${
+      fileName ? ` from ${fileName}` : ''
+    }:
 
 \`\`\`
 ${selectedCode}
@@ -267,8 +272,9 @@ Please help identify:
     if (!selectedCode) {
       return;
     }
-    const prompt = `Generate documentation for this code${fileName ? ` from ${fileName}` : ''
-      }:
+    const prompt = `Generate documentation for this code${
+      fileName ? ` from ${fileName}` : ''
+    }:
 
 \`\`\`
 ${selectedCode}
@@ -291,48 +297,48 @@ Please provide:
   };
 
   return (
-    <ModalComp
+    <ModalAny
       isOpen={isOpen}
       onClose={onClose}
       title='🤖 AI Coding Assistant'
       size='large'
       actions={[
-        <ButtonComp key='clear' variant='ghost' onClick={clearChat}>
+        <ButtonAny key='clear' variant='ghost' onClick={clearChat}>
           Clear Chat
-        </ButtonComp>,
-        <ButtonComp key='close' variant='secondary' onClick={onClose}>
+        </ButtonAny>,
+        <ButtonAny key='close' variant='secondary' onClick={onClose}>
           Close
-        </ButtonComp>,
+        </ButtonAny>,
       ]}
     >
-      <StackComp gap='medium' style={{ height: '70vh' }}>
+      <StackAny gap='medium' style={{ height: '70vh' }}>
         {/* Enhanced Quick Actions */}
         {selectedCode && (
-          <CardComp title='✨ Quick Actions' padding='small'>
-            <StackComp direction='row' gap='small' wrap>
-              <ButtonComp size='small' onClick={explainSelection}>
+          <CardAny title='✨ Quick Actions' padding='small'>
+            <StackAny direction='row' gap='small' wrap>
+              <ButtonAny size='small' onClick={explainSelection}>
                 📖 Explain
-              </ButtonComp>
-              <ButtonComp size='small' onClick={writeTests}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={writeTests}>
                 🧪 Write Tests
-              </ButtonComp>
-              <ButtonComp size='small' onClick={optimizeCode}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={optimizeCode}>
                 ⚡ Optimize
-              </ButtonComp>
-              <ButtonComp size='small' onClick={debugCode}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={debugCode}>
                 🐛 Debug
-              </ButtonComp>
-              <ButtonComp size='small' onClick={generateDocumentation}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={generateDocumentation}>
                 📝 Document
-              </ButtonComp>
-            </StackComp>
-          </CardComp>
+              </ButtonAny>
+            </StackAny>
+          </CardAny>
         )}
 
         {/* Context Information */}
         {(fileName || cursorPosition) && (
-          <CardComp title='📍 Context' padding='small'>
-            <StackComp gap='small'>
+          <CardAny title='📍 Context' padding='small'>
+            <StackAny gap='small'>
               {fileName && (
                 <div>
                   <strong>File:</strong> {fileName}
@@ -350,8 +356,8 @@ Please provide:
                   selected
                 </div>
               )}
-            </StackComp>
-          </CardComp>
+            </StackAny>
+          </CardAny>
         )}
 
         {/* Chat Messages */}
@@ -397,8 +403,9 @@ Please provide:
                   borderRadius: '12px',
                   backgroundColor:
                     message.role === 'user' ? '#e3f2fd' : '#f8f9fa',
-                  border: `1px solid ${message.role === 'user' ? '#bbdefb' : '#e9ecef'
-                    }`,
+                  border: `1px solid ${
+                    message.role === 'user' ? '#bbdefb' : '#e9ecef'
+                  }`,
                   boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                 }}
               >
@@ -441,8 +448,7 @@ Please provide:
           )}
           {isLoading && (
             <div style={{ textAlign: 'center', margin: '16px 0' }}>
-              <LoadingComp
-                // @ts-ignore - loading component accepts a `text` prop in the UI package
+              <LoadingAny
                 text={isTyping ? 'AI is typing...' : 'AI is thinking...'}
               />
             </div>
@@ -451,28 +457,25 @@ Please provide:
         </div>
 
         {/* Enhanced Input Form */}
-        <StackComp direction='row' gap='small' align='center'>
-          <InputComp
-            // @ts-ignore - Input component props are intentionally treated as unknown during this rebase
+        <StackAny direction='row' gap='small' align='center'>
+          <InputAny
             value={inputValue}
-            // @ts-ignore
             onChange={setInputValue}
             placeholder='Ask me anything about your code...'
             style={{ flex: 1 }}
             disabled={isLoading}
           />
-          <ButtonComp
-            // @ts-ignore
+          <ButtonAny
             disabled={!inputValue.trim() || isLoading}
             onClick={() => sendMessage(inputValue)}
           >
             {isLoading ? '...' : 'Send'}
-          </ButtonComp>
-        </StackComp>
+          </ButtonAny>
+        </StackAny>
         <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
           💡 Click Send to submit your message
         </div>
-      </StackComp>
-    </ModalComp>
+      </StackAny>
+    </ModalAny>
   );
 };

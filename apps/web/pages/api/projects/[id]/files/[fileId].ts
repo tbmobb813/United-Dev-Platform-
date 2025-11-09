@@ -89,18 +89,17 @@ async function updateFile(
   try {
     const { path, name, content, userId } = req.body;
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: any = {};
 
     if (path) {
-      updateData['path'] = path;
+      updateData.path = path;
     }
     if (name) {
-      updateData['name'] = name;
+      updateData.name = name;
     }
     if (content !== undefined) {
-      updateData['content'] = content;
-      const size = content ? new TextEncoder().encode(String(content)).length : 0;
-      updateData['size'] = size;
+      updateData.content = content;
+      updateData.size = content ? Buffer.byteLength(content, 'utf8') : 0;
     }
 
     const file = await prisma.projectFile.update({
@@ -108,7 +107,7 @@ async function updateFile(
         id: fileId,
         projectId,
       },
-      data: updateData as Prisma.ProjectFileUpdateInput,
+      data: updateData,
       select: {
         id: true,
         path: true,

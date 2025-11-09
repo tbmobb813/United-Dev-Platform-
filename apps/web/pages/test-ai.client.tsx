@@ -5,8 +5,8 @@ import React, { useState } from 'react';
 import { AIAssistant } from '@udp/ai';
 import { Button } from '@udp/ui';
 
-const ButtonComp = Button as unknown as React.ComponentType<Record<string, unknown>>;
-const AIAssistantComp = AIAssistant as unknown as React.ComponentType<Record<string, unknown>>;
+const ButtonAny: any = Button;
+const AIAssistantAny: any = AIAssistant;
 import logger from '@udp/logger';
 
 export default function TestAIAssistantClient() {
@@ -42,23 +42,15 @@ export default function TestAIAssistantClient() {
         </pre>
       </div>
 
-      <ButtonComp
-        // @ts-ignore - Button props treated as unknown during typing pass
-        onClick={() => setIsAIOpen(true)}
-      >
+      <ButtonAny onClick={() => setIsAIOpen(true)}>
         🤖 Open AI Assistant
-      </ButtonComp>
+      </ButtonAny>
 
-      <AIAssistantComp
-        // @ts-ignore - render-prop and props intentionally treated as unknown during rebase
+      <AIAssistantAny
         isOpen={isAIOpen}
-        // @ts-ignore
         onClose={() => setIsAIOpen(false)}
-        // @ts-ignore
         currentFile={currentFile}
-        // @ts-ignore
         selectedCode={selectedCode}
-        // @ts-ignore
         onCodeInsert={handleCodeInsert}
       />
 
