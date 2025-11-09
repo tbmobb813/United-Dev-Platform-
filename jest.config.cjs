@@ -7,13 +7,19 @@ module.exports = {
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
   setupFilesAfterEnv: [],
   // Treat .ts files as ESM modules. Jest will infer .js as ESM when the nearest
-  // package.json contains "type": "module" (the repo root does), so do not
-  // explicitly include '.js' here to avoid a validation error.
+  // Treat TypeScript files as ESM modules. Jest will infer .js as ESM from the
+  // nearest package.json "type": "module" where applicable, so keep only
+  // '.ts' here to avoid validation errors in some Jest versions.
   extensionsToTreatAsEsm: ['.ts'],
   globals: {
     'ts-jest': {
       useESM: true,
     },
+  },
+  // Let ts-jest transform both TS and JS files when needed (allow transforming
+  // JS so plain .js ESM test files under the repo can be handled by ts-jest).
+  transform: {
+    '^.+\.[tj]sx?$': ['ts-jest', { useESM: true, isolatedModules: true }],
   },
   testPathIgnorePatterns: ['/node_modules/', '__tests__/jest.setup.ts'],
   // Transform some ESM-only node_modules so Jest can run them in this monorepo.

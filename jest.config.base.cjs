@@ -14,7 +14,10 @@ module.exports = {
   // `import` are executed as ESM by ts-jest / Jest runtime. Do NOT explicitly
   // include '.js' here — Jest will infer .js from the nearest package.json
   // "type": "module" when appropriate.
-  extensionsToTreatAsEsm: ['.ts'],
+  // Treat both TypeScript and JS files as ESM so test files and built
+  // `dist/*.js` that use `import` are executed as ESM by ts-jest / Jest runtime.
+  // This is required for several packages that publish ESM artifacts.
+  extensionsToTreatAsEsm: ['.ts', '.js'],
   // Allow transforming ESM-only node_modules that Jest otherwise ignores.
   // Some dependencies (yjs, y-websocket, y-monaco, y-protocols, y-indexeddb) ship ESM and
   // must be transformed so Jest can run them in this monorepo setup.
@@ -22,6 +25,15 @@ module.exports = {
   globals: {
     'ts-jest': {
       useESM: true,
+      // Ensure ts-jest compiles JS/TS with module settings that allow
+      // top-level await and modern ESM features used in tests.
+      tsconfig: {
+        compilerOptions: {
+          module: 'es2022',
+          target: 'es2017',
+          allowJs: true,
+        },
+      },
     },
   },
 };
