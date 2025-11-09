@@ -4,6 +4,11 @@ import * as os from 'os';
 import { spawnSync } from 'child_process';
 import { describe, it, expect, beforeAll } from '@jest/globals';
 
+// Provide __dirname in ESM tests
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import logger from '@udp/logger';
 describe('duplicate-yjs detector - integration', () => {
   const fixtureDir = path.resolve(

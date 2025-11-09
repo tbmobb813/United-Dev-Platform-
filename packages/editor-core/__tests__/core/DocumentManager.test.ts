@@ -1,6 +1,7 @@
 
 import { DocumentManager } from '../../DocumentManager';
 import { UserPresence } from '../../types';
+import { jest } from '@jest/globals';
 
 // Mock the WebsocketProvider to avoid actual network connections in tests
 jest.mock('y-websocket', () => ({
