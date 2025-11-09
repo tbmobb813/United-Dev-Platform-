@@ -2,15 +2,14 @@ import { createRequire } from 'module';
 import path from 'path';
 import fs from 'fs';
 import { execFileSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
 const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('duplicate-yjs detector - fixture', () => {
-  const fixtureDir = path.resolve(
-    __dirname,
-    'fixtures',
-    'duplicate-yjs-fixture'
-  );
+  const fixtureDir = path.resolve(__dirname, 'fixtures', 'duplicate-yjs-fixture');
   const reportPath = path.resolve(__dirname, 'fixtures', 'out-report.json');
 
   beforeAll(() => {

@@ -20,5 +20,10 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)'
   ],
+  // For some ESM packages used at runtime (y-websocket), prefer the published
+  // CJS bundle in tests to avoid transforming upstream ESM source files.
+  moduleNameMapper: {
+    '^y-websocket$': 'y-websocket/dist/y-websocket.cjs'
+  },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
