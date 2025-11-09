@@ -5,7 +5,10 @@ import GitHubProvider from 'next-auth/providers/github';
 
 // Resolve PrismaClient constructor robustly to handle variations in how the
 // generated client is exported across environments.
-const PrismaClientCtor: any = (PrismaPkg as any).PrismaClient ?? (PrismaPkg as any).default ?? (PrismaPkg as any);
+const PrismaClientCtor: any =
+  (PrismaPkg as any).PrismaClient ??
+  (PrismaPkg as any).default ??
+  (PrismaPkg as any);
 const prisma: any = new PrismaClientCtor();
 
 export const authOptions: NextAuthOptions = {

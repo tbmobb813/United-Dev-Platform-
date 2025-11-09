@@ -4,7 +4,10 @@ import * as PrismaPkg from '@prisma/client';
 // depending on build/tooling. Resolve the available constructor at runtime
 // and use `any` for the local types so this file compiles across CI
 // environments where the installed @prisma/client typings may differ.
-const PrismaClientCtor: any = (PrismaPkg as any).PrismaClient ?? (PrismaPkg as any).default ?? (PrismaPkg as any);
+const PrismaClientCtor: any =
+  (PrismaPkg as any).PrismaClient ??
+  (PrismaPkg as any).default ??
+  (PrismaPkg as any);
 
 const globalForPrisma = globalThis as unknown as {
   prisma: any | undefined;
