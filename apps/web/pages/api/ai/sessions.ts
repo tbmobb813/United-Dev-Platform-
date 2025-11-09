@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
-import type { Prisma } from '@prisma/client';
+import type * as Prisma from '@prisma/client';
 import logger from '@udp/logger';
 import { getErrorMessage, toEnum, isPrismaError } from 'lib/utils';
 
