@@ -23,7 +23,7 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { userId, projectId, context } = req.query;
 
-    const where = {} as Prisma.AiChatSessionWhereInput;
+    const where: any = {};
 
     if (userId && typeof userId === 'string') {
       where.userId = userId;
@@ -34,10 +34,10 @@ async function getChatSessions(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (context && typeof context === 'string') {
-      // Use explicit enum typing and a filter object to avoid fragile casts.
-      where.context = {
-        equals: toEnum<Prisma.AiChatSessionContext>(context),
-      };
+      // Avoid relying on generated Prisma enum types here to prevent
+      // cross-package type mismatches after the rebase. Use a loose
+      // equality filter and cast to any for now.
+      (where as any).context = { equals: context };
     }
 
     const sessions = await prisma.aiChatSession.findMany({

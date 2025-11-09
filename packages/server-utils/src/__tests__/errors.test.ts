@@ -1,5 +1,3 @@
-import { describe, it, expect } from 'vitest';
-
 describe('errors helpers', () => {
   it('getErrorMessage handles Error, string and unknown', async () => {
     // Prefer runtime import from built dist when available to avoid Vitest transform quirks

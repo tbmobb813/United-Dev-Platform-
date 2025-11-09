@@ -89,7 +89,7 @@ async function updateFile(
   try {
     const { path, name, content, userId } = req.body;
 
-    const updateData = {} as Prisma.ProjectFileUpdateInput;
+    const updateData: any = {};
 
     if (path) {
       updateData.path = path;

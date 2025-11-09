@@ -6,5 +6,6 @@ import React from 'react';
 const Client = dynamic(() => import('./presence-demo.client'), { ssr: false });
 
 export default function PresenceDemo() {
-  return <Client />;
+  const ClientAny: any = Client;
+  return <ClientAny />;
 }

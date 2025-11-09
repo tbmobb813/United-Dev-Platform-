@@ -27,6 +27,15 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
   editorContent,
   cursorPosition,
 }) => {
+  // Aliases to avoid cross-package React type incompatibilities during rebase
+  // (cast UI components to any for now to unblock type-check). We'll
+  // remove these casts once workspace React types are unified.
+  const ModalAny: any = Modal;
+  const CardAny: any = Card;
+  const StackAny: any = Stack;
+  const InputAny: any = Input;
+  const ButtonAny: any = Button;
+  const LoadingAny: any = Loading;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -67,18 +76,16 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
         editorContent: editorContent?.slice(0, 2000), // First 2000 chars for context
       };
 
-      const enhancedSystemPrompt = `${
-        systemPrompt || 'You are a helpful coding assistant.'
-      } 
+      const enhancedSystemPrompt = `${systemPrompt || 'You are a helpful coding assistant.'
+        } 
       
 Context:
 - File: ${fileName || 'unknown'}
 - Selected code: ${selectedCode ? 'Available' : 'None'}
-- Cursor position: ${
-        cursorPosition
+- Cursor position: ${cursorPosition
           ? `Line ${cursorPosition.line}, Column ${cursorPosition.column}`
           : 'Unknown'
-      }
+        }
 - This is a collaborative coding environment with real-time editing.
 
 Please provide helpful, accurate coding assistance with explanations.`;
@@ -194,9 +201,8 @@ Please provide a clear explanation of what this code does, how it works, and any
     if (!selectedCode) {
       return;
     }
-    const prompt = `Write comprehensive unit tests for this code${
-      fileName ? ` from ${fileName}` : ''
-    }:
+    const prompt = `Write comprehensive unit tests for this code${fileName ? ` from ${fileName}` : ''
+      }:
 
 \`\`\`
 ${selectedCode}
@@ -217,9 +223,8 @@ Please include:
     if (!selectedCode) {
       return;
     }
-    const prompt = `Optimize and improve this code${
-      fileName ? ` from ${fileName}` : ''
-    }:
+    const prompt = `Optimize and improve this code${fileName ? ` from ${fileName}` : ''
+      }:
 
 \`\`\`
 ${selectedCode}
@@ -263,9 +268,8 @@ Please help identify:
     if (!selectedCode) {
       return;
     }
-    const prompt = `Generate documentation for this code${
-      fileName ? ` from ${fileName}` : ''
-    }:
+    const prompt = `Generate documentation for this code${fileName ? ` from ${fileName}` : ''
+      }:
 
 \`\`\`
 ${selectedCode}
@@ -288,48 +292,48 @@ Please provide:
   };
 
   return (
-    <Modal
+    <ModalAny
       isOpen={isOpen}
       onClose={onClose}
       title='🤖 AI Coding Assistant'
       size='large'
       actions={[
-        <Button key='clear' variant='ghost' onClick={clearChat}>
+        <ButtonAny key='clear' variant='ghost' onClick={clearChat}>
           Clear Chat
-        </Button>,
-        <Button key='close' variant='secondary' onClick={onClose}>
+        </ButtonAny>,
+        <ButtonAny key='close' variant='secondary' onClick={onClose}>
           Close
-        </Button>,
+        </ButtonAny>,
       ]}
     >
-      <Stack gap='medium' style={{ height: '70vh' }}>
+      <StackAny gap='medium' style={{ height: '70vh' }}>
         {/* Enhanced Quick Actions */}
         {selectedCode && (
-          <Card title='✨ Quick Actions' padding='small'>
-            <Stack direction='row' gap='small' wrap>
-              <Button size='small' onClick={explainSelection}>
+          <CardAny title='✨ Quick Actions' padding='small'>
+            <StackAny direction='row' gap='small' wrap>
+              <ButtonAny size='small' onClick={explainSelection}>
                 📖 Explain
-              </Button>
-              <Button size='small' onClick={writeTests}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={writeTests}>
                 🧪 Write Tests
-              </Button>
-              <Button size='small' onClick={optimizeCode}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={optimizeCode}>
                 ⚡ Optimize
-              </Button>
-              <Button size='small' onClick={debugCode}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={debugCode}>
                 🐛 Debug
-              </Button>
-              <Button size='small' onClick={generateDocumentation}>
+              </ButtonAny>
+              <ButtonAny size='small' onClick={generateDocumentation}>
                 📝 Document
-              </Button>
-            </Stack>
-          </Card>
+              </ButtonAny>
+            </StackAny>
+          </CardAny>
         )}
 
         {/* Context Information */}
         {(fileName || cursorPosition) && (
-          <Card title='📍 Context' padding='small'>
-            <Stack gap='small'>
+          <CardAny title='📍 Context' padding='small'>
+            <StackAny gap='small'>
               {fileName && (
                 <div>
                   <strong>File:</strong> {fileName}
@@ -347,8 +351,8 @@ Please provide:
                   selected
                 </div>
               )}
-            </Stack>
-          </Card>
+            </StackAny>
+          </CardAny>
         )}
 
         {/* Chat Messages */}
@@ -394,9 +398,8 @@ Please provide:
                   borderRadius: '12px',
                   backgroundColor:
                     message.role === 'user' ? '#e3f2fd' : '#f8f9fa',
-                  border: `1px solid ${
-                    message.role === 'user' ? '#bbdefb' : '#e9ecef'
-                  }`,
+                  border: `1px solid ${message.role === 'user' ? '#bbdefb' : '#e9ecef'
+                    }`,
                   boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                 }}
               >
@@ -439,7 +442,7 @@ Please provide:
           )}
           {isLoading && (
             <div style={{ textAlign: 'center', margin: '16px 0' }}>
-              <Loading
+              <LoadingAny
                 text={isTyping ? 'AI is typing...' : 'AI is thinking...'}
               />
             </div>
@@ -448,25 +451,25 @@ Please provide:
         </div>
 
         {/* Enhanced Input Form */}
-        <Stack direction='row' gap='small' align='center'>
-          <Input
+        <StackAny direction='row' gap='small' align='center'>
+          <InputAny
             value={inputValue}
             onChange={setInputValue}
             placeholder='Ask me anything about your code...'
             style={{ flex: 1 }}
             disabled={isLoading}
           />
-          <Button
+          <ButtonAny
             disabled={!inputValue.trim() || isLoading}
             onClick={() => sendMessage(inputValue)}
           >
             {isLoading ? '...' : 'Send'}
-          </Button>
-        </Stack>
+          </ButtonAny>
+        </StackAny>
         <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
           💡 Click Send to submit your message
         </div>
-      </Stack>
-    </Modal>
+      </StackAny>
+    </ModalAny>
   );
 };

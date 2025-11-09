@@ -49,10 +49,10 @@ const config = [
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     ignores: ['next-env.d.ts'],
-  languageOptions: {
+    languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-  parser: tsparser,
+      parser: tsparser,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,

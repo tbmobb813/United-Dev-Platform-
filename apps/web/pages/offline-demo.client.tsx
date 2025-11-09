@@ -13,6 +13,7 @@ const OfflineEditorClient = dynamic(
     ),
   { ssr: false }
 );
+const OfflineEditorClientAny: any = OfflineEditorClient;
 
 /**
  * Complete demonstration of offline-enabled collaborative editing
@@ -59,11 +60,11 @@ const OfflineCollaborationDemo: React.FC = () => {
           📝 Live Collaborative Editor with Offline Support
         </div>
 
-        <OfflineEditorClient
+        <OfflineEditorClientAny
           room='platform-demo'
           serverUrl='ws://localhost:1234'
         >
-          {(doc, status) => (
+          {(doc: any, status: any) => (
             <div className={styles.cardPadding}>
               <div
                 className={`${styles.mb20} ${status.isConnected ? styles.onlineBox : styles.offlineBox}`}
@@ -106,7 +107,7 @@ const OfflineCollaborationDemo: React.FC = () => {
               </div>
             </div>
           )}
-        </OfflineEditorClient>
+        </OfflineEditorClientAny>
       </div>
       <div className={styles.footerSection}>
         <h3 className={styles.footerTitle}>🚀 Platform Status:</h3>

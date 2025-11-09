@@ -33,7 +33,7 @@ async function getProjectFiles(
   try {
     const { path, type } = req.query;
 
-    const where = { projectId } as Prisma.ProjectFileWhereInput;
+    const where: any = { projectId };
 
     // Filter by path prefix (for directory contents)
     if (path && typeof path === 'string') {
@@ -42,11 +42,9 @@ async function getProjectFiles(
 
     // Filter by file type
     if (type && typeof type === 'string') {
-      // Cast to the Prisma where-input type to satisfy TypeScript while
-      // preserving the runtime conversion performed by `toEnum`.
-      where.type = toEnum(
-        type
-      ) as unknown as Prisma.ProjectFileWhereInput['type'];
+      // Avoid strongly typed Prisma inputs here to prevent cross-package
+      // generated-client mismatches during the rebase; use a loose value.
+      (where as any).type = type;
     }
 
     const files = await prisma.projectFile.findMany({

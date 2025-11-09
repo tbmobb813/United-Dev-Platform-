@@ -5,6 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
 let SourceMapConsumer = null;
 // try dynamic import of source-map in case it's available (top-level await)
@@ -27,51 +28,7 @@ function findFiles(dir, exts = ['.js', '.map']) {
   return out;
 }
 
-<<<<<<< HEAD
-=======
-async function scanBundleDir(dir) {
-  const files = findFiles(dir, ['.js']);
-  const matches = [];
-  const mapped = await mapMatchesToSources(matches);
 
-  // Apply allowlist (substring matching) and improved heuristics:
-  // - If an entry maps back to a resolvedSource that contains 'node_modules',
-  //   treat it as vendor and require a strong indicator to keep it.
-  // - Non-vendor (no 'node_modules' in resolvedSource) keep both weak and strong.
-  let filtered = filterAllowlist(mapped, allowlist);
-  filtered = filtered.filter(e => {
-    const resolved = e.resolvedSource || '';
-    const isVendor = /node_modules/.test(
-      resolved + ' ' + (e.generatedFile || '')
-    );
-    // strong property comes from scanBundleDir when a strong indicator matched
-    if (isVendor) {
-      // keep only if strong indicator or mapped back to an explicit yjs file
-      if (e.strong) {
-        return true;
-      }
-      const lower = (resolved + ' ' + (e.source || '')).toLowerCase();
-      if (
-        lower.includes('/yjs') ||
-        lower.includes('/yjs@') ||
-        lower.includes('yjs/dist')
-      ) {
-        return true;
-      }
-      return false;
-    }
-    // non-vendor: keep by default
-    return true;
-  });
-  matches.push({
-    file: f,
-    reason: 'contains-yjs-like-identifiers',
-    positions: fileMatches,
-  });
-}
-  
-return matches;
->>>>>>> df97ef6 (chore: add jest pins to pnpm.overrides (temporary))
 
 function indexToLineColumn(content, index) {
   const prefix = content.slice(0, index);
@@ -256,7 +213,18 @@ async function main() {
   const reportIdx = argv.indexOf('--report');
   const strictIdx = argv.indexOf('--strict');
   const dir = dirIdx >= 0 ? argv[dirIdx + 1] : 'apps/web/.next';
-  const report = reportIdx >= 0 ? argv[reportIdx + 1] : null;
+  let report = null;
+  if (reportIdx >= 0) {
+    const candidate = argv[reportIdx + 1];
+    // If --report is passed without a path (or followed by another flag),
+    // create a temp report file under /tmp and use that path.
+    if (!candidate || candidate.startsWith('--')) {
+      const tmpBase = fs.mkdtempSync(path.join(os.tmpdir(), 'duplicate-yjs-'));
+      report = path.join(tmpBase, 'out-report.json');
+    } else {
+      report = candidate;
+    }
+  }
   const strict = strictIdx >= 0;
   const allowlistIdx = argv.indexOf('--allowlist');
   const allowlist = allowlistIdx >= 0 ? argv[allowlistIdx + 1].split(',') : [];

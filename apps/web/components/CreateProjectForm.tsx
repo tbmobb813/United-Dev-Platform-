@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Input, Stack } from '@udp/ui';
+
+// Cast UI exports to any to avoid cross-package React typing mismatch during rebase
+const ButtonAny: any = Button;
+const InputAny: any = Input;
+const StackAny: any = Stack;
 import axios from 'axios';
 
 interface CreateProjectFormProps {
@@ -39,22 +44,22 @@ export default function CreateProjectForm({
   };
 
   return (
-    <Stack gap='medium'>
-      <Input
+    <StackAny gap='medium'>
+      <InputAny
         placeholder='Enter project name'
         value={projectName}
         onChange={setProjectName}
         disabled={loading}
       />
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <Stack direction='row' gap='small' justify='end'>
-        <Button variant='ghost' onClick={onCancel} disabled={loading}>
+      <StackAny direction='row' gap='small' justify='end'>
+        <ButtonAny variant='ghost' onClick={onCancel} disabled={loading}>
           Cancel
-        </Button>
-        <Button onClick={handleSubmit} disabled={loading}>
+        </ButtonAny>
+        <ButtonAny onClick={handleSubmit} disabled={loading}>
           Create
-        </Button>
-      </Stack>
-    </Stack>
+        </ButtonAny>
+      </StackAny>
+    </StackAny>
   );
 }

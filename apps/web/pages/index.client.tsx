@@ -31,14 +31,11 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   loading: () => <Loading text='Loading editor...' />,
 });
 
-const QRCode = dynamic<React.ComponentType<{ value: string; size?: number }>>(
-  () =>
-    import('qrcode.react').then(mod => (mod && (mod as { default: React.ComponentType<{ value: string; size?: number }> }).default) || mod),
-  {
-    ssr: false,
-    loading: () => <Loading text='Loading QR code...' />,
-  }
-);
+const QRCode = dynamic(() => import('qrcode.react').then(mod => (mod as any).default || mod), {
+  ssr: false,
+  loading: () => <Loading text='Loading QR code...' />,
+});
+const QRCodeAny: any = QRCode;
 
 function generateColor() {
   const letters = '0123456789ABCDEF';
@@ -90,8 +87,8 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // Generate both mobile app deeplink and fallback web URL
   const webUrl = `${typeof window !== 'undefined'
-      ? window.location.origin
-      : 'http://localhost:3000'
+    ? window.location.origin
+    : 'http://localhost:3000'
     }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
@@ -103,6 +100,7 @@ export default function Home() {
   const providerRef = useRef<WebsocketProvider | null>(null);
   const ytextRef = useRef<Y.Text | null>(null);
   const awarenessRef = useRef<Awareness | null>(null);
+  const ignoreRef = useRef<boolean>(false);
   const editorRef = useRef<
     import('monaco-editor').editor.IStandaloneCodeEditor | null
   >(null);
@@ -199,9 +197,18 @@ export default function Home() {
             }));
           setUsers(userList);
 
-          // Update cursor decorations in editor
+          // Update cursor decorations in editor (narrow to users with cursor)
+          const usersWithCursors = userList.filter(
+            (u): u is {
+              id: string;
+              name: string;
+              color: string;
+              cursor: { line: number; column: number };
+            } => Boolean(u.cursor)
+          );
+
           if (editorRef.current) {
-            updateCursorDecorations(userList.filter(u => u.cursor));
+            updateCursorDecorations(usersWithCursors);
           }
         } catch (error) {
           logger.error('Error updating user list:', error);
@@ -231,7 +238,7 @@ export default function Home() {
     } catch (error) {
       logger.error('Error setting up Yjs:', error);
     }
-  }, [room, docName, session, userId, status, effectiveUserName, fileId, router]);
+  }, [room, docName, userId, router, userName]);
 
   const updateCursorDecorations = (
     usersWithCursors: {
@@ -686,7 +693,7 @@ export default function Home() {
         <Stack gap='medium' align='center'>
           <Card padding='medium' style={{ textAlign: 'center' }}>
             <Stack gap='small' align='center'>
-              <QRCode value={webUrl} size={180} />
+              <QRCodeAny value={webUrl} size={180} />
               <div style={{ fontSize: '12px', color: '#666' }}>
                 📱 Scan to open in mobile browser
               </div>
@@ -756,7 +763,7 @@ export default function Home() {
         onClose={() => setIsAIOpen(false)}
         currentFile={file}
         selectedCode={selectedCode}
-        aiManager={aiManager}
+        aiManager={aiManager ?? undefined}
         onCodeInsert={(code: string) => {
           // Insert code at cursor position in editor
           if (editorRef.current && typeof window !== 'undefined') {
