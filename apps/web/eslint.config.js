@@ -1,5 +1,6 @@
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import tsplugin from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from 'globals';
@@ -21,14 +22,14 @@ const config = [
     ],
   },
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tsplugin.configs.recommended,
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     ignores: ['next-env.d.ts'],
-    languageOptions: {
+  languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      parser: tseslint.parser,
+  parser: tsparser,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
