@@ -45,7 +45,7 @@ const config = [
     ],
   },
   js.configs.recommended,
-  ...tsplugin.configs.recommended,
+  tsplugin.configs.recommended,
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     ignores: ['next-env.d.ts'],
