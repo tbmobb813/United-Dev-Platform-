@@ -14,7 +14,11 @@ describe('duplicate-yjs detector - fixture', () => {
   it('detects a vendor yjs runtime and application reference', () => {
     // Run the detector script pointing at the fixture directory. Use an
     // absolute path to the script so it runs correctly regardless of Jest cwd.
-    const detector = path.resolve(path.resolve(__dirname, '..', '..'), 'scripts', 'check-duplicate-yjs.cjs');
+    const detector = path.resolve(
+      path.resolve(__dirname, '..', '..'),
+      'scripts',
+      'check-duplicate-yjs.cjs'
+    );
     // Only pass --report (no path) so detector writes to a temp file and prints the path
     let out = '';
     let errOut = '';

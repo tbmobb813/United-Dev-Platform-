@@ -28,7 +28,10 @@ describe('duplicate-yjs detector - integration', () => {
       'duplicate-yjs-fixture'
     );
 
-    reportPath = path.resolve(fs.mkdtempSync(path.join(os.tmpdir(), 'duplicate-yjs-')), 'out-report.json');
+    reportPath = path.resolve(
+      fs.mkdtempSync(path.join(os.tmpdir(), 'duplicate-yjs-')),
+      'out-report.json'
+    );
 
     if (fs.existsSync(reportPath)) {
       fs.unlinkSync(reportPath);

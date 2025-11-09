@@ -1,5 +1,12 @@
 import { jest } from '@jest/globals';
-import { describe, it, expect, beforeEach, afterEach, beforeAll } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+} from '@jest/globals';
 
 // We avoid top-level await so this test file can run under either CJS or
 // ESM Jest runtimes. Register the ESM mock and load the runtime module inside
