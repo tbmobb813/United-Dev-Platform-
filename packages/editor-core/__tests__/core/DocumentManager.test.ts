@@ -9,7 +9,7 @@ jest.mock('y-websocket', () => ({
     on: jest.fn((event, callback) => {
       // Immediately simulate a 'connected' event
       if (event === 'status') {
-        callback({ status: 'connected' });
+        (callback as any)({ status: 'connected' });
       }
     }),
     destroy: jest.fn(),
