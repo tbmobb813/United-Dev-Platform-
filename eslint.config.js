@@ -18,6 +18,7 @@ const config = [
     ignores: [
       'dist/**',
       '.next/**',
+      'apps/web/**',
       'node_modules/**',
       'apps/*/dist/**',
       'apps/*/.next/**',
