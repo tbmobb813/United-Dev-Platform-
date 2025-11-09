@@ -2,6 +2,8 @@
 
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+// Narrow local declaration for process.env so we don't need @types/node in this client file
+declare const process: { env: { NEXT_PUBLIC_WS_URL?: string } };
 import { useEffect, useRef, useState } from 'react';
 import logger from '@udp/logger';
 import { useRouter } from 'next/router';
@@ -32,7 +34,10 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
 });
 
 const QRCode = dynamic(
-  () => import('qrcode.react').then(mod => (mod as unknown) as any),
+  () =>
+    import('qrcode.react').then(
+      mod => mod as unknown as { default: React.ComponentType<Record<string, unknown>> }
+    ),
   {
     ssr: false,
     loading: () => <Loading text='Loading QR code...' />,
@@ -90,8 +95,8 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // Generate both mobile app deeplink and fallback web URL
   const webUrl = `${typeof window !== 'undefined'
-      ? window.location.origin
-      : 'http://localhost:3000'
+    ? window.location.origin
+    : 'http://localhost:3000'
     }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
@@ -194,6 +199,7 @@ export default function Home() {
             )
             .map(user => ({
               // @ts-ignore - narrow runtime fields to strings
+              id: String(user.id),
               name: String(user.name),
               // @ts-ignore
               color: String(user.color),
@@ -588,6 +594,7 @@ export default function Home() {
               overflow: 'hidden',
             }}
           >
+            {/* @ts-ignore styled-jsx global prop */}
             <style jsx global>{`
               .monaco-editor .selected-text {
                 background-color: rgba(0, 112, 243, 0.1) !important;

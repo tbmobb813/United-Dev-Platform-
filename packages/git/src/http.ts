@@ -3,8 +3,8 @@
  * Uses isomorphic-git's built-in HTTP clients for Node.js and browser compatibility
  */
 
-interface GitHttpClient {
-  request: (options: unknown) => Promise<unknown>;
+export interface GitHttpClient {
+  request: (options: any) => Promise<any>;
 }
 
 let httpClient: GitHttpClient | undefined;

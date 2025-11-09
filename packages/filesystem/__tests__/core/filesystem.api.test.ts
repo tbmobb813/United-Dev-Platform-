@@ -43,9 +43,10 @@ describe('packages/filesystem - API', () => {
     // Use NodeFileSystem in test env to avoid IndexedDB dependency
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'udp-pm-'));
     const nodeFs = new NodeFileSystem(tmp);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const pm = new ProjectManager(nodeFs as any);
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    // Use parameter type inference to avoid `any` cast
+    const pm = new ProjectManager(
+      nodeFs as unknown as ConstructorParameters<typeof ProjectManager>[0]
+    );
     const templateId = 'react-typescript';
     const projectPath = 'projects/myapp';
     await pm.createProject(templateId, projectPath, { projectName: 'myapp' });

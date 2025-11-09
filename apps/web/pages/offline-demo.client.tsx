@@ -8,7 +8,9 @@ import dynamic from 'next/dynamic';
 // to keep the demo fast and avoid any SSR issues.
 const OfflineEditorClient = dynamic(
   () =>
-    import('../components/OfflineEditorClient').then(m => (m as unknown) as any),
+    import('../components/OfflineEditorClient').then(
+      m => m as unknown as { default: React.ComponentType<Record<string, unknown>> }
+    ),
   { ssr: false }
 );
 const OfflineEditorClientComp = OfflineEditorClient as unknown as React.ComponentType<

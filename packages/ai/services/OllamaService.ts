@@ -85,8 +85,7 @@ export class OllamaService extends AIService {
       };
     } catch (error) {
       throw new Error(
-        `Ollama generation failed: ${
-          error instanceof Error ? error.message : 'Unknown error'
+        `Ollama generation failed: ${error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -129,8 +128,7 @@ export class OllamaService extends AIService {
       let fullContent = '';
       let lastResponse: OllamaStreamResponse | null = null;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const decoder = new (globalThis as any).TextDecoder();
+      const decoder = new TextDecoder();
 
       try {
         let finished = false;
@@ -139,6 +137,11 @@ export class OllamaService extends AIService {
           if (done) {
             finished = true;
             break;
+          }
+
+          if (!value) {
+            // No data in this read loop iteration; continue to next
+            continue;
           }
 
           const chunk = decoder.decode(value);
@@ -182,8 +185,7 @@ export class OllamaService extends AIService {
       };
     } catch (error) {
       throw new Error(
-        `Ollama streaming failed: ${
-          error instanceof Error ? error.message : 'Unknown error'
+        `Ollama streaming failed: ${error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -272,8 +274,7 @@ export class OllamaService extends AIService {
       }
     } catch (error) {
       throw new Error(
-        `Failed to pull model ${modelName}: ${
-          error instanceof Error ? error.message : 'Unknown error'
+        `Failed to pull model ${modelName}: ${error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -296,8 +297,7 @@ export class OllamaService extends AIService {
       }
     } catch (error) {
       throw new Error(
-        `Failed to delete model ${modelName}: ${
-          error instanceof Error ? error.message : 'Unknown error'
+        `Failed to delete model ${modelName}: ${error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -322,8 +322,7 @@ export class OllamaService extends AIService {
       return await response.json();
     } catch (error) {
       throw new Error(
-        `Failed to get model info for ${modelName}: ${
-          error instanceof Error ? error.message : 'Unknown error'
+        `Failed to get model info for ${modelName}: ${error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }

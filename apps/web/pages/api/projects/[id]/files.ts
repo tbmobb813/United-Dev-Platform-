@@ -96,7 +96,7 @@ async function createFile(
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    const size = content ? Buffer.byteLength(content, 'utf8') : 0;
+    const size = content ? new TextEncoder().encode(String(content)).length : 0;
 
     const file = await prisma.projectFile.create({
       data: {

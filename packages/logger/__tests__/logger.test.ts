@@ -15,19 +15,15 @@ describe('logger', () => {
   });
 
   afterAll(() => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = ORIGINAL_ENV;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = ORIGINAL_ENV;
   });
 
   it('calls console.log for info when not in production', async () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = 'development';
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'development';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
-    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const spy = jest.spyOn(console, 'log').mockImplementation(() => { });
     logger.info('hello', { a: 1 });
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe('[info]');
@@ -37,13 +33,11 @@ describe('logger', () => {
   });
 
   it('always calls console.warn for warn', async () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = 'production';
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'production';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
-    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => { });
     logger.warn('something', 42);
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe('[warn]');
@@ -51,13 +45,11 @@ describe('logger', () => {
   });
 
   it('always calls console.error for error', async () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = 'production';
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'production';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => { });
     logger.error(new Error('boom'));
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe('[error]');
