@@ -33,11 +33,10 @@ describe('duplicate-yjs detector - integration', () => {
   });
 
   it('runs detector in report-only mode and writes a JSON report', () => {
-    const detector = path.resolve(
-      process.cwd(),
-      'scripts',
-      'check-duplicate-yjs.cjs'
-    );
+    // Resolve detector relative to the repository root via the test file __dirname.
+    // Some test runners change process.cwd() when running per-package; using
+    // __dirname keeps the path deterministic regardless of cwd.
+    const detector = path.resolve(__dirname, '..', '..', '..', 'scripts', 'check-duplicate-yjs.cjs');
 
     const res = spawnSync(
       process.execPath,

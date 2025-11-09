@@ -1,23 +1,31 @@
 
-import { DocumentManager } from '../../DocumentManager';
-import { UserPresence } from '../../types';
 import { jest } from '@jest/globals';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
 
-// Mock the WebsocketProvider to avoid actual network connections in tests
-jest.mock('y-websocket', () => ({
-  WebsocketProvider: jest.fn().mockImplementation(() => ({
-    on: jest.fn((event, callback) => {
-      // Immediately simulate a 'connected' event
-      if (event === 'status') {
-        (callback as any)({ status: 'connected' });
-      }
-    }),
-    destroy: jest.fn(),
-  })),
+// Use ESM-aware mocking. We must register the mock before importing the
+// module under test so that the module's import of 'y-websocket' is replaced.
+await jest.unstable_mockModule('y-websocket', async () => ({
+  WebsocketProvider: jest
+    .fn()
+    .mockImplementation(() => ({
+      on: jest.fn((event, callback) => {
+        if (event === 'status') {
+          (callback as any)({ status: 'connected' });
+        }
+      }),
+      destroy: jest.fn(),
+    })),
 }));
 
+// Import the type for compile-time annotations, and import the runtime class
+// after registering the ESM mock above.
+import type { DocumentManager as DocumentManagerType } from '../../DocumentManager';
+import type { UserPresence } from '../../types';
+const { DocumentManager } = await import('../../DocumentManager');
+
 describe('DocumentManager', () => {
-  let docManager: DocumentManager;
+  let docManager: DocumentManagerType;
   const mockUser = {
     id: 'user-1',
     name: 'Test User',
