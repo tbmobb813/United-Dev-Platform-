@@ -85,7 +85,8 @@ export class OllamaService extends AIService {
       };
     } catch (error) {
       throw new Error(
-        `Ollama generation failed: ${error instanceof Error ? error.message : 'Unknown error'
+        `Ollama generation failed: ${
+          error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -181,7 +182,8 @@ export class OllamaService extends AIService {
       };
     } catch (error) {
       throw new Error(
-        `Ollama streaming failed: ${error instanceof Error ? error.message : 'Unknown error'
+        `Ollama streaming failed: ${
+          error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -270,7 +272,8 @@ export class OllamaService extends AIService {
       }
     } catch (error) {
       throw new Error(
-        `Failed to pull model ${modelName}: ${error instanceof Error ? error.message : 'Unknown error'
+        `Failed to pull model ${modelName}: ${
+          error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -293,7 +296,8 @@ export class OllamaService extends AIService {
       }
     } catch (error) {
       throw new Error(
-        `Failed to delete model ${modelName}: ${error instanceof Error ? error.message : 'Unknown error'
+        `Failed to delete model ${modelName}: ${
+          error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }
@@ -318,7 +322,8 @@ export class OllamaService extends AIService {
       return await response.json();
     } catch (error) {
       throw new Error(
-        `Failed to get model info for ${modelName}: ${error instanceof Error ? error.message : 'Unknown error'
+        `Failed to get model info for ${modelName}: ${
+          error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     }

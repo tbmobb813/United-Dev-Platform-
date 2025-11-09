@@ -354,8 +354,9 @@ export const withTooltip = <P extends object>(
     );
   };
 
-  WithTooltipComponent.displayName = `withTooltip(${WrappedComponent.displayName || WrappedComponent.name
-    })`;
+  WithTooltipComponent.displayName = `withTooltip(${
+    WrappedComponent.displayName || WrappedComponent.name
+  })`;
 
   return WithTooltipComponent;
 };

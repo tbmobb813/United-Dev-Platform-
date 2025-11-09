@@ -6,13 +6,20 @@ describe('Yjs Duplication Check', () => {
     // if (glo['__ $YJS$ __'] === true) { ... }
     // We can simulate a similar check here.
 
-    const globalScope = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : {});
+    const globalScope =
+      typeof globalThis !== 'undefined'
+        ? globalThis
+        : typeof window !== 'undefined'
+          ? window
+          : {};
     const yjsMarker = '__YJS_DUPLICATION_CHECK__';
 
     // do a guarded check for an existing marker
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if ((globalScope as any)[yjsMarker]) {
-      console.error('Yjs has already been imported. This indicates a duplication issue.');
+      console.error(
+        'Yjs has already been imported. This indicates a duplication issue.'
+      );
     }
 
     // assign marker on global scope for test (use any because global shape varies in test env)

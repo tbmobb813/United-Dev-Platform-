@@ -11,7 +11,9 @@ describe('errors helpers', () => {
     const { getErrorMessage } = mod;
     expect(getErrorMessage(new Error('boom'))).toBe('boom');
     expect(getErrorMessage('simple')).toBe('simple');
-    expect(getErrorMessage({ foo: 'bar' })).toBe(JSON.stringify({ foo: 'bar' }));
+    expect(getErrorMessage({ foo: 'bar' })).toBe(
+      JSON.stringify({ foo: 'bar' })
+    );
   });
 
   it('isPrismaError detects object with code string', async () => {

@@ -76,16 +76,18 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
         editorContent: editorContent?.slice(0, 2000), // First 2000 chars for context
       };
 
-      const enhancedSystemPrompt = `${systemPrompt || 'You are a helpful coding assistant.'
-        } 
+      const enhancedSystemPrompt = `${
+        systemPrompt || 'You are a helpful coding assistant.'
+      } 
       
 Context:
 - File: ${fileName || 'unknown'}
 - Selected code: ${selectedCode ? 'Available' : 'None'}
-- Cursor position: ${cursorPosition
+- Cursor position: ${
+        cursorPosition
           ? `Line ${cursorPosition.line}, Column ${cursorPosition.column}`
           : 'Unknown'
-        }
+      }
 - This is a collaborative coding environment with real-time editing.
 
 Please provide helpful, accurate coding assistance with explanations.`;
@@ -201,8 +203,9 @@ Please provide a clear explanation of what this code does, how it works, and any
     if (!selectedCode) {
       return;
     }
-    const prompt = `Write comprehensive unit tests for this code${fileName ? ` from ${fileName}` : ''
-      }:
+    const prompt = `Write comprehensive unit tests for this code${
+      fileName ? ` from ${fileName}` : ''
+    }:
 
 \`\`\`
 ${selectedCode}
@@ -223,8 +226,9 @@ Please include:
     if (!selectedCode) {
       return;
     }
-    const prompt = `Optimize and improve this code${fileName ? ` from ${fileName}` : ''
-      }:
+    const prompt = `Optimize and improve this code${
+      fileName ? ` from ${fileName}` : ''
+    }:
 
 \`\`\`
 ${selectedCode}
@@ -268,8 +272,9 @@ Please help identify:
     if (!selectedCode) {
       return;
     }
-    const prompt = `Generate documentation for this code${fileName ? ` from ${fileName}` : ''
-      }:
+    const prompt = `Generate documentation for this code${
+      fileName ? ` from ${fileName}` : ''
+    }:
 
 \`\`\`
 ${selectedCode}
@@ -398,8 +403,9 @@ Please provide:
                   borderRadius: '12px',
                   backgroundColor:
                     message.role === 'user' ? '#e3f2fd' : '#f8f9fa',
-                  border: `1px solid ${message.role === 'user' ? '#bbdefb' : '#e9ecef'
-                    }`,
+                  border: `1px solid ${
+                    message.role === 'user' ? '#bbdefb' : '#e9ecef'
+                  }`,
                   boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                 }}
               >

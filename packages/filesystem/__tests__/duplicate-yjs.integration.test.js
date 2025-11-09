@@ -36,7 +36,14 @@ describe('duplicate-yjs detector - integration', () => {
     // Resolve detector relative to the repository root via the test file __dirname.
     // Some test runners change process.cwd() when running per-package; using
     // __dirname keeps the path deterministic regardless of cwd.
-    const detector = path.resolve(__dirname, '..', '..', '..', 'scripts', 'check-duplicate-yjs.cjs');
+    const detector = path.resolve(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'scripts',
+      'check-duplicate-yjs.cjs'
+    );
 
     const res = spawnSync(
       process.execPath,

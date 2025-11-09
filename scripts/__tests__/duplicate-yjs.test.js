@@ -9,7 +9,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 describe('duplicate-yjs detector - fixture', () => {
-  const fixtureDir = path.resolve(__dirname, 'fixtures', 'duplicate-yjs-fixture');
+  const fixtureDir = path.resolve(
+    __dirname,
+    'fixtures',
+    'duplicate-yjs-fixture'
+  );
 
   it('detects a vendor yjs runtime and application reference', () => {
     // Run the detector script pointing at the fixture directory. Use an
@@ -23,14 +27,10 @@ describe('duplicate-yjs detector - fixture', () => {
     let out = '';
     let errOut = '';
     try {
-      out = execFileSync(
-        'node',
-        [detector, '--dir', fixtureDir, '--report'],
-        {
-          encoding: 'utf8',
-          stdio: 'pipe',
-        }
-      );
+      out = execFileSync('node', [detector, '--dir', fixtureDir, '--report'], {
+        encoding: 'utf8',
+        stdio: 'pipe',
+      });
     } catch (err) {
       if (err.stdout) out = err.stdout.toString();
       if (err.stderr) errOut = err.stderr.toString();
@@ -51,7 +51,8 @@ describe('duplicate-yjs detector - fixture', () => {
       const prefix = 'duplicate-yjs-';
       let candidate = null;
       try {
-        const dirs = fs.readdirSync(tmpDir)
+        const dirs = fs
+          .readdirSync(tmpDir)
           .filter(d => d.startsWith(prefix))
           .map(d => path.join(tmpDir, d, 'out-report.json'))
           .filter(f => fs.existsSync(f));
@@ -66,7 +67,9 @@ describe('duplicate-yjs detector - fixture', () => {
       if (candidate) {
         reportPath = candidate;
       } else {
-        throw new Error('Could not find report path in detector output or /tmp fallback');
+        throw new Error(
+          'Could not find report path in detector output or /tmp fallback'
+        );
       }
     }
     const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));

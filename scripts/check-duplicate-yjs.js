@@ -28,8 +28,6 @@ function findFiles(dir, exts = ['.js', '.map']) {
   return out;
 }
 
-
-
 function indexToLineColumn(content, index) {
   const prefix = content.slice(0, index);
   const lines = prefix.split('\n');
@@ -87,7 +85,8 @@ async function mapMatchesToSources(matches) {
 
   function resolveSourcePath(rawSource, generatedFile) {
     if (!rawSource) return null;
-    if (path.isAbsolute(rawSource) && fs.existsSync(rawSource)) return rawSource;
+    if (path.isAbsolute(rawSource) && fs.existsSync(rawSource))
+      return rawSource;
     if (/^webpack:(?:\/+)?/.test(rawSource)) {
       let s = rawSource.replace(/^webpack:(?:\/+)?/, '');
       if (s.startsWith('./')) s = s.slice(2);
@@ -104,7 +103,10 @@ async function mapMatchesToSources(matches) {
     if (/^https?:\/\//i.test(rawSource)) {
       try {
         const u = new URL(rawSource);
-        const cand = path.resolve(process.cwd(), u.pathname.replace(/^\/+/, ''));
+        const cand = path.resolve(
+          process.cwd(),
+          u.pathname.replace(/^\/+/, '')
+        );
         if (fs.existsSync(cand)) return cand;
         const base = path.basename(u.pathname);
         const possible = path.resolve(process.cwd(), '.next', base);
@@ -136,10 +138,14 @@ async function mapMatchesToSources(matches) {
     const content = fs.readFileSync(generatedFile, 'utf8');
     let inlineSourceMap = null;
     if (!mapPath) {
-      const singleLineMatch = content.match(/(?:\/\/|\/\*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i);
+      const singleLineMatch = content.match(
+        /(?:\/\/|\/\*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
+      );
       if (singleLineMatch && singleLineMatch[1]) {
         const raw = singleLineMatch[1].trim();
-        const dataMatch = raw.match(/^data:([^,;]+)(?:;charset=[^;,]+)?;(base64),(.+)$/i);
+        const dataMatch = raw.match(
+          /^data:([^,;]+)(?:;charset=[^;,]+)?;(base64),(.+)$/i
+        );
         if (dataMatch) {
           try {
             const b64 = dataMatch[3];
@@ -174,7 +180,9 @@ async function mapMatchesToSources(matches) {
           let rawMap;
           if (inlineSourceMap) rawMap = JSON.parse(inlineSourceMap);
           else rawMap = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
-          const orig = await SourceMapConsumer.with(rawMap, null, consumer => consumer.originalPositionFor({ line, column }));
+          const orig = await SourceMapConsumer.with(rawMap, null, consumer =>
+            consumer.originalPositionFor({ line, column })
+          );
           if (orig && orig.source) {
             entry.source = orig.source;
             entry.sourceLine = orig.line;
@@ -204,7 +212,9 @@ async function mapMatchesToSources(matches) {
 function filterAllowlist(matches, allowlist = []) {
   if (!allowlist || allowlist.length === 0) return matches;
   const normalized = allowlist.map(p => path.resolve(p));
-  return matches.filter(m => !normalized.includes(path.resolve(m.generatedFile)));
+  return matches.filter(
+    m => !normalized.includes(path.resolve(m.generatedFile))
+  );
 }
 
 async function main() {
@@ -256,7 +266,12 @@ async function main() {
     if (srcBase && allowlistBasenames.includes(srcBase)) return false;
     if (rsrcBase && allowlistBasenames.includes(rsrcBase)) return false;
     if (
-      normalizedAllowlist.some(a => gen.endsWith(a) || (src && src.endsWith(a)) || (rsrc && rsrc.endsWith(a)))
+      normalizedAllowlist.some(
+        a =>
+          gen.endsWith(a) ||
+          (src && src.endsWith(a)) ||
+          (rsrc && rsrc.endsWith(a))
+      )
     )
       return false;
     return true;
@@ -266,9 +281,14 @@ async function main() {
   if (strict) {
     const resolved = filtered.map(e => e.resolvedSource).filter(Boolean);
     if (resolved.length > 0) flaggedSet = new Set(resolved);
-    else flaggedSet = new Set(filtered.map(e => (e.source ? e.source : e.generatedFile)));
+    else
+      flaggedSet = new Set(
+        filtered.map(e => (e.source ? e.source : e.generatedFile))
+      );
   } else {
-    flaggedSet = new Set(filtered.map(e => (e.source ? e.source : e.generatedFile)));
+    flaggedSet = new Set(
+      filtered.map(e => (e.source ? e.source : e.generatedFile))
+    );
   }
 
   const result = {
@@ -279,16 +299,21 @@ async function main() {
     flaggedFiles: flaggedSet.size,
     allowlist,
     strict: !!strict,
-    severity: flaggedSet.size > 1 ? 'error' : flaggedSet.size === 1 ? 'warning' : 'ok',
+    severity:
+      flaggedSet.size > 1 ? 'error' : flaggedSet.size === 1 ? 'warning' : 'ok',
   };
 
   if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
 
-  console.log(`Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`);
+  console.log(
+    `Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`
+  );
   if (report) console.log(`Wrote report to ${report}`);
 
   if (result.flaggedFiles > 1) {
-    console.error('Potential duplicate Yjs runtime detected (more than one flagged chunk/source).');
+    console.error(
+      'Potential duplicate Yjs runtime detected (more than one flagged chunk/source).'
+    );
     if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
     if (report) {
       /* no-op */
@@ -297,7 +322,9 @@ async function main() {
     }
   }
   if (result.flaggedFiles === 1) {
-    console.warn('Single chunk/source references Yjs-like identifiers (flagged as warning).');
+    console.warn(
+      'Single chunk/source references Yjs-like identifiers (flagged as warning).'
+    );
     if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
     process.exit(0);
   }
@@ -325,7 +352,10 @@ const invokedDirectly = (() => {
 
 if (invokedDirectly) {
   main().catch(err => {
-    console.error('Detector failure:', err && err.stack ? err.stack : String(err));
+    console.error(
+      'Detector failure:',
+      err && err.stack ? err.stack : String(err)
+    );
     process.exit(4);
   });
 }

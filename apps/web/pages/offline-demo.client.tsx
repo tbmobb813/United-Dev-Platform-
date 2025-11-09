@@ -30,7 +30,9 @@ const OfflineCollaborationDemo: React.FC = () => {
             <strong>🤖 Complete AI Integration Suite</strong>
             <ul>
               <li>Local Model Support (Ollama) for offline AI capabilities</li>
-              <li>Intelligent Code Completion with caching and context awareness</li>
+              <li>
+                Intelligent Code Completion with caching and context awareness
+              </li>
               <li>13+ Refactoring Tools with safety analysis</li>
               <li>Context-Aware Assistant with codebase understanding</li>
             </ul>

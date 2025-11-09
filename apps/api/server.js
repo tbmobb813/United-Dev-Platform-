@@ -15,7 +15,7 @@ import { getToken } from 'next-auth/jwt';
 const docs = new Map();
 
 // Get or create Yjs document
-const getYDoc = (docname) => {
+const getYDoc = docname => {
   let doc = docs.get(docname);
   if (!doc) {
     doc = new Y.Doc();
@@ -25,12 +25,16 @@ const getYDoc = (docname) => {
 };
 
 // Simple setupWSConnection replacement
-const setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[0] } = {}) => {
+const setupWSConnection = (
+  conn,
+  req,
+  { docName = req.url.slice(1).split('?')[0] } = {}
+) => {
   conn.binaryType = 'arraybuffer';
   const doc = getYDoc(docName);
   const awareness = new awarenessProtocol.Awareness(doc);
 
-  const messageHandler = (message) => {
+  const messageHandler = message => {
     const encoder = encoding.createEncoder();
     const decoder = decoding.createDecoder(new Uint8Array(message));
     const messageType = decoding.readVarUint(decoder);
@@ -48,7 +52,11 @@ const setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[0]
         syncProtocol.readUpdate(decoder, doc, null);
         break;
       case awarenessProtocol.messageAwareness:
-        awarenessProtocol.applyAwarenessUpdate(awareness, decoding.readVarUint8Array(decoder), conn);
+        awarenessProtocol.applyAwarenessUpdate(
+          awareness,
+          decoding.readVarUint8Array(decoder),
+          conn
+        );
         break;
     }
   };
@@ -91,7 +99,9 @@ async function authenticateToken(req, res, next) {
   }
 
   // Assuming the JWT contains the user ID in the 'sub' claim (standard for NextAuth.js)
-  const decodedToken = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+  const decodedToken = JSON.parse(
+    Buffer.from(token.split('.')[1], 'base64').toString()
+  );
   req.userId = decodedToken.sub; // 'sub' claim typically holds the user ID
 
   next();
@@ -109,7 +119,9 @@ function setupCollaborativeWSConnection(conn, req) {
 
   // For development, allow connections without sessionId/projectId
   if (!sessionId && !projectId && process.env.NODE_ENV !== 'production') {
-    logger.info('Development mode: accepting connection without session params');
+    logger.info(
+      'Development mode: accepting connection without session params'
+    );
   } else if (!sessionId || !projectId) {
     logger.warn('Missing sessionId or projectId, closing connection');
     conn.close(1008, 'Missing required parameters');
@@ -526,7 +538,9 @@ app.post('/api/files', authenticateToken, async (req, res) => {
     const userId = req.userId; // From authenticateToken middleware
 
     if (!projectId || !path || !name) {
-      return res.status(400).json({ error: 'Project ID, path, and name are required' });
+      return res
+        .status(400)
+        .json({ error: 'Project ID, path, and name are required' });
     }
 
     // Verify user has access to the project
@@ -535,7 +549,11 @@ app.post('/api/files', authenticateToken, async (req, res) => {
       include: { members: true },
     });
 
-    if (!project || (!project.members.some(m => m.userId === userId) && project.ownerId !== userId)) {
+    if (
+      !project ||
+      (!project.members.some(m => m.userId === userId) &&
+        project.ownerId !== userId)
+    ) {
       return res.status(403).json({ error: 'Access denied to project' });
     }
 
@@ -588,7 +606,11 @@ app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
 
     // Verify user has access to the project
     const project = existingFile.project;
-    if (!project || (!project.members.some(m => m.userId === userId) && project.ownerId !== userId)) {
+    if (
+      !project ||
+      (!project.members.some(m => m.userId === userId) &&
+        project.ownerId !== userId)
+    ) {
       return res.status(403).json({ error: 'Access denied to project' });
     }
 
@@ -634,7 +656,11 @@ app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
 
     // Verify user has access to the project
     const project = file.project;
-    if (!project || (!project.members.some(m => m.userId === userId) && project.ownerId !== userId)) {
+    if (
+      !project ||
+      (!project.members.some(m => m.userId === userId) &&
+        project.ownerId !== userId)
+    ) {
       return res.status(403).json({ error: 'Access denied to project' });
     }
 

@@ -42,7 +42,9 @@ export default function TestAIAssistantClient() {
         </pre>
       </div>
 
-      <ButtonAny onClick={() => setIsAIOpen(true)}>🤖 Open AI Assistant</ButtonAny>
+      <ButtonAny onClick={() => setIsAIOpen(true)}>
+        🤖 Open AI Assistant
+      </ButtonAny>
 
       <AIAssistantAny
         isOpen={isAIOpen}

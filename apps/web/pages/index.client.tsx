@@ -31,10 +31,13 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   loading: () => <Loading text='Loading editor...' />,
 });
 
-const QRCode = dynamic(() => import('qrcode.react').then(mod => (mod as any).default || mod), {
-  ssr: false,
-  loading: () => <Loading text='Loading QR code...' />,
-});
+const QRCode = dynamic(
+  () => import('qrcode.react').then(mod => (mod as any).default || mod),
+  {
+    ssr: false,
+    loading: () => <Loading text='Loading QR code...' />,
+  }
+);
 const QRCodeAny: any = QRCode;
 
 function generateColor() {
@@ -86,10 +89,11 @@ export default function Home() {
   }, []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // Generate both mobile app deeplink and fallback web URL
-  const webUrl = `${typeof window !== 'undefined'
-    ? window.location.origin
-    : 'http://localhost:3000'
-    }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
+  const webUrl = `${
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'http://localhost:3000'
+  }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
   )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(
@@ -199,7 +203,9 @@ export default function Home() {
 
           // Update cursor decorations in editor (narrow to users with cursor)
           const usersWithCursors = userList.filter(
-            (u): u is {
+            (
+              u
+            ): u is {
               id: string;
               name: string;
               color: string;

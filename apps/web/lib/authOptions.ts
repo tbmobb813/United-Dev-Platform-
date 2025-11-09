@@ -1,7 +1,7 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-import type { NextAuthOptions } from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client';
+import type { NextAuthOptions } from 'next-auth';
+import GitHubProvider from 'next-auth/providers/github';
 
 const prisma = new PrismaClient();
 
@@ -14,9 +14,9 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "database",
+    strategy: 'database',
   },
-  secret: process.env.NEXTAUTH_SECRET || "dev-secret",
+  secret: process.env.NEXTAUTH_SECRET || 'dev-secret',
   callbacks: {
     async session({ session, user }) {
       if (session.user) {

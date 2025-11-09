@@ -15,7 +15,11 @@ test('replacement script dry-run detects console.log in fixture', () => {
     'sample-with-console.ts'
   );
   // Use absolute path to the script so tests are independent of Jest's cwd
-  const scriptPath = path.join(repoRoot, 'scripts', 'replace-console-with-logger.cjs');
+  const scriptPath = path.join(
+    repoRoot,
+    'scripts',
+    'replace-console-with-logger.cjs'
+  );
   const cmd = `node ${scriptPath} --dry-run --files=${fixture}`;
   const out = execSync(cmd, { encoding: 'utf8' });
   expect(out).toContain('sample-with-console.ts');
