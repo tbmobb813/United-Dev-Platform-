@@ -3,7 +3,30 @@ import tsplugin from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import globals from 'globals/index.js';
+// Avoid depending on the 'globals' package during local checks; define a minimal
+// set of known globals used across the app to keep the config portable.
+const globals = {
+  browser: {
+    window: true,
+    document: true,
+    navigator: true,
+    localStorage: true,
+    sessionStorage: true,
+  },
+  node: {
+    process: true,
+    __dirname: true,
+    __filename: true,
+    module: true,
+    require: true,
+  },
+  es2021: {
+    Promise: true,
+    Set: true,
+    Map: true,
+    WeakMap: true,
+  },
+};
 
 const config = [
   {
