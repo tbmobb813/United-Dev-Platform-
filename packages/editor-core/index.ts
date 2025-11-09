@@ -15,7 +15,7 @@ export interface UserPresence {
 export interface CollaborativeDocument {
   id: string;
   content: Y.Text;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   metadata?: Record<string, any>;
 }
 

@@ -21,3 +21,7 @@ apps/web/.next/**
 .backup/
 .env
 .env.*
+
+# Ignore JSON/JSONC files to avoid ESLint parsing errors on non-JS/TS JSON files
+*.json
+**/*.json

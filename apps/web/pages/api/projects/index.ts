@@ -22,16 +22,13 @@ export default async function handler(
   }
 
   const maybeSession = await requireAuth(req, res);
-  const session: AuthSession = isAuthSession(maybeSession)
-    ? maybeSession
-    : undefined;
+  const session: AuthSession = isAuthSession(maybeSession) ? maybeSession : undefined;
   if (!session || !session.user) {
     return;
   }
-  const userId = ((session as any).user as { id?: string } | undefined)?.id;
-  if (!userId) {
-    return;
-  }
+  // `session.user` is present by the guard above; extract id safely
+  const userId = session.user.id;
+  if (!userId) return;
 
   switch (req.method) {
     case 'GET':

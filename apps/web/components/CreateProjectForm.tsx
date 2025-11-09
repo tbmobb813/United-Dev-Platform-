@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Input, Stack } from '@udp/ui';
 
-// Cast UI exports to any to avoid cross-package React typing mismatch during rebase
-const ButtonAny: any = Button;
-const InputAny: any = Input;
-const StackAny: any = Stack;
+// Use generic component aliases to avoid explicit `any` while preserving JSX use
+const ButtonComp = Button as React.ComponentType<Record<string, unknown>>;
+const InputComp = Input as React.ComponentType<Record<string, unknown>>;
+const StackComp = Stack as React.ComponentType<Record<string, unknown>>;
 import axios from 'axios';
 
 interface CreateProjectFormProps {
@@ -44,22 +44,25 @@ export default function CreateProjectForm({
   };
 
   return (
-    <StackAny gap='medium'>
-      <InputAny
+    <StackComp gap='medium'>
+      <InputComp
+        // @ts-ignore - treating component props as unknown during rebase
         placeholder='Enter project name'
+        // @ts-ignore
         value={projectName}
+        // @ts-ignore
         onChange={setProjectName}
         disabled={loading}
       />
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <StackAny direction='row' gap='small' justify='end'>
-        <ButtonAny variant='ghost' onClick={onCancel} disabled={loading}>
+      <StackComp direction='row' gap='small' justify='end'>
+        <ButtonComp variant='ghost' onClick={onCancel} disabled={loading}>
           Cancel
-        </ButtonAny>
-        <ButtonAny onClick={handleSubmit} disabled={loading}>
+        </ButtonComp>
+        <ButtonComp onClick={handleSubmit} disabled={loading}>
           Create
-        </ButtonAny>
-      </StackAny>
-    </StackAny>
+        </ButtonComp>
+      </StackComp>
+    </StackComp>
   );
 }

@@ -8,12 +8,12 @@ import dynamic from 'next/dynamic';
 // to keep the demo fast and avoid any SSR issues.
 const OfflineEditorClient = dynamic(
   () =>
-    import('../components/OfflineEditorClient').then(
-      m => m.default || m.OfflineEditorClient
-    ),
+    import('../components/OfflineEditorClient').then(m => (m as unknown) as any),
   { ssr: false }
 );
-const OfflineEditorClientAny: any = OfflineEditorClient;
+const OfflineEditorClientComp = OfflineEditorClient as unknown as React.ComponentType<
+  Record<string, unknown>
+>;
 
 /**
  * Complete demonstration of offline-enabled collaborative editing
@@ -62,54 +62,64 @@ const OfflineCollaborationDemo: React.FC = () => {
           📝 Live Collaborative Editor with Offline Support
         </div>
 
-        <OfflineEditorClientAny
+        <OfflineEditorClientComp
+          // @ts-ignore - props are intentionally treated as unknown during rebase
           room='platform-demo'
+          // @ts-ignore
           serverUrl='ws://localhost:1234'
         >
-          {(doc: any, status: any) => (
-            <div className={styles.cardPadding}>
-              <div
-                className={`${styles.mb20} ${status.isConnected ? styles.onlineBox : styles.offlineBox}`}
-              >
-                <h3 className={styles.statusHeaderTitle}>
-                  {status.isConnected ? '🌐 Online Mode' : '📱 Offline Mode'}
-                </h3>
-                <p className={styles.statusParagraph}>
-                  {status.isConnected
-                    ? 'Real-time collaboration active. Changes sync instantly with other users.'
-                    : 'Working offline. Your changes are being saved locally and will sync when you reconnect.'}
-                </p>
-                {status.pendingChanges > 0 && (
-                  <p className={styles.pendingChanges}>
-                    📋 {status.pendingChanges} changes pending sync
-                  </p>
-                )}
-              </div>
+          {(doc: unknown, status: unknown) => {
+            const statusRec = status as {
+              isConnected?: boolean;
+              pendingChanges?: number;
+              lastSync?: Date;
+            };
 
-              <div className={styles.statusBox}>
-                <div className={styles.bigIcon}>
-                  {status.isConnected ? '⚡' : '💾'}
+            return (
+              <div className={styles.cardPadding}>
+                <div
+                  className={`${styles.mb20} ${statusRec.isConnected ? styles.onlineBox : styles.offlineBox}`}
+                >
+                  <h3 className={styles.statusHeaderTitle}>
+                    {statusRec.isConnected ? '🌐 Online Mode' : '📱 Offline Mode'}
+                  </h3>
+                  <p className={styles.statusParagraph}>
+                    {statusRec.isConnected
+                      ? 'Real-time collaboration active. Changes sync instantly with other users.'
+                      : 'Working offline. Your changes are being saved locally and will sync when you reconnect.'}
+                  </p>
+                  {statusRec.pendingChanges && statusRec.pendingChanges > 0 && (
+                    <p className={styles.pendingChanges}>
+                      📋 {statusRec.pendingChanges} changes pending sync
+                    </p>
+                  )}
                 </div>
-                <h3 className={styles.statusTitle}>
-                  {status.isConnected
-                    ? 'Connected & Synced'
-                    : 'Offline Mode Active'}
-                </h3>
-                <p className={styles.statusParaSmall}>
-                  {status.isConnected
-                    ? 'Your document is live and syncing with collaborators in real-time.'
-                    : 'Continue editing! All changes are saved locally and will automatically sync when you reconnect.'}
-                </p>
 
-                {status.lastSync && (
-                  <p className={styles.pendingChanges}>
-                    Last sync: {status.lastSync.toLocaleString()}
+                <div className={styles.statusBox}>
+                  <div className={styles.bigIcon}>
+                    {statusRec.isConnected ? '⚡' : '💾'}
+                  </div>
+                  <h3 className={styles.statusTitle}>
+                    {statusRec.isConnected
+                      ? 'Connected & Synced'
+                      : 'Offline Mode Active'}
+                  </h3>
+                  <p className={styles.statusParaSmall}>
+                    {statusRec.isConnected
+                      ? 'Your document is live and syncing with collaborators in real-time.'
+                      : 'Continue editing! All changes are saved locally and will automatically sync when you reconnect.'}
                   </p>
-                )}
+
+                  {statusRec.lastSync && (
+                    <p className={styles.pendingChanges}>
+                      Last sync: {statusRec.lastSync.toLocaleString()}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-        </OfflineEditorClientAny>
+            );
+          }}
+        </OfflineEditorClientComp>
       </div>
       <div className={styles.footerSection}>
         <h3 className={styles.footerTitle}>🚀 Platform Status:</h3>

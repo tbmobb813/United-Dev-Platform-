@@ -4,7 +4,7 @@ export interface BreadcrumbItem {
   key?: string | number;
   label: ReactNode;
   href?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   onClick?: (event: React.MouseEvent<any>) => void;
   disabled?: boolean;
   icon?: ReactNode;
@@ -38,7 +38,7 @@ export interface BreadcrumbSeparatorProps {
 
 export interface BreadcrumbLinkProps {
   href?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   onClick?: (event: React.MouseEvent<any>) => void;
   children: ReactNode;
   className?: string;
@@ -63,7 +63,7 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
   className = '',
   disabled = false,
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const handleClick = (event: React.MouseEvent<any>) => {
     if (disabled) {
       event.preventDefault();
@@ -217,7 +217,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   const renderSeparator = (index: number): ReactNode => {
     if (React.isValidElement(separator)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const separatorElement = separator as any;
       return React.cloneElement(separatorElement, {
         key: `separator-${index}`,

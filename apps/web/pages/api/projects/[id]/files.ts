@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@udp/db';
-import type * as Prisma from '@prisma/client';
 import logger from '@udp/logger';
 import { getErrorMessage, toEnum, isPrismaError } from '@udp/server-utils';
 
@@ -33,7 +32,7 @@ async function getProjectFiles(
   try {
     const { path, type } = req.query;
 
-    const where: any = { projectId };
+    const where: Record<string, unknown> = { projectId };
 
     // Filter by path prefix (for directory contents)
     if (path && typeof path === 'string') {
@@ -43,8 +42,8 @@ async function getProjectFiles(
     // Filter by file type
     if (type && typeof type === 'string') {
       // Avoid strongly typed Prisma inputs here to prevent cross-package
-      // generated-client mismatches during the rebase; use a loose value.
-      (where as any).type = type;
+      // generated-client mismatches during the rebase; store as unknown in record
+      (where as Record<string, unknown>)["type"] = type;
     }
 
     const files = await prisma.projectFile.findMany({
