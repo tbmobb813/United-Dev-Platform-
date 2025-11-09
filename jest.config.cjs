@@ -6,9 +6,10 @@ module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
   setupFilesAfterEnv: [],
-  // Treat .ts and .js files as ESM modules so imports like `import { describe } from '@jest/globals'`
-  // and built `dist/*.js` files using `import` are executed as ESM by the Jest runtime.
-  extensionsToTreatAsEsm: ['.ts', '.js'],
+  // Treat .ts files as ESM modules. Jest will infer .js as ESM when the nearest
+  // package.json contains "type": "module" (the repo root does), so do not
+  // explicitly include '.js' here to avoid a validation error.
+  extensionsToTreatAsEsm: ['.ts'],
   globals: {
     'ts-jest': {
       useESM: true,
