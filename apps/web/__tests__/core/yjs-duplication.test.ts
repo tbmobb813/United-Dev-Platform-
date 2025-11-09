@@ -1,6 +1,4 @@
-import * as Y from 'yjs';
-
-describe('Yjs Duplication Check', () => {
+// ...existing code...
   it('should not have multiple Yjs instances', () => {
     // This is a simplified check. In a real environment, we would need to
     // check across different modules and bundles.
@@ -11,17 +9,16 @@ describe('Yjs Duplication Check', () => {
     const globalScope = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : {});
     const yjsMarker = '__YJS_DUPLICATION_CHECK__';
 
-    // @ts-ignore
-    if (globalScope[yjsMarker]) {
+    // do a guarded check for an existing marker
+    if ((globalScope as any)[yjsMarker]) {
       console.error('Yjs has already been imported. This indicates a duplication issue.');
     }
 
-    // @ts-ignore
-    globalScope[yjsMarker] = true;
+  // assign marker on global scope for test (use any because global shape varies in test env)
+  (globalScope as any)[yjsMarker] = true;
 
-    // The real test is whether this assertion fails.
-    // If it does, it means the marker was already set.
-    // @ts-ignore
-    expect(globalScope[yjsMarker]).toBe(true);
+  // The real test is whether this assertion fails.
+  // If it does, it means the marker was already set.
+  expect((globalScope as any)[yjsMarker]).toBe(true);
   });
 });

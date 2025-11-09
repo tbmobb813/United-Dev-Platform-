@@ -1,4 +1,4 @@
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 import { getErrorMessage, isPrismaError } from '../errors';
 
 describe('errors helpers', () => {

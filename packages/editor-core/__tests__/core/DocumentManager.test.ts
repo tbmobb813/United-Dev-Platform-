@@ -1,7 +1,6 @@
 
 import { jest } from '@jest/globals';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 
 // Use ESM-aware mocking. We must register the mock before importing the
 // module under test so that the module's import of 'y-websocket' is replaced.
@@ -9,9 +8,9 @@ await jest.unstable_mockModule('y-websocket', async () => ({
   WebsocketProvider: jest
     .fn()
     .mockImplementation(() => ({
-      on: jest.fn((event, callback) => {
+      on: jest.fn((event: string, callback: (event: { status: string }) => void) => {
         if (event === 'status') {
-          (callback as any)({ status: 'connected' });
+          callback({ status: 'connected' });
         }
       }),
       destroy: jest.fn(),
