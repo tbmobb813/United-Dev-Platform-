@@ -75,7 +75,7 @@ function hasLoggerImport(text) {
 const summary = [];
 
 for (const filePath of candidates) {
-  if (!fs.existsSync(filePath)) continue;
+  if (!fs.existsSync(filePath)) {continue;}
   const src = fs.readFileSync(filePath, 'utf8');
   const calls = findConsoleCalls(src, filePath);
   if (calls.length === 0) {
@@ -102,7 +102,7 @@ for (const filePath of candidates) {
     const newMethod = methodMap[c.propName] || c.propName;
     const newCallee = oldCallee.replace(/^console\./, 'logger.');
     // safety: if replacement would be identical (e.g., logger already present), skip
-    if (oldCallee.startsWith('logger.')) continue;
+    if (oldCallee.startsWith('logger.')) {continue;}
     edits.push({
       calleeStart,
       calleeEnd,

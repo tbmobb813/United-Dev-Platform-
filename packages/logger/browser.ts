@@ -12,15 +12,15 @@ const logger: Logger = {
   info: (...args: unknown[]) => {
     // Keep simple; in production this might be a no-op or routed to telemetry
     if (typeof console !== 'undefined' && console.info)
-      console.info('[info]', ...args);
+      {console.info('[info]', ...args);}
   },
   warn: (...args: unknown[]) => {
     if (typeof console !== 'undefined' && console.warn)
-      console.warn('[warn]', ...args);
+      {console.warn('[warn]', ...args);}
   },
   error: (...args: unknown[]) => {
     if (typeof console !== 'undefined' && console.error)
-      console.error('[error]', ...args);
+      {console.error('[error]', ...args);}
   },
 };
 
