@@ -1,7 +1,10 @@
 // Lightweight shared logger exported for workspace-wide use.
 // Avoid depending on @types/node in every package by keeping `process` usage minimal.
 declare const process: { env: Record<string, string | undefined> };
-const isProd = process?.env?.['NODE_ENV'] === 'production';
+const env = process?.env || {};
+const isProd = env['NODE_ENV'] === 'production';
+// During tests we generally want quieter output; detect Jest and NODE_ENV=test
+const isTest = env['NODE_ENV'] === 'test';
 
 function format(...args: unknown[]) {
   return args
@@ -26,7 +29,8 @@ function format(...args: unknown[]) {
 
 const logger = {
   info: (...args: unknown[]) => {
-    if (!isProd) {
+    // Suppress info-level logs in production and test runs to reduce noisy test output.
+    if (!isProd && !isTest) {
       console.log('[info]', format(...args));
     }
   },

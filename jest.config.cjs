@@ -11,15 +11,12 @@ module.exports = {
   // nearest package.json "type": "module" where applicable, so keep only
   // '.ts' here to avoid validation errors in some Jest versions.
   extensionsToTreatAsEsm: ['.ts'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
+  // ts-jest options are provided inline in the `transform` entry below. Avoid
+  // using the deprecated `globals['ts-jest']` configuration.
   // Let ts-jest transform both TS and JS files when needed (allow transforming
   // JS so plain .js ESM test files under the repo can be handled by ts-jest).
   transform: {
-    '^.+\.[tj]sx?$': ['ts-jest', { useESM: true, isolatedModules: true }],
+    '^.+\\.[tj]sx?$': ['ts-jest', { useESM: true }],
   },
   testPathIgnorePatterns: ['/node_modules/', '__tests__/jest.setup.ts'],
   // Transform some ESM-only node_modules so Jest can run them in this monorepo.
