@@ -10,18 +10,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "@udp/*": [
-        "../*/index.ts",
-        "../*/src/index.ts",
-        "../*"
-      ]
+      "@udp/*": ["../*/index.ts", "../*/src/index.ts", "../*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

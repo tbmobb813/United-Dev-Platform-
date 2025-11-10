@@ -49,7 +49,12 @@ const nextConfig = {
 
     try {
       config.resolve.mainFields = Array.from(
-        new Set(['module', 'browser', 'main', ...(config.resolve.mainFields || [])])
+        new Set([
+          'module',
+          'browser',
+          'main',
+          ...(config.resolve.mainFields || []),
+        ])
       );
     } catch (e) {
       /* ignore */
@@ -71,7 +76,8 @@ const nextConfig = {
     if (!isServer) {
       config.optimization = config.optimization || {};
       config.optimization.splitChunks = config.optimization.splitChunks || {};
-      config.optimization.splitChunks.cacheGroups = config.optimization.splitChunks.cacheGroups || {};
+      config.optimization.splitChunks.cacheGroups =
+        config.optimization.splitChunks.cacheGroups || {};
 
       // Force all Yjs-related modules into a single chunk
       config.optimization.splitChunks.cacheGroups.yjs = {
@@ -84,28 +90,40 @@ const nextConfig = {
     }
 
     // If webpack is available, register replacement plugins
-    if (webpackPkg && typeof webpackPkg.NormalModuleReplacementPlugin === 'function') {
+    if (
+      webpackPkg &&
+      typeof webpackPkg.NormalModuleReplacementPlugin === 'function'
+    ) {
       config.plugins = config.plugins || [];
 
       config.plugins.push(
-        new webpackPkg.NormalModuleReplacementPlugin(/^y-protocols(\/.*)?$/, (resource) => {
-          const req = resource.request || '';
-          if (req === 'y-protocols' || req === 'y-protocols/sync' || req === 'y-protocols/sync.js') {
-            resource.request = require.resolve('y-protocols/dist/sync.cjs');
-          } else if (req.includes('awareness')) {
-            resource.request = require.resolve('y-protocols/dist/awareness.cjs');
-          } else if (req.includes('auth')) {
-            resource.request = require.resolve('y-protocols/dist/auth.cjs');
-          } else {
-            resource.request = require.resolve('y-protocols/dist/sync.cjs');
+        new webpackPkg.NormalModuleReplacementPlugin(
+          /^y-protocols(\/.*)?$/,
+          resource => {
+            const req = resource.request || '';
+            if (
+              req === 'y-protocols' ||
+              req === 'y-protocols/sync' ||
+              req === 'y-protocols/sync.js'
+            ) {
+              resource.request = require.resolve('y-protocols/dist/sync.cjs');
+            } else if (req.includes('awareness')) {
+              resource.request = require.resolve(
+                'y-protocols/dist/awareness.cjs'
+              );
+            } else if (req.includes('auth')) {
+              resource.request = require.resolve('y-protocols/dist/auth.cjs');
+            } else {
+              resource.request = require.resolve('y-protocols/dist/sync.cjs');
+            }
           }
-        })
+        )
       );
 
       config.plugins.push(
         new webpackPkg.NormalModuleReplacementPlugin(
           /node_modules\/\.pnpm\/y-websocket@.*\/node_modules\/y-websocket\/dist\/y-websocket\.cjs$/,
-          (resource) => {
+          resource => {
             resource.request = require.resolve('y-websocket');
           }
         )
@@ -113,7 +131,7 @@ const nextConfig = {
 
       if (yjsEsm) {
         config.plugins.push(
-          new webpackPkg.NormalModuleReplacementPlugin(/^yjs$/, (resource) => {
+          new webpackPkg.NormalModuleReplacementPlugin(/^yjs$/, resource => {
             resource.request = yjsEsm;
           })
         );
@@ -124,7 +142,7 @@ const nextConfig = {
         config.plugins.push(
           new webpackPkg.SourceMapDevToolPlugin({
             filename: '[file].map',
-            moduleFilenameTemplate: (info) => `webpack:///${info.resourcePath}`,
+            moduleFilenameTemplate: info => `webpack:///${info.resourcePath}`,
           })
         );
       }
@@ -137,7 +155,7 @@ const nextConfig = {
       config.externals = config.externals || [];
       if (Array.isArray(config.externals)) {
         config.externals.push({
-          'yjs': 'commonjs yjs',
+          yjs: 'commonjs yjs',
           'y-protocols': 'commonjs y-protocols',
           'y-websocket': 'commonjs y-websocket',
           'y-indexeddb': 'commonjs y-indexeddb',
