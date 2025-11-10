@@ -4,7 +4,7 @@ export interface BreadcrumbItem {
   key?: string | number;
   label: ReactNode;
   href?: string;
-   
+
   onClick?: (event: React.MouseEvent<any>) => void;
   disabled?: boolean;
   icon?: ReactNode;
@@ -38,7 +38,7 @@ export interface BreadcrumbSeparatorProps {
 
 export interface BreadcrumbLinkProps {
   href?: string;
-   
+
   onClick?: (event: React.MouseEvent<any>) => void;
   children: ReactNode;
   className?: string;
@@ -63,7 +63,6 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
   className = '',
   disabled = false,
 }) => {
-   
   const handleClick = (event: React.MouseEvent<any>) => {
     if (disabled) {
       event.preventDefault();
@@ -217,7 +216,6 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   const renderSeparator = (index: number): ReactNode => {
     if (React.isValidElement(separator)) {
-       
       const separatorElement = separator as any;
       return React.cloneElement(separatorElement, {
         key: `separator-${index}`,

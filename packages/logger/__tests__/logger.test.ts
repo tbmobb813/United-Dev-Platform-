@@ -15,15 +15,19 @@ describe('logger', () => {
   });
 
   afterAll(() => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = ORIGINAL_ENV;
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = ORIGINAL_ENV;
   });
 
   it('calls console.log for info when not in production', async () => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'development';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'development';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
-    const spy = jest.spyOn(console, 'log').mockImplementation(() => { });
+    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
     logger.info('hello', { a: 1 });
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe('[info]');
@@ -33,11 +37,13 @@ describe('logger', () => {
   });
 
   it('always calls console.warn for warn', async () => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'production';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'production';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
-    const spy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     logger.warn('something', 42);
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe('[warn]');
@@ -45,11 +51,13 @@ describe('logger', () => {
   });
 
   it('always calls console.error for error', async () => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'production';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'production';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => { });
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     logger.error(new Error('boom'));
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe('[error]');

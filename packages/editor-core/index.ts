@@ -15,7 +15,7 @@ export interface UserPresence {
 export interface CollaborativeDocument {
   id: string;
   content: Y.Text;
-   
+
   metadata?: Record<string, any>;
 }
 

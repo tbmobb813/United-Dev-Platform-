@@ -21,15 +21,21 @@ describe('packages/config - API', () => {
   });
 
   it('returns defaults when environment variables are not set', () => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = undefined;
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = undefined;
     const cfg = getConfig();
     expect(cfg.appName).toBeDefined();
     expect(cfg.nodeEnv).toBe('development');
   });
 
   it('client config only includes NEXT_PUBLIC values', () => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NEXT_PUBLIC_APP_NAME = 'MyApp';
-    (process as unknown as { env: Record<string, string | undefined> }).env.OPENAI_API_KEY = 'secret';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NEXT_PUBLIC_APP_NAME = 'MyApp';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.OPENAI_API_KEY = 'secret';
     const client = getClientConfig();
     expect(client.appName).toBe('MyApp');
     // server-only secret should not be present on client config
@@ -37,12 +43,24 @@ describe('packages/config - API', () => {
   });
 
   it('validateConfig returns errors for missing production requirements and AI providers', () => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'production';
-    (process as unknown as { env: Record<string, string | undefined> }).env.NEXTAUTH_SECRET = undefined;
-    (process as unknown as { env: Record<string, string | undefined> }).env.DATABASE_URL = undefined;
-    (process as unknown as { env: Record<string, string | undefined> }).env.OPENAI_API_KEY = undefined;
-    (process as unknown as { env: Record<string, string | undefined> }).env.ANTHROPIC_API_KEY = undefined;
-    (process as unknown as { env: Record<string, string | undefined> }).env.ALLOW_LOCAL_MODELS = 'false';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'production';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NEXTAUTH_SECRET = undefined;
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.DATABASE_URL = undefined;
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.OPENAI_API_KEY = undefined;
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.ANTHROPIC_API_KEY = undefined;
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.ALLOW_LOCAL_MODELS = 'false';
 
     const res = validateConfig();
     expect(res.isValid).toBe(false);
@@ -54,10 +72,18 @@ describe('packages/config - API', () => {
   });
 
   it('validateConfig succeeds when required production vars are present', () => {
-    (process as unknown as { env: Record<string, string | undefined> }).env.NODE_ENV = 'production';
-    (process as unknown as { env: Record<string, string | undefined> }).env.NEXTAUTH_SECRET = 's';
-    (process as unknown as { env: Record<string, string | undefined> }).env.DATABASE_URL = 'postgres://x';
-    (process as unknown as { env: Record<string, string | undefined> }).env.OPENAI_API_KEY = 'ok';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'production';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NEXTAUTH_SECRET = 's';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.DATABASE_URL = 'postgres://x';
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.OPENAI_API_KEY = 'ok';
 
     const res = validateConfig();
     expect(res.isValid).toBe(true);

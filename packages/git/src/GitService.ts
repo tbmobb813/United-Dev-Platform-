@@ -226,21 +226,21 @@ export class GitService implements GitServiceInterface {
         onAuth: auth ? () => this.formatAuth(auth) : undefined,
         onProgress: onProgress
           ? progress => {
-            onProgress({
-              phase: progress.phase as
-                | 'initializing'
-                | 'counting'
-                | 'compressing'
-                | 'receiving'
-                | 'resolving'
-                | 'done',
-              loaded: progress.loaded || 0,
-              total: progress.total || 0,
-              percentage: progress.total
-                ? ((progress.loaded || 0) / progress.total) * 100
-                : 0,
-            });
-          }
+              onProgress({
+                phase: progress.phase as
+                  | 'initializing'
+                  | 'counting'
+                  | 'compressing'
+                  | 'receiving'
+                  | 'resolving'
+                  | 'done',
+                loaded: progress.loaded || 0,
+                total: progress.total || 0,
+                percentage: progress.total
+                  ? ((progress.loaded || 0) / progress.total) * 100
+                  : 0,
+              });
+            }
           : undefined,
       });
 
@@ -331,10 +331,10 @@ export class GitService implements GitServiceInterface {
         }),
         includeRemotes
           ? git.listBranches({
-            fs: this.gitFS,
-            dir: repositoryPath,
-            remote: 'origin',
-          })
+              fs: this.gitFS,
+              dir: repositoryPath,
+              remote: 'origin',
+            })
           : Promise.resolve([]),
         this.getCurrentBranch(repositoryPath),
       ]);
@@ -728,15 +728,15 @@ export class GitService implements GitServiceInterface {
         message,
         author: author
           ? {
-            name: author.name,
-            email: author.email,
-          }
+              name: author.name,
+              email: author.email,
+            }
           : undefined,
         committer: committer
           ? {
-            name: committer.name,
-            email: committer.email,
-          }
+              name: committer.name,
+              email: committer.email,
+            }
           : undefined,
       });
 
@@ -825,8 +825,9 @@ export class GitService implements GitServiceInterface {
                 oldLines: status === 'added' ? 0 : 10,
                 newStart: 1,
                 newLines: status === 'deleted' ? 0 : 10,
-                header: `@@ -1,${status === 'added' ? 0 : 10} +1,${status === 'deleted' ? 0 : 10
-                  } @@`,
+                header: `@@ -1,${status === 'added' ? 0 : 10} +1,${
+                  status === 'deleted' ? 0 : 10
+                } @@`,
                 lines: [
                   {
                     type:
@@ -987,8 +988,8 @@ export class GitService implements GitServiceInterface {
         onAuth: auth ? () => this.formatAuth(auth) : undefined,
         onProgress: onProgress
           ? () => {
-            // Progress handling disabled due to type complexity
-          }
+              // Progress handling disabled due to type complexity
+            }
           : undefined,
       });
 
@@ -1023,8 +1024,8 @@ export class GitService implements GitServiceInterface {
         onAuth: auth ? () => this.formatAuth(auth) : undefined,
         onProgress: onProgress
           ? () => {
-            // Progress handling disabled due to type complexity
-          }
+              // Progress handling disabled due to type complexity
+            }
           : undefined,
       });
 
