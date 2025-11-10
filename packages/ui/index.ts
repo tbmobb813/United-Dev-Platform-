@@ -4,6 +4,9 @@ export * from './ThemeProvider';
 export * from './styled';
 export * from './hooks/useMediaQuery';
 
+// Command Palette
+export * from './CommandPalette';
+
 // Components
 export * from './Button';
 export * from './Card';

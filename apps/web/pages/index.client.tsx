@@ -21,9 +21,12 @@ import {
   ShortcutsHelp,
   Settings,
   CollaborationPanel,
+  useTheme,
+  useRegisterCommands,
 } from '@udp/ui';
 import { AIAssistant, AIManager } from '@udp/ai';
 import { codeCompletionService } from '../components/CodeCompletionProvider';
+import { useAppCommands } from '../hooks/useAppCommands';
 
 // Dynamic imports for client-side only components
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
@@ -51,6 +54,7 @@ function generateColor() {
 
 export default function Home() {
   const router = useRouter();
+  const { toggleMode } = useTheme();
   const [userName, setUserName] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const room = (router.query.room as string) || 'default-room';
@@ -65,6 +69,31 @@ export default function Home() {
     'open' | 'save' | 'create'
   >('open');
   const [isShortcutsHelpOpen, setIsShortcutsHelpOpen] = useState(false);
+
+  // Register app commands for command palette
+  const appCommands = useAppCommands({
+    onOpenFile: () => {
+      setFileManagerMode('open');
+      setIsFileManagerOpen(true);
+    },
+    onSaveFile: () => {
+      setFileManagerMode('save');
+      setIsFileManagerOpen(true);
+    },
+    onCreateFile: () => {
+      setFileManagerMode('create');
+      setIsFileManagerOpen(true);
+    },
+    onOpenAI: () => setIsAIOpen(true),
+    onOpenSettings: () => setIsSettingsOpen(true),
+    onOpenShortcuts: () => setIsShortcutsHelpOpen(true),
+    onToggleTheme: toggleMode,
+    onSignOut: () => {
+      localStorage.removeItem('userName');
+      router.push('/login');
+    },
+  });
+  useRegisterCommands(appCommands);
 
   // AI Manager for real AI integration
   const [aiManager, setAiManager] = useState<AIManager | null>(null);
