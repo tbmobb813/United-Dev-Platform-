@@ -1,4 +1,5 @@
 import { Theme } from './theme';
+import type { CSSProperties } from 'react';
 
 /**
  * Styled Component Helpers
@@ -10,7 +11,7 @@ import { Theme } from './theme';
 /**
  * Create a style object with theme-aware values
  */
-export function createStyles<T extends Record<string, React.CSSProperties>>(
+export function createStyles<T extends Record<string, CSSProperties>>(
   stylesFn: (theme: Theme) => T
 ): (theme: Theme) => T {
   return stylesFn;
@@ -20,8 +21,8 @@ export function createStyles<T extends Record<string, React.CSSProperties>>(
  * Merge multiple style objects
  */
 export function mergeStyles(
-  ...styles: (React.CSSProperties | undefined)[]
-): React.CSSProperties {
+  ...styles: (CSSProperties | undefined)[]
+): CSSProperties {
   return Object.assign({}, ...styles.filter(Boolean));
 }
 
@@ -183,10 +184,10 @@ export const stylePatterns = {
  * Responsive style helper
  */
 export function responsive(
-  mobile: React.CSSProperties,
-  tablet?: React.CSSProperties,
-  desktop?: React.CSSProperties
-): React.CSSProperties {
+  mobile: CSSProperties,
+  tablet?: CSSProperties,
+  desktop?: CSSProperties
+): CSSProperties {
   // Note: This is a simplified version. For true responsive styles,
   // you'd need to use media queries in CSS or a CSS-in-JS solution
   return mobile;
@@ -196,7 +197,7 @@ export function responsive(
  * Create a component style hook
  */
 export function createStyleHook<P extends object>(
-  stylesFn: (props: P, theme: Theme) => Record<string, React.CSSProperties>
+  stylesFn: (props: P, theme: Theme) => Record<string, CSSProperties>
 ) {
   return (props: P, theme: Theme) => stylesFn(props, theme);
 }

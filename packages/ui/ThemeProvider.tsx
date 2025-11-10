@@ -80,7 +80,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
+    const handleChange = (e: globalThis.MediaQueryListEvent) => {
       // Only auto-switch if user hasn't explicitly set a preference
       const stored = localStorage.getItem(storageKey);
       if (!stored) {
