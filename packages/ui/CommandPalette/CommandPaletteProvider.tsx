@@ -37,6 +37,18 @@ export const CommandPaletteProvider: React.FC<CommandPaletteProviderProps> = ({
   const [commands, setCommands] = useState<Map<string, Command>>(
     new Map(initialCommands.map(cmd => [cmd.id, cmd]))
   );
+  const [recentCommandIds, setRecentCommandIds] = useState<string[]>(() => {
+    // Load recent commands from localStorage
+    if (typeof window === 'undefined') {
+      return [];
+    }
+    try {
+      const stored = localStorage.getItem('udp-recent-commands');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Register command
   const registerCommand = useCallback((command: Command) => {
@@ -61,6 +73,33 @@ export const CommandPaletteProvider: React.FC<CommandPaletteProviderProps> = ({
     return Array.from(commands.values());
   }, [commands]);
 
+  // Get recent commands
+  const getRecentCommands = useCallback(() => {
+    return recentCommandIds
+      .map(id => commands.get(id))
+      .filter((cmd): cmd is Command => cmd !== undefined && !cmd.disabled)
+      .slice(0, 5); // Show top 5 recent commands
+  }, [recentCommandIds, commands]);
+
+  // Add command to history
+  const addToHistory = useCallback((id: string) => {
+    setRecentCommandIds(prev => {
+      // Remove if already exists
+      const filtered = prev.filter(cmdId => cmdId !== id);
+      // Add to front
+      const next = [id, ...filtered].slice(0, 10); // Keep max 10 items
+
+      // Save to localStorage
+      try {
+        localStorage.setItem('udp-recent-commands', JSON.stringify(next));
+      } catch {
+        // Ignore localStorage errors
+      }
+
+      return next;
+    });
+  }, []);
+
   // Execute command
   const executeCommand = useCallback(
     async (id: string) => {
@@ -71,12 +110,13 @@ export const CommandPaletteProvider: React.FC<CommandPaletteProviderProps> = ({
 
       try {
         await command.action();
+        addToHistory(id);
         setIsOpen(false);
       } catch (error) {
         console.error('Command execution failed:', error);
       }
     },
-    [commands]
+    [commands, addToHistory]
   );
 
   // Control functions
@@ -130,6 +170,7 @@ export const CommandPaletteProvider: React.FC<CommandPaletteProviderProps> = ({
     registerCommand,
     unregisterCommand,
     getCommands,
+    getRecentCommands,
     executeCommand,
   };
 

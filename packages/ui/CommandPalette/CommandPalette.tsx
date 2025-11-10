@@ -26,7 +26,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   maxResults = 10,
 }) => {
   const { theme } = useTheme();
-  const { isOpen, close, getCommands, executeCommand } = useCommandPalette();
+  const { isOpen, close, getCommands, getRecentCommands, executeCommand } =
+    useCommandPalette();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -34,9 +35,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   // Get and search commands
   const allCommands = useMemo(() => getCommands(), [getCommands]);
+  const recentCommands = useMemo(() => getRecentCommands(), [getRecentCommands]);
   const searchResults = useMemo(
-    () => searchCommands(query, allCommands, maxResults),
-    [query, allCommands, maxResults]
+    () =>
+      query
+        ? searchCommands(query, allCommands, maxResults)
+        : recentCommands.map(cmd => ({ command: cmd, score: 0, matches: [] })),
+    [query, allCommands, recentCommands, maxResults]
   );
 
   // Group results by category
@@ -275,11 +280,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   : 'Start typing to search commands...'}
               </div>
             ) : (
-              groupedResults.map(group => (
-                <div key={group.name}>
-                  {groupedResults.length > 1 && (
-                    <div style={groupHeaderStyle}>{group.name}</div>
-                  )}
+              <>
+                {!query && recentCommands.length > 0 && (
+                  <div style={groupHeaderStyle}>Recent Commands</div>
+                )}
+                {groupedResults.map(group => (
+                  <div key={group.name}>
+                    {query && groupedResults.length > 1 && (
+                      <div style={groupHeaderStyle}>{group.name}</div>
+                    )}
                   {group.commands.map(command => {
                     const currentIndex = globalIndex++;
                     const result = searchResults[currentIndex];
@@ -315,7 +324,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                     );
                   })}
                 </div>
-              ))
+                ))}
+              </>
             )}
           </div>
         </div>

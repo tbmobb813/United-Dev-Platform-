@@ -94,6 +94,9 @@ export interface CommandPaletteContextValue {
   /** Get all registered commands */
   getCommands: () => Command[];
 
+  /** Get recently executed commands */
+  getRecentCommands: () => Command[];
+
   /** Execute a command by ID */
   executeCommand: (id: string) => Promise<void>;
 }
