@@ -6,9 +6,15 @@ const isProd = process?.env?.NODE_ENV === 'production';
 function format(...args: unknown[]) {
   return args
     .map(a => {
-      if (a === null || a === undefined) {return String(a);}
-      if (typeof a === 'string') {return a;}
-      if (a instanceof Error) {return a.message;}
+      if (a === null || a === undefined) {
+        return String(a);
+      }
+      if (typeof a === 'string') {
+        return a;
+      }
+      if (a instanceof Error) {
+        return a.message;
+      }
       try {
         return typeof a === 'object' ? JSON.stringify(a) : String(a);
       } catch {

@@ -48,7 +48,9 @@ describe('DocumentManager', () => {
           return {
             awareness,
             on: jest.fn((event: string, callback: (e: any) => void) => {
-              if (event === 'status') {callback({ status: 'connected' });}
+              if (event === 'status') {
+                callback({ status: 'connected' });
+              }
             }),
             destroy: jest.fn(),
             wsconnected: true,
