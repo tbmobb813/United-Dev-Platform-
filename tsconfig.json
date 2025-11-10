@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "ESNext",
     "lib": ["ES2020", "DOM"],
-  "isolatedModules": true,
+    "isolatedModules": true,
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
