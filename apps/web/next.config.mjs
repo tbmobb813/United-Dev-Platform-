@@ -9,8 +9,8 @@ const __dirname = dirname(__filename);
 
 const yjsEsm = (() => {
   try {
-    // Use the singleton shim instead of direct yjs resolution
-    return join(__dirname, 'src', 'shims', 'yjs-shim.cjs');
+    // Resolve to actual yjs package for consistency
+    return require.resolve('yjs');
   } catch (e) {
     return undefined;
   }
@@ -67,18 +67,21 @@ const nextConfig = {
       };
     }
 
-    config.optimization = config.optimization || {};
-    config.optimization.splitChunks = config.optimization.splitChunks || {};
-    config.optimization.splitChunks.cacheGroups = config.optimization.splitChunks.cacheGroups || {};
+    // Only apply chunk optimization for client-side bundles
+    if (!isServer) {
+      config.optimization = config.optimization || {};
+      config.optimization.splitChunks = config.optimization.splitChunks || {};
+      config.optimization.splitChunks.cacheGroups = config.optimization.splitChunks.cacheGroups || {};
 
-    // Force all Yjs-related modules into a single chunk
-    config.optimization.splitChunks.cacheGroups.yjs = {
-      test: /[\\/]node_modules[\\/](yjs|y-protocols|y-websocket|y-indexeddb)[\\/]/,
-      name: 'yjs-vendor',
-      priority: 100,
-      reuseExistingChunk: true,
-      enforce: true,
-    };
+      // Force all Yjs-related modules into a single chunk
+      config.optimization.splitChunks.cacheGroups.yjs = {
+        test: /[\\/]node_modules[\\/](yjs|y-protocols|y-websocket|y-indexeddb)[\\/]/,
+        name: 'yjs-vendor',
+        priority: 100,
+        reuseExistingChunk: true,
+        enforce: true,
+      };
+    }
 
     // If webpack is available, register replacement plugins
     if (webpackPkg && typeof webpackPkg.NormalModuleReplacementPlugin === 'function') {
@@ -129,6 +132,17 @@ const nextConfig = {
 
     if (isServer) {
       config.devtool = 'source-map';
+
+      // Externalize Yjs packages on the server to prevent duplicate bundling
+      config.externals = config.externals || [];
+      if (Array.isArray(config.externals)) {
+        config.externals.push({
+          'yjs': 'commonjs yjs',
+          'y-protocols': 'commonjs y-protocols',
+          'y-websocket': 'commonjs y-websocket',
+          'y-indexeddb': 'commonjs y-indexeddb',
+        });
+      }
     }
 
     return config;
