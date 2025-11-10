@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import logger from '@udp/logger';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import * as Y from '@udp/editor-core/yjs-singleton';
 import { WebsocketProvider } from 'y-websocket';
 import { Awareness } from 'y-protocols/awareness';
@@ -56,9 +57,11 @@ function generateColor() {
 
 export default function Home() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const { toggleMode } = useTheme();
-  const [userName, setUserName] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [collaborativeSessionId, setCollaborativeSessionId] = useState<string | null>(null);
+  const [projectId] = useState('demo-project-id'); // TODO: Get from project selector
   const room = (router.query.room as string) || 'default-room';
   const docName = (router.query.doc as string) || 'main-document';
   const [file, setFile] = useState('/README.md');
@@ -98,10 +101,7 @@ export default function Home() {
     onOpenSettings: () => setIsSettingsOpen(true),
     onOpenShortcuts: () => setIsShortcutsHelpOpen(true),
     onToggleTheme: toggleMode,
-    onSignOut: () => {
-      localStorage.removeItem('userName');
-      router.push('/login');
-    },
+    onSignOut: handleSignOut,
     selectedCode,
   });
   useRegisterCommands(appCommands);
@@ -244,41 +244,68 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
-    const storedName =
-      typeof window !== 'undefined' ? localStorage.getItem('userName') : null;
-    if (!storedName) {
-      router.push('/login');
-    } else {
-      setUserName(storedName);
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
     }
-  }, [router]);
+  }, [status, router]);
 
   useEffect(() => {
-    if (!userName) {
+    if (!session?.user || status !== 'authenticated') {
       return;
     }
 
-    try {
-      const docId = `${room}-${docName}`;
-      const doc = new Y.Doc();
+    const userId = (session.user as any).id;
+    if (!userId) {
+      logger.error('User ID not found in session');
+      return;
+    }
 
-      const provider = new WebsocketProvider(
-        process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3030',
-        docId,
-        doc
-      );
+    // Create or join collaborative session
+    const createSession = async () => {
+      try {
+        // For now, use room as session identifier
+        // In production, you'd create/fetch a proper session from the API
+        const sessionId = `session-${room}-${docName}`;
+        setCollaborativeSessionId(sessionId);
 
-      // Add error handling for WebSocket
-      provider.on('status', (event: { status: string }) => {
-        logger.info('WebSocket status:', event.status);
-      });
+        const docId = `${room}-${docName}`;
+        const doc = new Y.Doc();
 
-      provider.on('connection-error', (error: Error) => {
-        logger.error('WebSocket connection error:', error);
-      });
+        // Build WebSocket URL with authentication parameters
+        const wsBaseUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3030';
+        const wsUrl = `${wsBaseUrl}?sessionId=${encodeURIComponent(sessionId)}&projectId=${encodeURIComponent(projectId)}&userId=${encodeURIComponent(userId)}`;
 
-      const ytext = doc.getText(docName);
-      const awareness = provider.awareness;
+        const provider = new WebsocketProvider(
+          wsUrl,
+          docId,
+          doc,
+          { connect: true }
+        );
+
+        // Add error handling for WebSocket
+        provider.on('status', (event: { status: string }) => {
+          logger.info('WebSocket status:', event.status);
+
+          // Send join-session message when connected
+          if (event.status === 'connected' && provider.ws) {
+            const joinMessage = JSON.stringify({
+              type: 'join-session',
+              sessionId,
+              projectId,
+              userId,
+              userName: session.user?.name || 'Unknown User',
+            });
+            provider.ws.send(joinMessage);
+            logger.info('Sent join-session message');
+          }
+        });
+
+        provider.on('connection-error', (error: Error) => {
+          logger.error('WebSocket connection error:', error);
+        });
+
+        const ytext = doc.getText(docName);
+        const awareness = provider.awareness;
 
       // Set initial content if document is empty
       if (ytext.length === 0) {
@@ -344,29 +371,51 @@ export default function Home() {
         }
       };
 
-      awareness.setLocalStateField('user', {
-        id: userId,
-        name: userName,
-        color: generateColor(),
-      });
+        awareness.setLocalStateField('user', {
+          id: userId,
+          name: session.user?.name || 'Unknown User',
+          color: generateColor(),
+        });
 
-      awareness.on('change', handleChange);
-      handleChange();
+        awareness.on('change', handleChange);
+        handleChange();
 
-      ydocRef.current = doc;
-      providerRef.current = provider;
-      ytextRef.current = ytext;
-      awarenessRef.current = awareness;
+        ydocRef.current = doc;
+        providerRef.current = provider;
+        ytextRef.current = ytext;
+        awarenessRef.current = awareness;
+      } catch (error) {
+        logger.error('Error setting up Yjs:', error);
+      }
+    };
 
-      return () => {
-        awareness.off('change', handleChange);
-        provider.destroy();
-        doc.destroy();
-      };
-    } catch (error) {
-      logger.error('Error setting up Yjs:', error);
-    }
-  }, [room, docName, userId, router, userName]);
+    createSession();
+
+    return () => {
+      if (awarenessRef.current) {
+        awarenessRef.current.off('change', handleChange);
+      }
+      if (providerRef.current) {
+        // Send leave-session message before disconnecting
+        if (providerRef.current.ws && collaborativeSessionId) {
+          const leaveMessage = JSON.stringify({
+            type: 'leave-session',
+            sessionId: collaborativeSessionId,
+            userId,
+          });
+          try {
+            providerRef.current.ws.send(leaveMessage);
+          } catch (error) {
+            logger.warn('Failed to send leave-session message:', error);
+          }
+        }
+        providerRef.current.destroy();
+      }
+      if (ydocRef.current) {
+        ydocRef.current.destroy();
+      }
+    };
+  }, [room, docName, session, status, projectId, collaborativeSessionId]);
 
   const updateCursorDecorations = (
     usersWithCursors: {
@@ -505,13 +554,30 @@ export default function Home() {
       }
 
       const position = e.position;
+      const cursorData = {
+        line: position.lineNumber,
+        column: position.column,
+      };
+
       awarenessRef.current.setLocalStateField('user', {
         ...awarenessRef.current.getLocalState()?.user,
-        cursor: {
-          line: position.lineNumber,
-          column: position.column,
-        },
+        cursor: cursorData,
       });
+
+      // Send cursor update to server
+      if (providerRef.current?.ws && collaborativeSessionId) {
+        try {
+          const cursorMessage = JSON.stringify({
+            type: 'cursor-update',
+            sessionId: collaborativeSessionId,
+            userId: (session as any)?.user?.id,
+            cursor: cursorData,
+          });
+          providerRef.current.ws.send(cursorMessage);
+        } catch (error) {
+          // Ignore errors - cursor updates are not critical
+        }
+      }
     });
 
     // Track text selection for AI assistant
@@ -536,9 +602,9 @@ export default function Home() {
     });
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem('userName');
-    router.push('/login');
+  const handleSignOut = async () => {
+    const { signOut } = await import('next-auth/react');
+    await signOut({ callbackUrl: '/auth/signin' });
   };
 
   // FileManager handlers
@@ -605,8 +671,12 @@ export default function Home() {
     },
   ]);
 
-  if (!userName || !isClient) {
+  if (status === 'loading' || !isClient) {
     return <div>Loading...</div>;
+  }
+
+  if (status === 'unauthenticated') {
+    return <div>Redirecting to sign in...</div>;
   }
 
   return (
@@ -617,7 +687,7 @@ export default function Home() {
         footer: (
           <div style={{ fontSize: '14px' }}>
             <div style={{ marginBottom: '8px' }}>
-              {userName ? String(userName) : 'Unknown'}
+              {session?.user?.name || session?.user?.email || 'Unknown'}
             </div>
             <Button
               size='small'

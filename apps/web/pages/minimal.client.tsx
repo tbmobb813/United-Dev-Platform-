@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import logger from '@udp/logger';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import * as Y from '@udp/editor-core/yjs-singleton';
 import { WebsocketProvider } from 'y-websocket';
 import { Awareness } from 'y-protocols/awareness';
@@ -21,8 +22,10 @@ function generateColor() {
 
 export default function MinimalHomeClient() {
   const router = useRouter();
-  const [userName, setUserName] = useState<string | null>(null);
+  const { data: session, status } = useSession();
   const [isClient, setIsClient] = useState(false);
+  const [collaborativeSessionId, setCollaborativeSessionId] = useState<string | null>(null);
+  const [projectId] = useState('demo-project-id'); // TODO: Get from project selector
   const room = (router.query.room as string) || 'room-demo';
   const [file, setFile] = useState('/README.md');
 
@@ -36,27 +39,56 @@ export default function MinimalHomeClient() {
 
   useEffect(() => {
     setIsClient(true);
-    const storedName =
-      typeof window !== 'undefined' ? localStorage.getItem('userName') : null;
-    if (!storedName) {
-      router.push('/login');
-    } else {
-      setUserName(storedName);
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
     }
-  }, [router]);
+  }, [status, router]);
 
   useEffect(() => {
-    if (!userName || !isClient) {
+    if (!session?.user || status !== 'authenticated' || !isClient) {
       return;
     }
 
-    try {
-      const doc = new Y.Doc();
-      const provider = new WebsocketProvider(
-        process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3030',
-        room,
-        doc
-      );
+    const userId = (session.user as any).id;
+    if (!userId) {
+      logger.error('User ID not found in session');
+      return;
+    }
+
+    const createSession = async () => {
+      try {
+        const sessionId = `session-${room}`;
+        setCollaborativeSessionId(sessionId);
+
+        const doc = new Y.Doc();
+
+        // Build WebSocket URL with authentication parameters
+        const wsBaseUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3030';
+        const wsUrl = `${wsBaseUrl}?sessionId=${encodeURIComponent(sessionId)}&projectId=${encodeURIComponent(projectId)}&userId=${encodeURIComponent(userId)}`;
+
+        const provider = new WebsocketProvider(
+          wsUrl,
+          room,
+          doc,
+          { connect: true }
+        );
+
+        // Add error handling for WebSocket
+        provider.on('status', (event: { status: string }) => {
+          logger.info('WebSocket status:', event.status);
+
+          // Send join-session message when connected
+          if (event.status === 'connected' && provider.ws) {
+            const joinMessage = JSON.stringify({
+              type: 'join-session',
+              sessionId,
+              projectId,
+              userId,
+              userName: session.user?.name || 'Unknown User',
+            });
+            provider.ws.send(joinMessage);
+          }
+        });
 
       const ytext = doc.getText('main');
       const awareness = provider.awareness;
@@ -95,37 +127,65 @@ export default function MinimalHomeClient() {
         }
       };
 
-      awareness.setLocalStateField('user', {
-        id: userId,
-        name: userName,
-        color: generateColor(),
-      });
+        const userId = (session.user as any).id;
+        awareness.setLocalStateField('user', {
+          id: userId,
+          name: session.user?.name || 'Unknown User',
+          color: generateColor(),
+        });
 
-      awareness.on('change', handleChange);
-      handleChange();
+        awareness.on('change', handleChange);
+        handleChange();
 
-      ydocRef.current = doc;
-      providerRef.current = provider;
-      ytextRef.current = ytext;
-      awarenessRef.current = awareness;
+        ydocRef.current = doc;
+        providerRef.current = provider;
+        ytextRef.current = ytext;
+        awarenessRef.current = awareness;
+      } catch (error) {
+        logger.error('Error setting up Yjs:', error);
+      }
+    };
 
-      return () => {
-        awareness.off('change', handleChange);
-        provider.destroy();
-        doc.destroy();
-      };
-    } catch (error) {
-      logger.error('Error setting up Yjs:', error);
-    }
-  }, [room, userName, isClient]);
+    createSession();
 
-  const handleSignOut = () => {
-    localStorage.removeItem('userName');
-    router.push('/login');
+    return () => {
+      if (awarenessRef.current) {
+        awarenessRef.current.off('change', handleChange);
+      }
+      if (providerRef.current) {
+        // Send leave-session message before disconnecting
+        if (providerRef.current.ws && collaborativeSessionId) {
+          const userId = (session.user as any).id;
+          const leaveMessage = JSON.stringify({
+            type: 'leave-session',
+            sessionId: collaborativeSessionId,
+            userId,
+          });
+          try {
+            providerRef.current.ws.send(leaveMessage);
+          } catch (error) {
+            logger.warn('Failed to send leave-session message:', error);
+          }
+        }
+        providerRef.current.destroy();
+      }
+      if (ydocRef.current) {
+        ydocRef.current.destroy();
+      }
+    };
+  }, [room, session, status, isClient, projectId, collaborativeSessionId]);
+
+  const handleSignOut = async () => {
+    const { signOut } = await import('next-auth/react');
+    await signOut({ callbackUrl: '/auth/signin' });
   };
 
-  if (!userName || !isClient) {
+  if (status === 'loading' || !isClient) {
     return <div>Loading...</div>;
+  }
+
+  if (status === 'unauthenticated') {
+    return <div>Redirecting to sign in...</div>;
   }
 
   return (
