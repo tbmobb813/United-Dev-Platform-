@@ -102,6 +102,9 @@ importers:
       '@udp/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@udp/editor-core':
+        specifier: workspace:*
+        version: link:../../packages/editor-core
       '@udp/logger':
         specifier: workspace:*
         version: link:../../packages/logger
