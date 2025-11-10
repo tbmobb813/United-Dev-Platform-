@@ -29,8 +29,7 @@
     "@types/react": "18.2.79",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
-  "eslint": "^9.39.0",
-  "prettier": "workspace:*",
+    "eslint": "^9.39.0",
     "typescript": "^5.9.3"
   },
   "eslintConfig": {

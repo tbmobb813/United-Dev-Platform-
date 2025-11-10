@@ -7,10 +7,8 @@
     "index.js"
   ],
   "private": true,
-  "dependencies": {
-    "prettier": "workspace:*"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "prettier": "workspace:*"
+    "prettier": "^3.6.2"
   }
 }
