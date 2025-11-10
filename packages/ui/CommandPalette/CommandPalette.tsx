@@ -4,8 +4,7 @@ import { useCommandPalette } from './CommandPaletteProvider';
 import { searchCommands, highlightMatches } from './fuzzySearch';
 import { Command, CommandGroup } from './types';
 import { stylePatterns } from '../styled';
-
-export interface CommandPaletteProps {
+interface CommandPaletteProps {
   /** Placeholder text for search */
   placeholder?: string;
   /** Maximum results to show */

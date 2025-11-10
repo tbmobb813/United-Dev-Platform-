@@ -1,9 +1,4 @@
-/**
- * Fuzzy Search Utility
- *
- * Simple fuzzy search implementation for command matching
- */
-
+import React from 'react';
 import { Command } from './types';
 
 interface SearchResult {
@@ -12,12 +7,6 @@ interface SearchResult {
   matches: number[];
 }
 
-/**
- * Calculate fuzzy match score for a string
- * @param query - Search query
- * @param text - Text to search in
- * @returns Score (higher is better) and match indices
- */
 export function fuzzyMatch(
   query: string,
   text: string
@@ -30,7 +19,6 @@ export function fuzzyMatch(
     return { score: 0, matches: [] };
   }
 
-  // Exact match gets highest score
   if (textLower === queryLower) {
     return {
       score: 1000,
@@ -38,19 +26,16 @@ export function fuzzyMatch(
     };
   }
 
-  // Contains match
   const containsIndex = textLower.indexOf(queryLower);
   if (containsIndex >= 0) {
     const containsMatches = Array.from(
       { length: query.length },
       (_, i) => containsIndex + i
     );
-    // Higher score if match is at the start
     const positionBonus = containsIndex === 0 ? 200 : 100;
     return { score: 500 + positionBonus, matches: containsMatches };
   }
 
-  // Fuzzy match - characters in order but not consecutive
   let score = 0;
   let queryIndex = 0;
   let lastMatchIndex = -1;
@@ -59,19 +44,16 @@ export function fuzzyMatch(
     if (textLower[i] === queryLower[queryIndex]) {
       matches.push(i);
 
-      // Consecutive matches get bonus
       if (lastMatchIndex === i - 1) {
         score += 10;
       } else {
         score += 5;
       }
 
-      // Match at word boundaries gets bonus
       if (i === 0 || text[i - 1] === ' ' || text[i - 1] === '-') {
         score += 15;
       }
 
-      // Uppercase match in camelCase gets bonus
       if (text[i] === query[queryIndex] && text[i] === text[i].toUpperCase()) {
         score += 10;
       }
@@ -81,15 +63,12 @@ export function fuzzyMatch(
     }
   }
 
-  // Must match all query characters
   if (queryIndex !== query.length) {
     return { score: 0, matches: [] };
   }
 
-  // Prefer shorter strings
   score -= textLower.length;
 
-  // Prefer matches at the start
   if (matches[0] === 0) {
     score += 50;
   }
@@ -97,20 +76,12 @@ export function fuzzyMatch(
   return { score: Math.max(0, score), matches };
 }
 
-/**
- * Search commands using fuzzy matching
- * @param query - Search query
- * @param commands - Commands to search
- * @param maxResults - Maximum results to return
- * @returns Sorted array of matching commands with scores
- */
 export function searchCommands(
   query: string,
   commands: Command[],
   maxResults = 10
 ): SearchResult[] {
   if (!query.trim()) {
-    // Return all commands when no query
     return commands.slice(0, maxResults).map(command => ({
       command,
       score: 0,
@@ -125,22 +96,18 @@ export function searchCommands(
       continue;
     }
 
-    // Search in label
     const labelMatch = fuzzyMatch(query, command.label);
 
-    // Search in description
     const descMatch = command.description
       ? fuzzyMatch(query, command.description)
       : { score: 0, matches: [] };
 
-    // Search in keywords
     let keywordScore = 0;
     for (const keyword of command.keywords || []) {
       const match = fuzzyMatch(query, keyword);
-      keywordScore = Math.max(keywordScore, match.score * 0.8); // Keywords worth slightly less
+      keywordScore = Math.max(keywordScore, match.score * 0.8);
     }
 
-    // Use best score
     const bestScore = Math.max(labelMatch.score, descMatch.score, keywordScore);
 
     if (bestScore > 0) {
@@ -152,18 +119,11 @@ export function searchCommands(
     }
   }
 
-  // Sort by score (descending)
   results.sort((a, b) => b.score - a.score);
 
   return results.slice(0, maxResults);
 }
 
-/**
- * Highlight matched characters in text
- * @param text - Text to highlight
- * @param matches - Indices of characters to highlight
- * @returns Text with highlighted portions
- */
 export function highlightMatches(text: string, matches: number[]): React.ReactNode {
   if (!matches.length) {
     return text;
@@ -173,12 +133,10 @@ export function highlightMatches(text: string, matches: number[]): React.ReactNo
   let lastIndex = 0;
 
   for (const matchIndex of matches) {
-    // Add non-matched text
     if (matchIndex > lastIndex) {
       parts.push(text.substring(lastIndex, matchIndex));
     }
 
-    // Add matched character with highlight
     parts.push(
       <mark
         key={`match-${matchIndex}`}
@@ -195,7 +153,6 @@ export function highlightMatches(text: string, matches: number[]): React.ReactNo
     lastIndex = matchIndex + 1;
   }
 
-  // Add remaining text
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }
