@@ -83,6 +83,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Debug Prettier and package.json state
+        run: |
+          echo "=== Prettier version and location ==="
+          pnpm exec -- prettier --version
+          pnpm exec -- which prettier
+          echo ""
+          echo "=== Git status (checking for modified files) ==="
+          git status --porcelain
+          echo ""
+          echo "=== Diff of package.json (if modified) ==="
+          git --no-pager diff -- package.json || echo "No changes to package.json"
+          echo ""
+          echo "=== Last 10 bytes of package.json in hex ==="
+          tail -c 10 package.json | od -An -tx1
+
       - name: Run ESLint
         run: pnpm lint
 

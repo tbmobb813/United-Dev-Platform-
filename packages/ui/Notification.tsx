@@ -1,4 +1,3 @@
-/* global setTimeout, clearTimeout */
 import React, {
   createContext,
   useCallback,

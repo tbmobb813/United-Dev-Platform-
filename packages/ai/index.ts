@@ -19,8 +19,8 @@ export const prompts = {
 };
 
 // Main AI Assistant component (Class component to avoid React hooks issues)
-export { default as AIAssistant } from './AIAssistantClass';
-export type { AIAssistantProps, ChatMessage } from './AIAssistantClass';
+export { default as AIAssistant } from './AIAssistant';
+export type { AIAssistantProps, ChatMessage } from './AIAssistant';
 
 // AI Service layer
 export { AIManager } from './AIManager';

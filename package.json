@@ -1,5 +1,6 @@
 {
   "name": "unified-dev-platform",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.0.0",
@@ -55,8 +56,7 @@
     "dev:api": "cd apps/api && pnpm dev",
     "dev:mobile": "cd apps/mobile && pnpm start",
     "dev:all": "turbo dev --parallel",
-    "prebuild": "pnpm check && pnpm validate-env",
-    "postinstall": "pnpm type-check"
+    "prebuild": "pnpm check && pnpm validate-env"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
