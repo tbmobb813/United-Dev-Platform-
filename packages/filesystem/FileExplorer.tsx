@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SyncManager } from './SyncManager';
 import type { FileSystemEntry, IFileSystem } from './types';

@@ -7,10 +7,8 @@
     "index.js"
   ],
   "private": true,
-  "dependencies": {
-    "prettier": "^3.0.0"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "prettier": "^3.0.0"
+    "prettier": "^3.6.2"
   }
 }

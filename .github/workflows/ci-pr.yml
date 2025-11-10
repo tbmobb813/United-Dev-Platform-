@@ -14,11 +14,17 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      AGENT_CHECK_STRICT: "true"
+      AGENT_CHECK_STRICT: 'true'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
       - name: Enable Corepack and prepare pnpm (pinned)
         run: |
@@ -74,6 +80,13 @@ jobs:
     if: ${{ always() }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
       - name: Enable Corepack and prepare pnpm (pinned)
         run: |
@@ -106,11 +119,11 @@ jobs:
         # fail in CI when repo-level environment variables are not configured.
         env:
           NODE_ENV: production
-          NEXT_PUBLIC_APP_NAME: "udp-ci"
-          NEXT_PUBLIC_APP_VERSION: "ci"
-          NEXT_PUBLIC_APP_URL: "https://example.invalid"
-          NEXT_PUBLIC_WS_URL: "wss://example.invalid"
-          NEXT_PUBLIC_API_URL: "https://example.invalid"
+          NEXT_PUBLIC_APP_NAME: 'udp-ci'
+          NEXT_PUBLIC_APP_VERSION: 'ci'
+          NEXT_PUBLIC_APP_URL: 'https://example.invalid'
+          NEXT_PUBLIC_WS_URL: 'wss://example.invalid'
+          NEXT_PUBLIC_API_URL: 'https://example.invalid'
         run: pnpm --filter @udp/web build
 
       - name: Run duplicate-Yjs detector (report-only)
@@ -137,7 +150,8 @@ jobs:
           REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
         run: |
           if [ -f "$REPORT_PATH" ]; then
-            node -e "const r=JSON.parse(require('fs').readFileSync('$REPORT_PATH','utf8')); const s=`scanned:${r.scannedFiles} flagged:${r.flaggedFiles} severity:${r.severity} strict:${r.strict}`; console.log(s);" > report_summary.txt
+            # Call helper script to safely read the report and print summary
+            node .github/scripts/read-duplicate-yjs-report.js > report_summary.txt
             echo "summary<<EOF" >> $GITHUB_OUTPUT
             cat report_summary.txt >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT

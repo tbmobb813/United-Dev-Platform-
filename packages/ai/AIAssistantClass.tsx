@@ -74,7 +74,7 @@ class AIAssistant extends React.Component<AIAssistantProps, AIAssistantState> {
     }, 1000);
   };
 
-  render() {
+  override render() {
     const { isOpen, onClose, currentFile, selectedCode, onCodeInsert } =
       this.props;
     const { messages, input, isLoading } = this.state;

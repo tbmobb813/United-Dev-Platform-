@@ -4,12 +4,12 @@
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
-    "react": "^18.3.1",
-    "react-native": "^0.82.1"
+    "react": "^19.2.0",
+    "react-native": "^0.74.0"
   },
   "peerDependencies": {
-    "react": "^18.3.1",
-    "react-native": "^0.82.1"
+    "react": "^19.2.0",
+    "react-native": "^0.74.0"
   },
   "scripts": {
     "test": "jest --config ../../jest.config.cjs"

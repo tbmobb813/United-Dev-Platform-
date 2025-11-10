@@ -11,7 +11,7 @@ import {
 // We avoid top-level await so this test file can run under either CJS or
 // ESM Jest runtimes. Register the ESM mock and load the runtime module inside
 // a beforeAll lifecycle hook where async/await is permitted.
-import type { DocumentManager as DocumentManagerType } from '../../DocumentManager';
+import type { DocumentManager as DocumentManagerType } from '../../index';
 import type { UserPresence } from '../../types';
 let DocumentManager: any;
 
@@ -20,20 +20,49 @@ describe('DocumentManager', () => {
     // Register an ESM mock for the y-websocket dependency before importing
     // the module under test. Doing this inside beforeAll avoids top-level
     // await so the file can run as CJS under Jest when necessary.
-    await jest.unstable_mockModule('y-websocket', async () => ({
-      WebsocketProvider: jest.fn().mockImplementation(() => ({
-        on: jest.fn(
-          (event: string, callback: (event: { status: string }) => void) => {
-            if (event === 'status') {
-              callback({ status: 'connected' });
-            }
-          }
-        ),
-        destroy: jest.fn(),
-      })),
-    }));
+    await jest.unstable_mockModule('y-websocket', async () => {
+      // Create a small in-memory awareness mock that supports the
+      // API used by DocumentManager: setLocalStateField, on, getStates,
+      // getLocalState and clientID.
+      return {
+        WebsocketProvider: jest.fn().mockImplementation(() => {
+          const awarenessState: any = { user: undefined };
+          const listeners: Record<string, Function[]> = {};
+          const awareness = {
+            setLocalStateField: jest.fn((field: string, value: any) => {
+              if (field === 'user') {
+                awarenessState.user = value;
+                // notify change listeners
+                (listeners['change'] || []).forEach(fn => fn());
+              }
+            }),
+            getStates: jest.fn(() => new Map([[1, awarenessState]])),
+            getLocalState: jest.fn(() => ({ user: awarenessState.user })),
+            on: jest.fn((event: string, cb: Function) => {
+              listeners[event] = listeners[event] || [];
+              listeners[event].push(cb);
+            }),
+            clientID: 1,
+          };
 
-    const mod = await import('../../DocumentManager');
+          return {
+            awareness,
+            on: jest.fn((event: string, callback: (e: any) => void) => {
+              if (event === 'status') {
+                callback({ status: 'connected' });
+              }
+            }),
+            destroy: jest.fn(),
+            wsconnected: true,
+          };
+        }),
+      };
+    });
+
+    // Import the runtime module from the package entry (index) so the
+    // mocked ESM modules (e.g. y-websocket) are applied before the module
+    // is evaluated. The project exposes DocumentManager from `index.ts`.
+    const mod = await import('../../index');
     DocumentManager = mod.DocumentManager;
   });
   let docManager: DocumentManagerType;
@@ -62,14 +91,15 @@ describe('DocumentManager', () => {
   });
 
   it('should update the local user presence', () => {
-    const presenceUpdate: Partial<UserPresence> = {
+    // Presence shape may include additional runtime fields (cursor etc.)
+    const presenceUpdate: any = {
       cursor: { x: 100, y: 200 },
     };
     docManager.updateUserPresence(presenceUpdate);
 
     const connectedUsers = docManager.getConnectedUsers();
     const localUserPresence = connectedUsers[0];
-    expect(localUserPresence.cursor).toEqual(presenceUpdate.cursor);
+    expect((localUserPresence as any).cursor).toEqual(presenceUpdate.cursor);
     expect(localUserPresence.isActive).toBe(true);
   });
 

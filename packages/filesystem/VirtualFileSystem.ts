@@ -1,3 +1,6 @@
+/// <reference lib="dom" />
+/// <reference lib="dom.iterable" />
+
 import * as mime from 'mime-types';
 import {
   CreateFileOptions,
@@ -12,7 +15,28 @@ import {
   MoveOptions,
   ReadFileOptions,
 } from './types';
-import logger from '@udp/logger';
+// Fallback logger: use '@udp/logger' if available, otherwise use console
+let logger: {
+  error: (...args: any[]) => void;
+  warn?: (...args: any[]) => void;
+  info?: (...args: any[]) => void;
+} = console as any;
+
+try {
+  if (typeof require !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const maybeLogger = require('@udp/logger');
+    logger = maybeLogger?.default || maybeLogger || logger;
+  }
+} catch {
+  // ignore and keep console as logger
+}
+
+declare global {
+  interface Window {
+    indexedDB: IDBFactory;
+  }
+}
 
 /**
  * Virtual file system implementation for browser environments
@@ -305,8 +329,8 @@ export class VirtualFileSystem implements FileSystemProvider {
   ): Promise<void> {
     const content = await this.readFile(sourcePath);
     await this.writeFile(destinationPath, content, {
-      overwrite: options.overwrite,
-      createDirectories: options.createDirectories,
+      overwrite: !!options.overwrite,
+      createDirectories: !!options.createDirectories,
     });
   }
 
@@ -702,13 +726,38 @@ export class VirtualFileSystem implements FileSystemProvider {
 
     // Create FileSystemEvent adapter for FileWatchEvent
     const adapter = (watchEvent: FileWatchEvent) => {
-      const fsEvent: FileSystemEvent = {
-        type: this.mapWatchEventToFileSystemEventType(watchEvent.type),
-        path: watchEvent.path,
-        stats: watchEvent.entry,
-        timestamp: watchEvent.timestamp,
-      };
-      callback(fsEvent);
+      (async () => {
+        let stats: FileSystemEntry;
+        if (watchEvent.entry) {
+          stats = watchEvent.entry;
+        } else {
+          try {
+            stats = await this.getStats(watchEvent.path);
+          } catch {
+            // Fallback minimal entry when stats can't be retrieved
+            stats = {
+              name: this.basename(watchEvent.path),
+              path: watchEvent.path,
+              type: 'file',
+              lastModified: new Date(),
+              size: 0,
+              permissions: {
+                readable: true,
+                writable: false,
+                executable: false,
+              },
+            } as FileSystemEntry;
+          }
+        }
+
+        const fsEvent: FileSystemEvent = {
+          type: this.mapWatchEventToFileSystemEventType(watchEvent.type),
+          path: watchEvent.path,
+          stats,
+          timestamp: watchEvent.timestamp,
+        };
+        callback(fsEvent);
+      })();
     };
 
     // Check if this is a file or directory to determine watch method

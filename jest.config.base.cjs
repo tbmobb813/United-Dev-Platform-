@@ -9,7 +9,12 @@ module.exports = {
     '^.+\.[tj]sx?$': ['ts-jest', { useESM: true, isolatedModules: true }],
   },
   // Ignore common build folders and the repository-level jest.setup.ts under __tests__
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '<rootDir>/__tests__/jest.setup.ts'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/build/',
+    '<rootDir>/__tests__/jest.setup.ts',
+  ],
   // Treat TypeScript files as ESM so test files and built dist/*.js that use
   // `import` are executed as ESM by ts-jest / Jest runtime. Do NOT explicitly
   // include '.js' here — Jest will infer .js from the nearest package.json
@@ -19,7 +24,9 @@ module.exports = {
   // Allow transforming ESM-only node_modules that Jest otherwise ignores.
   // Some dependencies (yjs, y-websocket, y-monaco, y-protocols, y-indexeddb) ship ESM and
   // must be transformed so Jest can run them in this monorepo setup.
-  transformIgnorePatterns: ['node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)',
+  ],
   globals: {
     'ts-jest': {
       useESM: true,
@@ -30,6 +37,6 @@ module.exports = {
   // base). This prevents parsing `export` from upstream ESM mocks and avoids
   // trying to establish real websocket connections during unit tests.
   moduleNameMapper: {
-    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs'
+    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
   },
 };
