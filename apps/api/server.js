@@ -176,7 +176,7 @@ function setupCollaborativeWSConnection(conn, req) {
 async function handleJoinSession(conn, data, sessionId, projectId, userId) {
   try {
     // Verify session exists and user has access
-    const session = await prisma.collaborationSession.findFirst({
+    const session = await prisma.collaborativeSession.findFirst({
       where: {
         id: sessionId,
         projectId: projectId,
@@ -223,9 +223,9 @@ async function handleJoinSession(conn, data, sessionId, projectId, userId) {
     }
 
     // Add user as participant if not already
-    await prisma.sessionParticipant.upsert({
+    await prisma.userPresence.upsert({
       where: {
-        sessionId_userId: {
+        userId_sessionId: {
           sessionId,
           userId,
         },
@@ -237,7 +237,7 @@ async function handleJoinSession(conn, data, sessionId, projectId, userId) {
       },
       update: {
         isActive: true,
-        leftAt: null,
+        lastSeen: null,
       },
     });
 
@@ -311,9 +311,9 @@ async function handleCursorUpdate(conn, data, sessionId, userId) {
     const { cursor } = data;
 
     // Update cursor in database
-    await prisma.sessionParticipant.update({
+    await prisma.userPresence.update({
       where: {
-        sessionId_userId: {
+        userId_sessionId: {
           sessionId,
           userId,
         },
@@ -346,7 +346,7 @@ async function handleFileSave(conn, data, projectId, userId) {
 
     if (fileId) {
       // Update existing file
-      const file = await prisma.projectFile.update({
+      const file = await prisma.file.update({
         where: { id: fileId },
         data: {
           content,
@@ -356,17 +356,17 @@ async function handleFileSave(conn, data, projectId, userId) {
       });
 
       // Log file activity
-      await prisma.fileActivity.create({
-        data: {
-          action: 'UPDATE',
-          fileId,
-          userId,
-          changes: {
-            contentChanged: true,
-            size: file.size,
-          },
-        },
-      });
+//       await prisma.fileActivity.create({
+//         data: {
+//           action: 'UPDATE',
+//           fileId,
+//           userId,
+//           changes: {
+//             contentChanged: true,
+//             size: file.size,
+//           },
+//         },
+//       });
 
       conn.send(
         JSON.stringify({
@@ -390,9 +390,9 @@ async function handleFileSave(conn, data, projectId, userId) {
 // Update user presence in session
 async function updateUserPresence(sessionId, userId, isActive) {
   try {
-    await prisma.sessionParticipant.upsert({
+    await prisma.userPresence.upsert({
       where: {
-        sessionId_userId: {
+        userId_sessionId: {
           sessionId,
           userId,
         },
@@ -404,7 +404,7 @@ async function updateUserPresence(sessionId, userId, isActive) {
       },
       update: {
         isActive,
-        leftAt: isActive ? null : new Date(),
+        lastSeen: isActive ? null : new Date(),
       },
     });
   } catch (error) {
@@ -448,7 +448,7 @@ app.get('/health', async (request, reply) => {
 app.get('/api/sessions/:sessionId', async (request, reply) => {
   try {
     const sessionId = request.params.sessionId;
-    const session = await prisma.collaborationSession.findUnique({
+    const session = await prisma.collaborativeSession.findUnique({
       where: { id: sessionId },
       include: {
         participants: {
@@ -557,7 +557,7 @@ app.post('/api/files', authenticateToken, async (req, res) => {
       return res.status(403).json({ error: 'Access denied to project' });
     }
 
-    const file = await prisma.projectFile.create({
+    const file = await prisma.file.create({
       data: {
         projectId,
         path,
@@ -570,13 +570,13 @@ app.post('/api/files', authenticateToken, async (req, res) => {
     });
 
     // Log file activity
-    await prisma.fileActivity.create({
-      data: {
-        action: 'CREATE',
-        fileId: file.id,
-        userId,
-      },
-    });
+//     await prisma.fileActivity.create({
+//       data: {
+//         action: 'CREATE',
+//         fileId: file.id,
+//         userId,
+//       },
+//     });
 
     res.status(201).json({ file });
   } catch (error) {
@@ -595,7 +595,7 @@ app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'File content is required' });
     }
 
-    const existingFile = await prisma.projectFile.findUnique({
+    const existingFile = await prisma.file.findUnique({
       where: { id: fileId },
       include: { project: { include: { members: true } } },
     });
@@ -614,7 +614,7 @@ app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
       return res.status(403).json({ error: 'Access denied to project' });
     }
 
-    const updatedFile = await prisma.projectFile.update({
+    const updatedFile = await prisma.file.update({
       where: { id: fileId },
       data: {
         content,
@@ -624,14 +624,14 @@ app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
     });
 
     // Log file activity
-    await prisma.fileActivity.create({
-      data: {
-        action: 'UPDATE',
-        fileId,
-        userId,
-        changes: { contentChanged: true, size: updatedFile.size },
-      },
-    });
+//     await prisma.fileActivity.create({
+//       data: {
+//         action: 'UPDATE',
+//         fileId,
+//         userId,
+//         changes: { contentChanged: true, size: updatedFile.size },
+//       },
+//     });
 
     res.json({ file: updatedFile });
   } catch (error) {
@@ -645,7 +645,7 @@ app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
     const { fileId } = req.params;
     const userId = req.userId; // From authenticateToken middleware
 
-    const file = await prisma.projectFile.findUnique({
+    const file = await prisma.file.findUnique({
       where: { id: fileId },
       include: { project: { include: { members: true } } },
     });
