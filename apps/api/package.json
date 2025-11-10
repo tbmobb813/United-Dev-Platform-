@@ -12,6 +12,7 @@
   "dependencies": {
     "@prisma/client": "^6.17.1",
     "@udp/db": "workspace:*",
+    "@udp/editor-core": "workspace:*",
     "@udp/logger": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.19.2",
