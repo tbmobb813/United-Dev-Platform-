@@ -1,6 +1,5 @@
 name: CI - Pull Request
 
-# Minimal permissions required by the workflow (kept explicit)
 permissions:
   contents: read
   issues: write
