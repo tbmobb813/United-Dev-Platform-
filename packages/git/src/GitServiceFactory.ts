@@ -51,7 +51,7 @@ export class BrowserFileSystem implements FileSystemInterface {
  * Uses Node.js fs module for file operations
  */
 export class NodeFileSystem implements FileSystemInterface {
-  private fs: unknown;
+  private fs: typeof import('fs').promises | null = null;
 
   constructor() {
     // Dynamic import to avoid errors in browser environments

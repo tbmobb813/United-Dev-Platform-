@@ -129,8 +129,8 @@ export class OllamaService extends AIService {
       let fullContent = '';
       let lastResponse: OllamaStreamResponse | null = null;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const decoder = new (globalThis as any).TextDecoder();
+      // eslint-disable-next-line no-undef
+      const decoder = new TextDecoder();
 
       try {
         let finished = false;
@@ -139,6 +139,11 @@ export class OllamaService extends AIService {
           if (done) {
             finished = true;
             break;
+          }
+
+          if (!value) {
+            // No data in this read loop iteration; continue to next
+            continue;
           }
 
           const chunk = decoder.decode(value);

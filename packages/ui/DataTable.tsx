@@ -1,6 +1,5 @@
 import React, { useMemo, useState, ReactNode } from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface DataTableColumn<T = Record<string, React.Key>> {
   key: string;
   title: string;
@@ -15,7 +14,6 @@ export interface DataTableColumn<T = Record<string, React.Key>> {
   headerClassName?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface DataTableProps<T = Record<string, React.Key>> {
   columns: DataTableColumn<T>[];
   data: T[];
@@ -48,7 +46,6 @@ export interface PaginationConfig {
   onChange?: (page: number, pageSize: number) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface RowSelectionConfig<T = Record<string, React.Key>> {
   type?: 'checkbox' | 'radio';
   selectedRowKeys?: React.Key[];
@@ -71,7 +68,7 @@ interface SortState {
   field: string | null;
   direction: SortDirection;
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export const DataTable = <T extends Record<string, React.Key>>({
   columns,
   data,
