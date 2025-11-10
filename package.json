@@ -1,5 +1,6 @@
 {
   "name": "unified-dev-platform",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.0.0",
