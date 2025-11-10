@@ -2,7 +2,8 @@
 
 ## Overview
 
-This package implements a centralized Yjs singleton pattern to prevent duplicate Yjs imports and the "Yjs was already imported" error.
+This package implements a centralized Yjs singleton pattern to prevent duplicate Yjs imports and the
+"Yjs was already imported" error.
 
 ## Architecture
 
@@ -29,31 +30,34 @@ This package implements a centralized Yjs singleton pattern to prevent duplicate
 
 ```typescript
 // ✅ CORRECT - Import from @udp/editor-core
-import { Y, DocumentManager } from '@udp/editor-core';
+import { Y, DocumentManager } from "@udp/editor-core";
 
 // ❌ WRONG - Don't import yjs directly
-import * as Y from 'yjs';
+import * as Y from "yjs";
 ```
 
 ### In editor-core Package
 
 ```typescript
 // ✅ CORRECT - Import from local singleton
-import * as Y from './yjs-singleton';
+import * as Y from "./yjs-singleton";
 
 // ❌ WRONG - Don't import yjs directly
-import * as Y from 'yjs';
+import * as Y from "yjs";
 ```
 
 ## Build-Time Warnings
 
-You may still see "Yjs was already imported" warnings during Next.js static site generation (SSG). This is expected because:
+You may still see "Yjs was already imported" warnings during Next.js static site generation (SSG).
+This is expected because:
 
 1. Next.js runs page generation in multiple worker processes
 2. Each worker loads its own Yjs instance for SSG
 3. The warnings are precautionary and don't affect runtime behavior
 
-These warnings are documented in the [Yjs GitHub issues](https://github.com/yjs/yjs/issues/438) and are safe to ignore if:
+These warnings are documented in the [Yjs GitHub issues](https://github.com/yjs/yjs/issues/438) and
+are safe to ignore if:
+
 - You're not passing Yjs documents between processes
 - Runtime (browser/server) works correctly
 - The build completes successfully
@@ -74,7 +78,8 @@ All Yjs-related packages are locked to specific versions in the root `package.js
 }
 ```
 
-The `@udp/editor-core` package must specify matching versions in its `peerDependencies` and `devDependencies`.
+The `@udp/editor-core` package must specify matching versions in its `peerDependencies` and
+`devDependencies`.
 
 ## Troubleshooting
 
@@ -97,6 +102,7 @@ If the build fails with Yjs errors:
 ## Testing
 
 The singleton pattern is tested in:
+
 - `packages/editor-core/__tests__/core/DocumentManager.test.ts`
 - Integration tests in web and mobile apps
 
