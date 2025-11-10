@@ -138,26 +138,39 @@ const config = [
       'no-undef': 'off',
     },
   },
-  // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts
+  // Test files configuration
   {
-    files: ['**/jest.config.*', '**/*.cjs'],
+    files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'script',
       globals: {
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
-        process: 'readonly',
+        jest: 'readonly',
+        describe: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        test: 'readonly',
       },
     },
-    rules: {
-      // Allow require-style imports and var requires in config files
-      '@typescript-eslint/no-var-requires': 'off',
-      '@typescript-eslint/no-require-imports': 'off',
-      // Node config files may reference globals like __dirname
-      'no-undef': 'off',
+  },
+  // Filesystem package tests - add browser environment
+  {
+    files: ['packages/filesystem/**/__tests__/**/*.[jt]s?(x)'],
+    languageOptions: {
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        FileReader: 'readonly',
+        File: 'readonly',
+        Blob: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+      },
     },
   },
 ];

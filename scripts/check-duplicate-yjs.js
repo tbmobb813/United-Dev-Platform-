@@ -18,12 +18,17 @@ try {
 
 function findFiles(dir, exts = ['.js', '.map']) {
   const out = [];
-  if (!fs.existsSync(dir)) return out;
+  if (!fs.existsSync(dir)) {
+    return out;
+  }
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const e of entries) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) out.push(...findFiles(p, exts));
-    else if (exts.includes(path.extname(e.name))) out.push(p);
+    if (e.isDirectory()) {
+      out.push(...findFiles(p, exts));
+    } else if (exts.includes(path.extname(e.name))) {
+      out.push(p);
+    }
   }
   return out;
 }
@@ -55,17 +60,23 @@ function scanBundleDir(dir) {
         if (re.test(content)) {
           isStrong = true;
           // reset lastIndex in case of global regex reuse
-          if (re.global) re.lastIndex = 0;
+          if (re.global) {
+            re.lastIndex = 0;
+          }
         }
       }
 
       for (const re of weakIndicators) {
         let m;
         // ensure global regex has lastIndex reset
-        if (re.global) re.lastIndex = 0;
+        if (re.global) {
+          re.lastIndex = 0;
+        }
         while ((m = re.exec(content)) !== null) {
           fileMatches.push({ index: m.index, match: m[0] });
-          if (m.index === re.lastIndex) re.lastIndex++;
+          if (m.index === re.lastIndex) {
+            re.lastIndex++;
+          }
         }
       }
 
@@ -84,21 +95,32 @@ async function mapMatchesToSources(matches) {
   const mapped = [];
 
   function resolveSourcePath(rawSource, generatedFile) {
-    if (!rawSource) return null;
-    if (path.isAbsolute(rawSource) && fs.existsSync(rawSource))
+    if (!rawSource) {
+      return null;
+    }
+    if (path.isAbsolute(rawSource) && fs.existsSync(rawSource)) {
       return rawSource;
+    }
     if (/^webpack:(?:\/+)?/.test(rawSource)) {
       let s = rawSource.replace(/^webpack:(?:\/+)?/, '');
-      if (s.startsWith('./')) s = s.slice(2);
+      if (s.startsWith('./')) {
+        s = s.slice(2);
+      }
       const tryRoot = path.resolve(process.cwd(), s);
-      if (fs.existsSync(tryRoot)) return tryRoot;
+      if (fs.existsSync(tryRoot)) {
+        return tryRoot;
+      }
       const nmIdx = s.indexOf('node_modules');
       if (nmIdx !== -1) {
         const nmPath = path.resolve(process.cwd(), s.slice(nmIdx));
-        if (fs.existsSync(nmPath)) return nmPath;
+        if (fs.existsSync(nmPath)) {
+          return nmPath;
+        }
       }
       const tryRel = path.resolve(path.dirname(generatedFile), s);
-      if (fs.existsSync(tryRel)) return tryRel;
+      if (fs.existsSync(tryRel)) {
+        return tryRel;
+      }
     }
     if (/^https?:\/\//i.test(rawSource)) {
       try {
@@ -107,22 +129,32 @@ async function mapMatchesToSources(matches) {
           process.cwd(),
           u.pathname.replace(/^\/+/, '')
         );
-        if (fs.existsSync(cand)) return cand;
+        if (fs.existsSync(cand)) {
+          return cand;
+        }
         const base = path.basename(u.pathname);
         const possible = path.resolve(process.cwd(), '.next', base);
-        if (fs.existsSync(possible)) return possible;
+        if (fs.existsSync(possible)) {
+          return possible;
+        }
       } catch (e) {
         /* ignore */
       }
     }
     const relTry = path.resolve(path.dirname(generatedFile), rawSource);
-    if (fs.existsSync(relTry)) return relTry;
+    if (fs.existsSync(relTry)) {
+      return relTry;
+    }
     const rootTry = path.resolve(process.cwd(), rawSource.replace(/^\/+/, ''));
-    if (fs.existsSync(rootTry)) return rootTry;
+    if (fs.existsSync(rootTry)) {
+      return rootTry;
+    }
     const nm = rawSource.indexOf('node_modules');
     if (nm !== -1) {
       const nmPath = path.resolve(process.cwd(), rawSource.slice(nm));
-      if (fs.existsSync(nmPath)) return nmPath;
+      if (fs.existsSync(nmPath)) {
+        return nmPath;
+      }
     }
     return null;
   }
@@ -139,7 +171,7 @@ async function mapMatchesToSources(matches) {
     let inlineSourceMap = null;
     if (!mapPath) {
       const singleLineMatch = content.match(
-        /(?:\/\/|\/\*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
+        /(?:\/\/|\/\*)#?\s*sourceMappingURL=([^\n\r\*]+)/i
       );
       if (singleLineMatch && singleLineMatch[1]) {
         const raw = singleLineMatch[1].trim();
@@ -156,7 +188,9 @@ async function mapMatchesToSources(matches) {
           }
         } else {
           const possible = path.resolve(path.dirname(generatedFile), raw);
-          if (fs.existsSync(possible)) mapPath = possible;
+          if (fs.existsSync(possible)) {
+            mapPath = possible;
+          }
         }
       }
     }
@@ -178,8 +212,11 @@ async function mapMatchesToSources(matches) {
       if ((mapPath || inlineSourceMap) && SourceMapConsumer) {
         try {
           let rawMap;
-          if (inlineSourceMap) rawMap = JSON.parse(inlineSourceMap);
-          else rawMap = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+          if (inlineSourceMap) {
+            rawMap = JSON.parse(inlineSourceMap);
+          } else {
+            rawMap = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+          }
           const orig = await SourceMapConsumer.with(rawMap, null, consumer =>
             consumer.originalPositionFor({ line, column })
           );
@@ -190,7 +227,9 @@ async function mapMatchesToSources(matches) {
             entry.sourceName = orig.name || null;
             try {
               const resolved = resolveSourcePath(orig.source, generatedFile);
-              if (resolved) entry.resolvedSource = resolved;
+              if (resolved) {
+                entry.resolvedSource = resolved;
+              }
             } catch (e) {
               /* ignore */
             }
@@ -210,7 +249,9 @@ async function mapMatchesToSources(matches) {
 }
 
 function filterAllowlist(matches, allowlist = []) {
-  if (!allowlist || allowlist.length === 0) return matches;
+  if (!allowlist || allowlist.length === 0) {
+    return matches;
+  }
   const normalized = allowlist.map(p => path.resolve(p));
   return matches.filter(
     m => !normalized.includes(path.resolve(m.generatedFile))
@@ -256,15 +297,27 @@ async function main() {
     const gen = path.resolve(e.generatedFile);
     const src = e.source ? path.resolve(e.source) : null;
     const rsrc = e.resolvedSource ? path.resolve(e.resolvedSource) : null;
-    if (normalizedAllowlist.includes(gen)) return false;
-    if (src && normalizedAllowlist.includes(src)) return false;
-    if (rsrc && normalizedAllowlist.includes(rsrc)) return false;
+    if (normalizedAllowlist.includes(gen)) {
+      return false;
+    }
+    if (src && normalizedAllowlist.includes(src)) {
+      return false;
+    }
+    if (rsrc && normalizedAllowlist.includes(rsrc)) {
+      return false;
+    }
     const genBase = path.basename(gen);
     const srcBase = src ? path.basename(src) : null;
     const rsrcBase = rsrc ? path.basename(rsrc) : null;
-    if (allowlistBasenames.includes(genBase)) return false;
-    if (srcBase && allowlistBasenames.includes(srcBase)) return false;
-    if (rsrcBase && allowlistBasenames.includes(rsrcBase)) return false;
+    if (allowlistBasenames.includes(genBase)) {
+      return false;
+    }
+    if (srcBase && allowlistBasenames.includes(srcBase)) {
+      return false;
+    }
+    if (rsrcBase && allowlistBasenames.includes(rsrcBase)) {
+      return false;
+    }
     if (
       normalizedAllowlist.some(
         a =>
@@ -272,19 +325,22 @@ async function main() {
           (src && src.endsWith(a)) ||
           (rsrc && rsrc.endsWith(a))
       )
-    )
+    ) {
       return false;
+    }
     return true;
   });
 
   let flaggedSet;
   if (strict) {
     const resolved = filtered.map(e => e.resolvedSource).filter(Boolean);
-    if (resolved.length > 0) flaggedSet = new Set(resolved);
-    else
+    if (resolved.length > 0) {
+      flaggedSet = new Set(resolved);
+    } else {
       flaggedSet = new Set(
         filtered.map(e => (e.source ? e.source : e.generatedFile))
       );
+    }
   } else {
     flaggedSet = new Set(
       filtered.map(e => (e.source ? e.source : e.generatedFile))
@@ -303,18 +359,24 @@ async function main() {
       flaggedSet.size > 1 ? 'error' : flaggedSet.size === 1 ? 'warning' : 'ok',
   };
 
-  if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
+  if (report) {
+    fs.writeFileSync(report, JSON.stringify(result, null, 2));
+  }
 
   console.log(
     `Scanned ${result.scannedFiles} files. Flagged ${result.flaggedFiles} file(s) after allowlist in ${dir}`
   );
-  if (report) console.log(`Wrote report to ${report}`);
+  if (report) {
+    console.log(`Wrote report to ${report}`);
+  }
 
   if (result.flaggedFiles > 1) {
     console.error(
       'Potential duplicate Yjs runtime detected (more than one flagged chunk/source).'
     );
-    if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
+    if (report) {
+      fs.writeFileSync(report, JSON.stringify(result, null, 2));
+    }
     if (report) {
       /* no-op */
     } else {
@@ -325,10 +387,14 @@ async function main() {
     console.warn(
       'Single chunk/source references Yjs-like identifiers (flagged as warning).'
     );
-    if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
+    if (report) {
+      fs.writeFileSync(report, JSON.stringify(result, null, 2));
+    }
     process.exit(0);
   }
-  if (report) fs.writeFileSync(report, JSON.stringify(result, null, 2));
+  if (report) {
+    fs.writeFileSync(report, JSON.stringify(result, null, 2));
+  }
   process.exit(0);
 }
 

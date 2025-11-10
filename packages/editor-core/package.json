@@ -11,14 +11,12 @@
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
+    "@udp/logger": "workspace:*",
     "y-indexeddb": "^9.0.12"
   },
   "peerDependencies": {
     "y-protocols": "^1.0.6",
-    "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27"
-  },
-  "peerDependencies": {
+    "y-websocket": "^1.5.4",
     "yjs": "^13.6.27"
   },
   "devDependencies": {
@@ -31,7 +29,8 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.9.3",
     "y-protocols": "^1.0.6",
-    "y-websocket": "^3.0.0"
+    "y-websocket": "^1.5.4",
+    "yjs": "^13.6.27"
   },
   "eslintConfig": {
     "extends": [

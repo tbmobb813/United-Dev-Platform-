@@ -28,9 +28,15 @@ describe('duplicate-yjs detector - fixture', () => {
         stdio: 'pipe',
       });
     } catch (err) {
-      if (err.stdout) out = err.stdout.toString();
-      if (err.stderr) errOut = err.stderr.toString();
-      if (!out && !errOut) throw err;
+      if (err.stdout) {
+        out = err.stdout.toString();
+      }
+      if (err.stderr) {
+        errOut = err.stderr.toString();
+      }
+      if (!out && !errOut) {
+        throw err;
+      }
     }
     // Find the temp report path from detector output (stdout or stderr)
     const allLines = (out + '\n' + errOut).split('\n');

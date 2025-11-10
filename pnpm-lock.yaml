@@ -416,12 +416,12 @@ importers:
 
   packages/editor-core:
     dependencies:
+      '@udp/logger':
+        specifier: workspace:*
+        version: link:../logger
       y-indexeddb:
         specifier: ^9.0.12
         version: 9.0.12(yjs@13.6.27)
-      yjs:
-        specifier: 13.6.27
-        version: 13.6.27
     devDependencies:
       '@types/jest':
         specifier: ^29.5.13
@@ -453,6 +453,9 @@ importers:
       y-websocket:
         specifier: 1.5.4
         version: 1.5.4(yjs@13.6.27)
+      yjs:
+        specifier: 13.6.27
+        version: 13.6.27
 
   packages/eslint-config:
     dependencies:
