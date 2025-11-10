@@ -1,0 +1,97 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - heading "Unified Dev Platform (Web)" [level=1] [ref=e4]
+    - paragraph [ref=e5]: "Logged in as: playwright-A"
+    - generic [ref=e6]:
+      - button "Sign out" [ref=e7] [cursor=pointer]
+      - button "🤖 AI Assistant" [ref=e8] [cursor=pointer]
+      - button "📁 Open File" [ref=e9] [cursor=pointer]
+      - button "💾 Save As" [ref=e10] [cursor=pointer]
+      - button "➕ New File" [ref=e11] [cursor=pointer]
+      - button "❓ Help (F1)" [ref=e12] [cursor=pointer]
+      - button "⚙️ Settings" [ref=e13] [cursor=pointer]
+    - generic [ref=e14]:
+      - heading "Document Navigation" [level=3] [ref=e15]
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: "Room:"
+          - textbox "Enter room name" [ref=e19]: playwright-room
+        - generic [ref=e20]:
+          - generic [ref=e21]: "Document:"
+          - textbox "Enter document name" [ref=e22]: playwright-doc
+        - button "Switch Document" [ref=e23] [cursor=pointer]
+      - paragraph [ref=e24]:
+        - text: "Current:"
+        - strong [ref=e25]: playwright-room
+        - text: /
+        - strong [ref=e26]: playwright-doc
+    - 'heading "Collaborative editor powered by Yjs. Room: playwright-room, Document: playwright-doc" [level=2] [ref=e27]'
+    - generic [ref=e28]:
+      - code [ref=e32]:
+        - generic [ref=e33]:
+          - textbox "Editor content" [ref=e34]
+          - textbox [ref=e35]
+          - generic [ref=e40]: "1"
+          - generic [ref=e45]: Playwright sync test — hello from A
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]: ✅
+          - generic [ref=e51]: AI Assistant
+        - generic [ref=e52]:
+          - generic [ref=e53]: 💡
+          - generic [ref=e54]: Code Completion
+        - generic [ref=e55]:
+          - generic [ref=e56]: 🔍
+          - generic [ref=e57]: Hover Help
+        - generic [ref=e58]:
+          - generic [ref=e59]: ⚡
+          - generic [ref=e60]: Quick Actions
+        - generic [ref=e61]: 💡 Type to trigger suggestions • Select code for AI assistance
+    - heading "Active users:" [level=3] [ref=e62]
+    - list [ref=e63]:
+      - listitem [ref=e64]: playwright-A
+      - listitem [ref=e65]: playwright-B
+    - heading "Mobile Handoff" [level=2] [ref=e66]
+    - paragraph [ref=e67]: "Scan with your mobile device to join this collaboration session:"
+    - generic [ref=e68]:
+      - generic [ref=e72]: 📱 Scan to open in mobile browser
+      - generic [ref=e73]:
+        - button "📋 Copy Web Link" [ref=e74] [cursor=pointer]
+        - button "📱 Copy App Link" [ref=e75] [cursor=pointer]
+      - generic [ref=e76]:
+        - heading "Connection Details" [level=3] [ref=e77]
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - strong [ref=e80]: "Room:"
+            - text: playwright-room
+          - generic [ref=e81]:
+            - strong [ref=e82]: "Document:"
+            - text: playwright-doc
+          - generic [ref=e83]: 💡 Mobile app link will work when the UDP mobile app is installed
+    - generic [ref=e84]:
+      - generic [ref=e85]: "File path:"
+      - textbox "/README.md" [ref=e86]
+    - generic [ref=e88]:
+      - generic [ref=e89]:
+        - generic [ref=e90]: 👥 Collaboration
+        - button "←" [ref=e92] [cursor=pointer]
+      - generic [ref=e94]:
+        - heading "Collaboration (2)" [level=3] [ref=e95]
+        - generic [ref=e96]:
+          - button "Hide Details ▲" [ref=e98] [cursor=pointer]
+          - generic [ref=e99]:
+            - generic [ref=e100]: Recent Activity
+            - generic [ref=e106]:
+              - strong [ref=e107]: playwright-B
+              - text: left Just now
+          - generic [ref=e108]:
+            - generic [ref=e109]: 0 active
+            - generic [ref=e110]: 2 total
+  - alert [ref=e111]
+  - generic [ref=e112]:
+    - alert
+    - alert
+```

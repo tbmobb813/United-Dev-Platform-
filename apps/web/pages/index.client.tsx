@@ -89,11 +89,10 @@ export default function Home() {
   }, []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // Generate both mobile app deeplink and fallback web URL
-  const webUrl = `${
-    typeof window !== 'undefined'
-      ? window.location.origin
-      : 'http://localhost:3000'
-  }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
+  const webUrl = `${typeof window !== 'undefined'
+    ? window.location.origin
+    : 'http://localhost:3000'
+    }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
   )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(
@@ -236,8 +235,75 @@ export default function Home() {
       ytextRef.current = ytext;
       awarenessRef.current = awareness;
 
+      // Client-side Yjs lower-level update listener for debugging.
+      // Enable by setting NEXT_PUBLIC_UDP_DEBUG_YJS=true in the environment.
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const docUpdateHandler = (update: Uint8Array, origin: any) => {
+          try {
+            if (process.env.NEXT_PUBLIC_UDP_DEBUG_YJS) {
+              // Keep the log short
+              // eslint-disable-next-line no-console
+              console.log(
+                `[udp][yjs] doc ${docId} update (origin=${origin ? 'origin' : 'remote'}) size=${
+                  (update && (update.byteLength || (update as any).length)) || 'unknown'
+                }`
+              );
+            }
+          } catch (e) {
+            // ignore
+          }
+        };
+
+        doc.on('update', docUpdateHandler);
+
+        // Expose for test/cleanup
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).__udp_test = (globalThis as any).__udp_test || {};
+        // store handler reference for cleanup if tests want to inspect
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).__udp_test.docUpdateHandler = docUpdateHandler;
+      } catch (e) {
+        // ignore in constrained environments
+      }
+
+      // Expose a tiny debug API on the window for end-to-end tests and local
+      // debugging. This is intentionally minimal and can be removed later.
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).__udp_test = (globalThis as any).__udp_test || {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).__udp_test.getYText = () => (ytextRef.current ? ytextRef.current.toString() : null);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).__udp_test.setYText = (s: string) => {
+          if (!ytextRef.current) return;
+          ytextRef.current.doc?.transact(() => {
+            ytextRef.current!.delete(0, ytextRef.current!.length);
+            ytextRef.current!.insert(0, s);
+          });
+        };
+      } catch (e) {
+        // ignore in environments where globalThis isn't writable
+      }
+
       return () => {
         awareness.off('change', handleChange);
+        try {
+          // attempt to remove client-side doc update handler if present
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const testObj = (globalThis as any).__udp_test;
+          if (testObj && testObj.docUpdateHandler) {
+            try {
+              doc.off('update', testObj.docUpdateHandler);
+            } catch (e) {
+              // ignore
+            }
+            // cleanup reference
+            delete testObj.docUpdateHandler;
+          }
+        } catch (e) {
+          // ignore
+        }
         provider.destroy();
         doc.destroy();
       };
@@ -356,6 +422,13 @@ export default function Home() {
     const yObserver = () => {
       if (!ytextRef.current || ignoreRef.current) {
         return;
+      }
+      try {
+        // Log Y.Text updates for E2E debugging
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        console.log('[udp] yObserver fired', String(ytextRef.current.toString()).slice(0, 120));
+      } catch (e) {
+        // ignore
       }
       ignoreRef.current = true;
       model.setValue(ytextRef.current.toString());
