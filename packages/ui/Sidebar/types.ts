@@ -4,6 +4,8 @@
  * Type definitions for the sidebar navigation system
  */
 
+import React from 'react';
+
 export interface SidebarItem {
   /** Unique identifier */
   id: string;

@@ -4,6 +4,8 @@
  * Type definitions for the command palette system
  */
 
+import React from 'react';
+
 export interface Command {
   /** Unique identifier for the command */
   id: string;

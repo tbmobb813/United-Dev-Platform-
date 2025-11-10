@@ -185,8 +185,8 @@ export const stylePatterns = {
  */
 export function responsive(
   mobile: CSSProperties,
-  tablet?: CSSProperties,
-  desktop?: CSSProperties
+  _tablet?: CSSProperties,
+  _desktop?: CSSProperties
 ): CSSProperties {
   // Note: This is a simplified version. For true responsive styles,
   // you'd need to use media queries in CSS or a CSS-in-JS solution
@@ -218,7 +218,7 @@ export function alpha(color: string, opacity: number): string {
 /**
  * Darken color helper
  */
-export function darken(color: string, amount: number): string {
+export function darken(color: string, _amount: number): string {
   // Simplified implementation
   return color; // In production, use a proper color library
 }
@@ -226,7 +226,7 @@ export function darken(color: string, amount: number): string {
 /**
  * Lighten color helper
  */
-export function lighten(color: string, amount: number): string {
+export function lighten(color: string, _amount: number): string {
   // Simplified implementation
   return color; // In production, use a proper color library
 }

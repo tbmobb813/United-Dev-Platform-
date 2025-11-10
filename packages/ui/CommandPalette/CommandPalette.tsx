@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTheme } from '../ThemeProvider';
 import { useCommandPalette } from './CommandPaletteProvider';
 import { searchCommands, highlightMatches } from './fuzzySearch';
-import { Command, CommandGroup } from './types';
+import { CommandGroup } from './types';
 import { stylePatterns } from '../styled';
 interface CommandPaletteProps {
   /** Placeholder text for search */

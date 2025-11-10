@@ -5,11 +5,8 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import {
-  Command,
-  CommandPaletteContextValue,
-  UseCommandPaletteOptions,
-} from './types';
+import { Command, CommandPaletteContextValue } from './types';
+import logger from '@udp/logger';
 
 const CommandPaletteContext = createContext<
   CommandPaletteContextValue | undefined
@@ -113,7 +110,7 @@ export const CommandPaletteProvider: React.FC<CommandPaletteProviderProps> = ({
         addToHistory(id);
         setIsOpen(false);
       } catch (error) {
-        console.error('Command execution failed:', error);
+        logger.error('Command execution failed:', error);
       }
     },
     [commands, addToHistory]
