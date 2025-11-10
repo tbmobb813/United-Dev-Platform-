@@ -44,11 +44,19 @@ jobs:
           echo "=== Git status (checking for modified files) ==="
           git status --porcelain
           echo ""
-          echo "=== Diff of package.json (if modified) ==="
-          git --no-pager diff -- package.json || echo "No changes to package.json"
+          echo "=== Check package.json specifically ==="
+          pnpm exec -- prettier --check package.json || echo "Check failed"
+          echo ""
+          echo "=== Try formatting package.json and show diff ==="
+          cp package.json package.json.backup
+          pnpm exec -- prettier --write package.json
+          diff package.json.backup package.json || echo "No diff after prettier --write"
           echo ""
           echo "=== Last 10 bytes of package.json in hex ==="
           tail -c 10 package.json | od -An -tx1
+          echo ""
+          echo "=== First 100 chars of package.json ==="
+          head -c 100 package.json | od -An -tx1
 
       - name: Validate environment (main only)
         if: github.ref == 'refs/heads/main'
