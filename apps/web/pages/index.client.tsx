@@ -23,6 +23,8 @@ import {
   CollaborationPanel,
   useTheme,
   useRegisterCommands,
+  SidebarLayout,
+  SidebarSection,
 } from '@udp/ui';
 import { AIAssistant, AIManager } from '@udp/ai';
 import { codeCompletionService } from '../components/CodeCompletionProvider';
@@ -103,6 +105,88 @@ export default function Home() {
     selectedCode,
   });
   useRegisterCommands(appCommands);
+
+  // Sidebar navigation sections
+  const sidebarSections: SidebarSection[] = [
+    {
+      title: 'Main',
+      items: [
+        {
+          id: 'home',
+          label: 'Home',
+          icon: '🏠',
+          active: router.pathname === '/',
+          onClick: () => router.push('/'),
+        },
+        {
+          id: 'files',
+          label: 'Files',
+          icon: '📁',
+          onClick: () => {
+            setFileManagerMode('open');
+            setIsFileManagerOpen(true);
+          },
+        },
+        {
+          id: 'ai',
+          label: 'AI Assistant',
+          icon: '🤖',
+          onClick: () => setIsAIOpen(true),
+          badge: selectedCode ? '1' : undefined,
+        },
+      ],
+    },
+    {
+      title: 'Pages',
+      items: [
+        {
+          id: 'minimal',
+          label: 'Minimal Editor',
+          icon: '📝',
+          active: router.pathname === '/minimal',
+          onClick: () => router.push('/minimal'),
+        },
+        {
+          id: 'offline',
+          label: 'Offline Demo',
+          icon: '📴',
+          active: router.pathname === '/offline-demo',
+          onClick: () => router.push('/offline-demo'),
+        },
+        {
+          id: 'presence',
+          label: 'Presence Demo',
+          icon: '👥',
+          active: router.pathname === '/presence-demo',
+          onClick: () => router.push('/presence-demo'),
+        },
+      ],
+    },
+    {
+      title: 'Settings',
+      items: [
+        {
+          id: 'theme',
+          label: 'Toggle Theme',
+          icon: '🌓',
+          onClick: toggleMode,
+        },
+        {
+          id: 'shortcuts',
+          label: 'Shortcuts',
+          icon: '⌨️',
+          onClick: () => setIsShortcutsHelpOpen(true),
+          shortcut: 'F1',
+        },
+        {
+          id: 'settings',
+          label: 'Settings',
+          icon: '⚙️',
+          onClick: () => setIsSettingsOpen(true),
+        },
+      ],
+    },
+  ];
 
   // AI Manager for real AI integration
   const [aiManager, setAiManager] = useState<AIManager | null>(null);
@@ -526,61 +610,33 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <Head>
-        <title>Unified Dev Platform</title>
-      </Head>
-      <h1>Unified Dev Platform (Web)</h1>
-      <p>Logged in as: {userName ? String(userName) : 'Unknown'}</p>
-      <Stack direction='row' gap='small' wrap>
-        <Button onClick={handleSignOut}>Sign out</Button>
-        <Button variant='outline' onClick={() => setIsAIOpen(true)}>
-          🤖 AI Assistant
-        </Button>
-        <Button
-          variant='outline'
-          onClick={() => {
-            setFileManagerMode('open');
-            setIsFileManagerOpen(true);
-          }}
-        >
-          📁 Open File
-        </Button>
-        <Button
-          variant='outline'
-          onClick={() => {
-            setFileManagerMode('save');
-            setIsFileManagerOpen(true);
-          }}
-        >
-          💾 Save As
-        </Button>
-        <Button
-          variant='outline'
-          onClick={() => {
-            setFileManagerMode('create');
-            setIsFileManagerOpen(true);
-          }}
-        >
-          ➕ New File
-        </Button>
-        <Button
-          variant='ghost'
-          size='small'
-          onClick={() => setIsShortcutsHelpOpen(true)}
-        >
-          ❓ Help (F1)
-        </Button>
-        <Button
-          variant='ghost'
-          size='small'
-          onClick={() => setIsSettingsOpen(true)}
-        >
-          ⚙️ Settings
-        </Button>
-      </Stack>
+    <SidebarLayout
+      sidebar={{
+        sections: sidebarSections,
+        header: (
+          <div style={{ fontWeight: 600, fontSize: '18px' }}>
+            UDP
+          </div>
+        ),
+        footer: (
+          <div style={{ fontSize: '14px' }}>
+            <div style={{ marginBottom: '8px' }}>
+              {userName ? String(userName) : 'Unknown'}
+            </div>
+            <Button size='small' variant='ghost' onClick={handleSignOut} fullWidth>
+              Sign out
+            </Button>
+          </div>
+        ),
+      }}
+    >
+      <div style={{ padding: '24px' }}>
+        <Head>
+          <title>Unified Dev Platform</title>
+        </Head>
+        <h1>Unified Dev Platform (Web)</h1>
 
-      <Card title='Document Navigation' style={{ margin: '20px 0' }}>
+        <Card title='Document Navigation' style={{ margin: '20px 0' }}>
         <Stack direction='row' gap='medium' align='center' wrap>
           <Stack direction='row' gap='small' align='center'>
             <label>Room:</label>
@@ -863,18 +919,19 @@ export default function Home() {
         onClose={() => setIsSettingsOpen(false)}
       />
 
-      {/* Collaboration Panel */}
-      <div
-        style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          zIndex: 1000,
-          maxWidth: '300px',
-        }}
-      >
-        <CollaborationPanel users={users} currentUserId={userId} />
+        {/* Collaboration Panel */}
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: 1000,
+            maxWidth: '300px',
+          }}
+        >
+          <CollaborationPanel users={users} currentUserId={userId} />
+        </div>
       </div>
-    </div>
+    </SidebarLayout>
   );
 }

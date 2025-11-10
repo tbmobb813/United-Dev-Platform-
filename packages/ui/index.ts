@@ -7,6 +7,9 @@ export * from './hooks/useMediaQuery';
 // Command Palette
 export * from './CommandPalette';
 
+// Sidebar
+export * from './Sidebar';
+
 // Components
 export * from './Button';
 export * from './Card';
