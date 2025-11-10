@@ -137,7 +137,8 @@ jobs:
           REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
         run: |
           if [ -f "$REPORT_PATH" ]; then
-            node -e "const r=JSON.parse(require('fs').readFileSync('$REPORT_PATH','utf8')); const s=`scanned:${r.scannedFiles} flagged:${r.flaggedFiles} severity:${r.severity} strict:${r.strict}`; console.log(s);" > report_summary.txt
+            # Call helper script to safely read the report and print summary
+            node .github/scripts/read-duplicate-yjs-report.js > report_summary.txt
             echo "summary<<EOF" >> $GITHUB_OUTPUT
             cat report_summary.txt >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
