@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTheme } from '../ThemeProvider';
 import { useCommandPalette } from './CommandPaletteProvider';
