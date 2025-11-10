@@ -10,12 +10,10 @@ export const authOptions: NextAuthOptions = {
 
 export async function requireAuth(req: IncomingMessage, res: ServerResponse) {
   try {
-    // Use parameter types from getServerSession to avoid `any` while remaining
-    // compatible with Next.js request/response shapes in different runtimes.
     const session = await getServerSession(
-      req as unknown as Parameters<typeof getServerSession>[0],
-      res as unknown as Parameters<typeof getServerSession>[1],
-      authOptions as unknown as Parameters<typeof getServerSession>[2]
+      req as any,
+      res as any,
+      authOptions as any
     );
     return session;
   } catch {

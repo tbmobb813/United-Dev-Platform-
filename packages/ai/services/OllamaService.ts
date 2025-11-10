@@ -128,6 +128,7 @@ export class OllamaService extends AIService {
       let fullContent = '';
       let lastResponse: OllamaStreamResponse | null = null;
 
+      // eslint-disable-next-line no-undef
       const decoder = new TextDecoder();
 
       try {
