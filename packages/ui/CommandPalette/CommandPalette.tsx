@@ -36,7 +36,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   // Get and search commands
   const allCommands = useMemo(() => getCommands(), [getCommands]);
-  const recentCommands = useMemo(() => getRecentCommands(), [getRecentCommands]);
+  const recentCommands = useMemo(
+    () => getRecentCommands(),
+    [getRecentCommands]
+  );
   const searchResults = useMemo(
     () =>
       query
@@ -290,41 +293,44 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                     {query && groupedResults.length > 1 && (
                       <div style={groupHeaderStyle}>{group.name}</div>
                     )}
-                  {group.commands.map(command => {
-                    const currentIndex = globalIndex++;
-                    const result = searchResults[currentIndex];
-                    const isSelected = currentIndex === selectedIndex;
+                    {group.commands.map(command => {
+                      const currentIndex = globalIndex++;
+                      const result = searchResults[currentIndex];
+                      const isSelected = currentIndex === selectedIndex;
 
-                    return (
-                      <div
-                        key={command.id}
-                        data-index={currentIndex}
-                        style={commandItemStyle(isSelected)}
-                        onClick={() => executeCommand(command.id)}
-                        onMouseEnter={() => setSelectedIndex(currentIndex)}
-                      >
-                        {command.icon && (
-                          <div style={iconStyle}>{command.icon}</div>
-                        )}
-                        <div style={labelContainerStyle}>
-                          <div style={labelStyle}>
-                            {result
-                              ? highlightMatches(command.label, result.matches)
-                              : command.label}
-                          </div>
-                          {command.description && (
-                            <div style={descriptionStyle}>
-                              {command.description}
+                      return (
+                        <div
+                          key={command.id}
+                          data-index={currentIndex}
+                          style={commandItemStyle(isSelected)}
+                          onClick={() => executeCommand(command.id)}
+                          onMouseEnter={() => setSelectedIndex(currentIndex)}
+                        >
+                          {command.icon && (
+                            <div style={iconStyle}>{command.icon}</div>
+                          )}
+                          <div style={labelContainerStyle}>
+                            <div style={labelStyle}>
+                              {result
+                                ? highlightMatches(
+                                    command.label,
+                                    result.matches
+                                  )
+                                : command.label}
                             </div>
+                            {command.description && (
+                              <div style={descriptionStyle}>
+                                {command.description}
+                              </div>
+                            )}
+                          </div>
+                          {command.shortcut && (
+                            <div style={shortcutStyle}>{command.shortcut}</div>
                           )}
                         </div>
-                        {command.shortcut && (
-                          <div style={shortcutStyle}>{command.shortcut}</div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
                 ))}
               </>
             )}

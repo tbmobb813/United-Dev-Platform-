@@ -27,9 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   // Use controlled or internal collapsed state
   const isCollapsed =
-    controlledCollapsed !== undefined
-      ? controlledCollapsed
-      : internalCollapsed;
+    controlledCollapsed !== undefined ? controlledCollapsed : internalCollapsed;
 
   const handleToggleCollapse = () => {
     const newCollapsed = !isCollapsed;
@@ -199,7 +197,9 @@ const SidebarItemComponent: React.FC<{
       : isHovered && !item.disabled
         ? theme.colors.interactive.hover
         : 'transparent',
-    fontWeight: item.active ? theme.fontWeight.semibold : theme.fontWeight.medium,
+    fontWeight: item.active
+      ? theme.fontWeight.semibold
+      : theme.fontWeight.medium,
     fontSize: theme.fontSize.sm,
     opacity: item.disabled ? 0.5 : 1,
     position: 'relative',

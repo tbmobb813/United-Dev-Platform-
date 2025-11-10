@@ -613,17 +613,18 @@ export default function Home() {
     <SidebarLayout
       sidebar={{
         sections: sidebarSections,
-        header: (
-          <div style={{ fontWeight: 600, fontSize: '18px' }}>
-            UDP
-          </div>
-        ),
+        header: <div style={{ fontWeight: 600, fontSize: '18px' }}>UDP</div>,
         footer: (
           <div style={{ fontSize: '14px' }}>
             <div style={{ marginBottom: '8px' }}>
               {userName ? String(userName) : 'Unknown'}
             </div>
-            <Button size='small' variant='ghost' onClick={handleSignOut} fullWidth>
+            <Button
+              size='small'
+              variant='ghost'
+              onClick={handleSignOut}
+              fullWidth
+            >
               Sign out
             </Button>
           </div>
@@ -637,287 +638,291 @@ export default function Home() {
         <h1>Unified Dev Platform (Web)</h1>
 
         <Card title='Document Navigation' style={{ margin: '20px 0' }}>
-        <Stack direction='row' gap='medium' align='center' wrap>
-          <Stack direction='row' gap='small' align='center'>
-            <label>Room:</label>
-            <Input
-              value={roomInput}
-              onChange={setRoomInput}
-              placeholder='Enter room name'
-            />
-          </Stack>
-          <Stack direction='row' gap='small' align='center'>
-            <label>Document:</label>
-            <Input
-              value={docInput}
-              onChange={setDocInput}
-              placeholder='Enter document name'
-            />
-          </Stack>
-          <Button
-            onClick={() => {
-              const newUrl = `/?room=${encodeURIComponent(
-                roomInput
-              )}&doc=${encodeURIComponent(docInput)}`;
-              router.push(newUrl);
-            }}
-          >
-            Switch Document
-          </Button>
-        </Stack>
-        <p style={{ fontSize: '14px', color: '#666', margin: '12px 0 0 0' }}>
-          Current: <strong>{room}</strong> / <strong>{docName}</strong>
-        </p>
-      </Card>
-
-      <h2>
-        Collaborative editor powered by Yjs. Room: {room}, Document: {docName}
-      </h2>
-      {isClient && (
-        <Stack gap='small'>
-          <div
-            style={{
-              border: '1px solid #e1e5e9',
-              borderRadius: '8px',
-              overflow: 'hidden',
-            }}
-          >
-            <style jsx global>{`
-              .monaco-editor .selected-text {
-                background-color: rgba(0, 112, 243, 0.1) !important;
-              }
-              .monaco-editor .selectionHighlight {
-                background-color: rgba(0, 112, 243, 0.15) !important;
-              }
-              .monaco-editor .wordHighlight {
-                background-color: rgba(0, 112, 243, 0.1) !important;
-              }
-              .monaco-editor .wordHighlightStrong {
-                background-color: rgba(0, 112, 243, 0.2) !important;
-              }
-              .monaco-editor .hover-contents {
-                background-color: #ffffff !important;
-                border: 1px solid #e1e5e9 !important;
-                border-radius: 6px !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-              }
-              .monaco-editor .monaco-hover {
-                background-color: #ffffff !important;
-                border: 1px solid #e1e5e9 !important;
-                border-radius: 6px !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-              }
-            `}</style>
-            <MonacoEditor
-              height='40vh'
-              language='markdown'
-              onMount={handleEditorDidMount}
-              theme='vs-light'
-              options={{
-                selectOnLineNumbers: true,
-                roundedSelection: false,
-                readOnly: false,
-                cursorStyle: 'line',
-                automaticLayout: true,
+          <Stack direction='row' gap='medium' align='center' wrap>
+            <Stack direction='row' gap='small' align='center'>
+              <label>Room:</label>
+              <Input
+                value={roomInput}
+                onChange={setRoomInput}
+                placeholder='Enter room name'
+              />
+            </Stack>
+            <Stack direction='row' gap='small' align='center'>
+              <label>Document:</label>
+              <Input
+                value={docInput}
+                onChange={setDocInput}
+                placeholder='Enter document name'
+              />
+            </Stack>
+            <Button
+              onClick={() => {
+                const newUrl = `/?room=${encodeURIComponent(
+                  roomInput
+                )}&doc=${encodeURIComponent(docInput)}`;
+                router.push(newUrl);
               }}
-            />
-          </div>
-          <Card padding='small'>
-            <Stack direction='row' gap='medium' align='center' wrap>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-              >
-                <span style={{ color: '#4caf50' }}>✅</span>
-                <span style={{ fontSize: '12px' }}>AI Assistant</span>
-              </div>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-              >
-                <span style={{ color: '#2196f3' }}>💡</span>
-                <span style={{ fontSize: '12px' }}>Code Completion</span>
-              </div>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-              >
-                <span style={{ color: '#ff9800' }}>🔍</span>
-                <span style={{ fontSize: '12px' }}>Hover Help</span>
-              </div>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-              >
-                <span style={{ color: '#9c27b0' }}>⚡</span>
-                <span style={{ fontSize: '12px' }}>Quick Actions</span>
-              </div>
-              <div
-                style={{ fontSize: '11px', color: '#666', marginLeft: 'auto' }}
-              >
-                💡 Type to trigger suggestions • Select code for AI assistance
-              </div>
-            </Stack>
-          </Card>
-        </Stack>
-      )}
-
-      <h3>Active users:</h3>
-      <ul>
-        {Array.isArray(users) && users.length > 0 ? (
-          users
-            .map((u, index) => {
-              // Ensure all properties exist and are valid
-              if (!u || typeof u !== 'object') {
-                return null;
-              }
-              const id = u.id ? String(u.id) : `user-${index}`;
-              const name = u.name ? String(u.name) : 'Unknown User';
-              const color = u.color ? String(u.color) : '#000000';
-              const cursorInfo = u.cursor
-                ? ` (Line ${u.cursor.line}, Col ${u.cursor.column})`
-                : '';
-
-              return (
-                <li key={`${id}-${index}`} style={{ color: color }}>
-                  {name}
-                  {cursorInfo}
-                </li>
-              );
-            })
-            .filter(Boolean)
-        ) : (
-          <li>No active users</li>
-        )}
-      </ul>
-
-      <h2>Mobile Handoff</h2>
-      <p>Scan with your mobile device to join this collaboration session:</p>
-      {isClient && deeplink ? (
-        <Stack gap='medium' align='center'>
-          <Card padding='medium' style={{ textAlign: 'center' }}>
-            <Stack gap='small' align='center'>
-              <QRCodeAny value={webUrl} size={180} />
-              <div style={{ fontSize: '12px', color: '#666' }}>
-                📱 Scan to open in mobile browser
-              </div>
-            </Stack>
-          </Card>
-
-          <Stack direction='row' gap='small' wrap>
-            <Button
-              variant='outline'
-              size='small'
-              onClick={() => navigator.clipboard.writeText(webUrl)}
             >
-              📋 Copy Web Link
-            </Button>
-            <Button
-              variant='outline'
-              size='small'
-              onClick={() => navigator.clipboard.writeText(deeplink)}
-            >
-              📱 Copy App Link
+              Switch Document
             </Button>
           </Stack>
+          <p style={{ fontSize: '14px', color: '#666', margin: '12px 0 0 0' }}>
+            Current: <strong>{room}</strong> / <strong>{docName}</strong>
+          </p>
+        </Card>
 
-          <Card
-            title='Connection Details'
-            padding='medium'
-            style={{ maxWidth: '400px' }}
-          >
-            <Stack gap='small'>
-              <div>
-                <strong>Room:</strong> {room}
-              </div>
-              <div>
-                <strong>Document:</strong> {docName}
-              </div>
-              <div
-                style={{ fontSize: '10px', color: '#666', marginTop: '8px' }}
+        <h2>
+          Collaborative editor powered by Yjs. Room: {room}, Document: {docName}
+        </h2>
+        {isClient && (
+          <Stack gap='small'>
+            <div
+              style={{
+                border: '1px solid #e1e5e9',
+                borderRadius: '8px',
+                overflow: 'hidden',
+              }}
+            >
+              <style jsx global>{`
+                .monaco-editor .selected-text {
+                  background-color: rgba(0, 112, 243, 0.1) !important;
+                }
+                .monaco-editor .selectionHighlight {
+                  background-color: rgba(0, 112, 243, 0.15) !important;
+                }
+                .monaco-editor .wordHighlight {
+                  background-color: rgba(0, 112, 243, 0.1) !important;
+                }
+                .monaco-editor .wordHighlightStrong {
+                  background-color: rgba(0, 112, 243, 0.2) !important;
+                }
+                .monaco-editor .hover-contents {
+                  background-color: #ffffff !important;
+                  border: 1px solid #e1e5e9 !important;
+                  border-radius: 6px !important;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+                }
+                .monaco-editor .monaco-hover {
+                  background-color: #ffffff !important;
+                  border: 1px solid #e1e5e9 !important;
+                  border-radius: 6px !important;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+                }
+              `}</style>
+              <MonacoEditor
+                height='40vh'
+                language='markdown'
+                onMount={handleEditorDidMount}
+                theme='vs-light'
+                options={{
+                  selectOnLineNumbers: true,
+                  roundedSelection: false,
+                  readOnly: false,
+                  cursorStyle: 'line',
+                  automaticLayout: true,
+                }}
+              />
+            </div>
+            <Card padding='small'>
+              <Stack direction='row' gap='medium' align='center' wrap>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <span style={{ color: '#4caf50' }}>✅</span>
+                  <span style={{ fontSize: '12px' }}>AI Assistant</span>
+                </div>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <span style={{ color: '#2196f3' }}>💡</span>
+                  <span style={{ fontSize: '12px' }}>Code Completion</span>
+                </div>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <span style={{ color: '#ff9800' }}>🔍</span>
+                  <span style={{ fontSize: '12px' }}>Hover Help</span>
+                </div>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <span style={{ color: '#9c27b0' }}>⚡</span>
+                  <span style={{ fontSize: '12px' }}>Quick Actions</span>
+                </div>
+                <div
+                  style={{
+                    fontSize: '11px',
+                    color: '#666',
+                    marginLeft: 'auto',
+                  }}
+                >
+                  💡 Type to trigger suggestions • Select code for AI assistance
+                </div>
+              </Stack>
+            </Card>
+          </Stack>
+        )}
+
+        <h3>Active users:</h3>
+        <ul>
+          {Array.isArray(users) && users.length > 0 ? (
+            users
+              .map((u, index) => {
+                // Ensure all properties exist and are valid
+                if (!u || typeof u !== 'object') {
+                  return null;
+                }
+                const id = u.id ? String(u.id) : `user-${index}`;
+                const name = u.name ? String(u.name) : 'Unknown User';
+                const color = u.color ? String(u.color) : '#000000';
+                const cursorInfo = u.cursor
+                  ? ` (Line ${u.cursor.line}, Col ${u.cursor.column})`
+                  : '';
+
+                return (
+                  <li key={`${id}-${index}`} style={{ color: color }}>
+                    {name}
+                    {cursorInfo}
+                  </li>
+                );
+              })
+              .filter(Boolean)
+          ) : (
+            <li>No active users</li>
+          )}
+        </ul>
+
+        <h2>Mobile Handoff</h2>
+        <p>Scan with your mobile device to join this collaboration session:</p>
+        {isClient && deeplink ? (
+          <Stack gap='medium' align='center'>
+            <Card padding='medium' style={{ textAlign: 'center' }}>
+              <Stack gap='small' align='center'>
+                <QRCodeAny value={webUrl} size={180} />
+                <div style={{ fontSize: '12px', color: '#666' }}>
+                  📱 Scan to open in mobile browser
+                </div>
+              </Stack>
+            </Card>
+
+            <Stack direction='row' gap='small' wrap>
+              <Button
+                variant='outline'
+                size='small'
+                onClick={() => navigator.clipboard.writeText(webUrl)}
               >
-                💡 Mobile app link will work when the UDP mobile app is
-                installed
-              </div>
+                📋 Copy Web Link
+              </Button>
+              <Button
+                variant='outline'
+                size='small'
+                onClick={() => navigator.clipboard.writeText(deeplink)}
+              >
+                📱 Copy App Link
+              </Button>
             </Stack>
-          </Card>
+
+            <Card
+              title='Connection Details'
+              padding='medium'
+              style={{ maxWidth: '400px' }}
+            >
+              <Stack gap='small'>
+                <div>
+                  <strong>Room:</strong> {room}
+                </div>
+                <div>
+                  <strong>Document:</strong> {docName}
+                </div>
+                <div
+                  style={{ fontSize: '10px', color: '#666', marginTop: '8px' }}
+                >
+                  💡 Mobile app link will work when the UDP mobile app is
+                  installed
+                </div>
+              </Stack>
+            </Card>
+          </Stack>
+        ) : (
+          <Loading text='Loading QR code and deep link...' />
+        )}
+
+        <Stack
+          direction='row'
+          gap='small'
+          align='center'
+          style={{ marginTop: '16px' }}
+        >
+          <label>File path:</label>
+          <Input
+            value={file}
+            onChange={setFile}
+            placeholder='/README.md'
+            style={{ minWidth: '200px' }}
+          />
         </Stack>
-      ) : (
-        <Loading text='Loading QR code and deep link...' />
-      )}
 
-      <Stack
-        direction='row'
-        gap='small'
-        align='center'
-        style={{ marginTop: '16px' }}
-      >
-        <label>File path:</label>
-        <Input
-          value={file}
-          onChange={setFile}
-          placeholder='/README.md'
-          style={{ minWidth: '200px' }}
-        />
-      </Stack>
-
-      {/* AI Assistant Modal */}
-      <AIAssistant
-        isOpen={isAIOpen}
-        onClose={() => {
-          setIsAIOpen(false);
-          setAiInitialPrompt(undefined);
-          setAiInitialIntent('chat');
-        }}
-        currentFile={file}
-        selectedCode={selectedCode}
-        aiManager={aiManager ?? undefined}
-        initialPrompt={aiInitialPrompt}
-        initialIntent={aiInitialIntent}
-        onCodeInsert={(code: string) => {
-          // Insert code at cursor position in editor
-          if (editorRef.current && typeof window !== 'undefined') {
-            const editor = editorRef.current;
-            const position = editor.getPosition();
-            if (position) {
-              // Import monaco dynamically to access the Range class
-              import('monaco-editor').then(monaco => {
-                editor.executeEdits('ai-assistant', [
-                  {
-                    range: new monaco.Range(
-                      position.lineNumber,
-                      position.column,
-                      position.lineNumber,
-                      position.column
-                    ),
-                    text: code,
-                  },
-                ]);
-                editor.focus();
-              });
+        {/* AI Assistant Modal */}
+        <AIAssistant
+          isOpen={isAIOpen}
+          onClose={() => {
+            setIsAIOpen(false);
+            setAiInitialPrompt(undefined);
+            setAiInitialIntent('chat');
+          }}
+          currentFile={file}
+          selectedCode={selectedCode}
+          aiManager={aiManager ?? undefined}
+          initialPrompt={aiInitialPrompt}
+          initialIntent={aiInitialIntent}
+          onCodeInsert={(code: string) => {
+            // Insert code at cursor position in editor
+            if (editorRef.current && typeof window !== 'undefined') {
+              const editor = editorRef.current;
+              const position = editor.getPosition();
+              if (position) {
+                // Import monaco dynamically to access the Range class
+                import('monaco-editor').then(monaco => {
+                  editor.executeEdits('ai-assistant', [
+                    {
+                      range: new monaco.Range(
+                        position.lineNumber,
+                        position.column,
+                        position.lineNumber,
+                        position.column
+                      ),
+                      text: code,
+                    },
+                  ]);
+                  editor.focus();
+                });
+              }
             }
-          }
-        }}
-      />
+          }}
+        />
 
-      {/* File Manager Modal */}
-      <FileManager
-        isOpen={isFileManagerOpen}
-        onClose={() => setIsFileManagerOpen(false)}
-        mode={fileManagerMode}
-        currentFile={file}
-        onFileSelect={handleFileSelect}
-        onFileSave={handleFileSave}
-        onFileCreate={handleFileCreate}
-      />
+        {/* File Manager Modal */}
+        <FileManager
+          isOpen={isFileManagerOpen}
+          onClose={() => setIsFileManagerOpen(false)}
+          mode={fileManagerMode}
+          currentFile={file}
+          onFileSelect={handleFileSelect}
+          onFileSave={handleFileSave}
+          onFileCreate={handleFileCreate}
+        />
 
-      {/* Shortcuts Help Modal */}
-      <ShortcutsHelp
-        isOpen={isShortcutsHelpOpen}
-        onClose={() => setIsShortcutsHelpOpen(false)}
-      />
+        {/* Shortcuts Help Modal */}
+        <ShortcutsHelp
+          isOpen={isShortcutsHelpOpen}
+          onClose={() => setIsShortcutsHelpOpen(false)}
+        />
 
-      {/* Settings Modal */}
-      <Settings
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
+        {/* Settings Modal */}
+        <Settings
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
 
         {/* Collaboration Panel */}
         <div

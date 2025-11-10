@@ -14,7 +14,13 @@ interface UseAppCommandsOptions {
   onCreateFile?: () => void;
   onOpenAI?: (
     initialPrompt?: string,
-    initialIntent?: 'chat' | 'explain' | 'generate' | 'debug' | 'optimize' | 'test'
+    initialIntent?:
+      | 'chat'
+      | 'explain'
+      | 'generate'
+      | 'debug'
+      | 'optimize'
+      | 'test'
   ) => void;
   onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;

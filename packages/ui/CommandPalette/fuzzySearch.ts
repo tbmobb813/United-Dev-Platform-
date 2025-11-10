@@ -68,7 +68,11 @@ export function fuzzyMatch(
       }
 
       // Bonus for camelCase matching
-      if (i > 0 && text[i - 1] === text[i - 1].toLowerCase() && text[i] === text[i].toUpperCase()) {
+      if (
+        i > 0 &&
+        text[i - 1] === text[i - 1].toLowerCase() &&
+        text[i] === text[i].toUpperCase()
+      ) {
         score += 15;
       }
 
