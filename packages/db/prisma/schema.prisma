@@ -1,0 +1,199 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js Models
+// https://next-auth.js.org/adapters/prisma
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  username      String?   @unique
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  avatar        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts              Account[]
+  sessions              Session[]
+  projectMemberships    ProjectMember[]
+  ownedProjects         Project[]                @relation("ProjectOwner")
+  files                 File[]
+  collaborativeSessions CollaborativeSession[]
+  presence              UserPresence[]
+
+  @@index([email])
+  @@index([username])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Application Models
+
+enum ProjectVisibility {
+  PUBLIC
+  PRIVATE
+  TEAM
+}
+
+enum ProjectRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+model Project {
+  id            String            @id @default(cuid())
+  name          String
+  description   String?
+  visibility    ProjectVisibility @default(PRIVATE)
+  repositoryUrl String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  ownerId       String
+
+  owner                 User                   @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members               ProjectMember[]
+  files                 File[]
+  collaborativeSessions CollaborativeSession[]
+
+  @@index([ownerId])
+  @@index([createdAt])
+  @@index([visibility])
+}
+
+model ProjectMember {
+  id        String      @id @default(cuid())
+  projectId String
+  userId    String
+  role      ProjectRole @default(MEMBER)
+  joinedAt  DateTime    @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+}
+
+model File {
+  id          String   @id @default(cuid())
+  name        String
+  path        String
+  content     String   @db.Text
+  language    String?
+  size        Int      @default(0)
+  projectId   String
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  versions    FileVersion[]
+
+  @@unique([projectId, path])
+  @@index([projectId])
+  @@index([createdById])
+}
+
+model FileVersion {
+  id        String   @id @default(cuid())
+  fileId    String
+  content   String   @db.Text
+  version   Int
+  createdAt DateTime @default(now())
+
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@unique([fileId, version])
+  @@index([fileId])
+  @@index([createdAt])
+}
+
+model CollaborativeSession {
+  id          String   @id @default(cuid())
+  roomId      String   @unique
+  projectId   String?
+  name        String
+  isActive    Boolean  @default(true)
+  yjsState    Bytes?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  expiresAt   DateTime?
+
+  project     Project?       @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  participants User[]
+  presence    UserPresence[]
+
+  @@index([roomId])
+  @@index([projectId])
+  @@index([isActive])
+}
+
+model UserPresence {
+  id        String   @id @default(cuid())
+  userId    String
+  sessionId String
+  cursor    Json?
+  selection Json?
+  isActive  Boolean  @default(true)
+  lastSeen  DateTime @default(now())
+
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session   CollaborativeSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, sessionId])
+  @@index([sessionId])
+  @@index([userId])
+  @@index([lastSeen])
+}

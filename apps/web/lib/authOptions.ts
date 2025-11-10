@@ -1,24 +1,25 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import * as PrismaPkg from '@prisma/client';
 import type { NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
-
-// Resolve PrismaClient constructor robustly to handle variations in how the
-// generated client is exported across environments.
-const PrismaClientCtor: any =
-  (PrismaPkg as any).PrismaClient ??
-  (PrismaPkg as any).default ??
-  (PrismaPkg as any);
-const prisma: any = new PrismaClientCtor();
+import GoogleProvider from 'next-auth/providers/google';
+import { prisma } from '@udp/db';
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as any,
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      clientId: process.env.GITHUB_CLIENT_ID || '',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     }),
   ],
+  pages: {
+    signIn: '/auth/signin',
+    error: '/auth/error',
+  },
   session: {
     strategy: 'database',
   },
