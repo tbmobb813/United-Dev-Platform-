@@ -7,20 +7,10 @@
     "outDir": "./dist",
     "noUnusedParameters": false,
     "paths": {
-      "@udp/ui": [
-        "../ui/index.ts"
-      ],
-      "@udp/logger": [
-        "../logger/index.ts"
-      ]
+      "@udp/ui": ["../ui/index.ts"],
+      "@udp/logger": ["../logger/index.ts"]
     }
   },
-  "include": [
-    "index.ts",
-    "AIAssistant.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["index.ts", "AIAssistant.tsx"],
+  "exclude": ["node_modules", "dist"]
 }

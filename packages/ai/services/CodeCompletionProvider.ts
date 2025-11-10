@@ -19,13 +19,13 @@ export interface CodeSuggestion {
   text: string;
   description?: string;
   type:
-  | 'completion'
-  | 'snippet'
-  | 'function'
-  | 'variable'
-  | 'class'
-  | 'interface'
-  | 'property';
+    | 'completion'
+    | 'snippet'
+    | 'function'
+    | 'variable'
+    | 'class'
+    | 'interface'
+    | 'property';
   priority: number;
   insertText: string;
   range?: {

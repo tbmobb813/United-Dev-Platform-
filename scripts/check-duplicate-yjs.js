@@ -171,7 +171,7 @@ async function mapMatchesToSources(matches) {
     let inlineSourceMap = null;
     if (!mapPath) {
       const singleLineMatch = content.match(
-        /(?:\/\/|\/\*)\#?\s*sourceMappingURL=([^\n\r\*]+)/i
+        /(?:\/\/|\/\*)#?\s*sourceMappingURL=([^\n\r\*]+)/i
       );
       if (singleLineMatch && singleLineMatch[1]) {
         const raw = singleLineMatch[1].trim();

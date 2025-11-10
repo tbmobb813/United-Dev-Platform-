@@ -21,8 +21,14 @@ try {
   }
   const raw = fs.readFileSync(p, 'utf8');
   const r = JSON.parse(raw || '{}');
-  const scanned = r.scannedFiles !== null && r.scannedFiles !== undefined ? r.scannedFiles : '0';
-  const flagged = r.flaggedFiles !== null && r.flaggedFiles !== undefined ? r.flaggedFiles : '0';
+  const scanned =
+    r.scannedFiles !== null && r.scannedFiles !== undefined
+      ? r.scannedFiles
+      : '0';
+  const flagged =
+    r.flaggedFiles !== null && r.flaggedFiles !== undefined
+      ? r.flaggedFiles
+      : '0';
   const severity = r.severity || 'unknown';
   const strict = !!r.strict;
   const s = `scanned:${scanned} flagged:${flagged} severity:${severity} strict:${strict}`;
@@ -31,6 +37,9 @@ try {
   // Fail gracefully - print a simple message for the workflow
   console.log('no report generated');
   // Also log to stderr for debugging
-  console.error('error reading report:', err && err.stack ? err.stack : String(err));
+  console.error(
+    'error reading report:',
+    err && err.stack ? err.stack : String(err)
+  );
   process.exit(0);
 }

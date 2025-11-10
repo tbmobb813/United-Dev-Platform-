@@ -152,8 +152,8 @@ const config = [
         it: 'readonly',
         expect: 'readonly',
         test: 'readonly',
-      }
-    }
+      },
+    },
   },
   // Filesystem package tests - add browser environment
   {
@@ -170,8 +170,8 @@ const config = [
         Blob: 'readonly',
         TextEncoder: 'readonly',
         TextDecoder: 'readonly',
-      }
-    }
+      },
+    },
   },
 ];
 

@@ -26,12 +26,12 @@ jobs:
       - name: Setup pnpm (action)
         uses: pnpm/action-setup@v2
         with:
-          version: "latest"
+          version: 'latest'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: "Diagnostic: Prisma versions & resolved paths"
+      - name: 'Diagnostic: Prisma versions & resolved paths'
         run: node .github/scripts/prisma-diagnostic.js
 
       - name: Run lint
