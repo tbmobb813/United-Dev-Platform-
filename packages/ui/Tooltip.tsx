@@ -241,7 +241,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
     }
 
     // Ensure a cleanup function is always returned for consistent return type
-    return () => {};
+    return () => { };
   }, [isVisible, placement]);
 
   useEffect(() => {
@@ -357,9 +357,8 @@ export const withTooltip = <P extends object>(
     );
   };
 
-  WithTooltipComponent.displayName = `withTooltip(${
-    WrappedComponent.displayName || WrappedComponent.name
-  })`;
+  WithTooltipComponent.displayName = `withTooltip(${WrappedComponent.displayName || WrappedComponent.name
+    })`;
 
   return WithTooltipComponent;
 };
