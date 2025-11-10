@@ -6,7 +6,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   transform: {
     // Ensure ts-jest compiles TypeScript and uses ESM
-    '^.+\.[tj]sx?$': ['ts-jest', { useESM: true, isolatedModules: true }],
+    '^.+\\.[tj]sx?$': ['ts-jest', { useESM: true }],
   },
   // Ignore common build folders and the repository-level jest.setup.ts under __tests__
   testPathIgnorePatterns: [
@@ -27,11 +27,7 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)',
   ],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
+  // ts-jest options provided inline in `transform` to avoid deprecated globals usage.
   // Prefer the CommonJS mock for y-websocket in environments that execute
   // Jest in CJS mode (some core runs use the core config which extends this
   // base). This prevents parsing `export` from upstream ESM mocks and avoids
