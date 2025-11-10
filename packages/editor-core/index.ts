@@ -1,6 +1,6 @@
 import { Awareness } from 'y-protocols/awareness';
 import { WebsocketProvider } from 'y-websocket';
-import * as Y from 'yjs';
+import * as Y from './yjs-singleton';
 
 // User presence interface
 export interface UserPresence {
@@ -137,3 +137,7 @@ export class DocumentManager {
 
 // Export modules
 export * from './awareness';
+
+// Export Yjs singleton to ensure all consumers use the same instance
+export { default as Y } from './yjs-singleton';
+export * from './yjs-singleton';

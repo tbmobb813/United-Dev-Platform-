@@ -11,7 +11,7 @@ import {
 // We avoid top-level await so this test file can run under either CJS or
 // ESM Jest runtimes. Register the ESM mock and load the runtime module inside
 // a beforeAll lifecycle hook where async/await is permitted.
-import type { DocumentManager as DocumentManagerType } from '../../DocumentManager';
+import type { DocumentManager as DocumentManagerType } from '../../index';
 import type { UserPresence } from '../../types';
 let DocumentManager: any;
 

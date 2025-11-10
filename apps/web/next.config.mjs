@@ -1,10 +1,16 @@
 // Clean, canonical Next.js configuration tuned to avoid duplicate-Yjs bundling
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
 const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const yjsEsm = (() => {
   try {
-    return require.resolve('yjs');
+    // Use the singleton shim instead of direct yjs resolution
+    return join(__dirname, 'src', 'shims', 'yjs-shim.cjs');
   } catch (e) {
     return undefined;
   }
@@ -36,6 +42,8 @@ const nextConfig = {
         yjs: yjsEsm,
         'yjs/dist/yjs.mjs': yjsEsm,
         'yjs/dist/yjs.cjs': yjsEsm,
+        // Also alias the singleton path to ensure consistency
+        '@udp/editor-core/yjs-singleton': yjsEsm,
       };
     }
 
@@ -62,6 +70,15 @@ const nextConfig = {
     config.optimization = config.optimization || {};
     config.optimization.splitChunks = config.optimization.splitChunks || {};
     config.optimization.splitChunks.cacheGroups = config.optimization.splitChunks.cacheGroups || {};
+
+    // Force all Yjs-related modules into a single chunk
+    config.optimization.splitChunks.cacheGroups.yjs = {
+      test: /[\\/]node_modules[\\/](yjs|y-protocols|y-websocket|y-indexeddb)[\\/]/,
+      name: 'yjs-vendor',
+      priority: 100,
+      reuseExistingChunk: true,
+      enforce: true,
+    };
 
     // If webpack is available, register replacement plugins
     if (webpackPkg && typeof webpackPkg.NormalModuleReplacementPlugin === 'function') {

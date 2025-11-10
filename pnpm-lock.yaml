@@ -419,9 +419,6 @@ importers:
       y-indexeddb:
         specifier: ^9.0.12
         version: 9.0.12(yjs@13.6.27)
-      yjs:
-        specifier: 13.6.27
-        version: 13.6.27
     devDependencies:
       '@types/jest':
         specifier: ^29.5.13
@@ -453,6 +450,9 @@ importers:
       y-websocket:
         specifier: 1.5.4
         version: 1.5.4(yjs@13.6.27)
+      yjs:
+        specifier: 13.6.27
+        version: 13.6.27
 
   packages/eslint-config:
     dependencies:
@@ -1642,7 +1642,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.18.31':
     resolution: {integrity: sha512-v9llw9fT3Uv+TCM6Xllo54t672CuYtinEQZ2LPJ2EJsCwuTc4Cd2gXQaouuIVD21VoeGQnr5JtJuWbF97sBKzQ==}
