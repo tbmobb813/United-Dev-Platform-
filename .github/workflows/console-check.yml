@@ -16,7 +16,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "20"
-          cache: "pnpm"
 
       - name: Setup pnpm via action (best-effort)
         uses: pnpm/action-setup@v2
