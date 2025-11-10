@@ -383,16 +383,21 @@ export const Toast: React.FC<ToastProps> = ({
   const [isVisible, setIsVisible] = React.useState(show);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
     if (show && duration > 0) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setIsVisible(false);
         if (onClose) {
           setTimeout(onClose, 300);
         }
       }, duration);
-
-      return () => clearTimeout(timer);
     }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [show, duration, onClose]);
 
   if (!isVisible) {

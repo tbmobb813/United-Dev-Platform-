@@ -21,10 +21,12 @@ export interface CollaborationPanelProps {
 export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
   users,
   currentUserId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  autoCollapseDelay = 30000, // 30 seconds - unused but kept for API compatibility
+  autoCollapseDelay = 30000, // 30 seconds - kept for API compatibility
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
+
+  // Mark as used to preserve API compatibility and avoid unused variable errors
+  void autoCollapseDelay;
 
   const toggleMinimized = () => {
     setIsMinimized(!isMinimized);

@@ -250,9 +250,8 @@ export class ContextAwareAssistant {
     bestPractices: string[];
   }> {
     const prompt = `
-Context: ${this.codebaseContext?.projectType || 'General'} project in ${
-      context.language
-    }
+Context: ${this.codebaseContext?.projectType || 'General'} project in ${context.language
+      }
 ${context.fileName ? `File: ${context.fileName}` : ''}
 
 Current Code:
@@ -298,11 +297,10 @@ Return JSON format with suggestions array and explanation.`;
 - Type: ${this.codebaseContext.projectType || 'Unknown'}
 - Language: ${this.codebaseContext.language}
 - Framework: ${this.codebaseContext.framework || 'None specified'}
-${
-  this.codebaseContext.dependencies
-    ? `- Dependencies: ${this.codebaseContext.dependencies.join(', ')}\n`
-    : ''
-}
+${this.codebaseContext.dependencies
+          ? `- Dependencies: ${this.codebaseContext.dependencies.join(', ')}\n`
+          : ''
+        }
 `;
     }
 
@@ -380,16 +378,15 @@ ${this.codebaseContext.dependencies?.join('\n') || 'None specified'}
 File Structure:
 ${this.formatFileStructure(this.codebaseContext.fileStructure || [])}
 
-${
-  this.codebaseContext.codePatterns
-    ? `
+${this.codebaseContext.codePatterns
+        ? `
 Code Patterns:
 ${this.codebaseContext.codePatterns
-  .map(p => `- ${p.pattern}: ${p.description} (used ${p.frequency} times)`)
-  .join('\n')}
+          .map(p => `- ${p.pattern}: ${p.description} (used ${p.frequency} times)`)
+          .join('\n')}
 `
-    : ''
-}
+        : ''
+      }
 
 Provide comprehensive analysis including:
 1. Architecture overview
@@ -624,9 +621,8 @@ Format as JSON:
   private formatFileStructure(files: FileNode[]): string {
     const formatNode = (node: FileNode, depth = 0): string => {
       const indent = '  '.repeat(depth);
-      let result = `${indent}${node.name}${
-        node.type === 'directory' ? '/' : ''
-      }\n`;
+      let result = `${indent}${node.name}${node.type === 'directory' ? '/' : ''
+        }\n`;
 
       if (node.children) {
         result += node.children
@@ -649,17 +645,15 @@ Format as JSON:
 Project Context Summary:
 - Language: ${this.codebaseContext.language}
 - Framework: ${this.codebaseContext.framework || 'None'}
-- Dependencies: ${
-      this.codebaseContext.dependencies?.slice(0, 5).join(', ') || 'None'
-    }
-${
-  this.codebaseContext.codePatterns
-    ? `- Common patterns: ${this.codebaseContext.codePatterns
-        .slice(0, 3)
-        .map(p => p.pattern)
-        .join(', ')}`
-    : ''
-}`;
+- Dependencies: ${this.codebaseContext.dependencies?.slice(0, 5).join(', ') || 'None'
+      }
+${this.codebaseContext.codePatterns
+        ? `- Common patterns: ${this.codebaseContext.codePatterns
+          .slice(0, 3)
+          .map(p => p.pattern)
+          .join(', ')}`
+        : ''
+      }`;
   }
 
   private generateCacheKey(query: ContextualQuery): string {

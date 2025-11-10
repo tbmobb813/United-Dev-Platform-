@@ -18,18 +18,18 @@ export type TooltipPlacement =
 export interface TooltipProps {
   children: React.ReactNode;
   content: React.ReactNode;
-  placement?: TooltipPlacement;
-  trigger?: 'hover' | 'click' | 'focus' | 'manual';
-  visible?: boolean;
-  onVisibleChange?: (visible: boolean) => void;
-  delay?: number;
-  hideDelay?: number;
-  disabled?: boolean;
-  className?: string;
-  overlayClassName?: string;
-  maxWidth?: number;
-  arrow?: boolean;
-  offset?: number;
+  placement?: TooltipPlacement | undefined;
+  trigger?: ('hover' | 'click' | 'focus' | 'manual') | undefined;
+  visible?: boolean | undefined;
+  onVisibleChange?: ((visible: boolean) => void) | undefined;
+  delay?: number | undefined;
+  hideDelay?: number | undefined;
+  disabled?: boolean | undefined;
+  className?: string | undefined;
+  overlayClassName?: string | undefined;
+  maxWidth?: number | undefined;
+  arrow?: boolean | undefined;
+  offset?: number | undefined;
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({
@@ -239,6 +239,9 @@ export const Tooltip: React.FC<TooltipProps> = ({
         window.removeEventListener('scroll', handleScroll, true);
       };
     }
+
+    // Ensure a cleanup function is always returned for consistent return type
+    return () => {};
   }, [isVisible, placement]);
 
   useEffect(() => {

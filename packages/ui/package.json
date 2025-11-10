@@ -14,6 +14,9 @@
     "react": "^18.3.1",
     "yjs": "^13.6.27"
   },
+  "dependencies": {
+    "@udp/logger": "workspace:*"
+  },
   "devDependencies": {
     "@types/react": "18.2.79",
     "@udp/eslint-config": "workspace:*",
