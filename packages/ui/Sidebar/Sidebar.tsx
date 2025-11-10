@@ -64,11 +64,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
     borderRight: `1px solid ${theme.colors.border.default}`,
     display: 'flex',
     flexDirection: 'column',
-    transition: theme.transitions.normal,
+    transition: theme.transitions.base,
     position: 'fixed',
     left: 0,
     top: 0,
-    zIndex: theme.zIndex.header,
+    zIndex: theme.zIndex.fixed,
     overflowX: 'hidden',
     overflowY: 'auto',
   };
@@ -225,7 +225,7 @@ const SidebarItemComponent: React.FC<{
   };
 
   const badgeStyle: React.CSSProperties = {
-    backgroundColor: theme.colors.semantic.danger,
+    backgroundColor: theme.colors.danger[500],
     color: 'white',
     fontSize: theme.fontSize.xs,
     fontWeight: theme.fontWeight.bold,

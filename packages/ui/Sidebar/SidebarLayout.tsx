@@ -61,7 +61,7 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
       ? `${sidebarCollapsedWidth}px`
       : `${sidebarWidth}px`,
     minHeight: '100vh',
-    transition: theme.transitions.normal,
+    transition: theme.transitions.base,
     backgroundColor: theme.colors.surface.base,
   };
 
