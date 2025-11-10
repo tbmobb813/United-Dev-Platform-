@@ -9,10 +9,6 @@ jobs:
   noop:
     runs-on: ubuntu-latest
     steps:
-<<<<<<< HEAD
-      - name: no-op
-        run: echo "auto-fix workflow disabled for local testing"
-=======
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -85,4 +81,3 @@ jobs:
       - name: No changes
         if: steps.changes.outputs.changed == 'false'
         run: echo "No auto-fix changes detected; nothing to commit."
->>>>>>> 9a35808 (ci(auto-fix): ensure branch pushed with upstream and push token usage)
