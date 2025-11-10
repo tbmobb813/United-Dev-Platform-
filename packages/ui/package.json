@@ -20,8 +20,8 @@
     "@udp/prettier-config": "workspace:*",
     "@types/jest": "^29.5.13",
     "eslint": "^9.39.0",
-    "jest": "^29.7.0",
-    "prettier": "^3.2.5",
+  "jest": "^29.7.0",
+  "prettier": "workspace:*",
     "ts-jest": "^29.2.5",
     "typescript": "^5.9.3"
   },
