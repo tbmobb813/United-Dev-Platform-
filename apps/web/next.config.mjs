@@ -42,8 +42,7 @@ const nextConfig = {
         yjs: yjsEsm,
         'yjs/dist/yjs.mjs': yjsEsm,
         'yjs/dist/yjs.cjs': yjsEsm,
-        // Also alias the singleton path to ensure consistency
-        '@udp/editor-core/yjs-singleton': yjsEsm,
+        // DO NOT alias the singleton - it must remain separate to provide single Yjs instance
       };
     }
 
