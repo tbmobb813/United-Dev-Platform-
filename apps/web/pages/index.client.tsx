@@ -245,8 +245,7 @@ export default function Home() {
               // Keep the log short
               // eslint-disable-next-line no-console
               console.log(
-                `[udp][yjs] doc ${docId} update (origin=${origin ? 'origin' : 'remote'}) size=${
-                  (update && (update.byteLength || (update as any).length)) || 'unknown'
+                `[udp][yjs] doc ${docId} update (origin=${origin ? 'origin' : 'remote'}) size=${(update && (update.byteLength || (update as any).length)) || 'unknown'
                 }`
               );
             }
