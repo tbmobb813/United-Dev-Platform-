@@ -93,6 +93,27 @@ const config = [
       curly: ['error', 'all'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
+
+      // Prevent direct yjs imports - use singleton pattern
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['yjs', 'yjs/*'],
+              message:
+                'Direct yjs imports are not allowed. Import from @udp/editor-core/yjs-singleton instead to prevent "Yjs already imported" warnings.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow direct yjs import only in the singleton module and type definitions
+  {
+    files: ['**/yjs-singleton.ts', '**/yjs-singleton.js', '**/*.d.ts'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   },
   // Allow console in CLI scripts and in the logger browser entrypoint which
