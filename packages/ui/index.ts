@@ -1,3 +1,10 @@
+// Theme System
+export * from './theme';
+export * from './ThemeProvider';
+export * from './styled';
+export * from './hooks/useMediaQuery';
+
+// Components
 export * from './Button';
 export * from './Card';
 export * from './CollaborationPanel';
@@ -11,7 +18,7 @@ export * from './ShortcutsHelp';
 export * from './useKeyboardShortcuts';
 export * from './UserAvatar';
 
-// New components
+// Advanced Components
 export * from './Breadcrumb';
 export * from './DataTable';
 export * from './FormValidation';
