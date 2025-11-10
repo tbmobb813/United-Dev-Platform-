@@ -12,11 +12,15 @@ interface UseAppCommandsOptions {
   onOpenFile?: () => void;
   onSaveFile?: () => void;
   onCreateFile?: () => void;
-  onOpenAI?: () => void;
+  onOpenAI?: (
+    initialPrompt?: string,
+    initialIntent?: 'chat' | 'explain' | 'generate' | 'debug' | 'optimize' | 'test'
+  ) => void;
   onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;
   onToggleTheme?: () => void;
   onSignOut?: () => void;
+  selectedCode?: string;
 }
 
 /**
@@ -85,9 +89,14 @@ export function useAppCommands(options: UseAppCommandsOptions): Command[] {
         icon: '💡',
         category: 'AI',
         keywords: ['explain', 'ai', 'understand', 'documentation'],
+        disabled: !options.selectedCode,
         action: () => {
-          options.onOpenAI?.();
-          // TODO: Pre-fill with "Explain this code" prompt
+          if (options.selectedCode) {
+            options.onOpenAI?.(
+              `Explain this code:\n\n${options.selectedCode}`,
+              'explain'
+            );
+          }
         },
       },
       {
@@ -97,9 +106,14 @@ export function useAppCommands(options: UseAppCommandsOptions): Command[] {
         icon: '✨',
         category: 'AI',
         keywords: ['refactor', 'improve', 'ai', 'clean'],
+        disabled: !options.selectedCode,
         action: () => {
-          options.onOpenAI?.();
-          // TODO: Pre-fill with "Refactor this code" prompt
+          if (options.selectedCode) {
+            options.onOpenAI?.(
+              `Refactor and improve this code:\n\n${options.selectedCode}`,
+              'optimize'
+            );
+          }
         },
       },
       {
@@ -109,9 +123,48 @@ export function useAppCommands(options: UseAppCommandsOptions): Command[] {
         icon: '🐛',
         category: 'AI',
         keywords: ['fix', 'bug', 'debug', 'ai', 'error'],
+        disabled: !options.selectedCode,
         action: () => {
-          options.onOpenAI?.();
-          // TODO: Pre-fill with "Help me fix this bug" prompt
+          if (options.selectedCode) {
+            options.onOpenAI?.(
+              `Debug and fix issues in this code:\n\n${options.selectedCode}`,
+              'debug'
+            );
+          }
+        },
+      },
+      {
+        id: 'ai.test',
+        label: 'Generate Tests',
+        description: 'Generate unit tests for selected code',
+        icon: '🧪',
+        category: 'AI',
+        keywords: ['test', 'unit', 'testing', 'ai'],
+        disabled: !options.selectedCode,
+        action: () => {
+          if (options.selectedCode) {
+            options.onOpenAI?.(
+              `Write comprehensive unit tests for:\n\n${options.selectedCode}`,
+              'test'
+            );
+          }
+        },
+      },
+      {
+        id: 'ai.document',
+        label: 'Document Code',
+        description: 'Generate documentation for selected code',
+        icon: '📝',
+        category: 'AI',
+        keywords: ['document', 'docs', 'comments', 'ai'],
+        disabled: !options.selectedCode,
+        action: () => {
+          if (options.selectedCode) {
+            options.onOpenAI?.(
+              `Add comprehensive documentation and comments to:\n\n${options.selectedCode}`,
+              'generate'
+            );
+          }
         },
       },
 
@@ -241,6 +294,6 @@ export function useAppCommands(options: UseAppCommandsOptions): Command[] {
         },
       },
     ],
-    [router, options]
+    [router, options, options.selectedCode]
   );
 }

@@ -64,6 +64,10 @@ export default function Home() {
   const [docInput, setDocInput] = useState(docName);
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [selectedCode, setSelectedCode] = useState<string>('');
+  const [aiInitialPrompt, setAiInitialPrompt] = useState<string | undefined>();
+  const [aiInitialIntent, setAiInitialIntent] = useState<
+    'chat' | 'explain' | 'generate' | 'debug' | 'optimize' | 'test'
+  >('chat');
   const [isFileManagerOpen, setIsFileManagerOpen] = useState(false);
   const [fileManagerMode, setFileManagerMode] = useState<
     'open' | 'save' | 'create'
@@ -84,7 +88,11 @@ export default function Home() {
       setFileManagerMode('create');
       setIsFileManagerOpen(true);
     },
-    onOpenAI: () => setIsAIOpen(true),
+    onOpenAI: (initialPrompt, initialIntent) => {
+      setAiInitialPrompt(initialPrompt);
+      setAiInitialIntent(initialIntent || 'chat');
+      setIsAIOpen(true);
+    },
     onOpenSettings: () => setIsSettingsOpen(true),
     onOpenShortcuts: () => setIsShortcutsHelpOpen(true),
     onToggleTheme: toggleMode,
@@ -92,6 +100,7 @@ export default function Home() {
       localStorage.removeItem('userName');
       router.push('/login');
     },
+    selectedCode,
   });
   useRegisterCommands(appCommands);
 
@@ -795,10 +804,16 @@ export default function Home() {
       {/* AI Assistant Modal */}
       <AIAssistant
         isOpen={isAIOpen}
-        onClose={() => setIsAIOpen(false)}
+        onClose={() => {
+          setIsAIOpen(false);
+          setAiInitialPrompt(undefined);
+          setAiInitialIntent('chat');
+        }}
         currentFile={file}
         selectedCode={selectedCode}
         aiManager={aiManager ?? undefined}
+        initialPrompt={aiInitialPrompt}
+        initialIntent={aiInitialIntent}
         onCodeInsert={(code: string) => {
           // Insert code at cursor position in editor
           if (editorRef.current && typeof window !== 'undefined') {
