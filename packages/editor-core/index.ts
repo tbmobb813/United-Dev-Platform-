@@ -49,11 +49,11 @@ export class DocumentManager {
     // Ensure provider has safe defaults for the methods we call later.
     if (!this.provider.destroy) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      (this.provider as any).destroy = () => {};
+      (this.provider as any).destroy = () => { };
     }
     if (!this.provider.on) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      (this.provider as any).on = (_: string, __: any) => {};
+      (this.provider as any).on = (_: string, __: any) => { };
     }
     if (typeof (this.provider as any).wsconnected === 'undefined') {
       (this.provider as any).wsconnected = false;
@@ -105,11 +105,11 @@ export class DocumentManager {
     // Ensure safe defaults on the new provider like in the constructor
     if (!this.provider.destroy) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      (this.provider as any).destroy = () => {};
+      (this.provider as any).destroy = () => { };
     }
     if (!this.provider.on) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      (this.provider as any).on = (_: string, __: any) => {};
+      (this.provider as any).on = (_: string, __: any) => { };
     }
     if (typeof (this.provider as any).wsconnected === 'undefined') {
       (this.provider as any).wsconnected = false;
@@ -198,7 +198,7 @@ export class DocumentManager {
     try {
       const local =
         (this.awareness.getLocalState && this.awareness.getLocalState()) || {};
-      const currentUser = (local.user as any) || this.user;
+      const currentUser = (local['user'] as any) || this.user;
       const updated = {
         ...currentUser,
         ...presence,
@@ -215,8 +215,8 @@ export class DocumentManager {
     const collaborators: UserPresence[] = [];
 
     this.awareness.getStates().forEach((state, clientId) => {
-      if (state.user && clientId !== this.awareness.clientID) {
-        collaborators.push(state.user as UserPresence);
+      if (state['user'] && clientId !== this.awareness.clientID) {
+        collaborators.push(state['user'] as UserPresence);
       }
     });
 

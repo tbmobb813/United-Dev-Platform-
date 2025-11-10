@@ -1,7 +1,7 @@
 // Lightweight shared logger exported for workspace-wide use.
 // Avoid depending on @types/node in every package by keeping `process` usage minimal.
 declare const process: { env: Record<string, string | undefined> };
-const isProd = process?.env?.NODE_ENV === 'production';
+const isProd = process?.env?.['NODE_ENV'] === 'production';
 
 function format(...args: unknown[]) {
   return args

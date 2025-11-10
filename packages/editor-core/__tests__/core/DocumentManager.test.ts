@@ -99,7 +99,7 @@ describe('DocumentManager', () => {
 
     const connectedUsers = docManager.getConnectedUsers();
     const localUserPresence = connectedUsers[0];
-    expect(localUserPresence.cursor).toEqual(presenceUpdate.cursor);
+    expect((localUserPresence as any).cursor).toEqual(presenceUpdate.cursor);
     expect(localUserPresence.isActive).toBe(true);
   });
 

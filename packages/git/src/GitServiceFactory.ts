@@ -53,11 +53,16 @@ export class BrowserFileSystem implements FileSystemInterface {
 export class NodeFileSystem implements FileSystemInterface {
   private fs: typeof import('fs').promises | null = null;
 
-  constructor() {
+  async init() {
     // Dynamic import to avoid errors in browser environments
     if (typeof window === 'undefined' && typeof process !== 'undefined') {
-      this.fs = require('fs').promises;
+      const fs = await import('fs');
+      this.fs = fs.promises;
     }
+  }
+
+  constructor() {
+    this.init().catch(console.error);
   }
 
   async readFile(path: string): Promise<Uint8Array> {

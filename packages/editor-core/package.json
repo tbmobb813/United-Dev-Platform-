@@ -11,6 +11,7 @@
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
+    "@udp/logger": "workspace:*",
     "y-indexeddb": "^9.0.12"
   },
   "peerDependencies": {
