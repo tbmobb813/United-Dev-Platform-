@@ -56,6 +56,9 @@
     "dev:mobile": "cd apps/mobile && pnpm start",
     "dev:all": "turbo dev --parallel",
     "prebuild": "pnpm check && pnpm validate-env",
+    "setup:test-db": "bash ./scripts/setup-test-db.sh",
+    "teardown:test-db": "bash ./scripts/teardown-test-db.sh",
+    "seed:web": "pnpm --filter ./apps/web db:seed",
     "postinstall": "pnpm type-check"
   },
   "devDependencies": {

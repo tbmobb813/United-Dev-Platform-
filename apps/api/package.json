@@ -13,6 +13,8 @@
     "@prisma/client": "^6.17.1",
     "@udp/db": "workspace:*",
     "@udp/logger": "workspace:*",
+    "fastify": "^4.23.0",
+    "@fastify/cors": "^8.0.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "lib0": "^0.2.114",

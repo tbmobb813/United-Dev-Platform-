@@ -7,7 +7,11 @@ import * as syncProtocol from 'y-protocols/sync';
 import * as awarenessProtocol from 'y-protocols/awareness';
 import * as encoding from 'lib0/encoding';
 import * as decoding from 'lib0/decoding';
-import { prisma } from '@udp/db';
+// Runtime prisma holder - tests can inject a mocked prisma via __setPrisma
+let __testPrisma = null;
+export function __setPrisma(p) {
+  __testPrisma = p;
+}
 import logger from '@udp/logger';
 import { getToken } from 'next-auth/jwt';
 
@@ -84,27 +88,35 @@ const setupWSConnection = (
 
 // (Placeholder) collaboration session/document storage can be added here when needed
 
-// Authentication middleware for REST API endpoints
-async function authenticateToken(req, res, next) {
+// Authentication middleware for REST API endpoints (Fastify preHandler)
+async function authenticateToken(request, reply) {
   const secret = process.env.NEXTAUTH_SECRET;
   if (!secret) {
     logger.error('NEXTAUTH_SECRET is not defined');
-    return res.status(500).json({ error: 'Server configuration error' });
+    reply.code(500).send({ error: 'Server configuration error' });
+    return;
   }
 
-  const token = await getToken({ req, secret, raw: true });
+  // next-auth's getToken expects a `req` object similar to Next.js requests.
+  // We pass the Fastify request as `req` which works for our tests and basic usage.
+  const token = await getToken({ req: request, secret, raw: true });
 
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    reply.code(401).send({ error: 'Unauthorized' });
+    return;
   }
 
-  // Assuming the JWT contains the user ID in the 'sub' claim (standard for NextAuth.js)
-  const decodedToken = JSON.parse(
-    Buffer.from(token.split('.')[1], 'base64').toString()
-  );
-  req.userId = decodedToken.sub; // 'sub' claim typically holds the user ID
-
-  next();
+  // Assuming the JWT contains the user ID in the 'sub' claim
+  try {
+    const decodedToken = JSON.parse(
+      Buffer.from(token.split('.')[1], 'base64').toString()
+    );
+    request.userId = decodedToken.sub;
+  } catch (e) {
+    logger.error('Failed to decode token', e);
+    reply.code(401).send({ error: 'Unauthorized' });
+    return;
+  }
 }
 
 // Enhanced WebSocket connection handler with Yjs collaboration
@@ -175,6 +187,8 @@ function setupCollaborativeWSConnection(conn, req) {
 // Handle user joining a collaboration session
 async function handleJoinSession(conn, data, sessionId, projectId, userId) {
   try {
+  // Use injected test prisma if provided, otherwise load dynamically
+  const { prisma } = __testPrisma ? { prisma: __testPrisma } : await import('@udp/db');
     // Verify session exists and user has access
     const session = await prisma.collaborationSession.findFirst({
       where: {
@@ -390,7 +404,8 @@ async function handleFileSave(conn, data, projectId, userId) {
 // Update user presence in session
 async function updateUserPresence(sessionId, userId, isActive) {
   try {
-    await prisma.sessionParticipant.upsert({
+  const { prisma } = __testPrisma ? { prisma: __testPrisma } : await import('@udp/db');
+  await prisma.sessionParticipant.upsert({
       where: {
         sessionId_userId: {
           sessionId,
@@ -487,9 +502,8 @@ app.get('/api/sessions/:sessionId', async (request, reply) => {
 app.post('/ai/run', async (request, reply) => {
   try {
     const { tool, filePath, prompt, projectId, userId } = request.body || {};
-    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${
-      prompt || ''
-    }`;
+    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${prompt || ''
+      }`;
     if (projectId && userId) {
       logger.info(`AI interaction: ${userId} in project ${projectId}`);
     }
@@ -501,175 +515,191 @@ app.post('/ai/run', async (request, reply) => {
 });
 
 // Project Management Endpoints
-app.post('/api/projects', authenticateToken, async (req, res) => {
-  try {
-    const { name, description, visibility } = req.body;
-    const userId = req.userId; // From authenticateToken middleware
+app.post(
+  '/api/projects',
+  { preHandler: authenticateToken },
+  async (request, reply) => {
+    try {
+      const { name, description, visibility } = request.body;
+      const userId = request.userId; // From authenticateToken preHandler
 
-    if (!name) {
-      return res.status(400).json({ error: 'Project name is required' });
+      if (!name) {
+        return reply.code(400).send({ error: 'Project name is required' });
+      }
+
+      const project = await prisma.project.create({
+        data: {
+          name,
+          description,
+          visibility: visibility || 'PRIVATE',
+          owner: {
+            connect: { id: userId },
+          },
+          members: {
+            create: { userId, role: 'OWNER' },
+          },
+        },
+      });
+
+      reply.code(201).send({ project });
+    } catch (error) {
+      logger.error('Error creating project:', error);
+      reply.code(500).send({ error: 'Failed to create project' });
     }
-
-    const project = await prisma.project.create({
-      data: {
-        name,
-        description,
-        visibility: visibility || 'PRIVATE',
-        owner: {
-          connect: { id: userId },
-        },
-        members: {
-          create: { userId, role: 'OWNER' },
-        },
-      },
-    });
-
-    res.status(201).json({ project });
-  } catch (error) {
-    logger.error('Error creating project:', error);
-    res.status(500).json({ error: 'Failed to create project' });
   }
-});
+);
 
 // File Management Endpoints
-app.post('/api/files', authenticateToken, async (req, res) => {
-  try {
-    const { projectId, path, name, content, type, mimeType } = req.body;
-    const userId = req.userId; // From authenticateToken middleware
+app.post(
+  '/api/files',
+  { preHandler: authenticateToken },
+  async (request, reply) => {
+    try {
+      const { projectId, path, name, content, type, mimeType } = request.body;
+      const userId = request.userId; // From authenticateToken preHandler
 
-    if (!projectId || !path || !name) {
-      return res
-        .status(400)
-        .json({ error: 'Project ID, path, and name are required' });
+      if (!projectId || !path || !name) {
+        return reply
+          .code(400)
+          .send({ error: 'Project ID, path, and name are required' });
+      }
+
+      // Verify user has access to the project
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        include: { members: true },
+      });
+
+      if (
+        !project ||
+        (!project.members.some(m => m.userId === userId) &&
+          project.ownerId !== userId)
+      ) {
+        return reply.code(403).send({ error: 'Access denied to project' });
+      }
+
+      const file = await prisma.projectFile.create({
+        data: {
+          projectId,
+          path,
+          name,
+          content: content || '',
+          type: type || 'FILE',
+          mimeType: mimeType || 'text/plain',
+          size: content ? Buffer.byteLength(content, 'utf8') : 0,
+        },
+      });
+
+      // Log file activity
+      await prisma.fileActivity.create({
+        data: {
+          action: 'CREATE',
+          fileId: file.id,
+          userId,
+        },
+      });
+
+      reply.code(201).send({ file });
+    } catch (error) {
+      logger.error('Error creating file:', error);
+      reply.code(500).send({ error: 'Failed to create file' });
     }
-
-    // Verify user has access to the project
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: { members: true },
-    });
-
-    if (
-      !project ||
-      (!project.members.some(m => m.userId === userId) &&
-        project.ownerId !== userId)
-    ) {
-      return res.status(403).json({ error: 'Access denied to project' });
-    }
-
-    const file = await prisma.projectFile.create({
-      data: {
-        projectId,
-        path,
-        name,
-        content: content || '',
-        type: type || 'FILE',
-        mimeType: mimeType || 'text/plain',
-        size: content ? Buffer.byteLength(content, 'utf8') : 0,
-      },
-    });
-
-    // Log file activity
-    await prisma.fileActivity.create({
-      data: {
-        action: 'CREATE',
-        fileId: file.id,
-        userId,
-      },
-    });
-
-    res.status(201).json({ file });
-  } catch (error) {
-    logger.error('Error creating file:', error);
-    res.status(500).json({ error: 'Failed to create file' });
   }
-});
+);
 
-app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
-  try {
-    const { fileId } = req.params;
-    const { content } = req.body;
-    const userId = req.userId; // From authenticateToken middleware
+app.put(
+  '/api/files/:fileId',
+  { preHandler: authenticateToken },
+  async (request, reply) => {
+    try {
+      const { fileId } = request.params;
+      const { content } = request.body;
+      const userId = request.userId; // From authenticateToken preHandler
 
-    if (!content) {
-      return res.status(400).json({ error: 'File content is required' });
+      if (!content) {
+        return reply.code(400).send({ error: 'File content is required' });
+      }
+
+      const existingFile = await prisma.projectFile.findUnique({
+        where: { id: fileId },
+        include: { project: { include: { members: true } } },
+      });
+
+      if (!existingFile) {
+        return reply.code(404).send({ error: 'File not found' });
+      }
+
+      // Verify user has access to the project
+      const project = existingFile.project;
+      if (
+        !project ||
+        (!project.members.some(m => m.userId === userId) &&
+          project.ownerId !== userId)
+      ) {
+        return reply.code(403).send({ error: 'Access denied to project' });
+      }
+
+      const updatedFile = await prisma.projectFile.update({
+        where: { id: fileId },
+        data: {
+          content,
+          size: Buffer.byteLength(content, 'utf8'),
+          updatedAt: new Date(),
+        },
+      });
+
+      // Log file activity
+      await prisma.fileActivity.create({
+        data: {
+          action: 'UPDATE',
+          fileId,
+          userId,
+          changes: { contentChanged: true, size: updatedFile.size },
+        },
+      });
+
+      reply.send({ file: updatedFile });
+    } catch (error) {
+      logger.error('Error updating file:', error);
+      reply.code(500).send({ error: 'Failed to update file' });
     }
-
-    const existingFile = await prisma.projectFile.findUnique({
-      where: { id: fileId },
-      include: { project: { include: { members: true } } },
-    });
-
-    if (!existingFile) {
-      return res.status(404).json({ error: 'File not found' });
-    }
-
-    // Verify user has access to the project
-    const project = existingFile.project;
-    if (
-      !project ||
-      (!project.members.some(m => m.userId === userId) &&
-        project.ownerId !== userId)
-    ) {
-      return res.status(403).json({ error: 'Access denied to project' });
-    }
-
-    const updatedFile = await prisma.projectFile.update({
-      where: { id: fileId },
-      data: {
-        content,
-        size: Buffer.byteLength(content, 'utf8'),
-        updatedAt: new Date(),
-      },
-    });
-
-    // Log file activity
-    await prisma.fileActivity.create({
-      data: {
-        action: 'UPDATE',
-        fileId,
-        userId,
-        changes: { contentChanged: true, size: updatedFile.size },
-      },
-    });
-
-    res.json({ file: updatedFile });
-  } catch (error) {
-    logger.error('Error updating file:', error);
-    res.status(500).json({ error: 'Failed to update file' });
   }
-});
+);
 
-app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
-  try {
-    const { fileId } = req.params;
-    const userId = req.userId; // From authenticateToken middleware
+app.get(
+  '/api/files/:fileId',
+  { preHandler: authenticateToken },
+  async (request, reply) => {
+    try {
+      const { fileId } = request.params;
+      const userId = request.userId; // From authenticateToken preHandler
 
-    const file = await prisma.projectFile.findUnique({
-      where: { id: fileId },
-      include: { project: { include: { members: true } } },
-    });
+      const file = await prisma.projectFile.findUnique({
+        where: { id: fileId },
+        include: { project: { include: { members: true } } },
+      });
 
-    if (!file) {
-      return res.status(404).json({ error: 'File not found' });
+      if (!file) {
+        return reply.code(404).send({ error: 'File not found' });
+      }
+
+      // Verify user has access to the project
+      const project = file.project;
+      if (
+        !project ||
+        (!project.members.some(m => m.userId === userId) &&
+          project.ownerId !== userId)
+      ) {
+        return reply.code(403).send({ error: 'Access denied to project' });
+      }
+
+      reply.send({ file });
+    } catch (error) {
+      logger.error('Error fetching file:', error);
+      reply.code(500).send({ error: 'Failed to fetch file' });
     }
-
-    // Verify user has access to the project
-    const project = file.project;
-    if (
-      !project ||
-      (!project.members.some(m => m.userId === userId) &&
-        project.ownerId !== userId)
-    ) {
-      return res.status(403).json({ error: 'Access denied to project' });
-    }
-
-    res.json({ file });
-  } catch (error) {
-    logger.error('Error fetching file:', error);
-    res.status(500).json({ error: 'Failed to fetch file' });
   }
-});
+);
 
 // Create HTTP server
 const server = http.createServer(app);
@@ -709,15 +739,38 @@ process.on('SIGTERM', async () => {
   });
 });
 
-// Start server
-app.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
-  if (err) {
+// Export important functions for tests
+export {
+  handleJoinSession,
+  handleLeaveSession,
+  setupCollaborativeWSConnection,
+  updateUserPresence,
+  broadcastToSession,
+};
+
+// Start server programmatically (exported for tests)
+export async function startFastify(options = {}) {
+  const port = options.port || PORT;
+  try {
+    // Ensure Fastify is ready (registers routes/hooks)
+    await app.ready();
+
+    // Start the underlying HTTP server we attached the WebSocket upgrade handler to.
+    await new Promise((resolve, reject) => {
+      server.listen(port, '0.0.0.0', err => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+
+    logger.info(`[api] Fastify server listening on http://0.0.0.0:${port}`);
+    logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(
+      `[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`
+    );
+    return { port, server };
+  } catch (err) {
     logger.error('Fastify failed to start:', err);
-    process.exit(1);
+    throw err;
   }
-  logger.info(`[api] Fastify server listening on ${address}`);
-  logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(
-    `[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`
-  );
-});
+}
