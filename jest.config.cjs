@@ -35,4 +35,8 @@ module.exports = {
     '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  // Run a global teardown for diagnostic purposes in CI/dev when tests
+  // leave open handles. We add a small globalTeardown script that prints
+  // why-is-node-running output to help locate leaking async resources.
+  globalTeardown: '<rootDir>/scripts/jest-global-teardown.cjs',
 };
