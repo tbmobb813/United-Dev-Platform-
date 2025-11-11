@@ -90,9 +90,11 @@ describe('handleJoinSession (integration)', () => {
     });
 
     afterAll(async () => {
-        // try to close the server gracefully if exported
+        // close the server via exported helper for cleaner teardown
         try {
-            if (serverModule && serverModule.server && serverModule.server.close) {
+            if (serverModule && serverModule.stopFastify) {
+                await serverModule.stopFastify();
+            } else if (serverModule && serverModule.server && serverModule.server.close) {
                 serverModule.server.close();
             }
         } catch (e) {

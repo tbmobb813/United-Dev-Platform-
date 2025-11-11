@@ -774,3 +774,39 @@ export async function startFastify(options = {}) {
     throw err;
   }
 }
+
+// Stop server programmatically (for tests) - closes HTTP server, Fastify and DB connection
+export async function stopFastify() {
+  try {
+    // Close the underlying Node HTTP server if listening
+    if (server && server.listening) {
+      await new Promise((resolve, reject) => {
+        server.close(err => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
+    }
+  } catch (err) {
+    logger.error('Error closing HTTP server during stopFastify:', err);
+  }
+
+  try {
+    // Close Fastify (cleans up resources)
+    if (app && typeof app.close === 'function') {
+      await app.close();
+    }
+  } catch (err) {
+    logger.error('Error closing Fastify instance during stopFastify:', err);
+  }
+
+  try {
+    // Disconnect prisma if available (use injected test prisma if provided)
+    const { prisma } = __testPrisma ? { prisma: __testPrisma } : await import('@udp/db');
+    if (prisma && typeof prisma.$disconnect === 'function') {
+      await prisma.$disconnect();
+    }
+  } catch (err) {
+    // ignore errors during test teardown
+  }
+}
