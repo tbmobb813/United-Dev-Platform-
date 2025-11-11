@@ -122,6 +122,19 @@ describe('handleJoinSession (integration)', () => {
 
         expect(response.sessionId).toBe('sess-integ');
 
+        // ensure the client socket is fully closed before finishing the test
         ws.close();
+        await new Promise(resolve => {
+            const timer = setTimeout(() => {
+                // fallback: forcefully terminate if close doesn't arrive in time
+                try { ws.terminate(); } catch (e) { /* ignore */ }
+                resolve();
+            }, 2000);
+
+            ws.on('close', () => {
+                clearTimeout(timer);
+                resolve();
+            });
+        });
     });
 });

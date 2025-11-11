@@ -5,7 +5,7 @@ module.exports = {
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/scripts/jest-test-helpers.cjs'],
   // Treat .ts files as ESM modules. Jest will infer .js as ESM when the nearest
   // Treat TypeScript files as ESM modules. Jest will infer .js as ESM from the
   // nearest package.json "type": "module" where applicable, so keep only

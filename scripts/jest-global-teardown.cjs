@@ -4,9 +4,14 @@
 try {
     const whyIsNodeRunning = require('why-is-node-running');
     module.exports = async function globalTeardown() {
-        // Short delay to allow in-flight closes to settle.
-        await new Promise((r) => setTimeout(r, 100));
+        // Run immediately (avoid creating timers here which would appear in the dump).
         console.log('\n--- Jest globalTeardown: why-is-node-running output ---');
+        // print pid and worker id to correlate which worker emitted this dump
+        try {
+            console.log('teardown pid=%d JEST_WORKER_ID=%s title=%s', process.pid, process.env.JEST_WORKER_ID || '<none>', process.title);
+        } catch (e) {
+            // ignore
+        }
         try {
             // whyIsNodeRunning prints info to stdout; call it to dump active handles.
             whyIsNodeRunning();
@@ -27,9 +32,23 @@ try {
                     };
                     // Some timer objects expose _onTimeout; capture if available.
                     if (h && h._onTimeout) repr._onTimeout = String(h._onTimeout).slice(0, 200);
+                    // ChildProcess handles can expose pid/spawned file
+                    if (h && typeof h.pid === 'number') repr.pid = h.pid;
+                    if (h && (h.spawnfile || h.spawnpath)) repr.spawn = h.spawnfile || h.spawnpath;
+                    // Socket-like objects may expose remote/local info
+                    if (h && h.remoteAddress) repr.remoteAddress = h.remoteAddress;
+                    if (h && h.remotePort) repr.remotePort = h.remotePort;
+                    if (h && h.localAddress) repr.localAddress = h.localAddress;
+                    if (h && h.localPort) repr.localPort = h.localPort;
+                    // Writable streams (stdout/stderr) expose isTTY
+                    if (h && typeof h.isTTY === 'boolean') repr.isTTY = h.isTTY;
                     console.log(util.inspect(repr, { colors: false, depth: 2 }));
                 } catch (e) {
-                    console.log('handle', i, String(h));
+                    try {
+                        console.log('handle', i, util.inspect(h, { colors: false, depth: 1 }));
+                    } catch (ee) {
+                        console.log('handle', i, String(h));
+                    }
                 }
             });
             console.log('\n--- process._getActiveRequests() ---');

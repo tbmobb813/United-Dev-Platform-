@@ -776,6 +776,14 @@ export async function startFastify(options = {}) {
         resolve();
       });
     });
+    // Unref the server so a listening socket doesn't keep the Node process alive
+    try {
+      if (server && typeof server.unref === 'function') {
+        server.unref();
+      }
+    } catch (e) {
+      // ignore
+    }
     // Determine actual listening port (in case port 0 / ephemeral port was requested)
     const address = server.address && server.address();
     const actualPort = address && address.port ? address.port : port;
@@ -812,6 +820,15 @@ export async function stopFastify() {
 
               try {
                 client.once('close', onClose);
+                // If the client has an underlying socket, unref it so it won't keep the process alive
+                try {
+                  const sock = client && client._socket;
+                  if (sock && typeof sock.unref === 'function') {
+                    sock.unref();
+                  }
+                } catch (e) {
+                  // ignore
+                }
                 // attempt a graceful close; if it throws, terminate
                 try {
                   client.close();
