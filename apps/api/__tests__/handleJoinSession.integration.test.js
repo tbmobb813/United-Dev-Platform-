@@ -60,10 +60,13 @@ jest.unstable_mockModule('@udp/db', async () => ({
 
 // Import server after mocks so it uses mocked prisma (do import inside beforeAll)
 let serverModule;
-const PORT = process.env.PORT || 3030;
+// Use a per-Jest-worker port to avoid EADDRINUSE when tests run in parallel
+const WORKER_ID = process.env.JEST_WORKER_ID ? Number(process.env.JEST_WORKER_ID) : 0;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3030 + WORKER_ID;
 const WS_URL = `ws://localhost:${PORT}`;
 
 describe('handleJoinSession (integration)', () => {
+    // increase hook timeout to allow server startup in parallel CI/workers
     beforeAll(async () => {
         // make findFirst return a valid session object
         mockFindFirst.mockResolvedValue({
@@ -84,10 +87,17 @@ describe('handleJoinSession (integration)', () => {
             collaborationSession: { findFirst: mockFindFirst },
             sessionParticipant: { upsert: mockUpsert },
         });
-        await serverModule.startFastify();
-        // wait a short time for server to be fully listening
-        await new Promise(resolve => setTimeout(resolve, 300));
-    });
+    // request an ephemeral port to avoid collisions across parallel processes
+    const started = await serverModule.startFastify({ port: 0 });
+    // use the actual bound port
+    const actualPort = started.port;
+    // update WS_URL to use the actual port for this run
+    // (recompute the const by creating a new WebSocket URL below when needed)
+    // wait a short time for server to be fully listening
+    await new Promise(resolve => setTimeout(resolve, 150));
+    // expose actualPort for test that builds WS URL
+    serverModule.__testPort = actualPort;
+    }, 20000);
 
     afterAll(async () => {
         // close the server via exported helper for cleaner teardown
@@ -103,7 +113,8 @@ describe('handleJoinSession (integration)', () => {
     });
 
     it('should handle join session message', async () => {
-        const ws = new WebSocket(`${WS_URL}/?sessionId=sess-integ&projectId=proj-integ&userId=user-integ`);
+    const portToUse = serverModule.__testPort || PORT;
+    const ws = new WebSocket(`ws://localhost:${portToUse}/?sessionId=sess-integ&projectId=proj-integ&userId=user-integ`);
         await waitForOpen(ws);
 
         ws.send(JSON.stringify({ type: 'join-session' }));

@@ -65,18 +65,32 @@ const setupWSConnection = (
     }
   };
 
-  doc.on('update', (update, origin) => {
+  // (update handler is attached below as `updateHandler`) -- ensure only one listener exists
+
+  // Keep a reference to the update handler so it can be removed on close
+  const updateHandler = (update, origin) => {
     if (origin !== conn) {
       const encoder = encoding.createEncoder();
       encoding.writeVarUint(encoder, syncProtocol.messageYjsUpdate);
       encoding.writeVarUint8Array(encoder, update);
-      conn.send(encoding.toUint8Array(encoder));
+      try {
+        conn.send(encoding.toUint8Array(encoder));
+      } catch (e) {
+        // ignore errors sending to closed sockets
+      }
     }
-  });
+  };
+
+  doc.on('update', updateHandler);
 
   conn.on('message', messageHandler);
   conn.on('close', () => {
-    doc.off('update', messageHandler);
+    // remove update handler to avoid sending to closed connection
+    try {
+      doc.off('update', updateHandler);
+    } catch (e) {
+      // ignore
+    }
   });
 
   // Send sync step 1
@@ -750,7 +764,7 @@ export {
 
 // Start server programmatically (exported for tests)
 export async function startFastify(options = {}) {
-  const port = options.port || PORT;
+  const port = typeof options.port === 'number' ? options.port : PORT;
   try {
     // Ensure Fastify is ready (registers routes/hooks)
     await app.ready();
@@ -762,13 +776,16 @@ export async function startFastify(options = {}) {
         resolve();
       });
     });
+    // Determine actual listening port (in case port 0 / ephemeral port was requested)
+    const address = server.address && server.address();
+    const actualPort = address && address.port ? address.port : port;
 
-    logger.info(`[api] Fastify server listening on http://0.0.0.0:${port}`);
+    logger.info(`[api] Fastify server listening on http://0.0.0.0:${actualPort}`);
     logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
     logger.info(
       `[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`
     );
-    return { port, server };
+    return { port: actualPort, server };
   } catch (err) {
     logger.error('Fastify failed to start:', err);
     throw err;
@@ -777,6 +794,60 @@ export async function startFastify(options = {}) {
 
 // Stop server programmatically (for tests) - closes HTTP server, Fastify and DB connection
 export async function stopFastify() {
+  // Close WebSocket clients and WSS first so connection "close" handlers run
+  try {
+    if (typeof wss !== 'undefined' && wss && wss.clients) {
+      const clients = Array.from(wss.clients || []);
+      // ask each client to close and wait for close event (with a timeout fallback)
+      await Promise.all(
+        clients.map(
+          client =>
+            new Promise(resolve => {
+              let resolved = false;
+              const onClose = () => {
+                if (resolved) return;
+                resolved = true;
+                resolve();
+              };
+
+              try {
+                client.once('close', onClose);
+                // attempt a graceful close; if it throws, terminate
+                try {
+                  client.close();
+                } catch (e) {
+                  try {
+                    client.terminate();
+                  } catch (_e) {
+                    // ignore
+                  }
+                }
+              } catch (e) {
+                // ignore
+                resolve();
+              }
+
+              // fallback timeout to avoid hanging forever
+              setTimeout(onClose, 500);
+            })
+        )
+      );
+
+      // close the WSS itself
+      await new Promise((resolve, reject) => {
+        try {
+          wss.close(err => {
+            if (err) return reject(err);
+            resolve();
+          });
+        } catch (e) {
+          resolve();
+        }
+      });
+    }
+  } catch (err) {
+    logger.error('Error closing WebSocketServer during stopFastify:', err);
+  }
   try {
     // Close the underlying Node HTTP server if listening
     if (server && server.listening) {
@@ -810,3 +881,4 @@ export async function stopFastify() {
     // ignore errors during test teardown
   }
 }
+
