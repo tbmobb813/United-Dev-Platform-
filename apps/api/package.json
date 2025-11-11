@@ -7,7 +7,11 @@
     "dev": "node server.js",
     "start": "NODE_ENV=production node server.js",
     "build": "echo \"No build step for api\"",
-    "test": "jest --config ../../jest.config.cjs"
+    "test": "jest --config ../../jest.config.cjs",
+    "test:unit": "jest --config ../../jest.config.cjs --testPathPattern=__tests__/(?!integration)",
+    "test:integration": "TEST_INTEGRATION=1 jest --config ../../jest.config.cjs --testPathPattern=integration",
+    "test:watch": "jest --config ../../jest.config.cjs --watch",
+    "test:coverage": "jest --config ../../jest.config.cjs --coverage"
   },
   "dependencies": {
     "@auth/core": "^0.34.3",
