@@ -187,8 +187,8 @@ function setupCollaborativeWSConnection(conn, req) {
 // Handle user joining a collaboration session
 async function handleJoinSession(conn, data, sessionId, projectId, userId) {
   try {
-  // Use injected test prisma if provided, otherwise load dynamically
-  const { prisma } = __testPrisma ? { prisma: __testPrisma } : await import('@udp/db');
+    // Use injected test prisma if provided, otherwise load dynamically
+    const { prisma } = __testPrisma ? { prisma: __testPrisma } : await import('@udp/db');
     // Verify session exists and user has access
     const session = await prisma.collaborationSession.findFirst({
       where: {
@@ -404,8 +404,8 @@ async function handleFileSave(conn, data, projectId, userId) {
 // Update user presence in session
 async function updateUserPresence(sessionId, userId, isActive) {
   try {
-  const { prisma } = __testPrisma ? { prisma: __testPrisma } : await import('@udp/db');
-  await prisma.sessionParticipant.upsert({
+    const { prisma } = __testPrisma ? { prisma: __testPrisma } : await import('@udp/db');
+    await prisma.sessionParticipant.upsert({
       where: {
         sessionId_userId: {
           sessionId,
