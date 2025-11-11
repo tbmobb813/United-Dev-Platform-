@@ -12,6 +12,21 @@ try {
         } catch (e) {
             // ignore
         }
+        // Wait a short, unref'd grace period to allow worker child processes to exit
+        // and for their IPC sockets to close. This avoids noisy false-positive
+        // handle dumps when the parent tears down slightly before children exit.
+        try {
+            const waitMs = 300;
+            const sleep = ms => new Promise(resolve => {
+                const t = setTimeout(resolve, ms);
+                try { if (t && typeof t.unref === 'function') t.unref(); } catch (e) { }
+            });
+            // log that we're waiting (useful in CI) then wait
+            console.log('\n--- Jest globalTeardown: waiting %dms for child processes to settle ---', waitMs);
+            await sleep(waitMs);
+        } catch (e) {
+            // ignore sleep errors and continue to dump handles
+        }
         try {
             // whyIsNodeRunning prints info to stdout; call it to dump active handles.
             whyIsNodeRunning();

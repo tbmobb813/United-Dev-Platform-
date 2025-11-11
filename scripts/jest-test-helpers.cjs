@@ -34,7 +34,7 @@ try {
 try {
     const fs = require('fs');
     const util = require('util');
-    process.once('beforeExit', () => {
+    const writeWorkerDump = () => {
         try {
             const pid = process.pid;
             const workerId = process.env.JEST_WORKER_ID || '<none>';
@@ -58,10 +58,10 @@ try {
                     if (h && h.localAddress) repr.localAddress = h.localAddress;
                     if (h && h.localPort) repr.localPort = h.localPort;
                     if (h && typeof h.isTTY === 'boolean') repr.isTTY = h.isTTY;
-                    body += util.inspect(repr, { colors: false, depth: 2 }) + '\n';
+                    body += require('util').inspect(repr, { colors: false, depth: 2 }) + '\n';
                 } catch (e) {
                     try {
-                        body += `handle ${i} ${util.inspect(h, { colors: false, depth: 1 })}\n`;
+                        body += `handle ${i} ${require('util').inspect(h, { colors: false, depth: 1 })}\n`;
                     } catch (ee) {
                         body += `handle ${i} ${String(h)}\n`;
                     }
@@ -70,16 +70,21 @@ try {
             body += '\n--- process._getActiveRequests() ---\n';
             requests.forEach((r, i) => {
                 try {
-                    body += util.inspect({ index: i, type: r && r.constructor ? r.constructor.name : typeof r }, { depth: 2 }) + '\n';
+                    body += require('util').inspect({ index: i, type: r && r.constructor ? r.constructor.name : typeof r }, { depth: 2 }) + '\n';
                 } catch (e) {
                     body += `request ${i} ${String(r)}\n`;
                 }
             });
-            fs.writeFileSync(outPath, header + body, { encoding: 'utf8' });
+            require('fs').writeFileSync(outPath, header + body, { encoding: 'utf8' });
         } catch (e) {
             // ignore errors writing diagnostics
         }
-    });
+    };
+
+    process.once('beforeExit', writeWorkerDump);
+    // Also write on exit synchronously (safer for abrupt shutdowns)
+    process.on('exit', writeWorkerDump);
+
 } catch (e) {
     // best-effort only
 }

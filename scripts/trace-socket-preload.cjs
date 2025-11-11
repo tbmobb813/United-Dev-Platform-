@@ -79,7 +79,16 @@ cp.spawn = function (...args) {
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
     } catch (e) { }
-    return origSpawn.apply(this, args);
+    const child = origSpawn.apply(this, args);
+    try {
+        append(JSON.stringify({ event: 'spawned', pid: child && child.pid ? child.pid : null }));
+        if (child && typeof child.on === 'function') {
+            child.on('exit', (code, signal) => {
+                append(JSON.stringify({ event: 'child-exit', pid: child.pid, code, signal, when: new Date().toISOString() }));
+            });
+        }
+    } catch (e) { }
+    return child;
 };
 cp.fork = function (...args) {
     try {
@@ -88,7 +97,16 @@ cp.fork = function (...args) {
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
     } catch (e) { }
-    return origFork.apply(this, args);
+    const child = origFork.apply(this, args);
+    try {
+        append(JSON.stringify({ event: 'forked', pid: child && child.pid ? child.pid : null }));
+        if (child && typeof child.on === 'function') {
+            child.on('exit', (code, signal) => {
+                append(JSON.stringify({ event: 'child-exit', pid: child.pid, code, signal, when: new Date().toISOString() }));
+            });
+        }
+    } catch (e) { }
+    return child;
 };
 cp.exec = function (...args) {
     try {
