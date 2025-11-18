@@ -33,9 +33,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState<string>('');
   const [aiLoading, setAiLoading] = useState(false);
-  // Prefix with underscore to indicate intentional unused variable in some flows
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_aiResponse, setAiResponse] = useState<string>('');
+  const [aiResponse, setAiResponse] = useState<string>('');
 
   useEffect(() => {
     loadFileContent();

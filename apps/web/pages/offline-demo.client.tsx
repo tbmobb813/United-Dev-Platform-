@@ -69,7 +69,7 @@ const OfflineCollaborationDemo: React.FC = () => {
           {(doc: any, status: any) => (
             <div className={styles.cardPadding}>
               <div
-                className={`${styles.mb20} ${status.isConnected ? styles.onlineBox : styles.offlineBox}`}
+                className={`${styles.marginBottom20} ${status.isConnected ? styles.onlineStatusBox : styles.offlineStatusBox}`}
               >
                 <h3 className={styles.statusHeaderTitle}>
                   {status.isConnected ? '🌐 Online Mode' : '📱 Offline Mode'}

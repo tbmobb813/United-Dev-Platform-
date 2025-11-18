@@ -75,16 +75,52 @@ const nextConfig = {
     if (!isServer) {
       config.optimization = config.optimization || {};
       config.optimization.splitChunks = config.optimization.splitChunks || {};
-      config.optimization.splitChunks.cacheGroups =
-        config.optimization.splitChunks.cacheGroups || {};
-
-      // Force all Yjs-related modules into a single chunk
-      config.optimization.splitChunks.cacheGroups.yjs = {
-        test: /[\\/]node_modules[\\/](yjs|y-protocols|y-websocket|y-indexeddb)[\\/]/,
-        name: 'yjs-vendor',
-        priority: 100,
-        reuseExistingChunk: true,
-        enforce: true,
+      config.optimization.splitChunks.cacheGroups = {
+        ...(config.optimization.splitChunks.cacheGroups || {}),
+        // Stronger cache group for Yjs family: match both hoisted and pnpm
+        // virtual-store nested paths so webpack groups all yjs-related
+        // modules into a single `vendors-yjs` chunk.
+        'vendors-yjs': {
+          // Use a function test to inspect the module's resource path where
+          // present. This lets us match pnpm virtual-store paths like:
+          // node_modules/.pnpm/yjs@13.6.27/node_modules/yjs/...
+          test: (module, chunks) => {
+            try {
+              // Prefer resource (absolute filesystem path) when available.
+              let p = module && module.resource;
+              // Some modules (CJS concatenated or loader-wrapped) don't expose
+              // `resource`. Fall back to nameForCondition() which often
+              // contains the module path, or module.identifier().
+              if (!p || typeof p !== 'string') {
+                if (typeof module.nameForCondition === 'function') {
+                  p = module.nameForCondition();
+                }
+              }
+              if (!p || typeof p !== 'string') {
+                if (typeof module.identifier === 'function') {
+                  p = module.identifier();
+                }
+              }
+              if (!p || typeof p !== 'string') return false;
+              // Match yjs, y-protocols, y-websocket in either hoisted
+              // node_modules or pnpm virtual-store nested paths.
+              return /[\\/]node_modules[\\/](?:\\.pnpm[\\/].*?[\\/])?(?:yjs|y-protocols|y-websocket)(?:[\\/]|$)/.test(
+                p
+              );
+            } catch (e) {
+              return false;
+            }
+          },
+          name: 'vendors-yjs',
+          chunks: 'all',
+          enforce: true,
+          priority: 200,
+          // Allow very small modules (like a single CJS file) to be pulled
+          // into the vendors-yjs chunk and prefer reusing an existing
+          // vendors-yjs chunk rather than creating a separate one.
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
       };
     }
 
