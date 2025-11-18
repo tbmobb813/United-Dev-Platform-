@@ -1,4 +1,4 @@
-import logger from 'logger';
+import logger from '@udp/logger';
 import React from 'react';
 
 export interface SocialProvider {
