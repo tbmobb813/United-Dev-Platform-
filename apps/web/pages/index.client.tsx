@@ -211,10 +211,11 @@ export default function Home() {
   }, []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // Generate both mobile app deeplink and fallback web URL
-  const webUrl = `${typeof window !== 'undefined'
-    ? window.location.origin
-    : 'http://localhost:3000'
-    }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
+  const webUrl = `${
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'http://localhost:3000'
+  }?room=${encodeURIComponent(room)}&doc=${encodeURIComponent(docName)}`;
   const deeplink = `udp://open?repo=demo&file=${encodeURIComponent(
     file
   )}&cursor=1,1&room=${encodeURIComponent(room)}&doc=${encodeURIComponent(
@@ -367,7 +368,9 @@ export default function Home() {
               // Keep the log short
               // eslint-disable-next-line no-console
               console.log(
-                `[udp][yjs] doc ${docId} update (origin=${origin ? 'origin' : 'remote'}) size=${(update && (update.byteLength || (update as any).length)) || 'unknown'
+                `[udp][yjs] doc ${docId} update (origin=${origin ? 'origin' : 'remote'}) size=${
+                  (update && (update.byteLength || (update as any).length)) ||
+                  'unknown'
                 }`
               );
             }
@@ -394,7 +397,8 @@ export default function Home() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (globalThis as any).__udp_test = (globalThis as any).__udp_test || {};
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (globalThis as any).__udp_test.getYText = () => (ytextRef.current ? ytextRef.current.toString() : null);
+        (globalThis as any).__udp_test.getYText = () =>
+          ytextRef.current ? ytextRef.current.toString() : null;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (globalThis as any).__udp_test.setYText = (s: string) => {
           if (!ytextRef.current) return;
@@ -547,7 +551,10 @@ export default function Home() {
       try {
         // Log Y.Text updates for E2E debugging
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        console.log('[udp] yObserver fired', String(ytextRef.current.toString()).slice(0, 120));
+        console.log(
+          '[udp] yObserver fired',
+          String(ytextRef.current.toString()).slice(0, 120)
+        );
       } catch (e) {
         // ignore
       }

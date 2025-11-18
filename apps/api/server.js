@@ -79,7 +79,8 @@ const setupWSConnection = (
     try {
       if (process.env.UDP_DEBUG_YJS) {
         logger.info(
-          `[yjs] broadcasting update for doc=${docName} (fromOrigin=${origin === conn ? 'self' : 'remote'}) size=${update ? update.byteLength || update.length : 'unknown'
+          `[yjs] broadcasting update for doc=${docName} (fromOrigin=${origin === conn ? 'self' : 'remote'}) size=${
+            update ? update.byteLength || update.length : 'unknown'
           }`
         );
       }

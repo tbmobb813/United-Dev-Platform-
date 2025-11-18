@@ -213,7 +213,9 @@ export const validateForm = (
 // Hook for form validation
 export interface FormValidationOptions {
   validateOnChange?: boolean | undefined;
-  onValidationChange?: ((isValid: boolean, errors: ValidationErrors) => void) | undefined;
+  onValidationChange?:
+    | ((isValid: boolean, errors: ValidationErrors) => void)
+    | undefined;
 }
 
 export const useFormValidation = (
@@ -317,10 +319,14 @@ export const FormValidation: React.FC<FormValidationProps> = ({
 }) => {
   const validationOptions: FormValidationOptions = {
     validateOnChange: validateOnChange === true ? true : undefined,
-    onValidationChange: onValidationChange || undefined
+    onValidationChange: onValidationChange || undefined,
   };
 
-  const { isValid, validateAll } = useFormValidation(data, validation, validationOptions);
+  const { isValid, validateAll } = useFormValidation(
+    data,
+    validation,
+    validationOptions
+  );
 
   useEffect(() => {
     if (showErrorsOnMount) {
@@ -387,7 +393,7 @@ export const ValidationProvider: React.FC<ValidationProviderProps> = ({
   children,
   data,
   validation,
-  options = {}
+  options = {},
 }) => {
   const validationResult = useFormValidation(data, validation, options);
 

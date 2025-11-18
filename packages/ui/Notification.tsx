@@ -92,12 +92,12 @@ export interface NotificationProviderProps {
   maxNotifications?: number;
   defaultDuration?: number;
   position?:
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-right'
-  | 'bottom-left'
-  | 'top-center'
-  | 'bottom-center';
+    | 'top-right'
+    | 'top-left'
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'top-center'
+    | 'bottom-center';
 }
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({
@@ -315,8 +315,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
                   key={index}
                   type='button'
                   onClick={action.onClick}
-                  className={`notification__action notification__action--${action.variant || 'secondary'
-                    }`}
+                  className={`notification__action notification__action--${
+                    action.variant || 'secondary'
+                  }`}
                 >
                   {action.label}
                 </button>

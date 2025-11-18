@@ -101,8 +101,9 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
 
   return (
     <span
-      className={`breadcrumb__text ${disabled ? 'breadcrumb__text--disabled' : ''
-        } ${className}`}
+      className={`breadcrumb__text ${
+        disabled ? 'breadcrumb__text--disabled' : ''
+      } ${className}`}
     >
       {children}
     </span>
@@ -195,13 +196,13 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
           onClick={
             !isLast
               ? event => {
-                if (item.onClick) {
-                  item.onClick(event);
+                  if (item.onClick) {
+                    item.onClick(event);
+                  }
+                  if (onItemClick) {
+                    onItemClick(item, index);
+                  }
                 }
-                if (onItemClick) {
-                  onItemClick(item, index);
-                }
-              }
               : undefined
           }
           disabled={item.disabled || undefined}
@@ -218,8 +219,9 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       const separatorElement = separator as any;
       return React.cloneElement(separatorElement, {
         key: `separator-${index}`,
-        className: `${separatorElement.props?.className || ''
-          } ${separatorClassName}`.trim(),
+        className: `${
+          separatorElement.props?.className || ''
+        } ${separatorClassName}`.trim(),
       });
     }
 
