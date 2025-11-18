@@ -3,7 +3,6 @@
    Writes to /tmp/udp-socket-trace.log
 */
 const fs = require('fs');
-const path = require('path');
 const net = require('net');
 const tls = require('tls');
 const origCreateConnection = net.createConnection;
@@ -13,7 +12,7 @@ const LOGFILE = '/tmp/udp-socket-trace.log';
 function append(line) {
     try {
         fs.appendFileSync(LOGFILE, line + '\n');
-    } catch (e) {
+    } catch {
         // ignore
     }
 }
@@ -28,7 +27,7 @@ net.createConnection = function (...args) {
         append(new Date().toISOString());
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in net.createConnection: ' + String(e)); }
     return origCreateConnection.apply(this, args);
 };
 // Wrap net.connect (alias)
@@ -38,7 +37,7 @@ net.connect = function (...args) {
         append(new Date().toISOString());
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in net.connect: ' + String(e)); }
     return origConnect.apply(this, args);
 };
 // Wrap tls.connect
@@ -49,7 +48,7 @@ tls.connect = function (...args) {
         append(new Date().toISOString());
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in tls.connect: ' + String(e)); }
     return origTlsConnect.apply(this, args);
 };
 // Wrap Socket constructor to catch direct instantiation
@@ -62,7 +61,7 @@ function SocketWrapper(...args) {
         append(new Date().toISOString());
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in new net.Socket: ' + String(e)); }
     return origSocket.apply(this, args);
 }
 SocketWrapper.prototype = origSocket.prototype;
@@ -78,7 +77,7 @@ cp.spawn = function (...args) {
         append(new Date().toISOString());
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in cp.spawn: ' + String(e)); }
     const child = origSpawn.apply(this, args);
     try {
         append(JSON.stringify({ event: 'spawned', pid: child && child.pid ? child.pid : null }));
@@ -87,7 +86,7 @@ cp.spawn = function (...args) {
                 append(JSON.stringify({ event: 'child-exit', pid: child.pid, code, signal, when: new Date().toISOString() }));
             });
         }
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in cp.spawn: ' + String(e)); }
     return child;
 };
 cp.fork = function (...args) {
@@ -96,7 +95,7 @@ cp.fork = function (...args) {
         append(new Date().toISOString());
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in cp.fork: ' + String(e)); }
     const child = origFork.apply(this, args);
     try {
         append(JSON.stringify({ event: 'forked', pid: child && child.pid ? child.pid : null }));
@@ -105,7 +104,7 @@ cp.fork = function (...args) {
                 append(JSON.stringify({ event: 'child-exit', pid: child.pid, code, signal, when: new Date().toISOString() }));
             });
         }
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in cp.fork: ' + String(e)); }
     return child;
 };
 cp.exec = function (...args) {
@@ -114,7 +113,7 @@ cp.exec = function (...args) {
         append(new Date().toISOString());
         append(JSON.stringify({ args: args.slice(0, 2).map(a => String(a)) }));
         append(stack());
-    } catch (e) { }
+    } catch (e) { append('trace-socket-preload error in cp.exec: ' + String(e)); }
     return origExec.apply(this, args);
 };
 append('\n--- TRACE SOCKET PRELOAD LOADED at ' + new Date().toISOString() + ' ---\n');

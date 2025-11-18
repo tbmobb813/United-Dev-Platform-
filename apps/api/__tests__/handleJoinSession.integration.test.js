@@ -5,9 +5,27 @@ import WebSocket from 'ws';
 function waitForOpen(ws) {
   return new Promise((resolve, reject) => {
     if (ws.readyState === WebSocket.OPEN) return resolve();
-    ws.on('open', resolve);
-    ws.on('error', reject);
-    setTimeout(() => reject(new Error('WebSocket open timeout')), 5000);
+    const onOpen = () => {
+      cleanup();
+      resolve();
+    };
+    const onError = err => {
+      cleanup();
+      reject(err);
+    };
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('WebSocket open timeout'));
+    }, 5000);
+
+    const cleanup = () => {
+      ws.off('open', onOpen);
+      ws.off('error', onError);
+      clearTimeout(timer);
+    };
+
+    ws.on('open', onOpen);
+    ws.on('error', onError);
   });
 }
 
@@ -20,7 +38,7 @@ function waitForMessage(ws, type, timeout = 5000) {
           cleanup();
           resolve(parsed);
         }
-      } catch (e) {
+      } catch {
         // ignore binary/Yjs messages
       }
     };
@@ -65,7 +83,7 @@ const WORKER_ID = process.env.JEST_WORKER_ID
   ? Number(process.env.JEST_WORKER_ID)
   : 0;
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3030 + WORKER_ID;
-const WS_URL = `ws://localhost:${PORT}`;
+// WS_URL not used; per-test URLs are constructed using the actual port
 
 describe('handleJoinSession (integration)', () => {
   // increase hook timeout to allow server startup in parallel CI/workers
@@ -141,7 +159,7 @@ describe('handleJoinSession (integration)', () => {
         // fallback: forcefully terminate if close doesn't arrive in time
         try {
           ws.terminate();
-        } catch (e) {
+        } catch {
           /* ignore */
         }
         resolve();
