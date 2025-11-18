@@ -34,5 +34,9 @@ module.exports = {
   // trying to establish real websocket connections during unit tests.
   moduleNameMapper: {
     '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
+    // Ensure 'fastify' resolves consistently across package-level Jest runs
+    // by pointing it to a proxy that will load the real package when
+    // available or fall back to a lightweight stub.
+    '^fastify$': '<rootDir>/jest-mocks/fastify-proxy.cjs',
   },
 };

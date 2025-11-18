@@ -30,6 +30,11 @@ module.exports = {
     // don't fail parsing `export` in the ESM mock. Packages that run as ESM
     // can still mock via unstable_mockModule in their tests when needed.
     '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
+    // Ensure 'fastify' resolves consistently across workspace test runners by
+    // mapping it to the API package's installed entry point. This avoids
+    // module resolution failures for tests that import the API server from
+    // other package CWDs during the monorepo test run.
+    '^fastify$': '<rootDir>/jest-mocks/fastify-proxy.cjs',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   // Run a global teardown for diagnostic purposes in CI/dev when tests

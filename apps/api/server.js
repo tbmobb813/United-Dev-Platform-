@@ -456,7 +456,10 @@ function broadcastToSession(sessionId, message, _excludeUserId) {
 }
 
 const PORT = process.env.PORT || 3030;
-const app = Fastify({ logger: true });
+// Ensure compatibility with both CJS and ESM shapes for the fastify import.
+// Some Jest/CJS interop scenarios yield an object with a `.default` property.
+const FastifyFactory = Fastify && Fastify.default ? Fastify.default : Fastify;
+const app = FastifyFactory({ logger: true });
 
 app.register(fastifyCors, {
   origin:
