@@ -49,6 +49,19 @@ const setupWSConnection = (
         syncProtocol.readSyncStep2(decoder, doc, null);
         break;
       case syncProtocol.messageYjsUpdate:
+        // Optionally log incoming update size for debugging
+        try {
+          if (process.env.UDP_DEBUG_YJS) {
+            const remaining = decoding.readVarUint8Array
+              ? undefined
+              : undefined;
+            logger.info(
+              `[yjs] received update (${docName}): ${new Uint8Array(message).length} bytes`
+            );
+          }
+        } catch (e) {
+          // ignore logging errors
+        }
         syncProtocol.readUpdate(decoder, doc, null);
         break;
       case awarenessProtocol.messageAwareness:
@@ -61,18 +74,36 @@ const setupWSConnection = (
     }
   };
 
-  doc.on('update', (update, origin) => {
+  // Add an update handler that broadcasts updates to the connection (except origin)
+  const updateHandler = (update, origin) => {
+    try {
+      if (process.env.UDP_DEBUG_YJS) {
+        logger.info(
+          `[yjs] broadcasting update for doc=${docName} (fromOrigin=${origin === conn ? 'self' : 'remote'}) size=${update ? update.byteLength || update.length : 'unknown'
+          }`
+        );
+      }
+    } catch (e) {
+      // ignore logging failures
+    }
+
     if (origin !== conn) {
       const encoder = encoding.createEncoder();
       encoding.writeVarUint(encoder, syncProtocol.messageYjsUpdate);
       encoding.writeVarUint8Array(encoder, update);
       conn.send(encoding.toUint8Array(encoder));
     }
-  });
+  };
+
+  doc.on('update', updateHandler);
 
   conn.on('message', messageHandler);
   conn.on('close', () => {
-    doc.off('update', messageHandler);
+    try {
+      doc.off('update', updateHandler);
+    } catch (e) {
+      // ignore
+    }
   });
 
   // Send sync step 1
@@ -487,9 +518,8 @@ app.get('/api/sessions/:sessionId', async (request, reply) => {
 app.post('/ai/run', async (request, reply) => {
   try {
     const { tool, filePath, prompt, projectId, userId } = request.body || {};
-    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${
-      prompt || ''
-    }`;
+    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${prompt || ''
+      }`;
     if (projectId && userId) {
       logger.info(`AI interaction: ${userId} in project ${projectId}`);
     }

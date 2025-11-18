@@ -93,6 +93,11 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.0.0 --activate
 
+      - name: Enable Corepack and prepare pnpm (pinned)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -150,8 +155,7 @@ jobs:
           REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
         run: |
           if [ -f "$REPORT_PATH" ]; then
-            # Call helper script to safely read the report and print summary
-            node .github/scripts/read-duplicate-yjs-report.js > report_summary.txt
+            node -e "const r=JSON.parse(require('fs').readFileSync('$REPORT_PATH','utf8')); const s=`scanned:${r.scannedFiles} flagged:${r.flaggedFiles} severity:${r.severity} strict:${r.strict}`; console.log(s);" > report_summary.txt
             echo "summary<<EOF" >> $GITHUB_OUTPUT
             cat report_summary.txt >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
