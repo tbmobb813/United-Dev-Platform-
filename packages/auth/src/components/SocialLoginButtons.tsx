@@ -1,3 +1,4 @@
+import logger from 'logger';
 import React from 'react';
 
 export interface SocialProvider {
