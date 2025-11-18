@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-// NOTE: This file is intentionally duplicated as both .js and .cjs to support
-// different Node.js module systems and tooling. If you update this file,
-// ensure you also update `scripts/run-duplicate-yjs-fixture.js`.
 const path = require('path');
 const fs = require('fs');
 const { spawnSync } = require('child_process');
