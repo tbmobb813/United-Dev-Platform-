@@ -571,6 +571,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@udp/logger':
+        specifier: workspace:*
+        version: link:../logger
       react:
         specifier: 18.3.1
         version: 18.3.1
