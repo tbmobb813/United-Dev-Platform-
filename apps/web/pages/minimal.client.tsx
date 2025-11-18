@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import logger from '@udp/logger';
 import { useRouter } from 'next/router';
-import * as Y from 'yjs';
+import * as Y from '@udp/editor-core/yjs-singleton';
 import { WebsocketProvider } from 'y-websocket';
 import { Awareness } from 'y-protocols/awareness';
 import { v4 as uuidv4 } from 'uuid';

@@ -1,7 +1,7 @@
 import { IndexeddbPersistence } from 'y-indexeddb';
 import logger from '@udp/logger';
 import { WebsocketProvider } from 'y-websocket';
-import * as Y from 'yjs';
+import * as Y from './yjs-singleton';
 
 export interface OfflineConfig {
   room: string;

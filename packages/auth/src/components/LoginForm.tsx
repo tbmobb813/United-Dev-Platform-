@@ -1,4 +1,3 @@
-/* global HTMLInputElement */
 import React, { useState } from 'react';
 import type { AuthResult, LoginCredentials } from '../types';
 

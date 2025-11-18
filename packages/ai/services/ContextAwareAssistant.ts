@@ -508,13 +508,14 @@ Format as JSON:
     bestPractices: string[];
   } {
     const codeBlocks = content.match(/```[\s\S]*?```/g) || [];
-    const suggestions: CodeExample[] = codeBlocks.map((block, index) => {
+    const codeLanguage = language || 'text';
+    const suggestions = codeBlocks.map((block, index) => {
       const code = block.replace(/```\w*\n?/g, '').trim();
       return {
         title: `Suggestion ${index + 1}`,
-        description: `Code suggestion for ${language}`,
+        description: `Code suggestion for ${codeLanguage}`,
         code,
-        language,
+        language: codeLanguage,
         context: 'Generated based on project patterns',
       };
     });
@@ -578,8 +579,9 @@ Format as JSON:
   private extractCodeExamples(content: string): CodeExample[] {
     const codeBlocks = content.match(/```(\w+)?\n([\s\S]*?)```/g) || [];
     return codeBlocks.map((block, index) => {
-      const languageMatch = block.match(/```(\w+)/);
-      const language = languageMatch ? languageMatch[1] : 'text';
+      // Use non-capturing group and make the language capture required
+      const languageMatch = block.match(/```(?:(\w+))?\n([\s\S]*?)```/);
+      const blockLanguage = (languageMatch && languageMatch[1]) || 'text';
       const code = block
         .replace(/```\w*\n?/g, '')
         .replace(/```/g, '')
@@ -587,9 +589,9 @@ Format as JSON:
 
       return {
         title: `Example ${index + 1}`,
-        description: `Code example in ${language}`,
+        description: `Code example in ${blockLanguage}`,
         code,
-        language,
+        language: blockLanguage,
       };
     });
   }

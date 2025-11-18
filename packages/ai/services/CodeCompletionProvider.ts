@@ -214,7 +214,7 @@ Return suggestions as JSON array with format:
         const code = block.replace(/```\w*\n?/g, '').trim();
         if (code) {
           suggestions.push({
-            text: code.split('\n')[0], // First line as preview
+            text: code.split('\n')[0] || '', // First line as preview
             description: `Code suggestion ${index + 1}`,
             type: 'snippet',
             priority: 8 - index,

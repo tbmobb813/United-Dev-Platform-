@@ -17,6 +17,22 @@ commands_run:
 ci_status: <e.g. all checks passing / pending>
 -->
 
+<!--
+Agent-PR-Checklist:
+branch: <feature/branch-name>
+pr_summary: <Short summary of what this PR changes>
+files_changed:
+      - <path/to/changed/file1>
+      - <path/to/changed/file2>
+commands_run:
+      - pnpm -w format
+      - pnpm -w type-check
+      - pnpm -w lint
+      - pnpm -w test
+      - pnpm -w check:duplicate-yjs
+ci_status: <e.g. all checks passing / pending>
+-->
+
 Brief description of the changes in this PR.
 
 ## Type of Change

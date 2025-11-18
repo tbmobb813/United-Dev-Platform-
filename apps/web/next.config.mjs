@@ -1,9 +1,15 @@
 // Clean, canonical Next.js configuration tuned to avoid duplicate-Yjs bundling
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
 const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const yjsEsm = (() => {
   try {
+    // Resolve to actual yjs package for consistency
     return require.resolve('yjs');
   } catch (e) {
     return undefined;
@@ -36,12 +42,18 @@ const nextConfig = {
         yjs: yjsEsm,
         'yjs/dist/yjs.mjs': yjsEsm,
         'yjs/dist/yjs.cjs': yjsEsm,
+        // DO NOT alias the singleton - it must remain separate to provide single Yjs instance
       };
     }
 
     try {
       config.resolve.mainFields = Array.from(
-        new Set(['module', 'browser', 'main', ...(config.resolve.mainFields || [])])
+        new Set([
+          'module',
+          'browser',
+          'main',
+          ...(config.resolve.mainFields || []),
+        ])
       );
     } catch (e) {
       /* ignore */
@@ -59,33 +71,58 @@ const nextConfig = {
       };
     }
 
-    config.optimization = config.optimization || {};
-    config.optimization.splitChunks = config.optimization.splitChunks || {};
-    config.optimization.splitChunks.cacheGroups = config.optimization.splitChunks.cacheGroups || {};
+    // Only apply chunk optimization for client-side bundles
+    if (!isServer) {
+      config.optimization = config.optimization || {};
+      config.optimization.splitChunks = config.optimization.splitChunks || {};
+      config.optimization.splitChunks.cacheGroups =
+        config.optimization.splitChunks.cacheGroups || {};
+
+      // Force all Yjs-related modules into a single chunk
+      config.optimization.splitChunks.cacheGroups.yjs = {
+        test: /[\\/]node_modules[\\/](yjs|y-protocols|y-websocket|y-indexeddb)[\\/]/,
+        name: 'yjs-vendor',
+        priority: 100,
+        reuseExistingChunk: true,
+        enforce: true,
+      };
+    }
 
     // If webpack is available, register replacement plugins
-    if (webpackPkg && typeof webpackPkg.NormalModuleReplacementPlugin === 'function') {
+    if (
+      webpackPkg &&
+      typeof webpackPkg.NormalModuleReplacementPlugin === 'function'
+    ) {
       config.plugins = config.plugins || [];
 
       config.plugins.push(
-        new webpackPkg.NormalModuleReplacementPlugin(/^y-protocols(\/.*)?$/, (resource) => {
-          const req = resource.request || '';
-          if (req === 'y-protocols' || req === 'y-protocols/sync' || req === 'y-protocols/sync.js') {
-            resource.request = require.resolve('y-protocols/dist/sync.cjs');
-          } else if (req.includes('awareness')) {
-            resource.request = require.resolve('y-protocols/dist/awareness.cjs');
-          } else if (req.includes('auth')) {
-            resource.request = require.resolve('y-protocols/dist/auth.cjs');
-          } else {
-            resource.request = require.resolve('y-protocols/dist/sync.cjs');
+        new webpackPkg.NormalModuleReplacementPlugin(
+          /^y-protocols(\/.*)?$/,
+          resource => {
+            const req = resource.request || '';
+            if (
+              req === 'y-protocols' ||
+              req === 'y-protocols/sync' ||
+              req === 'y-protocols/sync.js'
+            ) {
+              resource.request = require.resolve('y-protocols/dist/sync.cjs');
+            } else if (req.includes('awareness')) {
+              resource.request = require.resolve(
+                'y-protocols/dist/awareness.cjs'
+              );
+            } else if (req.includes('auth')) {
+              resource.request = require.resolve('y-protocols/dist/auth.cjs');
+            } else {
+              resource.request = require.resolve('y-protocols/dist/sync.cjs');
+            }
           }
-        })
+        )
       );
 
       config.plugins.push(
         new webpackPkg.NormalModuleReplacementPlugin(
           /node_modules\/\.pnpm\/y-websocket@.*\/node_modules\/y-websocket\/dist\/y-websocket\.cjs$/,
-          (resource) => {
+          resource => {
             resource.request = require.resolve('y-websocket');
           }
         )
@@ -93,7 +130,7 @@ const nextConfig = {
 
       if (yjsEsm) {
         config.plugins.push(
-          new webpackPkg.NormalModuleReplacementPlugin(/^yjs$/, (resource) => {
+          new webpackPkg.NormalModuleReplacementPlugin(/^yjs$/, resource => {
             resource.request = yjsEsm;
           })
         );
@@ -104,7 +141,7 @@ const nextConfig = {
         config.plugins.push(
           new webpackPkg.SourceMapDevToolPlugin({
             filename: '[file].map',
-            moduleFilenameTemplate: (info) => `webpack:///${info.resourcePath}`,
+            moduleFilenameTemplate: info => `webpack:///${info.resourcePath}`,
           })
         );
       }
@@ -112,6 +149,17 @@ const nextConfig = {
 
     if (isServer) {
       config.devtool = 'source-map';
+
+      // Externalize Yjs packages on the server to prevent duplicate bundling
+      config.externals = config.externals || [];
+      if (Array.isArray(config.externals)) {
+        config.externals.push({
+          yjs: 'commonjs yjs',
+          'y-protocols': 'commonjs y-protocols',
+          'y-websocket': 'commonjs y-websocket',
+          'y-indexeddb': 'commonjs y-indexeddb',
+        });
+      }
     }
 
     return config;

@@ -22,6 +22,14 @@ export interface AIAssistantProps {
 
   onCodeInsert?: (code: string) => void;
   aiManager?: AIManager; // Optional AI manager instance
+  initialPrompt?: string; // Auto-send this message when opened
+  initialIntent?:
+    | 'chat'
+    | 'explain'
+    | 'generate'
+    | 'debug'
+    | 'optimize'
+    | 'test'; // Intent for initial message
 }
 
 // AI Assistant Component
@@ -32,12 +40,15 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   selectedCode,
   onCodeInsert,
   aiManager,
+  initialPrompt,
+  initialIntent = 'chat',
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
   const messagesEndRef = useRef<React.ElementRef<'div'>>(null);
+  const hasAutoSentRef = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -46,6 +57,20 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages, streamingContent]);
+
+  // Auto-send initial prompt when modal opens
+  useEffect(() => {
+    if (isOpen && initialPrompt && !hasAutoSentRef.current) {
+      hasAutoSentRef.current = true;
+      // Small delay to ensure modal is fully rendered
+      setTimeout(() => {
+        sendMessage(initialPrompt, initialIntent);
+      }, 100);
+    } else if (!isOpen) {
+      // Reset when modal closes
+      hasAutoSentRef.current = false;
+    }
+  }, [isOpen, initialPrompt, initialIntent]);
 
   const getCodeContext = (): CodeContext => {
     const fileExtension = currentFile?.split('.').pop()?.toLowerCase();

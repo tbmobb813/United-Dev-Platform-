@@ -18,7 +18,10 @@
           await mod.main();
         } catch (runErr) {
           // eslint-disable-next-line no-console
-          console.error('Detector execution failed:', runErr && runErr.stack ? runErr.stack : String(runErr));
+          console.error(
+            'Detector execution failed:',
+            runErr && runErr.stack ? runErr.stack : String(runErr)
+          );
           // In report-only mode we want to still write the report and not fail CI.
           if (reportMode) {
             process.exit(0);
@@ -33,8 +36,12 @@
       }
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error('Failed to load ESM detector:', err && err.stack ? err.stack : String(err));
-      if (process.argv.some(a => a && a.startsWith('--report'))) process.exit(0);
+      console.error(
+        'Failed to load ESM detector:',
+        err && err.stack ? err.stack : String(err)
+      );
+      if (process.argv.some(a => a && a.startsWith('--report')))
+        process.exit(0);
       process.exit(1);
     }
   })();

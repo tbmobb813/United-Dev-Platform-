@@ -1,0 +1,1 @@
+scanned:12 flagged:2 severity:error strict:true

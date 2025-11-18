@@ -7,8 +7,8 @@ on:
     branches: [main, develop]
 
 env:
-  NODE_VERSION: "20"
-  PNPM_VERSION: "latest"
+  NODE_VERSION: '20'
+  PNPM_VERSION: 'latest'
 
 jobs:
   setup:
@@ -58,6 +58,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -83,6 +90,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Debug Prettier and package.json state
+        run: |
+          echo "=== Prettier version and location ==="
+          pnpm exec -- prettier --version
+          pnpm exec -- which prettier
+          echo ""
+          echo "=== Git status (checking for modified files) ==="
+          git status --porcelain
+          echo ""
+          echo "=== Diff of package.json (if modified) ==="
+          git --no-pager diff -- package.json || echo "No changes to package.json"
+          echo ""
+          echo "=== Last 10 bytes of package.json in hex ==="
+          tail -c 10 package.json | od -An -tx1
+
       - name: Run ESLint
         run: pnpm lint
 
@@ -97,6 +119,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -383,17 +412,17 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: "fs"
-          scan-ref: "."
-          format: "sarif"
-          output: "trivy-results.sarif"
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         continue-on-error: true
         with:
-          sarif_file: "trivy-results.sarif"
+          sarif_file: 'trivy-results.sarif'
 
   deploy-staging:
     name: Deploy to Staging

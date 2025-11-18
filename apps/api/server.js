@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import http from 'http';
 import { WebSocketServer } from 'ws';
-import * as Y from 'yjs';
+import * as Y from '@udp/editor-core/yjs-singleton';
 import * as syncProtocol from 'y-protocols/sync';
 import * as awarenessProtocol from 'y-protocols/awareness';
 import * as encoding from 'lib0/encoding';
