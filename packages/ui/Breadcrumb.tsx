@@ -3,12 +3,12 @@ import React, { ReactNode } from 'react';
 export interface BreadcrumbItem {
   key?: string | number;
   label: ReactNode;
-  href?: string;
+  href?: string | undefined;
 
-  onClick?: (event: React.MouseEvent<any>) => void;
-  disabled?: boolean;
-  icon?: ReactNode;
-  className?: string;
+  onClick?: ((event: React.MouseEvent<any>) => void) | undefined;
+  disabled?: boolean | undefined;
+  icon?: ReactNode | undefined;
+  className?: string | undefined;
 }
 
 export interface BreadcrumbProps {
@@ -37,12 +37,12 @@ export interface BreadcrumbSeparatorProps {
 }
 
 export interface BreadcrumbLinkProps {
-  href?: string;
+  href?: string | undefined;
 
-  onClick?: (event: React.MouseEvent<any>) => void;
+  onClick?: ((event: React.MouseEvent<any>) => void) | undefined;
   children: ReactNode;
-  className?: string;
-  disabled?: boolean;
+  className?: string | undefined;
+  disabled?: boolean | undefined;
 }
 
 // Default separator component
@@ -101,9 +101,8 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
 
   return (
     <span
-      className={`breadcrumb__text ${
-        disabled ? 'breadcrumb__text--disabled' : ''
-      } ${className}`}
+      className={`breadcrumb__text ${disabled ? 'breadcrumb__text--disabled' : ''
+        } ${className}`}
     >
       {children}
     </span>
@@ -141,7 +140,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     const firstItem = items[0];
     const finalItems = items.slice(-lastItems);
 
-    return [firstItem, ...finalItems];
+    return firstItem ? [firstItem, ...finalItems] : finalItems;
   };
 
   const getEllipsisItem = (): BreadcrumbItem => ({
@@ -192,20 +191,20 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     return (
       <li key={item.key || index} className={itemClasses}>
         <BreadcrumbLink
-          href={!isLast ? item.href : undefined}
+          href={(!isLast && item.href) || undefined}
           onClick={
             !isLast
               ? event => {
-                  if (item.onClick) {
-                    item.onClick(event);
-                  }
-                  if (onItemClick) {
-                    onItemClick(item, index);
-                  }
+                if (item.onClick) {
+                  item.onClick(event);
                 }
+                if (onItemClick) {
+                  onItemClick(item, index);
+                }
+              }
               : undefined
           }
-          disabled={item.disabled}
+          disabled={item.disabled || undefined}
           className={isLast ? 'breadcrumb__current' : ''}
         >
           {content}
@@ -219,9 +218,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       const separatorElement = separator as any;
       return React.cloneElement(separatorElement, {
         key: `separator-${index}`,
-        className: `${
-          separatorElement.props?.className || ''
-        } ${separatorClassName}`.trim(),
+        className: `${separatorElement.props?.className || ''
+          } ${separatorClassName}`.trim(),
       });
     }
 
@@ -257,14 +255,14 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       <ol className='breadcrumb__list' role='list'>
         {itemsToRender.map((item, index) => {
           const isLast = index === itemsToRender.length - 1;
-          const itemElement = renderItem(item, index, isLast);
+          const itemElement = item ? renderItem(item, index, isLast) : null;
 
           if (isLast) {
             return itemElement;
           }
 
           return (
-            <React.Fragment key={item.key || index}>
+            <React.Fragment key={item?.key || index}>
               {itemElement}
               {renderSeparator(index)}
             </React.Fragment>
@@ -348,7 +346,7 @@ export const breadcrumbUtils = {
     return hierarchy.map(item => ({
       key: item.id,
       label: item.name,
-      href: item.url,
+      href: item.url || undefined,
       icon: item.icon,
     }));
   },

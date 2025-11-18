@@ -5,7 +5,7 @@ module.exports = {
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/scripts/jest-test-helpers.cjs'],
   // Treat .ts files as ESM modules. Jest will infer .js as ESM when the nearest
   // Treat TypeScript files as ESM modules. Jest will infer .js as ESM from the
   // nearest package.json "type": "module" where applicable, so keep only
@@ -32,4 +32,8 @@ module.exports = {
     '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  // Run a global teardown for diagnostic purposes in CI/dev when tests
+  // leave open handles. We add a small globalTeardown script that prints
+  // why-is-node-running output to help locate leaking async resources.
+  globalTeardown: '<rootDir>/scripts/jest-global-teardown.cjs',
 };

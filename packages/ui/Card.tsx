@@ -3,8 +3,8 @@ import React from 'react';
 export type CardProps = {
   children: React.ReactNode;
   title?: string;
-  className?: string;
-  style?: React.CSSProperties;
+  className?: string | undefined;
+  style?: React.CSSProperties | undefined;
   padding?: 'none' | 'small' | 'medium' | 'large';
   shadow?: 'none' | 'small' | 'medium' | 'large';
 };

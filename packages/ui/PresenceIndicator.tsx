@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 export interface PresenceIndicatorProps {
   isActive: boolean;
-  lastSeen?: Date;
+  lastSeen?: Date | undefined;
   size?: 'small' | 'medium' | 'large';
   showStatus?: boolean;
 }

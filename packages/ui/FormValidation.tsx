@@ -13,7 +13,7 @@ export interface ValidationRule {
   integer?: boolean;
   // Custom validator receives an unknown value and should narrow/convert as needed
   custom?: (value: unknown) => boolean | string;
-  message?: string;
+  message?: string | undefined;
 }
 
 export interface FieldValidation {
@@ -211,13 +211,15 @@ export const validateForm = (
 };
 
 // Hook for form validation
+export interface FormValidationOptions {
+  validateOnChange?: boolean | undefined;
+  onValidationChange?: ((isValid: boolean, errors: ValidationErrors) => void) | undefined;
+}
+
 export const useFormValidation = (
   data: Record<string, unknown>,
   validation: FieldValidation,
-  options: {
-    validateOnChange?: boolean;
-    onValidationChange?: (isValid: boolean, errors: ValidationErrors) => void;
-  } = {}
+  options: FormValidationOptions = {}
 ): FormValidationHookResult => {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -245,8 +247,9 @@ export const useFormValidation = (
 
     const isValid = Object.keys(newErrors).length === 0;
 
-    if (options.onValidationChange) {
-      options.onValidationChange(isValid, newErrors);
+    const callback = options.onValidationChange;
+    if (callback && typeof callback === 'function') {
+      callback(isValid, newErrors);
     }
 
     return isValid;
@@ -272,20 +275,20 @@ export const useFormValidation = (
   };
 
   const hasError = (fieldName: string): boolean => {
-    return errors[fieldName] && errors[fieldName].length > 0;
+    const fieldErrors = errors[fieldName];
+    return Boolean(fieldErrors?.length);
   };
 
   const getFirstError = (fieldName: string): string | null => {
-    return errors[fieldName] && errors[fieldName].length > 0
-      ? errors[fieldName][0]
-      : null;
+    const fieldErrors = errors[fieldName];
+    return fieldErrors?.[0] ?? null;
   };
 
   const isValid = Object.keys(errors).length === 0;
 
   // Validate on data change if enabled
   useEffect(() => {
-    if (options.validateOnChange) {
+    if (options.validateOnChange === true) {
       validateAll();
     }
   }, [data, validation, options.validateOnChange]);
@@ -312,10 +315,12 @@ export const FormValidation: React.FC<FormValidationProps> = ({
   validateOnChange = false,
   className = '',
 }) => {
-  const { isValid, validateAll } = useFormValidation(data, validation, {
-    validateOnChange,
-    onValidationChange,
-  });
+  const validationOptions: FormValidationOptions = {
+    validateOnChange: validateOnChange === true ? true : undefined,
+    onValidationChange: onValidationChange || undefined
+  };
+
+  const { isValid, validateAll } = useFormValidation(data, validation, validationOptions);
 
   useEffect(() => {
     if (showErrorsOnMount) {
@@ -371,15 +376,19 @@ export interface ValidationContextValue {
 export const ValidationContext =
   React.createContext<ValidationContextValue | null>(null);
 
-export const ValidationProvider: React.FC<{
+export interface ValidationProviderProps {
   children: ReactNode;
   data: Record<string, unknown>;
   validation: FieldValidation;
-  options?: {
-    validateOnChange?: boolean;
-    onValidationChange?: (isValid: boolean, errors: ValidationErrors) => void;
-  };
-}> = ({ children, data, validation, options = {} }) => {
+  options?: FormValidationOptions;
+}
+
+export const ValidationProvider: React.FC<ValidationProviderProps> = ({
+  children,
+  data,
+  validation,
+  options = {}
+}) => {
   const validationResult = useFormValidation(data, validation, options);
 
   return (

@@ -92,12 +92,12 @@ export interface NotificationProviderProps {
   maxNotifications?: number;
   defaultDuration?: number;
   position?:
-    | 'top-right'
-    | 'top-left'
-    | 'bottom-right'
-    | 'bottom-left'
-    | 'top-center'
-    | 'bottom-center';
+  | 'top-right'
+  | 'top-left'
+  | 'bottom-right'
+  | 'bottom-left'
+  | 'top-center'
+  | 'bottom-center';
 }
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({
@@ -315,9 +315,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
                   key={index}
                   type='button'
                   onClick={action.onClick}
-                  className={`notification__action notification__action--${
-                    action.variant || 'secondary'
-                  }`}
+                  className={`notification__action notification__action--${action.variant || 'secondary'
+                    }`}
                 >
                   {action.label}
                 </button>
@@ -382,16 +381,21 @@ export const Toast: React.FC<ToastProps> = ({
   const [isVisible, setIsVisible] = React.useState(show);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
     if (show && duration > 0) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setIsVisible(false);
         if (onClose) {
           setTimeout(onClose, 300);
         }
       }, duration);
-
-      return () => clearTimeout(timer);
     }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [show, duration, onClose]);
 
   if (!isVisible) {

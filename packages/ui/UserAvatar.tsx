@@ -14,7 +14,7 @@ export interface UserAvatarProps {
   size?: 'small' | 'medium' | 'large';
   showName?: boolean;
   isActive?: boolean;
-  lastSeen?: Date;
+  lastSeen?: Date | undefined;
   showPresence?: boolean;
 }
 

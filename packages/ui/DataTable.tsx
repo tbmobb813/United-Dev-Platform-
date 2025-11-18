@@ -103,7 +103,11 @@ export const DataTable = <T extends Record<string, React.Key>>({
     }
     if (rowKey) {
       // rowKey is a keyof T and T's values are constrained to React.Key, so direct access is safe
-      return record[rowKey as keyof T];
+      const key = record[rowKey as keyof T];
+      if (key === undefined) {
+        throw new Error(`Row key '${String(rowKey)}' not found in record`);
+      }
+      return key;
     }
     return index;
   };
@@ -263,16 +267,14 @@ export const DataTable = <T extends Record<string, React.Key>>({
     return (
       <span className='datatable__sort-icon'>
         <span
-          className={`datatable__sort-up ${
-            direction === 'asc' ? 'datatable__sort-up--active' : ''
-          }`}
+          className={`datatable__sort-up ${direction === 'asc' ? 'datatable__sort-up--active' : ''
+            }`}
         >
           ▲
         </span>
         <span
-          className={`datatable__sort-down ${
-            direction === 'desc' ? 'datatable__sort-down--active' : ''
-          }`}
+          className={`datatable__sort-down ${direction === 'desc' ? 'datatable__sort-down--active' : ''
+            }`}
         >
           ▼
         </span>
@@ -354,15 +356,13 @@ export const DataTable = <T extends Record<string, React.Key>>({
                   className={`
                     datatable__header-cell
                     ${column.headerClassName || ''}
-                    ${
-                      column.sortable || sortable
-                        ? 'datatable__header-cell--sortable'
-                        : ''
+                    ${column.sortable || sortable
+                      ? 'datatable__header-cell--sortable'
+                      : ''
                     }
-                    ${
-                      column.align
-                        ? `datatable__header-cell--${column.align}`
-                        : ''
+                    ${column.align
+                      ? `datatable__header-cell--${column.align}`
+                      : ''
                     }
                   `}
                   style={{ width: column.width }}
@@ -425,10 +425,9 @@ export const DataTable = <T extends Record<string, React.Key>>({
                         className={`
                           datatable__cell
                           ${column.className || ''}
-                          ${
-                            column.align
-                              ? `datatable__cell--${column.align}`
-                              : ''
+                          ${column.align
+                            ? `datatable__cell--${column.align}`
+                            : ''
                           }
                         `}
                       >
@@ -452,7 +451,7 @@ export const DataTable = <T extends Record<string, React.Key>>({
   );
 };
 
-interface DataTablePaginationProps extends PaginationConfig {}
+interface DataTablePaginationProps extends PaginationConfig { }
 
 const DataTablePagination: React.FC<DataTablePaginationProps> = ({
   current,
@@ -542,10 +541,9 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
             onClick={() => typeof page === 'number' && handlePageChange(page)}
             className={`
               datatable-pagination__button
-              ${
-                typeof page === 'number' && page === current
-                  ? 'datatable-pagination__button--active'
-                  : ''
+              ${typeof page === 'number' && page === current
+                ? 'datatable-pagination__button--active'
+                : ''
               }
               ${page === '...' ? 'datatable-pagination__ellipsis' : ''}
             `}
