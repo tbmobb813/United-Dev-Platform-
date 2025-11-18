@@ -518,8 +518,9 @@ app.get('/api/sessions/:sessionId', async (request, reply) => {
 app.post('/ai/run', async (request, reply) => {
   try {
     const { tool, filePath, prompt, projectId, userId } = request.body || {};
-    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${prompt || ''
-      }`;
+    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${
+      prompt || ''
+    }`;
     if (projectId && userId) {
       logger.info(`AI interaction: ${userId} in project ${projectId}`);
     }
