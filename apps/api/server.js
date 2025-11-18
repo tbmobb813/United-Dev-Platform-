@@ -203,7 +203,13 @@ function setupCollaborativeWSConnection(conn, req) {
 }
 
 // Handle user joining a collaboration session
-export async function handleJoinSession(conn, data, sessionId, projectId, userId) {
+export async function handleJoinSession(
+  conn,
+  data,
+  sessionId,
+  projectId,
+  userId
+) {
   try {
     // Verify session exists and user has access
     const session = await prisma.collaborationSession.findFirst({
@@ -527,79 +533,172 @@ function registerRoutes(fastifyApp, fastifyCorsImport, httpModule, wsModule) {
   });
 
   // Project and file endpoints (minimal re-registrations for tests)
-  fastifyApp.post('/api/projects', { preHandler: authenticateToken }, async (request, reply) => {
-    try {
-      const { name, description, visibility } = request.body || {};
-      const userId = request.userId;
-      if (!name) {
-        reply.code(400).send({ error: 'Project name is required' });
-        return;
+  fastifyApp.post(
+    '/api/projects',
+    { preHandler: authenticateToken },
+    async (request, reply) => {
+      try {
+        const { name, description, visibility } = request.body || {};
+        const userId = request.userId;
+        if (!name) {
+          reply.code(400).send({ error: 'Project name is required' });
+          return;
+        }
+        const project = await prisma.project.create({
+          data: {
+            name,
+            description,
+            visibility: visibility || 'PRIVATE',
+            owner: { connect: { id: userId } },
+            members: { create: { userId, role: 'OWNER' } },
+          },
+        });
+        reply.code(201).send({ project });
+      } catch (error) {
+        logger.error('Error creating project:', error);
+        reply.code(500).send({ error: 'Failed to create project' });
       }
-      const project = await prisma.project.create({
-        data: {
+    }
+  );
+
+  fastifyApp.post(
+    '/api/files',
+    { preHandler: authenticateToken },
+    async (request, reply) => {
+      try {
+        const {
+          projectId,
+          path: filePath,
           name,
-          description,
-          visibility: visibility || 'PRIVATE',
-          owner: { connect: { id: userId } },
-          members: { create: { userId, role: 'OWNER' } },
-        },
-      });
-      reply.code(201).send({ project });
-    } catch (error) {
-      logger.error('Error creating project:', error);
-      reply.code(500).send({ error: 'Failed to create project' });
-    }
-  });
-
-  fastifyApp.post('/api/files', { preHandler: authenticateToken }, async (request, reply) => {
-    try {
-      const { projectId, path: filePath, name, content, type, mimeType } = request.body || {};
-      const userId = request.userId;
-      if (!projectId || !filePath || !name) {
-        reply.code(400).send({ error: 'Project ID, path, and name are required' });
-        return;
+          content,
+          type,
+          mimeType,
+        } = request.body || {};
+        const userId = request.userId;
+        if (!projectId || !filePath || !name) {
+          reply
+            .code(400)
+            .send({ error: 'Project ID, path, and name are required' });
+          return;
+        }
+        const project = await prisma.project.findUnique({
+          where: { id: projectId },
+          include: { members: true },
+        });
+        if (
+          !project ||
+          (!project.members.some(m => m.userId === userId) &&
+            project.ownerId !== userId)
+        ) {
+          reply.code(403).send({ error: 'Access denied to project' });
+          return;
+        }
+        const file = await prisma.projectFile.create({
+          data: {
+            projectId,
+            path: filePath,
+            name,
+            content: content || '',
+            type: type || 'FILE',
+            mimeType: mimeType || 'text/plain',
+            size: content ? Buffer.byteLength(content, 'utf8') : 0,
+          },
+        });
+        await prisma.fileActivity.create({
+          data: { action: 'CREATE', fileId: file.id, userId },
+        });
+        reply.code(201).send({ file });
+      } catch (error) {
+        logger.error('Error creating file:', error);
+        reply.code(500).send({ error: 'Failed to create file' });
       }
-      const project = await prisma.project.findUnique({ where: { id: projectId }, include: { members: true } });
-      if (!project || (!project.members.some(m => m.userId === userId) && project.ownerId !== userId)) {
-        reply.code(403).send({ error: 'Access denied to project' });
-        return;
-      }
-      const file = await prisma.projectFile.create({ data: { projectId, path: filePath, name, content: content || '', type: type || 'FILE', mimeType: mimeType || 'text/plain', size: content ? Buffer.byteLength(content, 'utf8') : 0 } });
-      await prisma.fileActivity.create({ data: { action: 'CREATE', fileId: file.id, userId } });
-      reply.code(201).send({ file });
-    } catch (error) {
-      logger.error('Error creating file:', error);
-      reply.code(500).send({ error: 'Failed to create file' });
     }
-  });
+  );
 
-  fastifyApp.put('/api/files/:fileId', { preHandler: authenticateToken }, async (request, reply) => {
-    try {
-      const { fileId } = request.params || {};
-      const { content } = request.body || {};
-      const userId = request.userId;
-      if (!content) { reply.code(400).send({ error: 'File content is required' }); return; }
-      const existingFile = await prisma.projectFile.findUnique({ where: { id: fileId }, include: { project: { include: { members: true } } } });
-      if (!existingFile) { reply.code(404).send({ error: 'File not found' }); return; }
-      const project = existingFile.project;
-      if (!project || (!project.members.some(m => m.userId === userId) && project.ownerId !== userId)) { reply.code(403).send({ error: 'Access denied to project' }); return; }
-      const updatedFile = await prisma.projectFile.update({ where: { id: fileId }, data: { content, size: Buffer.byteLength(content, 'utf8'), updatedAt: new Date() } });
-      await prisma.fileActivity.create({ data: { action: 'UPDATE', fileId, userId, changes: { contentChanged: true, size: updatedFile.size } } });
-      reply.send({ file: updatedFile });
-    } catch (error) { logger.error('Error updating file:', error); reply.code(500).send({ error: 'Failed to update file' }); }
-  });
+  fastifyApp.put(
+    '/api/files/:fileId',
+    { preHandler: authenticateToken },
+    async (request, reply) => {
+      try {
+        const { fileId } = request.params || {};
+        const { content } = request.body || {};
+        const userId = request.userId;
+        if (!content) {
+          reply.code(400).send({ error: 'File content is required' });
+          return;
+        }
+        const existingFile = await prisma.projectFile.findUnique({
+          where: { id: fileId },
+          include: { project: { include: { members: true } } },
+        });
+        if (!existingFile) {
+          reply.code(404).send({ error: 'File not found' });
+          return;
+        }
+        const project = existingFile.project;
+        if (
+          !project ||
+          (!project.members.some(m => m.userId === userId) &&
+            project.ownerId !== userId)
+        ) {
+          reply.code(403).send({ error: 'Access denied to project' });
+          return;
+        }
+        const updatedFile = await prisma.projectFile.update({
+          where: { id: fileId },
+          data: {
+            content,
+            size: Buffer.byteLength(content, 'utf8'),
+            updatedAt: new Date(),
+          },
+        });
+        await prisma.fileActivity.create({
+          data: {
+            action: 'UPDATE',
+            fileId,
+            userId,
+            changes: { contentChanged: true, size: updatedFile.size },
+          },
+        });
+        reply.send({ file: updatedFile });
+      } catch (error) {
+        logger.error('Error updating file:', error);
+        reply.code(500).send({ error: 'Failed to update file' });
+      }
+    }
+  );
 
-  fastifyApp.get('/api/files/:fileId', { preHandler: authenticateToken }, async (request, reply) => {
-    try {
-      const { fileId } = request.params || {};
-      const userId = request.userId;
-      const file = await prisma.projectFile.findUnique({ where: { id: fileId }, include: { project: { include: { members: true } } } });
-      if (!file) { reply.code(404).send({ error: 'File not found' }); return; }
-      const project = file.project;
-      if (!project || (!project.members.some(m => m.userId === userId) && project.ownerId !== userId)) { reply.code(403).send({ error: 'Access denied to project' }); return; }
-      reply.send({ file });
-    } catch (error) { logger.error('Error fetching file:', error); reply.code(500).send({ error: 'Failed to fetch file' }); }
-  });
+  fastifyApp.get(
+    '/api/files/:fileId',
+    { preHandler: authenticateToken },
+    async (request, reply) => {
+      try {
+        const { fileId } = request.params || {};
+        const userId = request.userId;
+        const file = await prisma.projectFile.findUnique({
+          where: { id: fileId },
+          include: { project: { include: { members: true } } },
+        });
+        if (!file) {
+          reply.code(404).send({ error: 'File not found' });
+          return;
+        }
+        const project = file.project;
+        if (
+          !project ||
+          (!project.members.some(m => m.userId === userId) &&
+            project.ownerId !== userId)
+        ) {
+          reply.code(403).send({ error: 'Access denied to project' });
+          return;
+        }
+        reply.send({ file });
+      } catch (error) {
+        logger.error('Error fetching file:', error);
+        reply.code(500).send({ error: 'Failed to fetch file' });
+      }
+    }
+  );
 
   // Create HTTP server and WebSocket server
   server = httpModule.createServer(fastifyApp);
@@ -607,13 +706,18 @@ function registerRoutes(fastifyApp, fastifyCorsImport, httpModule, wsModule) {
 
   server.on('upgrade', (request, socket, head) => {
     logger.info('WebSocket upgrade request:', request.url);
-    wss.handleUpgrade(request, socket, head, ws => { setupCollaborativeWSConnection(ws, request); });
+    wss.handleUpgrade(request, socket, head, ws => {
+      setupCollaborativeWSConnection(ws, request);
+    });
   });
 
   // Error handler
   fastifyApp.setErrorHandler((error, request, reply) => {
     logger.error('Fastify error:', error);
-    reply.code(500).send({ error: 'Internal Server Error', timestamp: new Date().toISOString() });
+    reply.code(500).send({
+      error: 'Internal Server Error',
+      timestamp: new Date().toISOString(),
+    });
   });
 }
 
@@ -641,7 +745,9 @@ process.on('SIGTERM', async () => {
 });
 
 // Expose helpers so tests can control server lifecycle and inject mocks
-export function __setPrisma(newPrisma) { prisma = newPrisma; }
+export function __setPrisma(newPrisma) {
+  prisma = newPrisma;
+}
 
 export async function startFastify({ port = PORT } = {}) {
   // Dynamically import runtime dependencies so unit tests can import handlers
@@ -658,7 +764,7 @@ export async function startFastify({ port = PORT } = {}) {
     FastifyModule = await import('fastify');
     fastifyCorsModule = await import('@fastify/cors');
     wsModule = await import('ws');
-  // resolved via normal package resolver
+    // resolved via normal package resolver
   } catch {
     // Attempt to load from the API package's node_modules location directly.
     try {
@@ -675,7 +781,9 @@ export async function startFastify({ port = PORT } = {}) {
       } else {
         try {
           // Use a Function to reference import.meta at runtime only when ESM is active
-          const maybeUrl = new Function('return (typeof import !== "undefined" && import.meta && import.meta.url) ? import.meta.url : undefined')();
+          const maybeUrl = new Function(
+            'return (typeof import !== "undefined" && import.meta && import.meta.url) ? import.meta.url : undefined'
+          )();
           if (maybeUrl) {
             baseDir = path.dirname(new URL(maybeUrl).pathname);
           }
@@ -685,21 +793,37 @@ export async function startFastify({ port = PORT } = {}) {
       }
 
       baseDir = baseDir || process.cwd();
-      const candidateFastify = path.resolve(baseDir, 'node_modules', 'fastify', 'fastify.js');
-      const candidateCors = path.resolve(baseDir, 'node_modules', '@fastify', 'cors', 'index.js');
-      const candidateWs = path.resolve(baseDir, 'node_modules', 'ws', 'index.js');
+      const candidateFastify = path.resolve(
+        baseDir,
+        'node_modules',
+        'fastify',
+        'fastify.js'
+      );
+      const candidateCors = path.resolve(
+        baseDir,
+        'node_modules',
+        '@fastify',
+        'cors',
+        'index.js'
+      );
+      const candidateWs = path.resolve(
+        baseDir,
+        'node_modules',
+        'ws',
+        'index.js'
+      );
 
       if (fs.existsSync(candidateFastify)) {
         FastifyModule = await import(pathToFileURL(candidateFastify).href);
-  // resolved via candidate file
+        // resolved via candidate file
       }
       if (fs.existsSync(candidateCors)) {
         fastifyCorsModule = await import(pathToFileURL(candidateCors).href);
-  // resolved @fastify/cors via candidate file
+        // resolved @fastify/cors via candidate file
       }
       if (fs.existsSync(candidateWs)) {
         wsModule = await import(pathToFileURL(candidateWs).href);
-  // resolved ws via candidate file
+        // resolved ws via candidate file
       }
     } catch {
       // swallow - we'll rethrow below if we couldn't load the modules
@@ -708,13 +832,25 @@ export async function startFastify({ port = PORT } = {}) {
 
   // If still not loaded, throw an informative error to help debugging test runner resolution.
   if (!FastifyModule || !fastifyCorsModule || !wsModule) {
-    const err = new Error('Failed to dynamically import Fastify/@fastify/cors/ws. Ensure dependencies are installed and resolvable from the test runner CWD.');
-    logger.error(err.message, { fastifyLoaded: !!FastifyModule, corsLoaded: !!fastifyCorsModule, wsLoaded: !!wsModule });
+    const err = new Error(
+      'Failed to dynamically import Fastify/@fastify/cors/ws. Ensure dependencies are installed and resolvable from the test runner CWD.'
+    );
+    logger.error(err.message, {
+      fastifyLoaded: !!FastifyModule,
+      corsLoaded: !!fastifyCorsModule,
+      wsLoaded: !!wsModule,
+    });
     throw err;
   }
 
-  const FastifyImport = FastifyModule && FastifyModule.default ? FastifyModule.default : FastifyModule;
-  const fastifyCorsImport = fastifyCorsModule && fastifyCorsModule.default ? fastifyCorsModule.default : fastifyCorsModule;
+  const FastifyImport =
+    FastifyModule && FastifyModule.default
+      ? FastifyModule.default
+      : FastifyModule;
+  const fastifyCorsImport =
+    fastifyCorsModule && fastifyCorsModule.default
+      ? fastifyCorsModule.default
+      : fastifyCorsModule;
 
   // (diagnostic logging removed) ensure factory is callable
 
@@ -731,24 +867,39 @@ export async function startFastify({ port = PORT } = {}) {
       const fs = await import('fs');
       const { pathToFileURL } = await import('url');
       let baseDir;
-  if (typeof __dirname !== 'undefined') { baseDir = __dirname; }
-  else {
+      if (typeof __dirname !== 'undefined') {
+        baseDir = __dirname;
+      } else {
         try {
-          const maybeUrl = new Function('return (typeof import !== "undefined" && import.meta && import.meta.url) ? import.meta.url : undefined')();
-          if (maybeUrl) { baseDir = path.dirname(new URL(maybeUrl).pathname); }
+          const maybeUrl = new Function(
+            'return (typeof import !== "undefined" && import.meta && import.meta.url) ? import.meta.url : undefined'
+          )();
+          if (maybeUrl) {
+            baseDir = path.dirname(new URL(maybeUrl).pathname);
+          }
         } catch {
           baseDir = process.cwd();
         }
       }
       baseDir = baseDir || process.cwd();
-      const realFastifyPath = path.resolve(baseDir, 'node_modules', 'fastify', 'fastify.js');
+      const realFastifyPath = path.resolve(
+        baseDir,
+        'node_modules',
+        'fastify',
+        'fastify.js'
+      );
       if (fs.existsSync(realFastifyPath)) {
-  // attempting to load real fastify implementation from candidate path
-        const RealFastifyModule = await import(pathToFileURL(realFastifyPath).href);
-        const RealFastifyImport = RealFastifyModule && RealFastifyModule.default ? RealFastifyModule.default : RealFastifyModule;
+        // attempting to load real fastify implementation from candidate path
+        const RealFastifyModule = await import(
+          pathToFileURL(realFastifyPath).href
+        );
+        const RealFastifyImport =
+          RealFastifyModule && RealFastifyModule.default
+            ? RealFastifyModule.default
+            : RealFastifyModule;
         // Recreate app using the real factory
         app = RealFastifyImport({ logger: true });
-  // recreated fastify app from real implementation
+        // recreated fastify app from real implementation
         // If still missing addHook, we'll let the subsequent registration fail with a clearer message
       }
     } catch {
@@ -760,15 +911,24 @@ export async function startFastify({ port = PORT } = {}) {
 
   return new Promise((resolve, reject) => {
     server.listen({ port, host: '0.0.0.0' }, err => {
-      if (err) { logger.error('Fastify failed to start:', err); return reject(err); }
+      if (err) {
+        logger.error('Fastify failed to start:', err);
+        return reject(err);
+      }
       try {
         const addr = server.address();
         const actualPort = addr && addr.port ? addr.port : port;
         logger.info(`[api] Fastify server listening on ${actualPort}`);
-        logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
-        logger.info(`[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`);
+        logger.info(
+          `[api] Environment: ${process.env.NODE_ENV || 'development'}`
+        );
+        logger.info(
+          `[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`
+        );
         resolve({ port: actualPort });
-      } catch (e) { reject(e); }
+      } catch (e) {
+        reject(e);
+      }
     });
   });
 }
@@ -796,5 +956,8 @@ export async function stopFastify() {
 // If not running under Jest, start the server when the script is executed directly.
 // Tests import this module and control lifecycle via exported helpers.
 if (!process.env.JEST_WORKER_ID) {
-  startFastify().catch(err => { logger.error('Failed to start server:', err); process.exit(1); });
+  startFastify().catch(err => {
+    logger.error('Failed to start server:', err);
+    process.exit(1);
+  });
 }
