@@ -24,9 +24,14 @@ const runDry = (filesGlob, outReport) => {
     process.exit(2);
   }
   const filesArg = matches.join(',');
-  const cmd = `node ${script} --dry-run --report=${outReport} --files=${filesArg}`;
+  const args = [
+    script,
+    '--dry-run',
+    `--report=${outReport}`,
+    `--files=${filesArg}`,
+  ];
   try {
-    const out = execSync(cmd, { cwd: repoRoot, stdio: 'pipe' }).toString();
+    const out = execFileSync('node', args, { cwd: repoRoot, stdio: 'pipe' }).toString();
     return JSON.parse(out);
   } catch (e) {
     console.error('dry-run failed', e.stdout && e.stdout.toString());
