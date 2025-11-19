@@ -4,7 +4,7 @@ import WebSocket from 'ws';
 // Helpers
 function waitForOpen(ws) {
   return new Promise((resolve, reject) => {
-    if (ws.readyState === WebSocket.OPEN) return resolve();
+    if (ws.readyState === WebSocket.OPEN) { return resolve(); }
     const onOpen = () => {
       cleanup();
       resolve();
@@ -137,7 +137,7 @@ describe('handleJoinSession (integration)', () => {
       ) {
         serverModule.server.close();
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
   });
