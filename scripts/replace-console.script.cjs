@@ -2,7 +2,7 @@
 // Basic test harness for replacement script (dry-run mode) using fixtures
 const path = require('path');
 const fs = require('fs');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 const repoRoot = path.resolve(__dirname, '..', '..');
 const script = path.join(
@@ -21,9 +21,15 @@ function runDry(filesGlob, outReport) {
     process.exit(2);
   }
   const filesArg = matches.join(',');
-  const cmd = `node ${script} --dry-run --report=${outReport} --files=${filesArg}`;
+  const command = 'node';
+  const args = [
+    script,
+    '--dry-run',
+    `--report=${outReport}`,
+    `--files=${filesArg}`
+  ];
   try {
-    const out = execSync(cmd, { cwd: repoRoot, stdio: 'pipe' }).toString();
+    const out = execFileSync(command, args, { cwd: repoRoot, stdio: 'pipe' }).toString();
     return JSON.parse(out);
   } catch (e) {
     console.error('dry-run failed', e.stdout && e.stdout.toString());
