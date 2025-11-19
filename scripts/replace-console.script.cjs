@@ -1,17 +1,6 @@
 #!/usr/bin/env node
 // Basic test harness for replacement script (dry-run mode) using fixtures
-// When run under Jest's ESM environment some CommonJS globals may be
-// unavailable in worker VMs. If this file is discovered by Jest we make it
-// a no-op to avoid "require is not defined" failures. The real harness is
-// available at ../replace-console.script.cjs for manual runs.
-
-if (process.env.JEST_WORKER_ID) {
-  // jest discovered this file as a test; export a harmless no-op so the
-  // test runner doesn't execute the CommonJS-only harness.
-  module.exports = {};
-} else {
-
-  const path = require('path');
+const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 
@@ -24,7 +13,7 @@ const script = path.join(
 const fixturesDir = path.join(repoRoot, 'scripts', '__tests__', 'fixtures');
 
 const glob = require('glob');
-const runDry = (filesGlob, outReport) => {
+function runDry(filesGlob, outReport) {
   // expand the glob into concrete absolute paths and join with commas
   const matches = glob.sync(filesGlob, { cwd: repoRoot, absolute: true });
   if (!matches || matches.length === 0) {
@@ -93,5 +82,3 @@ for (const f of fs.readdirSync(fixturesDir)) {
 
 console.log('All fixtures reported expected results');
 process.exit(0);
-
-}

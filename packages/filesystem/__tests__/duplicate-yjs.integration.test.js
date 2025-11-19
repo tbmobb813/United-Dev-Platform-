@@ -15,14 +15,19 @@ describe('duplicate-yjs detector - integration', () => {
   let detectorPath;
 
   beforeAll(() => {
-    // Prefer __dirname when available; otherwise derive from import.meta.url or fall back to process.cwd().
-    // This makes the test robust when Jest runs tests from package root or under ESM.
-    const anchor =
-      typeof __dirname !== 'undefined'
-        ? __dirname
-        : typeof import.meta !== 'undefined'
+    // Determine an anchor directory robustly across CJS and ESM. Accessing
+    // `__dirname` directly in ESM throws a ReferenceError, so use try/catch to
+    // prefer it when present and fall back to import.meta URL or cwd.
+    let anchor;
+    try {
+      // In CommonJS this will succeed; in ESM it throws ReferenceError which we catch.
+      anchor = __dirname;
+    } catch {
+      // Derive from import.meta.url when available (ESM) else fallback to cwd.
+      anchor = typeof import.meta !== 'undefined'
         ? path.dirname(fileURLToPath(import.meta.url))
         : process.cwd();
+    }
 
     fixtureDir = path.resolve(
       anchor,
@@ -44,14 +49,7 @@ describe('duplicate-yjs detector - integration', () => {
       fs.unlinkSync(reportPath);
     }
     // Resolve detector here using the same anchor so this file works under ESM/CJS
-    detectorPath = path.resolve(
-      anchor,
-      '..',
-      '..',
-      '..',
-      'scripts',
-      'check-duplicate-yjs.cjs'
-    );
+    detectorPath = path.resolve(anchor, '..', '..', '..', 'scripts', 'check-duplicate-yjs.cjs');
   });
 
   it('runs detector in report-only mode and writes a JSON report', () => {
