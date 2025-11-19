@@ -15,18 +15,20 @@ describe('duplicate-yjs detector - integration', () => {
   let detectorPath;
 
   beforeAll(() => {
-    // Determine an anchor directory robustly across CJS and ESM. Accessing
-    // `__dirname` directly in ESM throws a ReferenceError, so use try/catch to
-    // prefer it when present and fall back to import.meta URL or cwd.
+    // Determine an anchor directory robustly across CJS and ESM. Avoid directly
+    // referencing `__dirname` in a way that throws in ESM worker VMs. Use
+    // typeof checks so we never trigger a ReferenceError.
     let anchor;
     try {
-      // In CommonJS this will succeed; in ESM it throws ReferenceError which we catch.
+      // Prefer CommonJS __dirname when available; it will throw in ESM so
+      // we catch and fall back to import.meta or cwd.
       anchor = __dirname;
     } catch {
-      // Derive from import.meta.url when available (ESM) else fallback to cwd.
-      anchor = typeof import.meta !== 'undefined'
-        ? path.dirname(fileURLToPath(import.meta.url))
-        : process.cwd();
+      try {
+        anchor = path.dirname(fileURLToPath(import.meta.url));
+      } catch {
+        anchor = process.cwd();
+      }
     }
 
     fixtureDir = path.resolve(
@@ -49,7 +51,14 @@ describe('duplicate-yjs detector - integration', () => {
       fs.unlinkSync(reportPath);
     }
     // Resolve detector here using the same anchor so this file works under ESM/CJS
-    detectorPath = path.resolve(anchor, '..', '..', '..', 'scripts', 'check-duplicate-yjs.cjs');
+    detectorPath = path.resolve(
+      anchor,
+      '..',
+      '..',
+      '..',
+      'scripts',
+      'check-duplicate-yjs.cjs'
+    );
   });
 
   it('runs detector in report-only mode and writes a JSON report', () => {

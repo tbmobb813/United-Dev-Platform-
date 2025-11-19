@@ -4,7 +4,9 @@ import WebSocket from 'ws';
 // Helpers
 function waitForOpen(ws) {
   return new Promise((resolve, reject) => {
-    if (ws.readyState === WebSocket.OPEN) { return resolve(); }
+    if (ws.readyState === WebSocket.OPEN) {
+      return resolve();
+    }
     const onOpen = () => {
       cleanup();
       resolve();
@@ -120,9 +122,12 @@ describe('handleJoinSession (integration)', () => {
     // (recompute the const by creating a new WebSocket URL below when needed)
     // wait a short time for server to be fully listening
     await new Promise(resolve => setTimeout(resolve, 150));
-  // expose actualPort for test that builds WS URL
-  // module namespace objects are not extensible — store the port in a test-scoped variable
-  serverActualPort = actualPort;
+
+    // expose actualPort for test that builds WS URL
+    // IMPORTANT: do NOT assign to imported module namespace objects (they are
+    // non-extensible in ESM worker VMs). Store the port in a test-scoped
+    // variable instead so parallel test workers don't race or attempt writes.
+    serverActualPort = actualPort;
   }, 20000);
 
   afterAll(async () => {
@@ -143,7 +148,7 @@ describe('handleJoinSession (integration)', () => {
   });
 
   it('should handle join session message', async () => {
-  const portToUse = serverActualPort || PORT;
+    const portToUse = serverActualPort || PORT;
     const ws = new WebSocket(
       `ws://localhost:${portToUse}/?sessionId=sess-integ&projectId=proj-integ&userId=user-integ`
     );
