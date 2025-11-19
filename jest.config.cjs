@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   // Use the ts-jest ESM preset so test files that use `import` / ESM syntax work
   // across the monorepo. This enables ts-jest to compile TypeScript as ESM
@@ -29,12 +31,17 @@ module.exports = {
     // Point to the CommonJS mock by default so tests running under Jest/CJS
     // don't fail parsing `export` in the ESM mock. Packages that run as ESM
     // can still mock via unstable_mockModule in their tests when needed.
-    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
-    // Ensure 'fastify' resolves consistently across workspace test runners by
-    // mapping it to the API package's installed entry point. This avoids
-    // module resolution failures for tests that import the API server from
-    // other package CWDs during the monorepo test run.
-    '^fastify$': '<rootDir>/jest-mocks/fastify-proxy.cjs',
+  '^y-websocket$': path.resolve(__dirname, 'jest-mocks/y-websocket.cjs'),
+  // Ensure 'fastify' resolves consistently across workspace test runners by
+  // mapping it to the API package's installed entry point. Use an absolute
+  // path (resolved from this repo root) so package-level Jest runs whose
+  // `rootDir` is a package directory still resolve the mock correctly.
+  '^fastify$': path.resolve(__dirname, 'jest-mocks/fastify-proxy.cjs'),
+  // Map the workspace DB package to its source entry so Jest can resolve
+  // and (optionally) mock it in tests without requiring the package to be
+  // built to `dist/` during CI test runs. Use an absolute path from the
+  // repository root so package-level runs find the source file.
+  '^@udp/db$': path.resolve(__dirname, 'packages/db/src/index.ts'),
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   // Run a global teardown for diagnostic purposes in CI/dev when tests

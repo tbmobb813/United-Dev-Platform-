@@ -1,8 +1,10 @@
-const path = require('path');
-const fs = require('fs');
-const { execFileSync } = require('child_process');
+import path from 'path';
+import fs from 'fs';
+import { execFileSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
-// Run under CommonJS; Jest will provide __dirname/__filename globals.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('duplicate-yjs detector - fixture', () => {
   const fixtureDir = path.resolve(

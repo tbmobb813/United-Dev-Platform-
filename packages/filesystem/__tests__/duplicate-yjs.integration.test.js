@@ -2,20 +2,27 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
 import { spawnSync } from 'child_process';
+import { fileURLToPath } from 'url';
 import { describe, it, expect, beforeAll } from '@jest/globals';
 
 // Provide __dirname in ESM tests
 import logger from '@udp/logger';
 describe('duplicate-yjs detector - integration', () => {
-  // We'll compute fixtureDir/reportPath at runtime in beforeAll so this test
-  // works under both CJS and ESM Jest runtimes (avoid import.meta at top-level).
+  // We'll compute fixtureDir/reportPath/detectorPath at runtime in beforeAll so
+  // this test works under both CJS and ESM Jest runtimes (avoid import.meta at top-level).
   let fixtureDir;
   let reportPath;
+  let detectorPath;
 
   beforeAll(() => {
-    // Prefer __dirname when available; otherwise fall back to process.cwd().
-    // Use `typeof` to avoid ReferenceError in ESM contexts.
-    const anchor = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+    // Prefer __dirname when available; otherwise derive from import.meta.url or fall back to process.cwd().
+    // This makes the test robust when Jest runs tests from package root or under ESM.
+    const anchor =
+      typeof __dirname !== 'undefined'
+        ? __dirname
+        : typeof import.meta !== 'undefined'
+        ? path.dirname(fileURLToPath(import.meta.url))
+        : process.cwd();
 
     fixtureDir = path.resolve(
       anchor,
@@ -36,24 +43,21 @@ describe('duplicate-yjs detector - integration', () => {
     if (fs.existsSync(reportPath)) {
       fs.unlinkSync(reportPath);
     }
-  });
-
-  it('runs detector in report-only mode and writes a JSON report', () => {
-    // Resolve detector relative to the repository root via the test file __dirname.
-    // Some test runners change process.cwd() when running per-package; using
-    // __dirname keeps the path deterministic regardless of cwd.
-    const detector = path.resolve(
-      __dirname,
+    // Resolve detector here using the same anchor so this file works under ESM/CJS
+    detectorPath = path.resolve(
+      anchor,
       '..',
       '..',
       '..',
       'scripts',
       'check-duplicate-yjs.cjs'
     );
+  });
 
+  it('runs detector in report-only mode and writes a JSON report', () => {
     const res = spawnSync(
       process.execPath,
-      [detector, '--dir', fixtureDir, '--report', reportPath],
+      [detectorPath, '--dir', fixtureDir, '--report', reportPath],
       {
         encoding: 'utf8',
         timeout: 60_000,

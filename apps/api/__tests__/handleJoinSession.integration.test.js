@@ -78,6 +78,7 @@ jest.unstable_mockModule('@udp/db', async () => ({
 
 // Import server after mocks so it uses mocked prisma (do import inside beforeAll)
 let serverModule;
+let serverActualPort;
 // Use a per-Jest-worker port to avoid EADDRINUSE when tests run in parallel
 const WORKER_ID = process.env.JEST_WORKER_ID
   ? Number(process.env.JEST_WORKER_ID)
@@ -119,8 +120,9 @@ describe('handleJoinSession (integration)', () => {
     // (recompute the const by creating a new WebSocket URL below when needed)
     // wait a short time for server to be fully listening
     await new Promise(resolve => setTimeout(resolve, 150));
-    // expose actualPort for test that builds WS URL
-    serverModule.__testPort = actualPort;
+  // expose actualPort for test that builds WS URL
+  // module namespace objects are not extensible — store the port in a test-scoped variable
+  serverActualPort = actualPort;
   }, 20000);
 
   afterAll(async () => {
@@ -141,7 +143,7 @@ describe('handleJoinSession (integration)', () => {
   });
 
   it('should handle join session message', async () => {
-    const portToUse = serverModule.__testPort || PORT;
+  const portToUse = serverActualPort || PORT;
     const ws = new WebSocket(
       `ws://localhost:${portToUse}/?sessionId=sess-integ&projectId=proj-integ&userId=user-integ`
     );
