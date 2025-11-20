@@ -19,3 +19,17 @@ webpack://_N_E/pages
 webpack://udp/src/shared/lib
 webpack://_N_E/src/shared/lib
 polyfills-
+
+# More explicit vendor path fragments to suppress noisy matches from monaco and lib0
+# These match the pnpm layout used in CI/build artifacts and are more specific than
+# the package name alone. They help the detector ignore vendor files that contain
+# 'Y' characters or other false positives.
+node_modules/.pnpm/monaco-editor@
+node_modules/.pnpm/@monaco-editor+react@
+node_modules/.pnpm/lib0@
+
+# Next server static chunk patterns
+apps/web/.next/static/chunks/
+apps/web/.next/static/chunks/vendors-
+
+```
