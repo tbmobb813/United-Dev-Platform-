@@ -347,6 +347,18 @@ async function main() {
     );
   }
 
+  // Determine unique Yjs-related resolved sources specifically. The detector
+  // should only escalate to 'error' if more than one distinct Yjs runtime
+  // (yjs or y-protocols) is present. This avoids false positives caused by
+  // many vendor files that incidentally match weak heuristics (like 'Y').
+  const yjsRelated = new Set();
+  for (const e of filtered) {
+    const candidate = e.resolvedSource || e.source || '';
+    if (/\byjs\b|y-protocols/i.test(candidate)) {
+      yjsRelated.add(candidate);
+    }
+  }
+
   const result = {
     dir,
     scannedFiles,
@@ -355,8 +367,20 @@ async function main() {
     flaggedFiles: flaggedSet.size,
     allowlist,
     strict: !!strict,
+    yjsResolvedCount: yjsRelated.size,
     severity:
-      flaggedSet.size > 1 ? 'error' : flaggedSet.size === 1 ? 'warning' : 'ok',
+      // If there are multiple distinct yjs-related resolved sources, it's a
+      // real duplicate runtime problem. Otherwise fall back to the generic
+      // flagged-set heuristic used previously.
+      yjsRelated.size > 1
+        ? 'error'
+        : yjsRelated.size === 1
+        ? 'ok'
+        : flaggedSet.size > 1
+        ? 'error'
+        : flaggedSet.size === 1
+        ? 'warning'
+        : 'ok',
   };
 
   if (report) {

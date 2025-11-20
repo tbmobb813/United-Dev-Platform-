@@ -1,0 +1,51 @@
+name: Check duplicate Yjs runtime
+
+on:
+  pull_request:
+    # run this check only for PRs that touch web, workspace packages, or tooling
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'scripts/**'
+      - '.github/**'
+
+jobs:
+  build-and-scan:
+    name: Build web and scan for duplicate Yjs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (with pnpm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Enable corepack and pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@8.8.0 --activate
+
+      - name: Install dependencies (workspace)
+        run: pnpm -w install --frozen-lockfile
+
+      - name: Build apps/web
+        working-directory: apps/web
+        run: pnpm build
+
+      - name: Run duplicate-Yjs detector
+        # run from repo root so the detector can find apps/web/.next easily
+        run: |
+          node scripts/check-duplicate-yjs.js \
+            --allowlist "node_modules/.pnpm/monaco-editor@,node_modules/.pnpm/@monaco-editor+react@,node_modules/.pnpm/lib0@,apps/web/.next/static/chunks/,apps/web/.next/static/chunks/vendors-" \
+            --report duplicate-yjs-report-ci.json
+
+      - name: Upload duplicate-yjs report
+        uses: actions/upload-artifact@v4
+        with:
+          name: duplicate-yjs-report
+          path: duplicate-yjs-report-ci.json
