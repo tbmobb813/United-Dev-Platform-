@@ -25,8 +25,8 @@
     "yjs": "^13.6.27"
   },
   "devDependencies": {
-    "@types/node": "^24.10.0",
-    "@types/react": "19.2.2",
+    "@types/node": "^24.10.1",
+    "@types/react": "19.2.6",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "eslint": "^9.39.1",
