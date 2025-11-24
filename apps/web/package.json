@@ -29,7 +29,7 @@
     "@udp/editor-core": "workspace:^",
     "@udp/ui": "workspace:^",
     "axios": "^1.7.2",
-    "monaco-editor": "^0.54.0",
+    "monaco-editor": "^0.55.1",
     "next": "16.0.1",
     "next-auth": "^4.24.12",
     "@auth/core": "^0.34.3",
