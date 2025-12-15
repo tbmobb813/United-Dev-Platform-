@@ -26,7 +26,7 @@
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "@udp/types": "workspace:*",
-    "tsup": "^8.0.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {

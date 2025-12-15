@@ -45,10 +45,10 @@
     "@types/react-dom": "19.2.2",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "react": "^19.2.0",
-    "rimraf": "^6.0.1",
-    "tsup": "^8.3.5",
+    "rimraf": "^6.1.2",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
