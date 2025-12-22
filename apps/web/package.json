@@ -23,7 +23,7 @@
     "@auth/prisma-adapter": "^2.10.0",
     "@monaco-editor/react": "^4.6.0",
     "@prisma/client": "^6.17.1",
-    "@tanstack/react-query": "^5.51.0",
+    "@tanstack/react-query": "^5.90.12",
     "@udp/ai": "workspace:^",
     "@udp/config": "workspace:^",
     "@udp/editor-core": "workspace:^",
@@ -39,9 +39,9 @@
     "react-dom": "^19.2.0",
     "uuid": "^13.0.0",
     "y-monaco": "^0.1.6",
-    "y-protocols": "^1.0.6",
+    "y-protocols": "^1.0.7",
     "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.28"
   },
   "devDependencies": {
     "@types/react": "19.2.2",

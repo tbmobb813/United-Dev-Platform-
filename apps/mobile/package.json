@@ -17,12 +17,12 @@
     "@rivascva/react-native-code-editor": "^1.2.2",
     "@udp/editor-core": "workspace:*",
     "@udp/ui-native": "workspace:*",
-    "expo": "^54.0.23",
-    "expo-linking": "~8.0.8",
+    "expo": "^54.0.30",
+    "expo-linking": "~8.0.11",
     "react": "^19.2.0",
     "react-native": "0.74.0",
     "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.28"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",

@@ -15,8 +15,8 @@
     "y-indexeddb": "^9.0.12"
   },
   "peerDependencies": {
-    "yjs": "^13.6.27",
-    "y-protocols": "^1.0.6",
+    "yjs": "^13.6.28",
+    "y-protocols": "^1.0.7",
     "y-websocket": "^3.0.0"
   },
   "devDependencies": {
@@ -27,9 +27,9 @@
     "jest": "^30.2.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.9.3",
-    "y-protocols": "^1.0.6",
+    "y-protocols": "^1.0.7",
     "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.28"
   },
   "eslintConfig": {
     "extends": [
