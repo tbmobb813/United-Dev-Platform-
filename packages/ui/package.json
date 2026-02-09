@@ -15,11 +15,11 @@
     "yjs": "^13.6.27"
   },
   "devDependencies": {
-    "@types/react": "19.2.2",
+    "@types/react": "19.2.13",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "@types/jest": "^30.0.0",
-    "eslint": "^9.39.1",
+    "eslint": "^10.0.0",
     "jest": "^30.2.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.9.3"

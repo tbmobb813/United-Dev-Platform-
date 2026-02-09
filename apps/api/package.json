@@ -10,7 +10,7 @@
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^7.3.0",
     "@udp/db": "workspace:*",
     "@udp/editor-core": "workspace:*",
     "@udp/logger": "workspace:*",

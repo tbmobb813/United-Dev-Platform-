@@ -22,7 +22,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
     "@monaco-editor/react": "^4.6.0",
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^7.3.0",
     "@tanstack/react-query": "^5.51.0",
     "@udp/ai": "workspace:^",
     "@udp/config": "workspace:^",
@@ -33,10 +33,10 @@
     "next": "16.0.1",
     "next-auth": "^4.24.12",
     "@auth/core": "^0.34.3",
-    "prisma": "^6.17.1",
+    "prisma": "^7.3.0",
     "qrcode.react": "^4.2.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "uuid": "^13.0.0",
     "y-monaco": "^0.1.6",
     "y-protocols": "^1.0.6",
@@ -44,13 +44,13 @@
     "yjs": "^13.6.27"
   },
   "devDependencies": {
-    "@types/react": "19.2.2",
+    "@types/react": "19.2.13",
     "@types/uuid": "11.0.0",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
-    "eslint": "^9.39.1",
+    "eslint": "^10.0.0",
     "eslint-config-next": "^16.0.1",
     "typescript": "^5.3.3"
   },
