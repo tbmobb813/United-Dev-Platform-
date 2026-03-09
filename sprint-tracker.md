@@ -21,22 +21,22 @@
 - [x] Run `pnpm typecheck` — fix all errors
 - [x] Run `pnpm lint` — fix all errors
 
-### Week 2: Database + CI
-- [ ] Switch Prisma datasource to SQLite in schema.prisma
-- [ ] Simplify schema (keep User, Project, ProjectFile only)
-- [ ] Update `.env.example` with `DATABASE_URL=file:./dev.db`
-- [ ] Run `pnpm --filter @udp/db generate`
-- [ ] Update CI workflows (remove web build, add CLI build)
-- [ ] Run full `pnpm check` — everything passes
-- [ ] Commit and push to `pivot/workflow-tool`
+### Week 2: Database + CI ✅
+- [x] Switch Prisma datasource to SQLite in schema.prisma
+- [x] Simplify schema (keep User, Project, ProjectFile only)
+- [x] Update `.env.example` with `DATABASE_URL=file:./dev.db`
+- [x] Run `pnpm --filter @udp/db generate`
+- [x] Update CI workflows (remove web build, add CLI build)
+- [x] Run full `pnpm check` — everything passes
+- [x] Commit and push to `pivot/workflow-tool`
 
 ## Sprint 2: Sync Engine + Server (3 weeks)
-### Week 1: ProjectSyncManager
-- [ ] Create `packages/editor-core/ProjectSyncManager.ts`
-- [ ] Implement Y.Map<Y.Text> file tree sync
-- [ ] Implement lazy file content loading
-- [ ] Wire to @udp/filesystem file watcher
-- [ ] Write unit tests for ProjectSyncManager
+### Week 1: ProjectSyncManager ✅
+- [x] Create `packages/editor-core/ProjectSyncManager.ts`
+- [x] Implement Y.Map<Y.Text> file tree sync
+- [x] Implement lazy file content loading
+- [x] Wire to @udp/filesystem file watcher
+- [x] Write unit tests for ProjectSyncManager (12 tests, all passing)
 
 ### Week 2: Sync Server + CLI
 - [ ] Refactor sync-server for project room protocol
