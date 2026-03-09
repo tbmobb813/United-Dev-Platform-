@@ -305,3 +305,6 @@ archive/*/.next/
 archive/*/dist/
 archive/*/build/
 archive/*/.expo/
+
+# UDP workflow tool
+.udp/

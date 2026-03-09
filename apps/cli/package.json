@@ -7,8 +7,8 @@
     "udp": "./dist/index.js"
   },
   "scripts": {
-    "dev": "tsup src/index.ts --format cjs --platform node --watch --onSuccess 'node dist/index.js'",
-    "build": "tsup src/index.ts --format cjs --platform node --dts --clean",
+    "dev": "tsup src/index.ts --format esm --platform node --watch --onSuccess 'node dist/index.js'",
+    "build": "tsup src/index.ts --format esm --platform node --dts --clean",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "test": "jest --config ../../jest.config.cjs"
