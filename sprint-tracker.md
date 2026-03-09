@@ -46,10 +46,12 @@
 - [x] Implement device pairing flow (end-to-end QR → register → confirm)
 
 ### Week 3: Integration Testing
-- [ ] Multi-client sync tests (create, edit, delete files)
-- [ ] Disconnect/reconnect recovery tests
-- [ ] File watcher → Yjs propagation tests
-- [ ] End-to-end: `udp sync` + second client sees changes
+- [~] Multi-client sync test suite created (uses y-websocket provider for multi-client scenarios)
+- [~] File watcher → Yjs propagation test suite created (ProjectSyncManager + FileWatcher)
+- [~] End-to-end integration test suite created (full sync flow tests)
+- [~] Sync server connectivity and WebSocket tests created (server health, message handling, lifecycle)
+- [ ] Refine integration tests to work with built packages (currently need full build infrastructure)
+- [ ] Run full integration test suite after build optimization
 
 ## Sprint 3: VS Code Extension (2 weeks)
 - [ ] Scaffold extension with `yo code`
