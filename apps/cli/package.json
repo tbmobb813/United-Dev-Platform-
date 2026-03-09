@@ -1,0 +1,35 @@
+{
+  "name": "@udp/cli",
+  "version": "0.1.0",
+  "description": "Cross-platform developer workflow tool",
+  "type": "module",
+  "bin": {
+    "udp": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsup src/index.ts --format cjs --platform node --watch --onSuccess 'node dist/index.js'",
+    "build": "tsup src/index.ts --format cjs --platform node --dts --clean",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.cjs"
+  },
+  "dependencies": {
+    "@udp/config": "workspace:*",
+    "@udp/filesystem": "workspace:*",
+    "@udp/git": "workspace:*",
+    "@udp/logger": "workspace:*",
+    "@udp/types": "workspace:*",
+    "chalk": "^5.3.0",
+    "commander": "^13.1.0",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

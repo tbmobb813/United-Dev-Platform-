@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+import { Command } from "commander";
+import chalk from "chalk";
+import { initCommand } from "./commands/init.js";
+import { statusCommand } from "./commands/status.js";
+import { syncCommand } from "./commands/sync.js";
+
+const program = new Command();
+
+program
+  .name("udp")
+  .description(
+    chalk.bold("UDP") +
+      " — Cross-platform developer workflow tool\n" +
+      "  Sync your project across devices, preview on mobile, analyze cross-platform parity."
+  )
+  .version("0.1.0");
+
+// Register commands
+initCommand(program);
+statusCommand(program);
+syncCommand(program);
+
+program.parse();

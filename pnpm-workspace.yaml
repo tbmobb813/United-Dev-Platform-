@@ -1,3 +1,5 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  # archive/ is explicitly excluded — those packages are preserved
+  # for reference but are not part of the active workspace
