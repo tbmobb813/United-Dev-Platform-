@@ -3,6 +3,8 @@ import chalk from "chalk";
 import ora from "ora";
 import fs from "node:fs";
 import path from "node:path";
+import pino from "pino";
+const logger = pino();
 
 interface UDPConfig {
   version: string;
@@ -29,9 +31,7 @@ export function initCommand(program: Command): void {
         // Check if already initialized
         if (fs.existsSync(configPath)) {
           spinner.warn("UDP is already initialized in this project.");
-          console.log(
-            chalk.dim(`  Config: ${configPath}`)
-          );
+          logger.info(chalk.dim(`  Config: ${configPath}`));
           return;
         }
 
@@ -65,23 +65,16 @@ export function initCommand(program: Command): void {
         }
 
         spinner.succeed(chalk.green("UDP initialized!"));
-        console.log();
-        console.log(chalk.bold("  Project: ") + projectName);
-        console.log(
-          chalk.bold("  Frameworks: ") +
-            (frameworks.length > 0 ? frameworks.join(", ") : "none detected")
-        );
-        console.log(chalk.bold("  Sync port: ") + config.syncPort);
-        console.log(chalk.bold("  Config: ") + chalk.dim(configPath));
-        console.log();
-        console.log(
-          chalk.dim("Next: run ") +
-            chalk.cyan("udp sync") +
-            chalk.dim(" to start syncing across devices")
+        logger.info("\n" +
+          chalk.bold("  Project: ") + projectName + "\n" +
+          chalk.bold("  Frameworks: ") + (frameworks.length > 0 ? frameworks.join(", ") : "none detected") + "\n" +
+          chalk.bold("  Sync port: ") + config.syncPort + "\n" +
+          chalk.bold("  Config: ") + chalk.dim(configPath) + "\n" +
+          chalk.dim("Next: run ") + chalk.cyan("udp sync") + chalk.dim(" to start syncing across devices")
         );
       } catch (error) {
         spinner.fail(chalk.red("Failed to initialize UDP"));
-        console.error(error);
+        logger.error(error);
         process.exit(1);
       }
     });
@@ -104,7 +97,7 @@ function detectFrameworks(root: string): string[] {
   const frameworks: string[] = [];
   try {
     const pkgPath = path.join(root, "package.json");
-    if (!fs.existsSync(pkgPath)) return frameworks;
+    if (!fs.existsSync(pkgPath)) { return frameworks; }
     const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
     const deps = { ...pkg.dependencies, ...pkg.devDependencies };
 
@@ -122,7 +115,7 @@ function detectFrameworks(root: string): string[] {
     };
 
     for (const [dep, name] of Object.entries(detectors)) {
-      if (deps[dep]) frameworks.push(name);
+      if (deps[dep]) { frameworks.push(name); }
     }
   } catch {
     // ignore

@@ -74,5 +74,5 @@ jobs:
       - name: Run tests
         run: pnpm test:core
 
-      - name: Build web
-        run: pnpm --filter @udp/web build
+      - name: Build CLI
+        run: pnpm --filter @udp/cli build

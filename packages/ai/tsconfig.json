@@ -11,6 +11,6 @@
       "@udp/logger": ["../logger/index.ts"]
     }
   },
-  "include": ["index.ts", "AIAssistant.tsx"],
+  "include": ["index.ts", "../../archive/ai-ui/AIAssistant.tsx"],
   "exclude": ["node_modules", "dist"]
 }

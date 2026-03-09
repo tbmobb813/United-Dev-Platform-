@@ -2,10 +2,10 @@
 
 ## 1. Database Setup
 
-- Ensure your `DATABASE_URL` is set in `.env` (PostgreSQL recommended)
+Ensure your `DATABASE_URL` is set in `.env` (SQLite example below)
 - Example:
   ```env
-  DATABASE_URL=postgresql://postgres:password@localhost:5432/udp_db
+  DATABASE_URL=file:./dev.db
   ```
 
 ## 2. Run Initial Migration

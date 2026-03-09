@@ -119,17 +119,8 @@ jobs:
         # (temporary: prefer updating pnpm-lock.yaml in the repo long-term)
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build web (production, keep source-maps per next.config)
-        # Provide safe fallbacks for NEXT_PUBLIC_* vars so the build does not
-        # fail in CI when repo-level environment variables are not configured.
-        env:
-          NODE_ENV: production
-          NEXT_PUBLIC_APP_NAME: 'udp-ci'
-          NEXT_PUBLIC_APP_VERSION: 'ci'
-          NEXT_PUBLIC_APP_URL: 'https://example.invalid'
-          NEXT_PUBLIC_WS_URL: 'wss://example.invalid'
-          NEXT_PUBLIC_API_URL: 'https://example.invalid'
-        run: pnpm --filter @udp/web build
+      - name: Build CLI
+        run: pnpm --filter @udp/cli build
 
       - name: Run duplicate-Yjs detector (report-only)
         # Run the detector and always succeed this step; the report will be

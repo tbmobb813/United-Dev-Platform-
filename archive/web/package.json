@@ -22,7 +22,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
     "@monaco-editor/react": "^4.6.0",
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^7.0.0",
     "@tanstack/react-query": "^5.51.0",
     "@udp/ai": "workspace:^",
     "@udp/config": "workspace:^",
@@ -33,7 +33,7 @@
     "next": "16.0.1",
     "next-auth": "^4.24.12",
     "@auth/core": "^0.34.3",
-    "prisma": "^6.17.1",
+    "prisma": "^7.0.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
