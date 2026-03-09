@@ -1,3 +1,4 @@
+
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import http from 'http';
@@ -10,28 +11,29 @@ import * as decoding from 'lib0/decoding';
 import { prisma } from '@udp/db';
 import logger from '@udp/logger';
 import { getToken } from 'next-auth/jwt';
+import QRCode from 'qrcode';
 
-// Yjs document storage
-const docs = new Map();
+// Project room protocol: organize docs by project/room
+const rooms = new Map(); // Map<roomId, { doc: Y.Doc, devices: Set<string> }>
 
-// Get or create Yjs document
-const getYDoc = docname => {
-  let doc = docs.get(docname);
-  if (!doc) {
-    doc = new Y.Doc();
-    docs.set(docname, doc);
+function getRoom(roomId) {
+  let room = rooms.get(roomId);
+  if (!room) {
+    room = { doc: new Y.Doc(), devices: new Set() };
+    rooms.set(roomId, room);
   }
-  return doc;
-};
+  return room;
+}
 
-// Simple setupWSConnection replacement
+// WebSocket connection for project room
 const setupWSConnection = (
   conn,
   req,
-  { docName = req.url.slice(1).split('?')[0] } = {}
+  { roomId = req.url.slice(1).split('?')[0] } = {}
 ) => {
   conn.binaryType = 'arraybuffer';
-  const doc = getYDoc(docName);
+  const room = getRoom(roomId);
+  const doc = room.doc;
   const awareness = new awarenessProtocol.Awareness(doc);
 
   const messageHandler = message => {
@@ -56,7 +58,7 @@ const setupWSConnection = (
               ? undefined
               : undefined;
             logger.info(
-              `[yjs] received update (${docName}): ${new Uint8Array(message).length} bytes`
+              `[yjs] received update (${roomId}): ${new Uint8Array(message).length} bytes`
             );
           }
         } catch (e) {
@@ -79,7 +81,7 @@ const setupWSConnection = (
     try {
       if (process.env.UDP_DEBUG_YJS) {
         logger.info(
-          `[yjs] broadcasting update for doc=${docName} (fromOrigin=${origin === conn ? 'self' : 'remote'}) size=${update ? update.byteLength || update.length : 'unknown'
+          `[yjs] broadcasting update for room=${roomId} (fromOrigin=${origin === conn ? 'self' : 'remote'}) size=${update ? update.byteLength || update.length : 'unknown'
           }`
         );
       }
@@ -113,7 +115,113 @@ const setupWSConnection = (
   conn.send(encoding.toUint8Array(encoder));
 };
 
-// (Placeholder) collaboration session/document storage can be added here when needed
+
+// --- Device Pairing State (will be registered on main app) ---
+const pairedDevices = new Map(); // deviceId -> { roomId, confirmed, info, token, pairedAt, lastSeen }
+const pendingPairings = new Map(); // token -> { deviceId, roomId, info, expiresAt }
+const pairingEvents = [];
+const { randomUUID } = require('crypto');
+
+// Device discovery endpoint (returns confirmed devices for a room)
+app.get('/api/devices/discover', async (request, reply) => {
+  const { roomId = 'default' } = request.query;
+  const devices = Array.from(pairedDevices.values())
+    .filter(d => d.roomId === roomId && d.confirmed)
+    .map(d => ({ deviceId: d.deviceId, info: d.info }));
+  reply.send({ devices });
+});
+
+// QR code endpoint for pairing (generates a short-lived pairing token)
+app.get('/api/devices/qr', async (request, reply) => {
+  const { roomId = 'default' } = request.query;
+  const token = randomUUID();
+  const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
+  const pairingUrl = `udp://pair?room=${encodeURIComponent(roomId)}&token=${token}`;
+  try {
+    // Store pending pairing with expiry
+    pendingPairings.set(token, { deviceId: null, roomId, info: null, expiresAt });
+    const qrDataUrl = await QRCode.toDataURL(pairingUrl);
+    // Return JSON with token and QR data URL (CLI needs the token to register device)
+    reply.send({
+      token,
+      pairingUrl,
+      qr: qrDataUrl,
+      expiresAt
+    });
+  } catch (e) {
+    reply.code(500).send({ error: 'Failed to generate QR code' });
+  }
+});
+
+// Device registration endpoint (called by device after scanning QR)
+app.post('/api/devices/register', async (request, reply) => {
+  const { token, deviceId, info } = request.body;
+  if (!token || !deviceId) {
+    return reply.code(400).send({ error: 'Missing token or deviceId' });
+  }
+  const pending = pendingPairings.get(token);
+  if (!pending || pending.expiresAt < Date.now()) {
+    pendingPairings.delete(token);
+    return reply.code(404).send({ error: 'Invalid or expired pairing token' });
+  }
+  // Register device as pending confirmation
+  pending.deviceId = deviceId;
+  pending.info = info || {};
+  pairedDevices.set(deviceId, {
+    deviceId,
+    roomId: pending.roomId,
+    confirmed: false,
+    info: info || {},
+    token,
+    pairedAt: new Date().toISOString(),
+    lastSeen: new Date().toISOString(),
+  });
+  pairingEvents.push({ type: 'register', deviceId, time: new Date().toISOString(), info });
+  reply.send({ status: 'pending', deviceId });
+});
+
+// Device confirmation endpoint (called by user to confirm device on CLI/UI)
+app.post('/api/devices/confirm', async (request, reply) => {
+  const { deviceId, authToken } = request.body;
+  // For demo: require a static authToken (in production, use real user auth)
+  if (process.env.UDP_PAIR_AUTH && request.body.authToken !== process.env.UDP_PAIR_AUTH) {
+    return reply.code(401).send({ error: 'Unauthorized confirmation' });
+  }
+  const device = pairedDevices.get(deviceId);
+  if (!device) {
+    return reply.code(404).send({ error: 'Device not found' });
+  }
+  device.confirmed = true;
+  device.lastSeen = new Date().toISOString();
+  // Remove from pendingPairings
+  if (device.token) pendingPairings.delete(device.token);
+  pairingEvents.push({ type: 'confirm', deviceId, time: new Date().toISOString() });
+  reply.send({ status: 'confirmed', deviceId });
+});
+
+// Device management endpoint (list all devices for a room)
+app.get('/api/devices', async (request, reply) => {
+  const { roomId = 'default' } = request.query;
+  const devices = Array.from(pairedDevices.values())
+    .filter(d => d.roomId === roomId)
+    .map(d => ({ deviceId: d.deviceId, confirmed: d.confirmed, info: d.info }));
+  reply.send({ devices });
+});
+
+// Device removal endpoint (remove/revoke device by deviceId)
+app.delete('/api/devices/:deviceId', async (request, reply) => {
+  const { deviceId } = request.params;
+  if (!pairedDevices.has(deviceId)) {
+    return reply.code(404).send({ error: 'Device not found' });
+  }
+  pairedDevices.delete(deviceId);
+  pairingEvents.push({ type: 'remove', deviceId, time: new Date().toISOString() });
+  reply.send({ status: 'removed', deviceId });
+});
+// Pairing event log endpoint (for audit)
+app.get('/api/devices/events', async (request, reply) => {
+  reply.send({ events: pairingEvents });
+});
 
 // Authentication middleware for REST API endpoints
 async function authenticateToken(req, res, next) {

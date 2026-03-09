@@ -4,6 +4,7 @@ import chalk from "chalk";
 import { initCommand } from "./commands/init.js";
 import { statusCommand } from "./commands/status.js";
 import { syncCommand } from "./commands/sync.js";
+import { devicesCommand } from "./commands/devices.js";
 
 const program = new Command();
 
@@ -19,6 +20,7 @@ program
 // Register commands
 initCommand(program);
 statusCommand(program);
-syncCommand(program);
+  syncCommand(program);
+  devicesCommand(program);
 
 program.parse();

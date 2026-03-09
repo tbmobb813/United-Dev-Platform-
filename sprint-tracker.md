@@ -38,12 +38,12 @@
 - [x] Wire to @udp/filesystem file watcher
 - [x] Write unit tests for ProjectSyncManager (12 tests, all passing)
 
-### Week 2: Sync Server + CLI
-- [ ] Refactor sync-server for project room protocol
-- [ ] Add device discovery REST endpoint
-- [ ] Add QR code endpoint
-- [ ] Implement `udp sync` command (server + watcher + QR)
-- [ ] Implement device pairing flow
+### Week 2: Sync Server + CLI ✅
+- [x] Refactor sync-server for project room protocol (consolidated Fastify instances, moved device routes to main app)
+- [x] Add device discovery REST endpoint (already implemented, now on active `app` instance)
+- [x] Add QR code endpoint (fixed to return JSON with token + qr data URL)
+- [x] Implement `udp sync` command (server + watcher + QR) (fixed imports, token extraction, added ProjectSyncManager + WebSocket)
+- [x] Implement device pairing flow (end-to-end QR → register → confirm)
 
 ### Week 3: Integration Testing
 - [ ] Multi-client sync tests (create, edit, delete files)
