@@ -298,3 +298,16 @@ docker-compose.override.yml
 # Kubernetes
 k8s/secrets/
 *.kubeconfigartifacts/
+
+# Archive - excluded from workspace but tracked in git for reference
+archive/*/node_modules/
+archive/*/.next/
+archive/*/dist/
+archive/*/build/
+archive/*/.expo/
+
+# UDP workflow tool
+.udp/
+
+# Node.js compile cache
+node-compile-cache/

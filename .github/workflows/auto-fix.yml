@@ -9,10 +9,6 @@ jobs:
   noop:
     runs-on: ubuntu-latest
     steps:
-<<<<<<< HEAD
-      - name: no-op
-        run: echo "auto-fix workflow disabled for local testing"
-=======
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -55,7 +51,7 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         uses: EndBug/add-and-commit@v9
         with:
-          message: "chore: apply ESLint/Prettier auto-fixes"
+          message: 'chore: apply ESLint/Prettier auto-fixes'
           add: '.'
           author_name: 'github-actions[bot]'
           author_email: 'github-actions[bot]@users.noreply.github.com'
@@ -72,17 +68,16 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: apply ESLint/Prettier auto-fixes"
-          title: "chore: auto-fix lint & format"
+          commit-message: 'chore: apply ESLint/Prettier auto-fixes'
+          title: 'chore: auto-fix lint & format'
           body: |
             This PR contains auto-applied ESLint and Prettier fixes produced by the `auto-fix` workflow.
-            
+
             The workflow runs `pnpm lint:fix` and `pnpm format`, commits any changes to a new branch, and opens this PR.
           labels: auto-fix
           base: main
-          head: ${{ steps.newbranch.outputs.branch }}
+          branch: ${{ steps.newbranch.outputs.branch }}
 
       - name: No changes
         if: steps.changes.outputs.changed == 'false'
         run: echo "No auto-fix changes detected; nothing to commit."
->>>>>>> 9a35808 (ci(auto-fix): ensure branch pushed with upstream and push token usage)

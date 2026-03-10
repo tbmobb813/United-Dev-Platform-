@@ -1,4 +1,5 @@
 import { Button, Card, Loading, Stack } from '@udp/ui-native';
+import CodeEditor, { CodeEditorSyntaxStyles } from '@rivascva/react-native-code-editor';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
@@ -286,9 +287,14 @@ export const FileViewer: React.FC<FileViewerProps> = ({
             scrollEnabled
           />
         ) : (
-          <ScrollView style={styles.scrollView} showsVerticalScrollIndicator>
-            <Text style={styles.viewer}>{content}</Text>
-          </ScrollView>
+          <CodeEditor
+            style={styles.codeEditor}
+            language={getFileLanguage()}
+            syntaxStyle={CodeEditorSyntaxStyles.atomOneDark}
+            showLineNumbers
+            readOnly
+            initialValue={content}
+          />
         )}
       </View>
 
@@ -488,12 +494,12 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#1e1e1e',
     margin: 16,
     borderRadius: 8,
     overflow: 'hidden',
   },
-  scrollView: {
+  codeEditor: {
     flex: 1,
   },
   editor: {
@@ -503,13 +509,6 @@ const styles = StyleSheet.create({
     padding: 16,
     textAlignVertical: 'top',
     color: '#333333',
-  },
-  viewer: {
-    fontSize: 14,
-    fontFamily: 'monospace',
-    padding: 16,
-    color: '#333333',
-    lineHeight: 20,
   },
   aiActions: {
     padding: 16,

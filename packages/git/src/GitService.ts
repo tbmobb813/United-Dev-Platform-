@@ -1,5 +1,6 @@
 import * as git from 'isomorphic-git';
 import { getHttpClient } from './http.js';
+import type { GitHttpClient } from './http.js';
 
 import type {
   Branch,
@@ -216,8 +217,7 @@ export class GitService implements GitServiceInterface {
 
       await git.clone({
         fs: this.gitFS,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        http: getHttpClient() as any,
+        http: getHttpClient() as GitHttpClient,
         dir: directory,
         url,
         ref: branch,
@@ -981,8 +981,7 @@ export class GitService implements GitServiceInterface {
 
       await git.push({
         fs: this.gitFS,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        http: getHttpClient() as any,
+        http: getHttpClient() as GitHttpClient,
         dir: repositoryPath,
         remote,
         ref: currentBranch,
@@ -1018,8 +1017,7 @@ export class GitService implements GitServiceInterface {
 
       await git.pull({
         fs: this.gitFS,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        http: getHttpClient() as any,
+        http: getHttpClient() as GitHttpClient,
         dir: repositoryPath,
         ref: currentBranch,
         remote,
@@ -1055,8 +1053,7 @@ export class GitService implements GitServiceInterface {
 
       await git.fetch({
         fs: this.gitFS,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        http: getHttpClient() as any,
+        http: getHttpClient() as GitHttpClient,
         dir: repositoryPath,
         remote,
         onAuth: auth ? () => this.formatAuth(auth) : undefined,

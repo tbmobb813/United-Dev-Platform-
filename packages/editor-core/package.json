@@ -11,27 +11,26 @@
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
+    "@udp/filesystem": "workspace:*",
+    "@udp/logger": "workspace:*",
     "y-indexeddb": "^9.0.12"
   },
   "peerDependencies": {
+    "yjs": "^13.6.27",
     "y-protocols": "^1.0.6",
-    "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27"
-  },
-  "peerDependencies": {
-    "yjs": "^13.6.27"
+    "y-websocket": "^3.0.0"
   },
   "devDependencies": {
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
-    "@types/jest": "^29.5.13",
-    "eslint": "^9.39.0",
-    "jest": "^29.7.0",
-    "prettier": "^3.2.5",
+    "@types/jest": "^30.0.0",
+    "eslint": "^9.39.1",
+    "jest": "^30.2.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.9.3",
     "y-protocols": "^1.0.6",
-    "y-websocket": "^3.0.0"
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27"
   },
   "eslintConfig": {
     "extends": [

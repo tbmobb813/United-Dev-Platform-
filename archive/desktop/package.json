@@ -1,0 +1,13 @@
+{
+  "name": "@udp/desktop",
+  "version": "0.0.1",
+  "main": "main.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^39.0.0"
+  }
+}

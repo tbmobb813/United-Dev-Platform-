@@ -1,0 +1,25 @@
+{
+  "name": "@udp/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP (Model Context Protocol) server for UDP projects",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "udp-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs --platform node --clean --dts",
+    "watch": "tsup src/index.ts --format cjs --platform node --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@udp/ai": "workspace:*",
+    "@udp/filesystem": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.9.3"
+  }
+}

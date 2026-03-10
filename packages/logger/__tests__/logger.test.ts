@@ -15,15 +15,15 @@ describe('logger', () => {
   });
 
   afterAll(() => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = ORIGINAL_ENV;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = ORIGINAL_ENV;
   });
 
   it('calls console.log for info when not in production', async () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = 'development';
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'development';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
@@ -37,9 +37,9 @@ describe('logger', () => {
   });
 
   it('always calls console.warn for warn', async () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = 'production';
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'production';
     jest.resetModules();
     const { default: logger } = await import('../index');
 
@@ -51,9 +51,9 @@ describe('logger', () => {
   });
 
   it('always calls console.error for error', async () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (process as any).env.NODE_ENV = 'production';
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    (
+      process as unknown as { env: Record<string, string | undefined> }
+    ).env.NODE_ENV = 'production';
     jest.resetModules();
     const { default: logger } = await import('../index');
 

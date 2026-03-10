@@ -1,10 +1,14 @@
 // Mobile App Configuration
 
-export const config = {
-  wsUrl: process.env.EXPO_PUBLIC_WS_URL || 'ws://localhost:3030',
-  apiUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3001',
-  webUrl: process.env.EXPO_PUBLIC_WEB_URL || 'http://localhost:3000',
-  env: process.env.EXPO_PUBLIC_ENV || 'development',
-  isDev: process.env.EXPO_PUBLIC_ENV === 'development',
-  isProd: process.env.EXPO_PUBLIC_ENV === 'production',
-};
+export const DEFAULT_SERVER_IP = 'localhost';
+export const DEFAULT_SERVER_PORT = 3030;
+
+export function buildConfig(serverIp = DEFAULT_SERVER_IP, port = DEFAULT_SERVER_PORT) {
+  return {
+    wsUrl: `ws://${serverIp}:${port}`,
+    apiUrl: `http://${serverIp}:${port}`,
+  };
+}
+
+// Backward-compatible default export
+export const config = buildConfig();

@@ -1,0 +1,3 @@
+# Ignore JSON/JSONC files in this package to avoid parse errors
+*.json
+**/*.json

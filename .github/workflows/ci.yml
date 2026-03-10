@@ -11,11 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Disable Git's automatic line ending conversion
+          # We enforce LF via .gitattributes
+          persist-credentials: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Enable Corepack and prepare pnpm (pinned)
         run: |
@@ -25,6 +34,29 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Debug Prettier and package.json state
+        run: |
+          echo "=== Prettier version and location ==="
+          pnpm exec -- prettier --version
+          pnpm exec -- which prettier
+          echo ""
+          echo "=== Git status (checking for modified files) ==="
+          git status --porcelain
+          echo ""
+          echo "=== Check package.json specifically ==="
+          pnpm exec -- prettier --check package.json || echo "Check failed"
+          echo ""
+          echo "=== Try formatting package.json and show diff ==="
+          cp package.json package.json.backup
+          pnpm exec -- prettier --write package.json
+          diff package.json.backup package.json || echo "No diff after prettier --write"
+          echo ""
+          echo "=== Last 10 bytes of package.json in hex ==="
+          tail -c 10 package.json | od -An -tx1
+          echo ""
+          echo "=== First 100 chars of package.json ==="
+          head -c 100 package.json | od -An -tx1
 
       - name: Validate environment (main only)
         if: github.ref == 'refs/heads/main'
@@ -42,5 +74,5 @@ jobs:
       - name: Run tests
         run: pnpm test:core
 
-      - name: Build web
-        run: pnpm --filter @udp/web build
+      - name: Build CLI
+        run: pnpm --filter @udp/cli build

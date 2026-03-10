@@ -5,6 +5,6 @@
     "scheme": "udp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "sdkVersion": "51.0.0"
+    "sdkVersion": "54.0.0"
   }
 }

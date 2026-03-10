@@ -22,7 +22,9 @@ const reportPath = path.resolve(
   'out-report.json'
 );
 
-if (fs.existsSync(reportPath)) fs.unlinkSync(reportPath);
+if (fs.existsSync(reportPath)) {
+  fs.unlinkSync(reportPath);
+}
 
 const detector = path.resolve(
   process.cwd(),
@@ -40,8 +42,12 @@ if (res.error) {
   console.error('Failed to run detector:', res.error);
   process.exit(2);
 }
-if (res.stdout) console.log(res.stdout);
-if (res.stderr) console.error(res.stderr);
+if (res.stdout) {
+  console.log(res.stdout);
+}
+if (res.stderr) {
+  console.error(res.stderr);
+}
 
 if (!fs.existsSync(reportPath)) {
   console.error('Detector did not produce report at', reportPath);

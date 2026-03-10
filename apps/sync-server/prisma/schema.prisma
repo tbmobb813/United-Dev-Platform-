@@ -1,0 +1,82 @@
+model Device {
+  id        String        @id @default(uuid())
+  deviceId  String        @unique
+  roomId    String
+  info      Json
+  confirmed Boolean       @default(false)
+  pairedAt  DateTime      @default(now())
+  lastSeen  DateTime      @default(now())
+  events    DeviceEvent[]
+
+  @@map("devices")
+}
+
+model DeviceEvent {
+  id       String   @id @default(uuid())
+  deviceId String
+  type     String
+  info     Json?
+  time     DateTime @default(now())
+  device   Device   @relation(fields: [deviceId], references: [deviceId], onDelete: Cascade)
+
+  @@map("device_events")
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  name      String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Owned projects
+  ownedProjects Project[]
+
+  @@map("users")
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  ownerId     String
+  owner       User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  files       ProjectFile[]
+
+  @@map("projects")
+}
+
+model ProjectFile {
+  id        String   @id @default(uuid())
+  path      String
+  name      String
+  type      FileType @default(FILE)
+  content   String?
+  size      Int      @default(0)
+  mimeType  String?
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId, path])
+  @@map("project_files")
+}
+
+enum FileType {
+  FILE
+  DIRECTORY
+}

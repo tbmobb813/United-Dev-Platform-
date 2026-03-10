@@ -60,6 +60,17 @@ const config = [
         Request: 'readonly',
         URL: 'readonly',
         URLSearchParams: 'readonly',
+        setTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearTimeout: 'readonly',
+        clearInterval: 'readonly',
+        HTMLElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLDivElement: 'readonly',
+        HTMLButtonElement: 'readonly',
+        KeyboardEvent: 'readonly',
+        MouseEvent: 'readonly',
+        Event: 'readonly',
       },
     },
     plugins: {
@@ -93,6 +104,27 @@ const config = [
       curly: ['error', 'all'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
+
+      // Prevent direct yjs imports - use singleton pattern
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['yjs', 'yjs/*'],
+              message:
+                'Direct yjs imports are not allowed. Import from @udp/editor-core/yjs-singleton instead to prevent "Yjs already imported" warnings.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow direct yjs import only in the singleton module and type definitions
+  {
+    files: ['**/yjs-singleton.ts', '**/yjs-singleton.js', '**/*.d.ts'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   },
   // Allow console in CLI scripts and in the logger browser entrypoint which
@@ -138,26 +170,39 @@ const config = [
       'no-undef': 'off',
     },
   },
-  // Node/config files (jest.config.*, *.cjs) should be linted as Node scripts
+  // Test files configuration
   {
-    files: ['**/jest.config.*', '**/*.cjs'],
+    files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'script',
       globals: {
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
-        process: 'readonly',
+        jest: 'readonly',
+        describe: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        test: 'readonly',
       },
     },
-    rules: {
-      // Allow require-style imports and var requires in config files
-      '@typescript-eslint/no-var-requires': 'off',
-      '@typescript-eslint/no-require-imports': 'off',
-      // Node config files may reference globals like __dirname
-      'no-undef': 'off',
+  },
+  // Filesystem package tests - add browser environment
+  {
+    files: ['packages/filesystem/**/__tests__/**/*.[jt]s?(x)'],
+    languageOptions: {
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        FileReader: 'readonly',
+        File: 'readonly',
+        Blob: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+      },
     },
   },
 ];

@@ -2,20 +2,21 @@
   "name": "@udp/db",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "generate": "prisma generate --schema ../../apps/api/prisma/schema.prisma",
+    "generate": "prisma generate --schema ../../apps/sync-server/prisma/schema.prisma",
     "prepare": "pnpm run generate && pnpm build",
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2"
+    "@prisma/client": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.8.1",
-    "prisma": "^6.16.2",
+    "@types/node": "^24.10.0",
+    "prisma": "^6.0.0",
     "typescript": "^5.9.3"
   }
 }

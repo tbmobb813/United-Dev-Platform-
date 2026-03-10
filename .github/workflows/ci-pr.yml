@@ -1,29 +1,35 @@
 name: CI - Pull Request
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened, edited]
-
 permissions:
   contents: read
   issues: write
   pull-requests: write
 
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  workflow_dispatch: {}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      AGENT_CHECK_STRICT: "true"
+      AGENT_CHECK_STRICT: 'true'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
       - name: Enable Corepack and prepare pnpm (pinned)
         run: |
           corepack enable
           corepack prepare pnpm@9.0.0 --activate
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -60,10 +66,6 @@ jobs:
         if: github.actor == 'dependabot[bot]' || startsWith(github.actor, 'user-agent-') || env.AGENT_CHECK_STRICT == 'true'
         run: |
           echo 'Running duplicate-yjs check (early) (strict enabled)'
-          # Only run the early strict check if the web build output exists.
-          # The validate job runs before the build job in some workflows, so
-          # apps/web/.next may not exist yet. If the directory is missing,
-          # skip the early strict check to avoid failing the whole workflow.
           if [ -d "apps/web/.next" ]; then
             pnpm run check:duplicate-yjs -- --strict || (
               echo 'duplicate-yjs check failed'; exit 1
@@ -78,6 +80,23 @@ jobs:
     if: ${{ always() }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - name: Enable Corepack and prepare pnpm (pinned)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
+
+      - name: Enable Corepack and prepare pnpm (pinned)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -100,17 +119,8 @@ jobs:
         # (temporary: prefer updating pnpm-lock.yaml in the repo long-term)
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build web (production, keep source-maps per next.config)
-        # Provide safe fallbacks for NEXT_PUBLIC_* vars so the build does not
-        # fail in CI when repo-level environment variables are not configured.
-        env:
-          NODE_ENV: production
-          NEXT_PUBLIC_APP_NAME: "udp-ci"
-          NEXT_PUBLIC_APP_VERSION: "ci"
-          NEXT_PUBLIC_APP_URL: "https://example.invalid"
-          NEXT_PUBLIC_WS_URL: "wss://example.invalid"
-          NEXT_PUBLIC_API_URL: "https://example.invalid"
-        run: pnpm --filter @udp/web build
+      - name: Build CLI
+        run: pnpm --filter @udp/cli build
 
       - name: Run duplicate-Yjs detector (report-only)
         # Run the detector and always succeed this step; the report will be
@@ -135,7 +145,16 @@ jobs:
         env:
           REPORT_PATH: artifacts/duplicate-yjs/pr-report.json
         run: |
-          node ./scripts/ci/read-duplicate-report.js
+          if [ -f "$REPORT_PATH" ]; then
+            node -e "const r=JSON.parse(require('fs').readFileSync('$REPORT_PATH','utf8')); const s=`scanned:${r.scannedFiles} flagged:${r.flaggedFiles} severity:${r.severity} strict:${r.strict}`; console.log(s);" > report_summary.txt
+            echo "summary<<EOF" >> $GITHUB_OUTPUT
+            cat report_summary.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "summary<<EOF" >> $GITHUB_OUTPUT
+            echo "no report generated" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
 
       - name: Post duplicate-Yjs summary as PR comment
         if: always()

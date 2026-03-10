@@ -8,14 +8,29 @@ import {
   View,
 } from 'react-native';
 import { FileNavigator } from '../components/FileNavigator';
+import { ConnectScreen } from '../components/ConnectScreen';
+import { CollaborativeEditor } from '../components/CollaborativeEditor';
+import { useDevicePairing } from '../hooks/useDevicePairing';
+import { useYjsFiles } from '../hooks/useYjsFiles';
 
 export const MobileHome: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'browse' | 'collaborate'>(
-    'browse'
+  const [activeTab, setActiveTab] = useState<'connect' | 'browse' | 'edit'>(
+    'connect'
+  );
+  const [pairingData, setPairingData] = useState<{
+    roomId: string;
+    serverIp: string;
+    port: number;
+  } | null>(null);
+  const { state: pairingState } = useDevicePairing();
+  const yjsFiles = useYjsFiles(
+    pairingData?.serverIp || 'localhost',
+    pairingData?.port || 3030,
+    pairingData?.roomId || 'default-room'
   );
 
   const TabButton: React.FC<{
-    tab: 'browse' | 'collaborate';
+    tab: 'connect' | 'browse' | 'edit';
     icon: string;
     label: string;
   }> = ({ tab, icon, label }) => (
@@ -40,47 +55,83 @@ export const MobileHome: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>UDP Mobile</Text>
         <Text style={styles.subtitle}>
-          {activeTab === 'browse' ? 'Browse Files' : 'Collaborate'}
+          {activeTab === 'connect'
+            ? 'Device Connection'
+            : activeTab === 'browse'
+              ? 'Browse Files'
+              : 'Real-time Editing'}
         </Text>
       </View>
 
       {/* Tab Navigation */}
       <View style={styles.tabContainer}>
+        <TabButton tab='connect' icon='🔗' label='Connect' />
         <TabButton tab='browse' icon='📁' label='Browse' />
-        <TabButton tab='collaborate' icon='✏️' label='Edit' />
+        <TabButton tab='edit' icon='✏️' label='Edit' />
       </View>
 
       {/* Content */}
       <View style={styles.content}>
-        {activeTab === 'browse' ? (
-          <FileNavigator
-            repository={{
-              id: 'udp-mobile',
-              name: 'United Development Platform',
-              owner: 'udp-team',
-              defaultBranch: 'main',
-              description: 'Mobile app for collaborative development',
+        {activeTab === 'connect' ? (
+          <ConnectScreen
+            onConnected={(roomId, serverIp, port) => {
+              setPairingData({ roomId, serverIp, port });
+              if (isConnected) {
+                setActiveTab('browse');
+              }
             }}
-            readOnly={false}
-            showAIActions={true}
           />
+        ) : activeTab === 'browse' ? (
+          isConnected ? (
+            <FileNavigator
+              repository={{
+                id: 'udp-mobile',
+                name: 'United Development Platform',
+                owner: 'udp-team',
+                defaultBranch: 'main',
+                description: 'Mobile app for collaborative development',
+              }}
+              readOnly={false}
+              showAIActions={true}
+            />
+          ) : (
+            <View style={styles.disconnected}>
+              <Text style={styles.disconnectedIcon}>🔌</Text>
+              <Text style={styles.disconnectedTitle}>Not Connected</Text>
+              <Text style={styles.disconnectedText}>
+                Please connect to a host device first
+              </Text>
+              <TouchableOpacity
+                style={styles.connectButton}
+                onPress={() => setActiveTab('connect')}
+              >
+                <Text style={styles.connectButtonText}>Go to Connect</Text>
+              </TouchableOpacity>
+            </View>
+          )
         ) : (
-          <View style={styles.comingSoon}>
-            <Stack gap='medium' style={{}}>
-              <Text style={styles.comingSoonIcon}>🚧</Text>
-              <Text style={styles.comingSoonTitle}>Coming Soon</Text>
-              <Text style={styles.comingSoonText}>
-                Real-time collaborative editing will be available here
+          isConnected ? (
+            <CollaborativeEditor
+              roomId={pairingData.roomId}
+              documentId='main-document'
+              userId={`mobile-user-${Math.random().toString(36).substr(2, 9)}`}
+              userName='Mobile User'
+            />
+          ) : (
+            <View style={styles.disconnected}>
+              <Text style={styles.disconnectedIcon}>🔌</Text>
+              <Text style={styles.disconnectedTitle}>Not Connected</Text>
+              <Text style={styles.disconnectedText}>
+                Please connect to a host device first
               </Text>
-              <Text style={styles.comingSoonFeatures}>
-                Features:
-                {'\n'}• Live code editing with others
-                {'\n'}• Real-time cursor tracking
-                {'\n'}• Voice/video chat integration
-                {'\n'}• Conflict resolution
-              </Text>
-            </Stack>
-          </View>
+              <TouchableOpacity
+                style={styles.connectButton}
+                onPress={() => setActiveTab('connect')}
+              >
+                <Text style={styles.connectButtonText}>Go to Connect</Text>
+              </TouchableOpacity>
+            </View>
+          )
         )}
       </View>
     </SafeAreaView>
@@ -172,6 +223,41 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginTop: 16,
+  },
+  disconnected: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  disconnectedIcon: {
+    fontSize: 48,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  disconnectedTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  disconnectedText: {
+    fontSize: 16,
+    color: '#6c757d',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  connectButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: '#007bff',
+    borderRadius: 8,
+  },
+  connectButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
   },
 });
 

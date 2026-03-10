@@ -7,14 +7,13 @@ import * as fs from 'fs';
 import { describe, it, expect } from '@jest/globals';
 
 function hasIndexedDB(): boolean {
-  return (
-    typeof (globalThis as unknown as Record<string, unknown>).indexedDB !==
-    'undefined'
-  );
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - globalThis may have different shapes in test environments
+  return typeof (globalThis as any).indexedDB !== 'undefined';
 }
 
 describe('packages/filesystem - API', () => {
-  it('createFileSystem returns virtual fs when requested', () => {
+  it('createFileSystem returns virtual fs when requested', async () => {
     // Use VirtualFileSystem in browser-like envs; otherwise fallback to NodeFileSystem
     let fsInstance: NodeFileSystem | VirtualFileSystem;
     if (hasIndexedDB()) {
@@ -23,29 +22,32 @@ describe('packages/filesystem - API', () => {
       const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'udp-fs-'));
       fsInstance = new NodeFileSystem(tmp);
     }
+
+    // sanity check that Node's fs module is available in the test env
     expect(fs).toBeDefined();
-    // basic contract: write/read/delete
-    return fsInstance
-      .writeFile('hello.txt', 'world', {
-        overwrite: true,
-        createDirectories: true,
-      })
-      .then(() => fsInstance.readFile('hello.txt'))
-      .then((content: string | Uint8Array) => {
-        expect(String(content)).toBe('world');
-        return fsInstance.deleteFile('hello.txt');
-      })
-      .then(() => fsInstance.exists('hello.txt'))
-      .then((exists: boolean) => expect(exists).toBe(false));
+
+    // basic contract: write/read/delete using async/await to satisfy lint rules
+    await fsInstance.writeFile('hello.txt', 'world', {
+      overwrite: true,
+      createDirectories: true,
+    });
+
+    const content = await fsInstance.readFile('hello.txt');
+    expect(String(content)).toBe('world');
+
+    await fsInstance.deleteFile('hello.txt');
+    const exists = await fsInstance.exists('hello.txt');
+    expect(exists).toBe(false);
   });
 
   it('createProjectManager can create a project from template', async () => {
     // Use NodeFileSystem in test env to avoid IndexedDB dependency
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'udp-pm-'));
     const nodeFs = new NodeFileSystem(tmp);
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const pm = new ProjectManager(nodeFs as any);
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    // Use parameter type inference to avoid `any` cast
+    const pm = new ProjectManager(
+      nodeFs as unknown as ConstructorParameters<typeof ProjectManager>[0]
+    );
     const templateId = 'react-typescript';
     const projectPath = 'projects/myapp';
     await pm.createProject(templateId, projectPath, { projectName: 'myapp' });

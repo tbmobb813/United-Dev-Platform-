@@ -1,0 +1,63 @@
+{
+  "name": "@udp/vscode-extension",
+  "displayName": "UDP — Project Sync",
+  "description": "Cross-device project synchronization for VS Code",
+  "version": "0.1.0",
+  "private": true,
+  "publisher": "udp",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "workspaceContains:.udp/config.json"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "udp.startSync",
+        "title": "UDP: Start Sync"
+      },
+      {
+        "command": "udp.stopSync",
+        "title": "UDP: Stop Sync"
+      },
+      {
+        "command": "udp.showQR",
+        "title": "UDP: Show on Mobile (QR Code)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "udp-sidebar",
+          "title": "UDP Sync",
+          "icon": "$(sync)"
+        }
+      ]
+    },
+    "views": {
+      "udp-sidebar": [
+        {
+          "type": "webview",
+          "id": "udp.sidebarView",
+          "name": "UDP Sync"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsup src/extension.ts --format cjs --platform node --external vscode --clean",
+    "watch": "tsup src/extension.ts --format cjs --platform node --external vscode --watch",
+    "typecheck": "tsc --noEmit",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.9.3"
+  }
+}
