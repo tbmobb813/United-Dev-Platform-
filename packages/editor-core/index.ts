@@ -2,6 +2,8 @@ import { Awareness } from 'y-protocols/awareness';
 import { WebsocketProvider } from 'y-websocket';
 import * as Y from './yjs-singleton';
 
+export { ProjectSyncManager } from './ProjectSyncManager';
+
 // User presence interface
 export interface UserPresence {
   id: string;

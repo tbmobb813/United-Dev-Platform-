@@ -43,7 +43,6 @@ export function syncCommand(program: Command): void {
       spinner.start("Waiting for QR code...");
       let pairingToken = null;
       let pairingUrl = null;
-      let qrDataUrl = null;
       for (let i = 0; i < 10; i++) {
         try {
           const res = await fetch(qrUrl);
@@ -52,10 +51,9 @@ export function syncCommand(program: Command): void {
             const data = (await res.json()) as { token: string; pairingUrl: string; qr: string };
             pairingToken = data.token;
             pairingUrl = data.pairingUrl;
-            qrDataUrl = data.qr;
             break;
           }
-        } catch {}
+        } catch { /* retry on fetch error */ }
         await new Promise(r => setTimeout(r, 500));
       }
       if (pairingToken && pairingUrl) {
@@ -101,7 +99,7 @@ export function syncCommand(program: Command): void {
               rl.close();
               confirmDevice(authToken);
             }
-            async function confirmDevice(authToken) {
+            async function confirmDevice(authToken: string) {
               const confirmRes = await fetch(`http://localhost:${port}/api/devices/confirm`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -122,8 +120,8 @@ export function syncCommand(program: Command): void {
                 // Set up file sync with ProjectSyncManager
                 spinner.start("Setting up file synchronization...");
                 try {
-                  const { NodeFileSystem } = await import("@udp/filesystem/NodeFileSystem");
-                  const { ProjectSyncManager } = await import("@udp/editor-core/ProjectSyncManager");
+                  const { NodeFileSystem } = await import("@udp/filesystem");
+                  const { ProjectSyncManager } = await import("@udp/editor-core");
                   const WebSocket = (await import("ws")).default;
 
                   // Initialize file system and sync manager
@@ -144,21 +142,21 @@ export function syncCommand(program: Command): void {
                   });
 
                   ws.on("error", (error) => {
-                    logger.error("File sync error:", error);
+                    logger.error({ err: error }, "File sync error");
                   });
 
                   // Log file sync events
-                  manager.on("file:synced", (path) => {
-                    logger.info(`📝 Synced: ${path}`);
+                  manager.on("file:synced", (...args: unknown[]) => {
+                    logger.info(`Synced: ${args[0]}`);
                   });
-                  manager.on("file:created", (path) => {
-                    logger.info(`✨ Created: ${path}`);
+                  manager.on("file:created", (...args: unknown[]) => {
+                    logger.info(`Created: ${args[0]}`);
                   });
-                  manager.on("file:deleted", (path) => {
-                    logger.info(`🗑️ Deleted: ${path}`);
+                  manager.on("file:deleted", (...args: unknown[]) => {
+                    logger.info(`Deleted: ${args[0]}`);
                   });
                 } catch (error) {
-                  logger.warn("File sync setup failed, continuing with pairing only:", error);
+                  logger.warn({ err: error }, "File sync setup failed, continuing with pairing only");
                 }
               } else {
                 spinner.fail("Device confirmation failed.");

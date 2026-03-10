@@ -19,7 +19,7 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@udp/*": ["../*/index.ts", "../*/src/index.ts", "../*"]
+      "@udp/*": ["./*/index.ts", "./*/src/index.ts", "./*"]
     }
   },
   "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]

@@ -1,5 +1,5 @@
 import { ProjectSyncManager } from '../ProjectSyncManager';
-import * as Y from 'yjs';
+import Y from '../yjs-singleton';
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
 // ── Mock helpers ──────────────────────────────────────────────────────────────

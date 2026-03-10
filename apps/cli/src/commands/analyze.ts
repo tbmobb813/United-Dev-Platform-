@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import path from 'path';
 import fs from 'fs';
 import { Command } from 'commander';
@@ -49,13 +50,13 @@ export function analyzeCommand(program: Command): void {
         // Check API keys
         const apiKey = process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY;
         if (!apiKey && options.provider !== 'local') {
-          if (spinner) spinner.fail();
+          if (spinner) {spinner.fail();}
           console.error(chalk.red('❌ No API key found for provider'));
           console.error(chalk.dim('Set ANTHROPIC_API_KEY or OPENAI_API_KEY environment variable'));
           process.exit(1);
         }
 
-        if (spinner) spinner.text = 'Initializing AI manager...';
+        if (spinner) {spinner.text = 'Initializing AI manager...';}
 
         // Initialize AI manager
         const manager = new AIManager({
@@ -71,11 +72,11 @@ export function analyzeCommand(program: Command): void {
 
         if (options.file) {
           // Single file analysis
-          if (spinner) spinner.text = `Analyzing ${path.basename(options.file)}...`;
+          if (spinner) {spinner.text = `Analyzing ${path.basename(options.file)}...`;}
 
           const filePath = path.resolve(options.file);
           if (!fs.existsSync(filePath)) {
-            if (spinner) spinner.fail();
+            if (spinner) {spinner.fail();}
             console.error(chalk.red(`❌ File not found: ${filePath}`));
             process.exit(1);
           }
@@ -88,7 +89,7 @@ export function analyzeCommand(program: Command): void {
             language: extension,
           });
 
-          if (spinner) spinner.succeed('Analysis complete');
+          if (spinner) {spinner.succeed('Analysis complete');}
           console.log();
           console.log(chalk.bold.cyan(`📄 ${path.basename(filePath)}`));
           console.log(chalk.dim(`   Language: ${extension}`));
@@ -97,13 +98,13 @@ export function analyzeCommand(program: Command): void {
           console.log();
         } else {
           // Full project analysis
-          if (spinner) spinner.text = 'Scanning project structure...';
+          if (spinner) {spinner.text = 'Scanning project structure...';}
 
           const fileStructure = walkDirectory(projectRoot, IGNORE_DIRS);
 
-          if (spinner) spinner.text = 'Building codebase context...';
+          if (spinner) {spinner.text = 'Building codebase context...';}
 
-          const assistant = new ContextAwareAssistant(manager);
+          const assistant = new ContextAwareAssistant(manager.getService());
           const primaryLanguage = inferPrimaryLanguage(fileStructure);
 
           assistant.setCodebaseContext({
@@ -113,16 +114,16 @@ export function analyzeCommand(program: Command): void {
             fileStructure,
           });
 
-          if (spinner) spinner.text = 'Running AI analysis...';
+          if (spinner) {spinner.text = 'Running AI analysis...';}
           const result = await assistant.analyzeCodebase();
 
-          if (spinner) spinner.succeed('Analysis complete');
+          if (spinner) {spinner.succeed('Analysis complete');}
 
           // Pretty-print results
           printProjectAnalysis(result);
         }
       } catch (error) {
-        if (spinner) spinner.fail();
+        if (spinner) {spinner.fail();}
         const msg = error instanceof Error ? error.message : String(error);
         logger.error(msg);
         console.error(chalk.red(`❌ Analysis failed: ${msg}`));
@@ -138,7 +139,7 @@ function walkDirectory(root: string, ignore: string[]): FileNode[] {
     const entries = fs.readdirSync(root, { withFileTypes: true });
 
     for (const entry of entries) {
-      if (ignore.includes(entry.name)) continue;
+      if (ignore.includes(entry.name)) {continue;}
 
       const fullPath = path.join(root, entry.name);
       const relativePath = path.relative(process.cwd(), fullPath);
@@ -191,7 +192,7 @@ function inferPrimaryLanguage(files: FileNode[]): string {
   // Prefer languages in this order
   const preferred = ['ts', 'tsx', 'js', 'jsx', 'py', 'go', 'rs', 'java'];
   for (const ext of preferred) {
-    if (extCount[ext]) return ext;
+    if (extCount[ext]) {return ext;}
   }
 
   // Return most common

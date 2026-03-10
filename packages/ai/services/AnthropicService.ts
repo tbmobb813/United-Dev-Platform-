@@ -44,7 +44,7 @@ export class AnthropicService extends AIService {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
+        const errorData = await response.json().catch(() => null) as { error?: { message?: string } } | null;
         throw new Error(
           `Anthropic API error: ${response.status} ${response.statusText}${
             errorData ? ` - ${errorData.error?.message}` : ''
@@ -106,7 +106,7 @@ export class AnthropicService extends AIService {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
+        const errorData = await response.json().catch(() => null) as { error?: { message?: string } } | null;
         throw new Error(
           `Anthropic API error: ${response.status} ${response.statusText}${
             errorData ? ` - ${errorData.error?.message}` : ''

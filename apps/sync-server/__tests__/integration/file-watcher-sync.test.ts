@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from '@jest/globals';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
-import { ProjectSyncManager } from '@udp/editor-core/ProjectSyncManager';
-import { NodeFileSystem } from '@udp/filesystem/NodeFileSystem';
+import { ProjectSyncManager } from '@udp/editor-core';
+import { NodeFileSystem } from '@udp/filesystem';
 import path from 'path';
 import fs from 'fs';
 import { spawn, ChildProcess } from 'child_process';
@@ -235,8 +235,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
       const manager = new ProjectSyncManager(fsInstance);
 
       const syncedEvents: string[] = [];
-      manager.on('file:synced', (path: string) => {
-        syncedEvents.push(path);
+      manager.on('file:synced', (...args: unknown[]) => {
+        syncedEvents.push(args[0] as string);
       });
 
       // Create a Y.Text and add it to files map to trigger sync
@@ -262,8 +262,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
       const manager = new ProjectSyncManager(fsInstance);
 
       const createdEvents: string[] = [];
-      manager.on('file:created', (filePath: string) => {
-        createdEvents.push(filePath);
+      manager.on('file:created', (...args: unknown[]) => {
+        createdEvents.push(args[0] as string);
       });
 
       // Create a file in the workspace
@@ -287,8 +287,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
       const manager = new ProjectSyncManager(fsInstance);
 
       const deletedEvents: string[] = [];
-      manager.on('file:deleted', (filePath: string) => {
-        deletedEvents.push(filePath);
+      manager.on('file:deleted', (...args: unknown[]) => {
+        deletedEvents.push(args[0] as string);
       });
 
       // Delete the file

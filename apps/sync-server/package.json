@@ -10,6 +10,7 @@
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
+    "@auth/core": "^0.34.3",
     "@fastify/cors": "^10.0.0",
     "@prisma/client": "^6.0.0",
     "@udp/db": "workspace:*",
@@ -25,13 +26,13 @@
     "ws": "^8.18.0",
     "y-protocols": "^1.0.6",
     "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27",
-    "@auth/core": "^0.34.3"
+    "yjs": "^13.6.27"
   },
   "description": "Yjs WebSocket sync relay server for UDP",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.0",
+    "@types/ws": "^8.18.1",
     "jest": "^29.7.0",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"

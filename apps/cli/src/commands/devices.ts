@@ -26,7 +26,7 @@ export function devicesCommand(program: Command): void {
         try {
           const res = await fetch(`http://localhost:${port}/api/devices`);
           if (!res.ok) { throw new Error("Failed to fetch devices"); }
-          const data = await res.json();
+          const data = await res.json() as { devices: Array<{ deviceId: string; info?: { name?: string }; confirmed: boolean }> };
           spinner.succeed("Paired devices:");
           if (data.devices.length === 0) {
             logger.info(chalk.dim("  (none)"));

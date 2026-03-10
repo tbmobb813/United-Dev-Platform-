@@ -288,6 +288,13 @@ Current context: You're working in a real-time collaborative editor where multip
     return this.isInitialized && this.service !== null;
   }
 
+  getService(): AIService {
+    if (!this.service) {
+      throw new Error('AI Manager not initialized. Call initialize() first.');
+    }
+    return this.service;
+  }
+
   getCurrentProvider(): string {
     return this.config.defaultProvider;
   }
