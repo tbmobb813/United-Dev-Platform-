@@ -1,4 +1,5 @@
 {
+  "name": "@udp/ai",
   "main": "index.ts",
   "private": true,
   "scripts": {

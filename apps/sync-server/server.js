@@ -1,4 +1,6 @@
 
+
+console.log('[Server] server.js top-level start');
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import http from 'http';
@@ -15,6 +17,8 @@ import QRCode from 'qrcode';
 
 // Project room protocol: organize docs by project/room
 const rooms = new Map(); // Map<roomId, { doc: Y.Doc, devices: Set<string> }>
+const PORT = process.env.PORT || 3030;
+const app = Fastify({ logger: true });
 
 function getRoom(roomId) {
   let room = rooms.get(roomId);
@@ -120,7 +124,7 @@ const setupWSConnection = (
 const pairedDevices = new Map(); // deviceId -> { roomId, confirmed, info, token, pairedAt, lastSeen }
 const pendingPairings = new Map(); // token -> { deviceId, roomId, info, expiresAt }
 const pairingEvents = [];
-const { randomUUID } = require('crypto');
+import { randomUUID } from 'crypto';
 
 // Device discovery endpoint (returns confirmed devices for a room)
 app.get('/api/devices/discover', async (request, reply) => {
@@ -809,18 +813,17 @@ app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
   }
 });
 
-// Create HTTP server
-const server = http.createServer(app);
-
 // Set up WebSocket server with Yjs support
 const wss = new WebSocketServer({ noServer: true });
 
-// Handle WebSocket upgrades
-server.on('upgrade', (request, socket, head) => {
-  logger.info('WebSocket upgrade request:', request.url);
-
-  wss.handleUpgrade(request, socket, head, ws => {
-    setupCollaborativeWSConnection(ws, request);
+// Attach WebSocket upgrade handler after Fastify is ready
+app.addHook('onReady', async () => {
+  const server = app.server;
+  server.on('upgrade', (request, socket, head) => {
+    logger.info('WebSocket upgrade request:', request.url);
+    wss.handleUpgrade(request, socket, head, ws => {
+      setupCollaborativeWSConnection(ws, request);
+    });
   });
 });
 
@@ -836,26 +839,27 @@ app.setErrorHandler((error, request, reply) => {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully');
-
-  // Close database connection
   await prisma.$disconnect();
-
-  // Close server
-  server.close(() => {
-    logger.info('Server closed');
-    process.exit(0);
-  });
+  // Fastify handles its own shutdown
+  await app.close();
+  logger.info('Server closed');
+  process.exit(0);
 });
 
-// Start server
-app.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
-  if (err) {
+
+// Start Fastify server
+console.log('[Server] calling app.listen...');
+app.listen({ port: PORT, host: '0.0.0.0' })
+  .then(address => {
+    logger.info(`[api] Fastify server listening on ${address}`);
+    logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(
+      `[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`
+    );
+    console.log('[Server] Fastify server listening on', address);
+  })
+  .catch(err => {
     logger.error('Fastify failed to start:', err);
+    console.error('[Server] Fastify failed to start:', err);
     process.exit(1);
-  }
-  logger.info(`[api] Fastify server listening on ${address}`);
-  logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(
-    `[api] Database: ${process.env.DATABASE_URL ? 'Connected' : 'Using default'}`
-  );
-});
+  });

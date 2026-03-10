@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "udp": {
+      "command": "node",
+      "args": ["apps/mcp-server/dist/index.js"],
+      "env": {
+        "UDP_PROJECT_ROOT": ".",
+        "ANTHROPIC_API_KEY": "${env:ANTHROPIC_API_KEY}",
+        "OPENAI_API_KEY": "${env:OPENAI_API_KEY}",
+        "UDP_AI_PROVIDER": "anthropic"
+      }
+    }
+  }
+}

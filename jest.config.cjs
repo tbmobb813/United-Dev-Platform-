@@ -18,7 +18,7 @@ module.exports = {
   transform: {
     '^.+\\.[tj]sx?$': ['ts-jest', { useESM: true }],
   },
-  testPathIgnorePatterns: ['/node_modules/', '__tests__/jest.setup.ts', '__tests__/integration/'],
+  testPathIgnorePatterns: ['/node_modules/', '__tests__/jest.setup.ts'],
   // Transform some ESM-only node_modules so Jest can run them in this monorepo.
   transformIgnorePatterns: [
     'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)',

@@ -1,0 +1,164 @@
+# UDP — United Development Platform
+
+This is a monorepo for UDP (United Development Platform), a cross-device real-time code synchronization tool.
+
+## Architecture
+
+**Stack:**
+- Runtime: Node.js 18+ with pnpm workspaces and Turborepo orchestration
+- Language: TypeScript throughout (strict mode)
+- Sync: Yjs + y-websocket for real-time document collaboration (packages/editor-core/ProjectSyncManager.ts)
+- Server: Fastify (apps/sync-server/server.js) running on port 3030
+- CLI: Commander.js (apps/cli/) — built with tsup to ESM, run with `node apps/cli/dist/index.js`
+- VS Code Extension: apps/vscode-extension/ (CommonJS via tsup)
+- Mobile: Expo 54 + React Native (apps/mobile/)
+- Database: SQLite via Prisma (packages/db/) with models: User, Project, ProjectFile, Device
+- AI: packages/ai/ — AIManager, ContextAwareAssistant, AnthropicService (Anthropic/OpenAI/Ollama support)
+- MCP Server: apps/mcp-server/ — Model Context Protocol server with tools: list_files, get_file_content, analyze_file
+
+## Key Commands
+
+```bash
+# Build
+pnpm build                           # Build all packages
+pnpm --filter @udp/cli build         # Build CLI only
+pnpm --filter @udp/mcp-server build  # Build MCP server only
+
+# Run
+node apps/cli/dist/index.js init                 # Initialize UDP in a project
+node apps/cli/dist/index.js sync                 # Start sync server + show QR code
+node apps/cli/dist/index.js devices              # Manage connected devices
+node apps/cli/dist/index.js analyze              # AI analysis of current project
+node apps/cli/dist/index.js analyze --file path  # AI analysis of a specific file
+
+# Test
+pnpm test                                  # Run unit tests (excludes integration)
+pnpm test -- --testPathPattern=integration # Run integration tests only
+
+# Lint & Type
+pnpm typecheck  # TypeScript type checking across all packages
+pnpm lint       # ESLint + Prettier
+```
+
+## Code Conventions
+
+**Commands (apps/cli/src/commands/):**
+- Follow the pattern in sync.ts and devices.ts
+- Use `commander` for argument parsing
+- Use `ora` for spinners and status messages
+- Use `chalk` for colored output
+- Use `pino` for structured logging
+- Read `.udp/config.json` for project configuration
+- All commands are async/await functions that export a `<name>Command(program)` factory
+
+**Packages (packages/*/):**
+- No circular dependencies
+- Each package has a clear `index.ts` that exports the public API
+- TypeScript files are consumed directly (tsconfig.base.json extends everywhere)
+- Tests go in `__tests__/` folder adjacent to source
+- Use strict TypeScript: no `any`, enable `noImplicitAny`, `strict: true`
+
+**Database (packages/db/):**
+- Use Prisma with SQLite for development
+- Models: User (auth), Project (owned by User), ProjectFile (path, content, projectId), Device (for mobile pairing)
+- Schema is at apps/sync-server/prisma/schema.prisma (shared)
+- Run `pnpm --filter @udp/db generate` after schema changes
+
+**AI (packages/ai/):**
+- AIManager is the high-level orchestrator
+- ContextAwareAssistant handles codebase-wide analysis
+- AnthropicService uses raw fetch (no SDK) to anthropic.com API
+- Providers: anthropic, openai, local (Ollama)
+- Methods: explainCode(), generateCode(), debugCode(), optimizeCode(), generateTests(), chat()
+
+**MCP Server (apps/mcp-server/):**
+- Tools are defined in src/tools/*.ts — each exports a Tool interface with name, description, inputSchema, execute()
+- Uses @modelcontextprotocol/sdk over stdio transport
+- Run standalone with `node apps/mcp-server/dist/index.js` or via .claude/mcp.json config
+- Each tool can read filesystem (for local projects) or query Prisma (if DB access needed)
+
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```
+# Database
+DATABASE_URL=file:./dev.db
+
+# AI Services
+ANTHROPIC_API_KEY=sk-...
+OPENAI_API_KEY=sk-...
+
+# Pairing
+UDP_PAIR_AUTH=your-auth-token
+
+# Development
+NODE_ENV=development
+PORT=3030
+```
+
+## File Structure Highlights
+
+```
+apps/
+  cli/                 # UDP command-line tool
+  sync-server/         # Fastify server + Yjs WebSocket
+  vscode-extension/    # VS Code extension
+  mobile/              # Expo mobile app
+  mcp-server/          # MCP (Model Context Protocol) server
+
+packages/
+  ai/                  # AI analysis engine
+  editor-core/         # ProjectSyncManager (Yjs), DocumentManager
+  filesystem/          # File system abstraction + watcher
+  db/                  # Prisma client + schema
+  types/               # Shared TypeScript types
+  logger/              # Pino logger setup
+  config/              # Configuration utilities
+  tsconfig.base.json   # Base TypeScript config
+
+.claude/mcp.json       # Claude Code MCP server config
+.cursorrules           # This file — Cursor context rules
+sprint-tracker.md      # Sprint progress tracker
+```
+
+## Testing
+
+- Unit tests: Jest with ts-jest configuration
+- Config file: jest.config.cjs (at repo root)
+- Run: `pnpm test` (excludes integration tests by default)
+- Integration tests: opt-in with `pnpm test -- --testPathPattern=integration`
+- Mock filesystem and WebSocket providers available in test setup
+
+## Common Tasks
+
+**Add a new CLI command:**
+1. Create `apps/cli/src/commands/<name>.ts` with `export function <name>Command(program: Command)`
+2. Import and call it in `apps/cli/src/index.ts`
+3. Follow the pattern in sync.ts: use ora, chalk, pino, commander options
+4. Build with `pnpm --filter @udp/cli build`
+
+**Modify the Prisma schema:**
+1. Edit `apps/sync-server/prisma/schema.prisma`
+2. Create migration: `pnpm --filter @udp/db prisma migrate dev --name <name>`
+3. Generate client: `pnpm --filter @udp/db generate`
+4. Update any TypeScript interfaces that mirror Prisma models
+
+**Add an MCP tool:**
+1. Create `apps/mcp-server/src/tools/<name>.ts` with `export const <name>Tool: Tool`
+2. Import in `apps/mcp-server/src/index.ts`
+3. Register in the tools array
+4. Build with `pnpm --filter @udp/mcp-server build`
+
+**Analyze a project with AI:**
+1. Set `ANTHROPIC_API_KEY` environment variable
+2. Run `node apps/cli/dist/index.js analyze` in the project directory
+3. For a single file: `node apps/cli/dist/index.js analyze --file src/App.tsx`
+4. Provider can be overridden: `--provider openai --model gpt-4`
+
+## Related Documentation
+
+- `sprint-tracker.md` — Project roadmap and completion status
+- `apps/sync-server/README.md` — Sync server setup
+- `packages/editor-core/README.md` — Yjs integration guide
+- `apps/cli/README.md` — CLI tool reference

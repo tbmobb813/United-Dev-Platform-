@@ -71,9 +71,9 @@
 - [x] Add edit mode with real-time sync back (CollaborativeEditor integrated in Edit tab)
 - [x] Full flow test: CLI → QR → mobile → sync → edit (three-tab layout: Connect/Browse/Edit)
 
-## Sprint 5: AI Analysis + MCP Agent (2 weeks)
-- [ ] Create cross-platform analysis prompts
-- [ ] Implement `udp analyze` command
-- [ ] Build MCP server with 3 tools
-- [ ] Write Cursor + Claude Code integration configs
-- [ ] Test end-to-end MCP flow
+## Sprint 5: AI Analysis + MCP Agent (2 weeks) ✅
+- [x] Create cross-platform analysis prompts (via AIManager.explainCode() + ContextAwareAssistant.analyzeCodebase())
+- [x] Implement `udp analyze` command (CLI command with --file option, --provider/--model flags)
+- [x] Build MCP server with 3 tools (list_files, get_file_content, analyze_file in apps/mcp-server/)
+- [x] Write Cursor + Claude Code integration configs (.cursorrules + .claude/mcp.json)
+- [x] Test end-to-end MCP flow (tools accessible via stdio transport)
