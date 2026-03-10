@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node", "jest", "ws"],
+    "jsx": "react-jsx",
+    "paths": {
+      "@udp/*": ["../../packages/*/index.ts", "../../packages/*/src/index.ts", "../../packages/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
+}

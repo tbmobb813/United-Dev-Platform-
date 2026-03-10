@@ -308,3 +308,6 @@ archive/*/.expo/
 
 # UDP workflow tool
 .udp/
+
+# Node.js compile cache
+node-compile-cache/

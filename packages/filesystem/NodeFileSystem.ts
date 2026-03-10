@@ -47,12 +47,12 @@ export class NodeFileSystem implements FileSystemProvider {
       name: path.basename(fullPath),
       path: '/' + relativePath.replace(/\\/g, '/'),
       type: stats.isDirectory() ? 'directory' : 'file',
-      size: stats.isFile() ? stats.size : undefined,
+      ...(stats.isFile() ? { size: stats.size } : {}),
       lastModified: stats.mtime,
       permissions: {
         readable: true, // We'll assume readable for now
         writable: true, // We'll assume writable for now
-        executable: stats.isFile() ? false : true,
+        executable: !stats.isFile(),
       },
     };
 
@@ -289,7 +289,7 @@ export class NodeFileSystem implements FileSystemProvider {
           type: this.mapChokidarEvent(eventType),
           path:
             '/' + path.relative(this.basePath, eventPath).replace(/\\/g, '/'),
-          entry,
+          ...(entry !== undefined ? { entry } : {}),
           timestamp: new Date(),
         };
 
@@ -322,7 +322,7 @@ export class NodeFileSystem implements FileSystemProvider {
     const watcher = chokidar.watch(fullPath, {
       persistent: true,
       ignoreInitial: true,
-      depth: recursive ? undefined : 1,
+      ...(recursive ? {} : { depth: 1 }),
     });
 
     const eventHandler = async (
@@ -341,10 +341,8 @@ export class NodeFileSystem implements FileSystemProvider {
           type: this.mapChokidarEvent(eventType),
           path:
             '/' + path.relative(this.basePath, eventPath).replace(/\\/g, '/'),
-          oldPath: oldPath
-            ? '/' + path.relative(this.basePath, oldPath).replace(/\\/g, '/')
-            : undefined,
-          entry,
+          ...(oldPath ? { oldPath: '/' + path.relative(this.basePath, oldPath).replace(/\\/g, '/') } : {}),
+          ...(entry !== undefined ? { entry } : {}),
           timestamp: new Date(),
         };
 
@@ -436,7 +434,7 @@ export class NodeFileSystem implements FileSystemProvider {
       const fsEvent: FileSystemEvent = {
         type: this.mapChokidarEventToFileSystemEventType(eventType),
         path: eventPath,
-        stats: stats ? this.convertStatsToEntry(eventPath, stats) : undefined,
+        ...(stats ? { stats: this.convertStatsToEntry(eventPath, stats) } : {}),
         timestamp: new Date(),
       };
       callback(fsEvent);
@@ -447,7 +445,7 @@ export class NodeFileSystem implements FileSystemProvider {
       persistent: true,
       ignoreInitial: false,
       followSymlinks: false,
-      depth: undefined, // Watch recursively
+      // depth omitted: chokidar watches recursively by default
     });
 
     // Set up event handlers

@@ -6,7 +6,6 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
   TextContent,
-  ToolError,
 } from '@modelcontextprotocol/sdk/types.js';
 import { listFilesTool } from './tools/list_files.js';
 import { getFileContentTool } from './tools/get_file_content.js';
