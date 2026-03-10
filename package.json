@@ -42,6 +42,8 @@
     "clean": "turbo clean && rm -rf node_modules",
     "test": "turbo test",
     "test:ci": "turbo test -- --passWithNoTests",
+    "test:unit": "jest --config ./jest.config.cjs",
+    "test:integration": "jest --config ./jest.config.integration.cjs",
     "test:critical": "jest --config ./jest.config.critical.cjs --runInBand || true",
     "test:core": "jest --config ./jest.config.core.cjs --runInBand || true",
     "test:full": "jest --config ./jest.config.full.cjs --runInBand || true",

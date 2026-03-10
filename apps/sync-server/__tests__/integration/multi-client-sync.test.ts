@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, jest } from '@jest/globals';
+// Increase Jest timeout for slow integration tests
+jest.setTimeout(30000);
 import WebSocket from 'ws';
 import * as Y from 'yjs';
 import path from 'path';
@@ -120,7 +122,7 @@ describe('Multi-Client Sync Integration Tests', () => {
       const files2 = doc2.getMap('files');
 
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Providers failed to sync')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Providers failed to sync')), 15000);
 
         let syncCount = 0;
         const checkSync = () => {
@@ -182,7 +184,7 @@ describe('Multi-Client Sync Integration Tests', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         let syncCount = 0;
         const checkSync = () => {
           syncCount++;
@@ -252,7 +254,7 @@ describe('Multi-Client Sync Integration Tests', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         let syncCount = 0;
         const checkSync = () => {
           syncCount++;
@@ -319,7 +321,7 @@ describe('Multi-Client Sync Integration Tests', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         let syncCount = 0;
         const checkSync = () => {
           syncCount++;

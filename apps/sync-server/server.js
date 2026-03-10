@@ -1,5 +1,3 @@
-
-
 console.log('[Server] server.js top-level start');
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';

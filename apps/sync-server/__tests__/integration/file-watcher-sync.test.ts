@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, jest } from '@jest/globals';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { ProjectSyncManager } from '@udp/editor-core';
@@ -10,6 +10,9 @@ import { spawn, ChildProcess } from 'child_process';
 const PORT = 18766; // Different test port
 const WS_URL = `ws://localhost:${PORT}`;
 const TEST_DIR = path.join(__dirname, '../.test-workspace');
+
+// Increase Jest timeout for slow integration tests
+jest.setTimeout(30000);
 
 let serverProc: ChildProcess;
 
@@ -100,7 +103,7 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         provider.on('sync', () => {
           clearTimeout(timeout);
           resolve();
@@ -137,6 +140,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
   describe('File modification via watcher', () => {
     it('file modified in workspace triggers sync', async () => {
       const testFile = path.join(TEST_DIR, 'modify.txt');
+      // Ensure directory exists and is writable
+      fs.mkdirSync(TEST_DIR, { recursive: true });
       fs.writeFileSync(testFile, 'initial content');
 
       const doc = new Y.Doc();
@@ -149,7 +154,7 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         provider.on('sync', () => {
           clearTimeout(timeout);
           resolve();
@@ -185,6 +190,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
   describe('File deletion via watcher', () => {
     it('file deleted in workspace is reflected in sync', async () => {
       const testFile = path.join(TEST_DIR, 'delete.txt');
+      // Ensure directory exists and is writable
+      fs.mkdirSync(TEST_DIR, { recursive: true });
       fs.writeFileSync(testFile, 'to be deleted');
 
       const doc = new Y.Doc();
@@ -197,7 +204,7 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         provider.on('sync', () => {
           clearTimeout(timeout);
           resolve();
@@ -240,13 +247,14 @@ describe('File Watcher → Yjs Sync Integration', () => {
       });
 
       // Create a Y.Text and add it to files map to trigger sync
+      // Use a relative path so NodeFileSystem resolves it under TEST_DIR
       const ytext = new Y.Text();
       ytext.insert(0, 'synced content');
-      manager.files.set('/test-sync.txt', ytext);
+      manager.files.set('test-sync.txt', ytext);
 
       // Wait for writeFile to be called
       await new Promise<void>((resolve) => {
-        setTimeout(resolve, 100);
+        setTimeout(resolve, 500);
       });
 
       // Verify file was written

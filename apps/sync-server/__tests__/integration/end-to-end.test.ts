@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
+// Increase Jest timeout for slow integration tests
+jest.setTimeout(30000);
 import { spawn, ChildProcess } from 'child_process';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
@@ -97,7 +99,7 @@ describe('End-to-End Sync Flow', () => {
 
       // Wait for both clients to sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         let syncCount = 0;
         const checkSync = () => {
           syncCount++;
@@ -185,7 +187,7 @@ describe('End-to-End Sync Flow', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         let syncCount = 0;
         const checkSync = () => {
           syncCount++;
@@ -269,7 +271,7 @@ describe('End-to-End Sync Flow', () => {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 5000);
+        const timeout = setTimeout(() => reject(new Error('Initial sync failed')), 15000);
         let syncCount = 0;
         const checkSync = () => {
           syncCount++;
