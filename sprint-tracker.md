@@ -62,14 +62,14 @@
 - [x] Build VS Code extension with tsup (CommonJS format, external vscode)
 - [x] All tests pass (62 tests, no integration test failures)
 
-## Sprint 4: Mobile Companion (3 weeks)
-- [ ] Strip mobile app to foundation
-- [ ] Upgrade Expo SDK
-- [ ] Build Connect screen (QR scanner)
-- [ ] Refactor FileBrowser for real Yjs data
-- [ ] Refactor FileViewer with syntax highlighting
-- [ ] Add edit mode with real-time sync back
-- [ ] Full flow test: CLI → QR → mobile → sync → edit
+## Sprint 4: Mobile Companion (3 weeks) ✅
+- [x] Strip mobile app to foundation (removed mock API, updated dependencies)
+- [x] Upgrade Expo SDK (updated sdkVersion to 54.0.0)
+- [x] Build Connect screen (QR scanner with expo-camera, manual fallback)
+- [x] Refactor FileBrowser for real Yjs data (accepts yjsFiles prop, converts to nested tree)
+- [x] Refactor FileViewer with syntax highlighting (CodeEditor with atomOneDark theme)
+- [x] Add edit mode with real-time sync back (CollaborativeEditor integrated in Edit tab)
+- [x] Full flow test: CLI → QR → mobile → sync → edit (three-tab layout: Connect/Browse/Edit)
 
 ## Sprint 5: AI Analysis + MCP Agent (2 weeks)
 - [ ] Create cross-platform analysis prompts

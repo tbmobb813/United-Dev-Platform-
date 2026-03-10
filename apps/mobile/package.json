@@ -18,9 +18,13 @@
     "@udp/editor-core": "workspace:*",
     "@udp/ui-native": "workspace:*",
     "expo": "^54.0.23",
+    "expo-camera": "~16.0.0",
+    "expo-crypto": "~14.0.0",
     "expo-linking": "~8.0.8",
+    "expo-secure-store": "~14.0.0",
     "react": "^19.2.0",
     "react-native": "0.74.0",
+    "uuid": "^10.0.0",
     "y-websocket": "^3.0.0",
     "yjs": "^13.6.27"
   },

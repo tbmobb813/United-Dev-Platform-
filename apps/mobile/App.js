@@ -18,6 +18,14 @@ export default function App() {
   useEffect(() => {
     const handleDeepLink = ({ url }) => {
       const { queryParams } = Linking.parse(url);
+
+      // Check if this is a pairing deep link (udp://pair?room=...&token=...)
+      if (queryParams.token && queryParams.room) {
+        // This is a pairing deep link - the MobileHome will handle it
+        return;
+      }
+
+      // Legacy deep link for repository/file
       const newParams = {
         repo: queryParams.repo || '',
         file: queryParams.file || '',
@@ -90,6 +98,6 @@ export default function App() {
     );
   }
 
-  // Default: Show the new mobile home with file browser
+  // Default: Show the mobile home with pairing, file browser, and editor
   return <MobileHome />;
 }

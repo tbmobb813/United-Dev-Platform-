@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { ApiService, MobileFileNode, MobileRepository } from '../services';
+import type { YjsFileEntry } from '../hooks/useYjsFiles';
 
 // Re-export types for backward compatibility
 export interface FileNode extends MobileFileNode {}
@@ -22,6 +23,48 @@ interface FileBrowserProps {
   onDirectorySelect?: (directory: FileNode) => void;
   showAIActions?: boolean;
   readOnly?: boolean;
+  yjsFiles?: YjsFileEntry[];
+}
+
+// Helper function to convert Yjs file entries to FileNode format
+function convertYjsFilesToFileNodes(yjsFiles: YjsFileEntry[]): FileNode[] {
+  return yjsFiles.map(entry => ({
+    name: entry.path.split('/').pop() || entry.path,
+    path: entry.path,
+    type: entry.type,
+    children: entry.children
+      ? convertYjsFilesToFileNodes(entry.children)
+      : undefined,
+    extension: entry.type === 'file'
+      ? entry.path.split('.').pop()
+      : undefined,
+    size: undefined,
+  }));
+}
+
+// Helper function to filter files by current path
+function filterFilesByPath(files: FileNode[], currentPath: string): FileNode[] {
+  if (currentPath === '/') {
+    return files;
+  }
+
+  // Find the node at the current path
+  const pathParts = currentPath.split('/').filter(p => p);
+  let current: FileNode | undefined;
+
+  for (const part of pathParts) {
+    if (!current) {
+      current = files.find(f => f.name === part);
+    } else {
+      current = current.children?.find(f => f.name === part);
+    }
+
+    if (!current) {
+      return [];
+    }
+  }
+
+  return current?.children || [];
 }
 
 export const FileBrowser: React.FC<FileBrowserProps> = ({
@@ -31,6 +74,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   onDirectorySelect,
   showAIActions = true,
   readOnly: _readOnly = true,
+  yjsFiles,
 }) => {
   const [files, setFiles] = useState<FileNode[]>([]);
   const [currentPath, setCurrentPath] = useState(initialPath);
@@ -40,7 +84,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
 
   useEffect(() => {
     loadFiles(currentPath);
-  }, [currentPath, repository]);
+  }, [currentPath, repository, yjsFiles]);
 
   const loadFiles = async (path: string, isRefresh = false) => {
     if (isRefresh) {
@@ -50,7 +94,11 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
     }
 
     try {
-      if (repository?.id) {
+      if (yjsFiles) {
+        // Use Yjs files from sync manager
+        const fileNodes = convertYjsFilesToFileNodes(yjsFiles);
+        setFiles(filterFilesByPath(fileNodes, path));
+      } else if (repository?.id) {
         // Use real API to load files
         const response = await ApiService.getMobileFileTree(
           repository.id,

@@ -565,7 +565,7 @@ app.register(fastifyCors, {
   origin:
     process.env.NODE_ENV === 'production'
       ? ['https://your-domain.com']
-      : ['http://localhost:3000', 'http://localhost:3001'],
+      : true,   // reflect origin in dev — allows mobile devices on local network
   credentials: true,
 });
 
