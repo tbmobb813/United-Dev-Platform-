@@ -40,61 +40,47 @@ const setupWSConnection = (
   const doc = room.doc;
   const awareness = new awarenessProtocol.Awareness(doc);
 
+  // y-websocket uses a 2-level message format:
+  //   outer type: 0 = messageSync, 1 = messageAwareness
+  //   inner type (under messageSync): 0 = SyncStep1, 1 = SyncStep2, 2 = Update
+  const messageSync = 0;
+
   const messageHandler = message => {
     const encoder = encoding.createEncoder();
     const decoder = decoding.createDecoder(new Uint8Array(message));
-    const messageType = decoding.readVarUint(decoder);
+    const outerType = decoding.readVarUint(decoder);
 
-    switch (messageType) {
-      case syncProtocol.messageYjsSyncStep1:
-        encoding.writeVarUint(encoder, syncProtocol.messageYjsSyncStep2);
-        syncProtocol.readSyncStep1(decoder, encoder, doc);
-        conn.send(encoding.toUint8Array(encoder));
-        break;
-      case syncProtocol.messageYjsSyncStep2:
-        syncProtocol.readSyncStep2(decoder, doc, null);
-        break;
-      case syncProtocol.messageYjsUpdate:
-        // Optionally log incoming update size for debugging
-        try {
-          if (process.env.UDP_DEBUG_YJS) {
-            const remaining = decoding.readVarUint8Array
-              ? undefined
-              : undefined;
-            logger.info(
-              `[yjs] received update (${roomId}): ${new Uint8Array(message).length} bytes`
-            );
-          }
-        } catch (e) {
-          // ignore logging errors
-        }
-        syncProtocol.readUpdate(decoder, doc, null);
-        break;
-      case awarenessProtocol.messageAwareness:
-        awarenessProtocol.applyAwarenessUpdate(
-          awareness,
-          decoding.readVarUint8Array(decoder),
-          conn
-        );
-        break;
+    if (outerType === messageSync) {
+      // Read inner sync type and respond with outer messageSync wrapper
+      const innerType = decoding.readVarUint(decoder);
+      switch (innerType) {
+        case syncProtocol.messageYjsSyncStep1:
+          encoding.writeVarUint(encoder, messageSync);
+          syncProtocol.readSyncStep1(decoder, encoder, doc);
+          conn.send(encoding.toUint8Array(encoder));
+          break;
+        case syncProtocol.messageYjsSyncStep2:
+          syncProtocol.readSyncStep2(decoder, doc, null);
+          break;
+        case syncProtocol.messageYjsUpdate:
+          syncProtocol.readUpdate(decoder, doc, null);
+          break;
+      }
+    } else if (outerType === awarenessProtocol.messageAwareness) {
+      awarenessProtocol.applyAwarenessUpdate(
+        awareness,
+        decoding.readVarUint8Array(decoder),
+        conn
+      );
     }
   };
 
   // Add an update handler that broadcasts updates to the connection (except origin)
   const updateHandler = (update, origin) => {
-    try {
-      if (process.env.UDP_DEBUG_YJS) {
-        logger.info(
-          `[yjs] broadcasting update for room=${roomId} (fromOrigin=${origin === conn ? 'self' : 'remote'}) size=${update ? update.byteLength || update.length : 'unknown'
-          }`
-        );
-      }
-    } catch (e) {
-      // ignore logging failures
-    }
-
     if (origin !== conn) {
       const encoder = encoding.createEncoder();
+      // Wrap in outer messageSync (0) + inner messageYjsUpdate (2)
+      encoding.writeVarUint(encoder, messageSync);
       encoding.writeVarUint(encoder, syncProtocol.messageYjsUpdate);
       encoding.writeVarUint8Array(encoder, update);
       conn.send(encoding.toUint8Array(encoder));
@@ -228,17 +214,17 @@ app.get('/api/devices/events', async (request, reply) => {
 });
 
 // Authentication middleware for REST API endpoints
-async function authenticateToken(req, res, next) {
+async function authenticateToken(req, reply) {
   const secret = process.env.NEXTAUTH_SECRET;
   if (!secret) {
     logger.error('NEXTAUTH_SECRET is not defined');
-    return res.status(500).json({ error: 'Server configuration error' });
+    return reply.code(500).send({ error: 'Server configuration error' });
   }
 
   const token = await getToken({ req, secret, raw: true });
 
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return reply.code(401).send({ error: 'Unauthorized' });
   }
 
   // Assuming the JWT contains the user ID in the 'sub' claim (standard for NextAuth.js)
@@ -246,8 +232,6 @@ async function authenticateToken(req, res, next) {
     Buffer.from(token.split('.')[1], 'base64').toString()
   );
   req.userId = decodedToken.sub; // 'sub' claim typically holds the user ID
-
-  next();
 }
 
 // Enhanced WebSocket connection handler with Yjs collaboration
@@ -562,9 +546,6 @@ function broadcastToSession(sessionId, message, _excludeUserId) {
   logger.info(`Broadcasting to session ${sessionId}:`, message);
 }
 
-const PORT = process.env.PORT || 3030;
-const app = Fastify({ logger: true });
-
 app.register(fastifyCors, {
   origin:
     process.env.NODE_ENV === 'production'
@@ -643,13 +624,13 @@ app.post('/ai/run', async (request, reply) => {
 });
 
 // Project Management Endpoints
-app.post('/api/projects', authenticateToken, async (req, res) => {
+app.post('/api/projects', { preHandler: [authenticateToken] }, async (req, reply) => {
   try {
     const { name, description, visibility } = req.body;
     const userId = req.userId; // From authenticateToken middleware
 
     if (!name) {
-      return res.status(400).json({ error: 'Project name is required' });
+      return reply.code(400).send({ error: 'Project name is required' });
     }
 
     const project = await prisma.project.create({
@@ -666,23 +647,21 @@ app.post('/api/projects', authenticateToken, async (req, res) => {
       },
     });
 
-    res.status(201).json({ project });
+    reply.code(201).send({ project });
   } catch (error) {
     logger.error('Error creating project:', error);
-    res.status(500).json({ error: 'Failed to create project' });
+    reply.code(500).send({ error: 'Failed to create project' });
   }
 });
 
 // File Management Endpoints
-app.post('/api/files', authenticateToken, async (req, res) => {
+app.post('/api/files', { preHandler: [authenticateToken] }, async (req, reply) => {
   try {
     const { projectId, path, name, content, type, mimeType } = req.body;
     const userId = req.userId; // From authenticateToken middleware
 
     if (!projectId || !path || !name) {
-      return res
-        .status(400)
-        .json({ error: 'Project ID, path, and name are required' });
+      return reply.code(400).send({ error: 'Project ID, path, and name are required' });
     }
 
     // Verify user has access to the project
@@ -696,7 +675,7 @@ app.post('/api/files', authenticateToken, async (req, res) => {
       (!project.members.some(m => m.userId === userId) &&
         project.ownerId !== userId)
     ) {
-      return res.status(403).json({ error: 'Access denied to project' });
+      return reply.code(403).send({ error: 'Access denied to project' });
     }
 
     const file = await prisma.projectFile.create({
@@ -720,21 +699,21 @@ app.post('/api/files', authenticateToken, async (req, res) => {
       },
     });
 
-    res.status(201).json({ file });
+    reply.code(201).send({ file });
   } catch (error) {
     logger.error('Error creating file:', error);
-    res.status(500).json({ error: 'Failed to create file' });
+    reply.code(500).send({ error: 'Failed to create file' });
   }
 });
 
-app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
+app.put('/api/files/:fileId', { preHandler: [authenticateToken] }, async (req, reply) => {
   try {
     const { fileId } = req.params;
     const { content } = req.body;
     const userId = req.userId; // From authenticateToken middleware
 
     if (!content) {
-      return res.status(400).json({ error: 'File content is required' });
+      return reply.code(400).send({ error: 'File content is required' });
     }
 
     const existingFile = await prisma.projectFile.findUnique({
@@ -743,7 +722,7 @@ app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
     });
 
     if (!existingFile) {
-      return res.status(404).json({ error: 'File not found' });
+      return reply.code(404).send({ error: 'File not found' });
     }
 
     // Verify user has access to the project
@@ -753,7 +732,7 @@ app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
       (!project.members.some(m => m.userId === userId) &&
         project.ownerId !== userId)
     ) {
-      return res.status(403).json({ error: 'Access denied to project' });
+      return reply.code(403).send({ error: 'Access denied to project' });
     }
 
     const updatedFile = await prisma.projectFile.update({
@@ -775,14 +754,14 @@ app.put('/api/files/:fileId', authenticateToken, async (req, res) => {
       },
     });
 
-    res.json({ file: updatedFile });
+    reply.send({ file: updatedFile });
   } catch (error) {
     logger.error('Error updating file:', error);
-    res.status(500).json({ error: 'Failed to update file' });
+    reply.code(500).send({ error: 'Failed to update file' });
   }
 });
 
-app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
+app.get('/api/files/:fileId', { preHandler: [authenticateToken] }, async (req, reply) => {
   try {
     const { fileId } = req.params;
     const userId = req.userId; // From authenticateToken middleware
@@ -793,7 +772,7 @@ app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
     });
 
     if (!file) {
-      return res.status(404).json({ error: 'File not found' });
+      return reply.code(404).send({ error: 'File not found' });
     }
 
     // Verify user has access to the project
@@ -803,13 +782,13 @@ app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
       (!project.members.some(m => m.userId === userId) &&
         project.ownerId !== userId)
     ) {
-      return res.status(403).json({ error: 'Access denied to project' });
+      return reply.code(403).send({ error: 'Access denied to project' });
     }
 
-    res.json({ file });
+    reply.send({ file });
   } catch (error) {
     logger.error('Error fetching file:', error);
-    res.status(500).json({ error: 'Failed to fetch file' });
+    reply.code(500).send({ error: 'Failed to fetch file' });
   }
 });
 
