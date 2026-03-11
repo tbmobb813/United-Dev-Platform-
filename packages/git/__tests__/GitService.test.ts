@@ -13,7 +13,7 @@ jest.mock('../src/http.ts', () => ({
 import * as git from 'isomorphic-git';
 
 // Cast every git function to a jest.Mock so TypeScript lets us call mockResolvedValue etc.
-const gitMock = git as unknown as Record<string, jest.Mock>;
+const gitMock: jest.Mocked<typeof git> = git as jest.Mocked<typeof git>;
 
 // ─── Mock FileSystem ─────────────────────────────────────────────────────────
 const createMockFS = () => ({

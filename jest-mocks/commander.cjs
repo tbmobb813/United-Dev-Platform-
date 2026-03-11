@@ -36,6 +36,7 @@ const Command = jest.fn(function () {
   };
 
   return {
+    name: jest.fn().mockReturnThis(),
     command: jest.fn(function (spec) {
       const tokens = String(spec || '').trim().split(/\s+/).filter(Boolean);
       commandName = tokens[0] || '';
@@ -43,6 +44,7 @@ const Command = jest.fn(function () {
       return this;
     }),
     description: jest.fn().mockReturnThis(),
+    version: jest.fn().mockReturnThis(),
     option: jest.fn(function (flags, _desc, defaultValue) {
       parseOptionSpec(flags, defaultValue);
       return this;
@@ -122,6 +124,7 @@ const Command = jest.fn(function () {
       }
       return undefined;
     }),
+    parse: jest.fn().mockReturnThis(),
   };
 });
 

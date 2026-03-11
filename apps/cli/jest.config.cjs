@@ -15,6 +15,8 @@ module.exports = {
     'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb|node-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill|chalk|ora|qrcode-terminal|pino|commander)/)',
   ],
   moduleNameMapper: {
+    // Resolve relative ESM .js imports to TypeScript sources in tests
+    '^(\\.{1,2}/.*)\\.js$': '$1',
     ...base.moduleNameMapper,
     // Point @udp/ai to its source entry to avoid Haste duplicate conflicts from worktrees
     '^@udp/ai$': '<rootDir>/../../packages/ai/index.ts',

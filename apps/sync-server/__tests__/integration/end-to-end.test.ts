@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
 // Increase Jest timeout for slow integration tests
 jest.setTimeout(30000);
 import { spawn, ChildProcess } from 'child_process';
-import * as Y from 'yjs';
+import * as Y from '@udp/editor-core/yjs-singleton';
 import { WebsocketProvider } from 'y-websocket';
 import path from 'path';
 import fs from 'fs';
@@ -21,7 +21,7 @@ async function startTestServer(): Promise<void> {
       stdio: 'pipe',
     });
 
-    let ready = false;
+    // removed unused 'ready' variable
     const timeout = setTimeout(() => {
       reject(new Error('Server failed to start within 5s'));
     }, 5000);
@@ -29,7 +29,6 @@ async function startTestServer(): Promise<void> {
     serverProc.stdout?.on('data', (data) => {
       const msg = data.toString();
       if (msg.includes('listening')) {
-        ready = true;
         clearTimeout(timeout);
         resolve();
       }
@@ -89,10 +88,10 @@ describe('End-to-End Sync Flow', () => {
 
       const provider1 = new WebsocketProvider(WS_URL, roomId, doc1, {
         awareness: undefined,
-      }) as any;
+      });
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
-      }) as any;
+      });
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -177,10 +176,10 @@ describe('End-to-End Sync Flow', () => {
 
       const provider1 = new WebsocketProvider(WS_URL, roomId, doc1, {
         awareness: undefined,
-      }) as any;
+      });
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
-      }) as any;
+      });
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -261,10 +260,10 @@ describe('End-to-End Sync Flow', () => {
 
       const provider1 = new WebsocketProvider(WS_URL, roomId, doc1, {
         awareness: undefined,
-      }) as any;
+      });
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
-      }) as any;
+      });
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');

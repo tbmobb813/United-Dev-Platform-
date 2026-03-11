@@ -67,7 +67,7 @@ describe('status command', () => {
     // Should complete without throwing
     await expect(
       program.parseAsync(['status'], { from: 'user' })
-    ).resolves.toBeDefined();
+    ).resolves.toBeUndefined();
 
     // config.json should have been read
     expect(mockedFs.readFileSync).toHaveBeenCalledWith(configPath, 'utf-8');
