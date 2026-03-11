@@ -605,4 +605,144 @@ describe('GitService', () => {
       }
     });
   });
+
+  // ── mergeBranch (edge/branch cases) ─────────────────────────────────────
+  describe('mergeBranch()', () => {
+    it('returns conflict result and emits event if conflicts detected before merge', async () => {
+      const conflictPath = 'conflicted-file.ts';
+      jest.spyOn(Object.getPrototypeOf(service), 'checkForConflicts').mockResolvedValue([conflictPath]);
+      const emitSpy = jest.spyOn(service, 'emit');
+      const result = await service.mergeBranch(REPO_PATH, { branch: 'feature', message: 'merge' });
+      expect(result.success).toBe(false);
+      expect(result.conflicts[0].path).toBe(conflictPath);
+      expect(result.message).toMatch(/conflict/i);
+      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:detected' }));
+    });
+
+    it('returns success result and emits event if no conflicts', async () => {
+      jest.spyOn(Object.getPrototypeOf(service), 'checkForConflicts').mockResolvedValue([]);
+      const emitSpy = jest.spyOn(service, 'emit');
+      const result = await service.mergeBranch(REPO_PATH, { branch: 'feature', message: 'merge' });
+      expect(result.success).toBe(true);
+      expect(result.conflicts).toEqual([]);
+      expect(typeof result.message).toBe('string'); // Accept any string
+      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'merge:completed' }));
+    });
+
+    it('handles merge conflicts thrown by git.merge and emits conflict event', async () => {
+      jest.spyOn(Object.getPrototypeOf(service), 'checkForConflicts').mockResolvedValue([]);
+      gitMock['merge'].mockRejectedValue({ message: 'conflict', code: 'MergeNotSupportedError' });
+      jest.spyOn(Object.getPrototypeOf(service), 'detectMergeConflicts').mockResolvedValue(['fileA.ts']);
+      const emitSpy = jest.spyOn(service, 'emit');
+      const result = await service.mergeBranch(REPO_PATH, { branch: 'feature' });
+      expect(result.success).toBe(false);
+      expect(result.conflicts[0].path).toBe('fileA.ts');
+      expect(result.message).toMatch(/conflict/i);
+      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:detected' }));
+    });
+  });
+
+  // ── resolveConflict (ours/theirs/manual) ────────────────────────────────
+  describe('resolveConflict()', () => {
+    it('stages file for manual resolution', async () => {
+      const stageSpy = jest.spyOn(service, 'stageFiles').mockResolvedValue();
+      const emitSpy = jest.spyOn(service, 'emit');
+      await service.resolveConflict(REPO_PATH, 'foo.ts', 'manual');
+      expect(stageSpy).toHaveBeenCalledWith(REPO_PATH, ['foo.ts']);
+      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:resolved' }));
+    });
+
+    it('resolves conflict by choosing ours', async () => {
+      gitMock['checkout'].mockResolvedValue(undefined);
+      const stageSpy = jest.spyOn(service, 'stageFiles').mockResolvedValue();
+      const emitSpy = jest.spyOn(service, 'emit');
+      await service.resolveConflict(REPO_PATH, 'bar.ts', 'ours');
+      expect(gitMock['checkout']).toHaveBeenCalledWith(expect.objectContaining({ ref: 'HEAD', filepaths: ['bar.ts'] }));
+      expect(stageSpy).toHaveBeenCalledWith(REPO_PATH, ['bar.ts']);
+      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:resolved' }));
+    });
+
+    it('resolves conflict by choosing theirs', async () => {
+      gitMock['checkout'].mockResolvedValue(undefined);
+      const stageSpy = jest.spyOn(service, 'stageFiles').mockResolvedValue();
+      const emitSpy = jest.spyOn(service, 'emit');
+      await service.resolveConflict(REPO_PATH, 'baz.ts', 'theirs');
+      expect(gitMock['checkout']).toHaveBeenCalledWith(expect.objectContaining({ ref: 'MERGE_HEAD', filepaths: ['baz.ts'] }));
+      expect(stageSpy).toHaveBeenCalledWith(REPO_PATH, ['baz.ts']);
+      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:resolved' }));
+    });
+
+    it('throws GitError if stageFiles fails', async () => {
+      jest.spyOn(service, 'stageFiles').mockRejectedValue(new Error('fail'));
+      await expect(service.resolveConflict(REPO_PATH, 'fail.ts', 'manual')).rejects.toThrow(GitError);
+    });
+  });
+
+  // ── abortMerge (edge/branch cases) ──────────────────────────────────────
+  describe('abortMerge()', () => {
+    it('calls git.checkout with force:true to abort', async () => {
+      gitMock['checkout'].mockResolvedValue(undefined);
+      const emitSpy = jest.spyOn(service, 'emit');
+      await service.abortMerge(REPO_PATH);
+      expect(gitMock['checkout']).toHaveBeenCalledWith(expect.objectContaining({ ref: 'HEAD', force: true }));
+      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'merge:completed' }));
+    });
+
+    it('throws GitError if git.checkout fails', async () => {
+      gitMock['checkout'].mockRejectedValue(new Error('fail'));
+      await expect(service.abortMerge(REPO_PATH)).rejects.toThrow(GitError);
+    });
+  });
+
+  // ── Private Helper Coverage ─────────────────────────────────────────────
+  describe('Private helpers', () => {
+    it('mapFileStatus covers all branches', () => {
+      const proto = Object.getPrototypeOf(service) as any;
+      // untracked
+      expect(proto.mapFileStatus(0, 2, 0)).toBe('untracked');
+      // deleted
+      expect(proto.mapFileStatus(1, 0, 0)).toBe('deleted');
+      // modified
+      expect(proto.mapFileStatus(1, 2, 1)).toBe('modified');
+      // added
+      expect(proto.mapFileStatus(0, 2, 2)).toBe('added');
+      // fallback
+      expect(proto.mapFileStatus(9, 9, 9)).toBe('modified');
+    });
+
+    it('formatAuth covers all auth types', () => {
+      const proto = Object.getPrototypeOf(service) as any;
+      // token
+      expect(proto.formatAuth({ token: 'abc' })).toEqual({ username: 'abc', password: 'x-oauth-basic' });
+      // username/password
+      expect(proto.formatAuth({ username: 'u', password: 'p' })).toEqual({ username: 'u', password: 'p' });
+      // undefined
+      expect(proto.formatAuth({})).toBeUndefined();
+    });
+
+    it('getBaseName handles unix, windows, fallback', () => {
+      const proto = Object.getPrototypeOf(service) as any;
+      expect(proto.getBaseName('/foo/bar/baz')).toBe('baz');
+      expect(proto.getBaseName('C:\\foo\\bar\\baz')).toBe('baz');
+      expect(proto.getBaseName('')).toBe('repository');
+    });
+
+    it('generateRepositoryId returns a string of length 8-16', () => {
+      const proto = Object.getPrototypeOf(service) as any;
+      const id = proto.generateRepositoryId('/foo/bar');
+      expect(typeof id).toBe('string');
+      expect(id.length).toBeGreaterThanOrEqual(8);
+      expect(id.length).toBeLessThanOrEqual(16);
+    });
+
+    it('handleError returns GitError or wraps error', () => {
+      const proto = Object.getPrototypeOf(service) as any;
+      const err = new (require('../src/types').GitError)('msg', 'CODE');
+      expect(proto.handleError(err, 'CODE')).toBe(err);
+      const wrapped = proto.handleError(new Error('fail'), 'CODE');
+      expect(wrapped).toBeInstanceOf(require('../src/types').GitError);
+      expect(wrapped.message).toBe('fail');
+      expect(wrapped.code).toBe('CODE');
+    });
+  });
 });

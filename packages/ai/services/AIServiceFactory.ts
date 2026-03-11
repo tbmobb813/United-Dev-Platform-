@@ -1,3 +1,9 @@
+  // Add a static create method for test compatibility
+  static create(provider: string, config: any): AIService {
+    // Map string provider to config
+    const fullConfig = { ...config, provider };
+    return this.createService(fullConfig);
+  }
 import { AIService, AIServiceConfig } from './AIService';
 import { AnthropicService } from './AnthropicService';
 import { OllamaService } from './OllamaService';

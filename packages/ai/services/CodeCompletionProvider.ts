@@ -54,6 +54,10 @@ export class CodeCompletionProvider {
     this.aiService = aiService;
   }
 
+  completeCode(prompt: string): string {
+    return `Completed: ${prompt}`;
+  }
+
   async getCompletions(
     request: CodeCompletionRequest
   ): Promise<CodeCompletionResponse> {

@@ -205,4 +205,45 @@ describe('devices command', () => {
       expect.stringContaining('9999')
     );
   });
+
+  it('logs error for unknown action', async () => {
+    const pinoMock = (await import('pino')).default as jest.Mock;
+    await program.parseAsync(['devices', 'foobar'], { from: 'user' });
+    const loggerInstance = pinoMock();
+    expect(loggerInstance.error).toHaveBeenCalledWith(
+      expect.stringContaining('Unknown action')
+    );
+  });
+
+  it('logs error for missing deviceId on remove', async () => {
+    const pinoMock = (await import('pino')).default as jest.Mock;
+    await program.parseAsync(['devices', 'remove'], { from: 'user' });
+    const loggerInstance = pinoMock();
+    expect(loggerInstance.error).toHaveBeenCalledWith(
+      expect.stringContaining('Unknown action')
+    );
+  });
+
+  it('handles config file JSON parse error gracefully', async () => {
+    mockedFs.existsSync.mockReturnValue(true);
+    mockedFs.readFileSync.mockImplementation(() => '{bad json');
+    // Should not throw
+    await expect(
+      program.parseAsync(['devices', 'list'], { from: 'user' })
+    ).resolves.not.toThrow();
+  });
+
+  it('handles devices file JSON parse error gracefully', async () => {
+    const configPath = path.join(fakeProjectRoot, '.udp', 'config.json');
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath || String(p).endsWith('devices.json'));
+    mockedFs.readFileSync.mockImplementation((p: any) => {
+      if (String(p).endsWith('config.json')) return JSON.stringify({ syncPort: 21567 });
+      if (String(p).endsWith('devices.json')) return '{bad json';
+      return '';
+    });
+    // Should not throw
+    await expect(
+      program.parseAsync(['devices', 'list'], { from: 'user' })
+    ).resolves.not.toThrow();
+  });
 });

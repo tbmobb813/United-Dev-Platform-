@@ -105,14 +105,19 @@ export class NodeFileSystem implements FileSystemProvider {
       await fs.mkdir(path.dirname(fullPath), { recursive: true });
     }
 
-    // Check if file exists and overwrite is disabled
-    if (!options.overwrite) {
-      try {
-        await fs.access(fullPath);
-        throw new Error(`File already exists: ${filePath}`);
-      } catch {
-        // File doesn't exist, proceed
-      }
+        // Check if file exists and overwrite is disabled
+        if (options.overwrite === false) {
+          try {
+            await fs.access(fullPath);
+            // File exists, do not overwrite
+            throw new Error(`File already exists: ${filePath}`);
+          } catch (err: any) {
+            if (err && err.code === 'ENOENT') {
+              // File doesn't exist, proceed
+            } else {
+              throw err;
+            }
+          }
     }
 
     if (content instanceof Uint8Array) {
@@ -127,13 +132,19 @@ export class NodeFileSystem implements FileSystemProvider {
 
   async deleteFile(filePath: string): Promise<void> {
     const fullPath = this.resolveFullPath(filePath);
-    const stats = await fs.stat(fullPath);
-
-    if (stats.isDirectory()) {
-      throw new Error(`Path is not a file: ${filePath}`);
+    try {
+      const stats = await fs.stat(fullPath);
+      if (stats.isDirectory()) {
+        throw new Error(`Path is not a file: ${filePath}`);
+      }
+      await fs.unlink(fullPath);
+    } catch (err: any) {
+      if (err && err.code === 'ENOENT') {
+        // File does not exist, treat as success
+        return;
+      }
+      throw err;
     }
-
-    await fs.unlink(fullPath);
   }
 
   async copyFile(
@@ -179,11 +190,18 @@ export class NodeFileSystem implements FileSystemProvider {
 
   async deleteDirectory(dirPath: string, recursive = false): Promise<void> {
     const fullPath = this.resolveFullPath(dirPath);
-
-    if (recursive) {
-      await fs.rm(fullPath, { recursive: true, force: true });
-    } else {
-      await fs.rmdir(fullPath);
+    try {
+      if (recursive) {
+        await fs.rm(fullPath, { recursive: true, force: true });
+      } else {
+        await fs.rmdir(fullPath);
+      }
+    } catch (err: any) {
+      if (err && err.code === 'ENOENT') {
+        // Directory does not exist, treat as success
+        return;
+      }
+      throw err;
     }
   }
 
