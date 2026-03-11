@@ -1,7 +1,7 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import { Command } from 'commander';
 
-// Mock all external modules before importing the command
+// Mock fs before importing the command
 jest.mock('node:fs');
 jest.mock('chalk', () => ({
   default: {
@@ -14,6 +14,7 @@ jest.mock('chalk', () => ({
       blue: (s: string) => s,
     }),
   },
+  __esModule: true,
 }));
 jest.mock('ora', () => ({
   default: jest.fn(() => ({
@@ -24,13 +25,7 @@ jest.mock('ora', () => ({
     get text() { return ''; },
     set text(_: string) {},
   })),
-}));
-jest.mock('pino', () => ({
-  default: jest.fn(() => ({
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-  })),
+  __esModule: true,
 }));
 
 import fs from 'node:fs';
@@ -50,7 +45,6 @@ describe('init command', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(process, 'cwd').mockReturnValue(fakeProjectRoot);
-    // By default, nothing exists
     mockedFs.existsSync.mockReturnValue(false);
     mockedFs.mkdirSync.mockReturnValue(undefined as any);
     mockedFs.writeFileSync.mockReturnValue(undefined);
@@ -58,7 +52,7 @@ describe('init command', () => {
     mockedFs.readFileSync.mockReturnValue('{}');
 
     program = new Command();
-    program.exitOverride(); // prevent process.exit in tests
+    program.exitOverride();
     initCommand(program);
   });
 
@@ -67,14 +61,9 @@ describe('init command', () => {
   });
 
   it('writes .udp/config.json with correct fields when no prior config exists', async () => {
-    // No config exists yet, no package.json
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === pkgJsonPath;
-    });
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
     mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) {
-        return JSON.stringify({ name: 'my-project' });
-      }
+      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'my-project' });
       return '';
     });
 
@@ -85,9 +74,8 @@ describe('init command', () => {
       expect.stringContaining('"projectName"')
     );
 
-    const written = JSON.parse(
-      (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string
-    );
+    const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
+    const written = JSON.parse(writtenJson);
     expect(written).toMatchObject({
       projectName: expect.any(String),
       frameworks: expect.any(Array),
@@ -97,66 +85,51 @@ describe('init command', () => {
   });
 
   it('detects project name from package.json', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === pkgJsonPath;
-    });
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
     mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) {
-        return JSON.stringify({ name: 'my-awesome-app', dependencies: {} });
-      }
+      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'my-awesome-app', dependencies: {} });
       return '';
     });
 
     await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
 
-    const written = JSON.parse(
-      (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string
-    );
+    const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
+    const written = JSON.parse(writtenJson);
     expect(written.projectName).toBe('my-awesome-app');
   });
 
   it('detects Next.js framework when "next" is in dependencies', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === pkgJsonPath;
-    });
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
     mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) {
-        return JSON.stringify({ name: 'test', dependencies: { next: '^14.0.0' } });
-      }
+      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test', dependencies: { next: '^14.0.0' } });
       return '';
     });
 
     await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
 
-    const written = JSON.parse(
-      (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string
-    );
+    const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
+    const written = JSON.parse(writtenJson);
     expect(written.frameworks).toContain('Next.js');
   });
 
   it('detects React framework when "react" is in dependencies', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === pkgJsonPath;
-    });
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
     mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) {
-        return JSON.stringify({ name: 'test', dependencies: { react: '^18.0.0' } });
-      }
+      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test', dependencies: { react: '^18.0.0' } });
       return '';
     });
 
     await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
 
-    const written = JSON.parse(
-      (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string
-    );
+    const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
+    const written = JSON.parse(writtenJson);
     expect(written.frameworks).toContain('React');
   });
 
-  it('appends .udp/ to .gitignore when .gitignore exists and does not already contain it', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === gitignorePath || String(p) === pkgJsonPath;
-    });
+  it('appends .udp/ to .gitignore when it exists and does not already contain .udp/', async () => {
+    mockedFs.existsSync.mockImplementation((p: any) =>
+      String(p) === gitignorePath || String(p) === pkgJsonPath
+    );
     mockedFs.readFileSync.mockImplementation((p: any) => {
       if (String(p) === gitignorePath) return 'node_modules/\ndist/\n';
       if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
@@ -172,9 +145,9 @@ describe('init command', () => {
   });
 
   it('does NOT duplicate .udp/ in .gitignore if already present', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === gitignorePath || String(p) === pkgJsonPath;
-    });
+    mockedFs.existsSync.mockImplementation((p: any) =>
+      String(p) === gitignorePath || String(p) === pkgJsonPath
+    );
     mockedFs.readFileSync.mockImplementation((p: any) => {
       if (String(p) === gitignorePath) return 'node_modules/\n.udp/\n';
       if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
@@ -187,9 +160,7 @@ describe('init command', () => {
   });
 
   it('uses default port 21567 when --port is not provided', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === pkgJsonPath;
-    });
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
     mockedFs.readFileSync.mockImplementation((p: any) => {
       if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
       return '';
@@ -197,16 +168,13 @@ describe('init command', () => {
 
     await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
 
-    const written = JSON.parse(
-      (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string
-    );
+    const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
+    const written = JSON.parse(writtenJson);
     expect(written.syncPort).toBe(21567);
   });
 
   it('uses custom port when --port is provided', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === pkgJsonPath;
-    });
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
     mockedFs.readFileSync.mockImplementation((p: any) => {
       if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
       return '';
@@ -214,23 +182,18 @@ describe('init command', () => {
 
     await program.parseAsync(['node', 'udp', 'init', '--port', '3000'], { from: 'user' });
 
-    const written = JSON.parse(
-      (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string
-    );
+    const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
+    const written = JSON.parse(writtenJson);
     expect(written.syncPort).toBe(3000);
   });
 
-  it('shows warning and does not overwrite config if already initialized', async () => {
-    // config.json already exists
-    mockedFs.existsSync.mockImplementation((p: any) => {
-      return String(p) === configPath;
-    });
+  it('does not overwrite config if already initialized', async () => {
+    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
 
     await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
 
-    // writeFileSync should NOT have been called with configPath
-    const writeCalls = (mockedFs.writeFileSync as jest.Mock).mock.calls;
-    const wroteConfig = writeCalls.some((call: any[]) => String(call[0]) === configPath);
+    const writeCalls = (mockedFs.writeFileSync as jest.Mock).mock.calls as any[][];
+    const wroteConfig = writeCalls.some((call) => String(call[0]) === configPath);
     expect(wroteConfig).toBe(false);
   });
 });

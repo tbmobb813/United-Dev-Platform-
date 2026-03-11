@@ -1,15 +1,15 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 
-// Mock fs and @udp/ai before importing the tool
+// Top-level mocks — stable across the whole suite (no resetModules)
 jest.mock('fs');
 jest.mock('@udp/ai');
 
 import fs from 'fs';
 import { AIManager } from '@udp/ai';
-import { analyzeFileTool } from '../../src/tools/analyze_file.js';
 
 const mockFs = fs as jest.Mocked<typeof fs>;
-const MockAIManager = AIManager as jest.MockedClass<typeof AIManager>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const MockAIManager = AIManager as jest.MockedClass<any>;
 
 function makeStats(overrides: Partial<{ isFile: boolean; size: number }> = {}) {
   const { isFile = true, size = 200 } = overrides;
@@ -25,39 +25,56 @@ describe('analyze_file tool', () => {
   const fakeFile = 'src/app.ts';
   const fakeContent = 'export function greet(name: string) {\n  return `Hello ${name}`;\n}\n';
 
-  let mockInitialize: jest.MockedFunction<() => Promise<void>>;
-  let mockChat: jest.MockedFunction<(...args: any[]) => Promise<any>>;
+  // Untyped so mockResolvedValue / mockRejectedValue are unconstrained
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockInitialize: jest.MockedFunction<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockChat: jest.MockedFunction<any>;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(process, 'cwd').mockReturnValue(fakeRoot);
 
-    // Set up AIManager mock instance methods
-    mockInitialize = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
-    mockChat = jest.fn<(...args: any[]) => Promise<any>>().mockResolvedValue({
+    mockInitialize = jest.fn().mockResolvedValue(undefined);
+    mockChat = jest.fn().mockResolvedValue({
       content: 'This file exports a greet function. No issues found.',
     });
 
+    // Wire the AIManager constructor to return our per-test method mocks.
+    // Because we use jest.clearAllMocks() above (not resetModules), the module
+    // cache is intact and this mock implementation is visible to the already-
+    // imported analyze_file module.
     MockAIManager.mockImplementation(() => ({
       initialize: mockInitialize,
       chat: mockChat,
-    }) as unknown as AIManager);
-
-    // Reset the module-level singleton so a fresh AIManager is created each test
-    // The tool caches aiManager in module scope; we can't reset it directly,
-    // but clearing and re-mocking the constructor ensures the mock is used.
+    }));
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
+  // Import once at suite level — the module singleton is reset between tests by
+  // clearing MockAIManager and re-setting the implementation in beforeEach.
+  // We use jest.isolateModules here so each test gets a fresh module instance
+  // (clearing the `aiManager` singleton inside analyze_file.ts).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function getToolFresh(): Promise<any> {
+    let tool: any;
+    jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      tool = require('../../src/tools/analyze_file').analyzeFileTool;
+    });
+    return tool;
+  }
+
   it('calls AIManager with file content and returns analysis', async () => {
     mockFs.existsSync.mockReturnValue(true);
     mockFs.statSync.mockReturnValue(makeStats({ size: fakeContent.length }));
     mockFs.readFileSync.mockReturnValue(fakeContent as unknown as Buffer);
 
-    const result = await analyzeFileTool.execute({
+    const tool = await getToolFresh();
+    const result = await tool.execute({
       file_path: fakeFile,
       project_root: fakeRoot,
     });
@@ -73,7 +90,8 @@ describe('analyze_file tool', () => {
     mockFs.statSync.mockReturnValue(makeStats({ size: fakeContent.length }));
     mockFs.readFileSync.mockReturnValue(fakeContent as unknown as Buffer);
 
-    const result = await analyzeFileTool.execute({
+    const tool = await getToolFresh();
+    const result = await tool.execute({
       file_path: fakeFile,
       project_root: fakeRoot,
     });
@@ -86,7 +104,8 @@ describe('analyze_file tool', () => {
     mockFs.statSync.mockReturnValue(makeStats({ size: fakeContent.length }));
     mockFs.readFileSync.mockReturnValue(fakeContent as unknown as Buffer);
 
-    const result = await analyzeFileTool.execute({
+    const tool = await getToolFresh();
+    const result = await tool.execute({
       file_path: fakeFile,
       project_root: fakeRoot,
     });
@@ -101,20 +120,21 @@ describe('analyze_file tool', () => {
 
     const customPrompt = 'What does this function return?';
 
-    await analyzeFileTool.execute({
+    const tool = await getToolFresh();
+    await tool.execute({
       file_path: fakeFile,
       project_root: fakeRoot,
       prompt: customPrompt,
     });
 
-    // The first argument to chat() should be our custom prompt
     const chatFirstArg = mockChat.mock.calls[0]?.[0];
     expect(chatFirstArg).toBe(customPrompt);
   });
 
   it('rejects path traversal attempts', async () => {
+    const tool = await getToolFresh();
     await expect(
-      analyzeFileTool.execute({
+      tool.execute({
         file_path: '../../etc/passwd',
         project_root: fakeRoot,
       })
@@ -122,8 +142,9 @@ describe('analyze_file tool', () => {
   });
 
   it('rejects absolute paths outside project root', async () => {
+    const tool = await getToolFresh();
     await expect(
-      analyzeFileTool.execute({
+      tool.execute({
         file_path: '/etc/shadow',
         project_root: fakeRoot,
       })
@@ -135,8 +156,9 @@ describe('analyze_file tool', () => {
     mockFs.existsSync.mockReturnValue(true);
     mockFs.statSync.mockReturnValue(makeStats({ size: oversizeBytes }));
 
+    const tool = await getToolFresh();
     await expect(
-      analyzeFileTool.execute({
+      tool.execute({
         file_path: fakeFile,
         project_root: fakeRoot,
       })
@@ -146,8 +168,9 @@ describe('analyze_file tool', () => {
   it('throws for non-existent files', async () => {
     mockFs.existsSync.mockReturnValue(false);
 
+    const tool = await getToolFresh();
     await expect(
-      analyzeFileTool.execute({
+      tool.execute({
         file_path: fakeFile,
         project_root: fakeRoot,
       })
@@ -158,8 +181,9 @@ describe('analyze_file tool', () => {
     mockFs.existsSync.mockReturnValue(true);
     mockFs.statSync.mockReturnValue(makeStats({ isFile: false }));
 
+    const tool = await getToolFresh();
     await expect(
-      analyzeFileTool.execute({
+      tool.execute({
         file_path: 'src',
         project_root: fakeRoot,
       })
@@ -173,8 +197,9 @@ describe('analyze_file tool', () => {
 
     mockInitialize.mockRejectedValue(new Error('API key for anthropic is required'));
 
+    const tool = await getToolFresh();
     await expect(
-      analyzeFileTool.execute({
+      tool.execute({
         file_path: fakeFile,
         project_root: fakeRoot,
       })
@@ -188,8 +213,9 @@ describe('analyze_file tool', () => {
 
     mockChat.mockRejectedValue(new Error('Network timeout'));
 
+    const tool = await getToolFresh();
     await expect(
-      analyzeFileTool.execute({
+      tool.execute({
         file_path: fakeFile,
         project_root: fakeRoot,
       })

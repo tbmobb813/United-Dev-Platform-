@@ -20,5 +20,7 @@ module.exports = {
     '^@udp/ai$': '<rootDir>/../../packages/ai/index.ts',
     // Stub node-fetch entirely to avoid ESM parse issues
     '^node-fetch$': '<rootDir>/../../jest-mocks/node-fetch.cjs',
+    // Stub pino to avoid CJS/ESM issues in test environment
+    '^pino$': '<rootDir>/../../jest-mocks/pino.cjs',
   },
 };
