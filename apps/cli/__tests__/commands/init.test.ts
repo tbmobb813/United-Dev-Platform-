@@ -17,6 +17,7 @@ jest.mock('chalk', () => ({
   __esModule: true,
 }));
 jest.mock('ora', () => ({
+  __esModule: true,
   default: jest.fn(() => ({
     start: jest.fn().mockReturnThis(),
     succeed: jest.fn().mockReturnThis(),
@@ -25,7 +26,6 @@ jest.mock('ora', () => ({
     get text() { return ''; },
     set text(_: string) {},
   })),
-  __esModule: true,
 }));
 
 import fs from 'node:fs';
@@ -62,12 +62,17 @@ describe('init command', () => {
 
   it('writes .udp/config.json with correct fields when no prior config exists', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'my-project' });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'my-project' });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
       configPath,
@@ -86,12 +91,17 @@ describe('init command', () => {
 
   it('detects project name from package.json', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'my-awesome-app', dependencies: {} });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'my-awesome-app', dependencies: {} });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -100,12 +110,17 @@ describe('init command', () => {
 
   it('detects Next.js framework when "next" is in dependencies', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test', dependencies: { next: '^14.0.0' } });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test', dependencies: { next: '^14.0.0' } });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -114,12 +129,17 @@ describe('init command', () => {
 
   it('detects React framework when "react" is in dependencies', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test', dependencies: { react: '^18.0.0' } });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test', dependencies: { react: '^18.0.0' } });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -130,13 +150,18 @@ describe('init command', () => {
     mockedFs.existsSync.mockImplementation((p: any) =>
       String(p) === gitignorePath || String(p) === pkgJsonPath
     );
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === gitignorePath) return 'node_modules/\ndist/\n';
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === gitignorePath) return 'node_modules/\ndist/\n';
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     expect(mockedFs.appendFileSync).toHaveBeenCalledWith(
       gitignorePath,
@@ -148,25 +173,35 @@ describe('init command', () => {
     mockedFs.existsSync.mockImplementation((p: any) =>
       String(p) === gitignorePath || String(p) === pkgJsonPath
     );
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === gitignorePath) return 'node_modules/\n.udp/\n';
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === gitignorePath) return 'node_modules/\n.udp/\n';
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     expect(mockedFs.appendFileSync).not.toHaveBeenCalled();
   });
 
   it('uses default port 21567 when --port is not provided', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -175,12 +210,17 @@ describe('init command', () => {
 
   it('uses custom port when --port is provided', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === pkgJsonPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === pkgJsonPath) return JSON.stringify({ name: 'test' });
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'init', '--port', '3000'], { from: 'user' });
+    await program.parseAsync(['init', '--port', '3000'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -190,7 +230,7 @@ describe('init command', () => {
   it('does not overwrite config if already initialized', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
 
-    await program.parseAsync(['udp', 'init'], { from: 'user' });
+    await program.parseAsync(['init'], { from: 'user' });
 
     const writeCalls = (mockedFs.writeFileSync as jest.Mock).mock.calls as any[][];
     const wroteConfig = writeCalls.some((call) => String(call[0]) === configPath);

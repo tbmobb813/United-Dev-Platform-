@@ -1,9 +1,16 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import { Command } from 'commander';
 
+const mockPinoLogger = {
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+};
+
 jest.mock('node:fs');
 jest.mock('node-fetch');
 jest.mock('chalk', () => ({
+  __esModule: true,
   default: {
     green: (s: string) => s,
     red: (s: string) => s,
@@ -16,6 +23,7 @@ jest.mock('chalk', () => ({
   },
 }));
 jest.mock('ora', () => ({
+  __esModule: true,
   default: jest.fn(() => ({
     start: jest.fn().mockReturnThis(),
     succeed: jest.fn().mockReturnThis(),
@@ -26,11 +34,8 @@ jest.mock('ora', () => ({
   })),
 }));
 jest.mock('pino', () => ({
-  default: jest.fn(() => ({
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-  })),
+  __esModule: true,
+  default: jest.fn(() => mockPinoLogger),
 }));
 
 import fs from 'node:fs';
@@ -83,14 +88,14 @@ describe('devices command', () => {
       json: async () => mockDevices,
     } as any);
 
-    await program.parseAsync(['node', 'udp', 'devices', 'list'], { from: 'user' });
+    await program.parseAsync(['devices', 'list'], { from: 'user' });
 
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/api/devices')
     );
 
     const pinoMock = (await import('pino')).default as jest.Mock;
-    const loggerInstance = pinoMock.mock.results[0]?.value;
+    const loggerInstance = pinoMock();
     const infoCalls = loggerInstance.info.mock.calls as any[][];
     const allOutput = infoCalls.map((c: any[]) => String(c[0])).join('\n');
     expect(allOutput).toContain('dev-abc');
@@ -106,7 +111,7 @@ describe('devices command', () => {
       json: async () => mockDevices,
     } as any);
 
-    await program.parseAsync(['node', 'udp', 'devices'], { from: 'user' });
+    await program.parseAsync(['devices'], { from: 'user' });
 
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/api/devices')
@@ -122,10 +127,10 @@ describe('devices command', () => {
       json: async () => mockDevices,
     } as any);
 
-    await program.parseAsync(['node', 'udp', 'devices', 'list'], { from: 'user' });
+    await program.parseAsync(['devices', 'list'], { from: 'user' });
 
     const pinoMock = (await import('pino')).default as jest.Mock;
-    const loggerInstance = pinoMock.mock.results[0]?.value;
+    const loggerInstance = pinoMock();
     const infoCalls = loggerInstance.info.mock.calls as any[][];
     const allOutput = infoCalls.map((c: any[]) => String(c[0])).join('\n');
     expect(allOutput).toContain('(none)');
@@ -143,7 +148,7 @@ describe('devices command', () => {
       json: async () => ({}),
     } as any);
 
-    await program.parseAsync(['node', 'udp', 'devices', 'remove', 'dev-abc'], { from: 'user' });
+    await program.parseAsync(['devices', 'remove', 'dev-abc'], { from: 'user' });
 
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/api/devices/dev-abc'),
@@ -157,7 +162,7 @@ describe('devices command', () => {
 
     // Should not throw
     await expect(
-      program.parseAsync(['node', 'udp', 'devices', 'list'], { from: 'user' })
+      program.parseAsync(['devices', 'list'], { from: 'user' })
     ).resolves.not.toThrow();
 
     const oraMock = (await import('ora')).default as jest.Mock;
@@ -173,7 +178,7 @@ describe('devices command', () => {
     } as any);
 
     await expect(
-      program.parseAsync(['node', 'udp', 'devices', 'remove', 'dev-xyz'], { from: 'user' })
+      program.parseAsync(['devices', 'remove', 'dev-xyz'], { from: 'user' })
     ).resolves.not.toThrow();
 
     const oraMock = (await import('ora')).default as jest.Mock;
@@ -194,7 +199,7 @@ describe('devices command', () => {
       json: async () => ({ devices: [] }),
     } as any);
 
-    await program.parseAsync(['node', 'udp', 'devices', 'list'], { from: 'user' });
+    await program.parseAsync(['devices', 'list'], { from: 'user' });
 
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('9999')

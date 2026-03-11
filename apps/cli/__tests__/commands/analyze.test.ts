@@ -4,6 +4,7 @@ import { Command } from 'commander';
 jest.mock('fs');
 jest.mock('@udp/ai');
 jest.mock('chalk', () => ({
+  __esModule: true,
   default: {
     green: (s: string) => s,
     red: (s: string) => s,
@@ -17,6 +18,7 @@ jest.mock('chalk', () => ({
   },
 }));
 jest.mock('ora', () => ({
+  __esModule: true,
   default: jest.fn(() => ({
     start: jest.fn().mockReturnThis(),
     succeed: jest.fn().mockReturnThis(),
@@ -27,6 +29,7 @@ jest.mock('ora', () => ({
   })),
 }));
 jest.mock('pino', () => ({
+  __esModule: true,
   default: jest.fn(() => ({
     info: jest.fn(),
     warn: jest.fn(),
@@ -130,7 +133,7 @@ describe('analyze command', () => {
       return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'analyze'], { from: 'user' });
+    await program.parseAsync(['analyze'], { from: 'user' });
 
     expect(MockedAIManager).toHaveBeenCalledWith(
       expect.objectContaining({ defaultProvider: 'anthropic' })
@@ -141,7 +144,7 @@ describe('analyze command', () => {
     process.env.OPENAI_API_KEY = 'test-openai-key';
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['udp', 'analyze', '--provider', 'openai'], { from: 'user' });
+    await program.parseAsync(['analyze', '--provider', 'openai'], { from: 'user' });
 
     expect(MockedAIManager).toHaveBeenCalledWith(
       expect.objectContaining({ defaultProvider: 'openai' })
@@ -153,7 +156,7 @@ describe('analyze command', () => {
   it('calls manager.initialize() before analysis', async () => {
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['udp', 'analyze'], { from: 'user' });
+    await program.parseAsync(['analyze'], { from: 'user' });
 
     expect(mockManagerInstance.initialize).toHaveBeenCalled();
   });
@@ -171,7 +174,7 @@ describe('analyze command', () => {
       return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'analyze', '--file', targetFile], { from: 'user' });
+    await program.parseAsync(['analyze', '--file', targetFile], { from: 'user' });
 
     expect(mockManagerInstance.explainCode).toHaveBeenCalledWith(
       'const x = 1;',
@@ -192,7 +195,7 @@ describe('analyze command', () => {
       return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'analyze', '--file', targetFile], { from: 'user' });
+    await program.parseAsync(['analyze', '--file', targetFile], { from: 'user' });
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
       expect.stringContaining('This is an AI analysis result.')
@@ -202,7 +205,7 @@ describe('analyze command', () => {
   it('--quiet flag suppresses the spinner', async () => {
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['udp', 'analyze', '--quiet'], { from: 'user' });
+    await program.parseAsync(['analyze', '--quiet'], { from: 'user' });
 
     const oraMock = (await import('ora')).default as jest.Mock;
     // ora should not be called with --quiet
@@ -215,7 +218,7 @@ describe('analyze command', () => {
 
     // Should not throw
     await expect(
-      program.parseAsync(['udp', 'analyze'], { from: 'user' })
+      program.parseAsync(['analyze'], { from: 'user' })
     ).resolves.not.toThrow();
 
     expect(MockedAIManager).toHaveBeenCalled();
@@ -227,7 +230,7 @@ describe('analyze command', () => {
     mockedFs.existsSync.mockReturnValue(false);
 
     await expect(
-      program.parseAsync(['udp', 'analyze', '--file', missingFile], { from: 'user' })
+      program.parseAsync(['analyze', '--file', missingFile], { from: 'user' })
     ).rejects.toThrow('process.exit(1)');
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -241,7 +244,7 @@ describe('analyze command', () => {
     mockedFs.existsSync.mockReturnValue(false);
 
     await expect(
-      program.parseAsync(['udp', 'analyze'], { from: 'user' })
+      program.parseAsync(['analyze'], { from: 'user' })
     ).rejects.toThrow('process.exit(1)');
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -261,7 +264,7 @@ describe('analyze command', () => {
       return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'analyze'], { from: 'user' });
+    await program.parseAsync(['analyze'], { from: 'user' });
 
     expect(mockAssistantInstance.setCodebaseContext).toHaveBeenCalled();
     expect(mockAssistantInstance.analyzeCodebase).toHaveBeenCalled();

@@ -12,7 +12,7 @@ module.exports = {
   ],
   // Transform node-fetch (ESM-only) and other ESM packages
   transformIgnorePatterns: [
-    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb|node-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill)/)',
+    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb|node-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill|chalk|ora|qrcode-terminal|pino|commander)/)',
   ],
   moduleNameMapper: {
     ...base.moduleNameMapper,
@@ -22,5 +22,10 @@ module.exports = {
     '^node-fetch$': '<rootDir>/../../jest-mocks/node-fetch.cjs',
     // Stub pino to avoid CJS/ESM issues in test environment
     '^pino$': '<rootDir>/../../jest-mocks/pino.cjs',
+    // Stub chalk, ora, qrcode-terminal, commander to avoid ESM import errors
+    '^chalk$': '<rootDir>/../../jest-mocks/chalk.cjs',
+    '^ora$': '<rootDir>/../../jest-mocks/ora.cjs',
+    '^qrcode-terminal$': '<rootDir>/../../jest-mocks/qrcode-terminal.cjs',
+    '^commander$': '<rootDir>/../../jest-mocks/commander.cjs',
   },
 };

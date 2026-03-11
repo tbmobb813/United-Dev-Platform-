@@ -54,14 +54,19 @@ describe('status command', () => {
 
   it('reads config.json and displays project information when initialized', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === configPath) return JSON.stringify(mockConfig);
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === configPath) return JSON.stringify(mockConfig);
+        return '';
+      }
+      return Buffer.from('');
     });
 
     // Should complete without throwing
     await expect(
-      program.parseAsync(['udp', 'status'], { from: 'user' })
+      program.parseAsync(['status'], { from: 'user' })
     ).resolves.toBeDefined();
 
     // config.json should have been read
@@ -70,12 +75,17 @@ describe('status command', () => {
 
   it('reads project name, frameworks, and port from config', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === configPath) return JSON.stringify(mockConfig);
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === configPath) return JSON.stringify(mockConfig);
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'status'], { from: 'user' });
+    await program.parseAsync(['status'], { from: 'user' });
 
     // Verify config was parsed (readFileSync called with config path)
     const readCalls = (mockedFs.readFileSync as jest.Mock).mock.calls as any[][];
@@ -87,13 +97,18 @@ describe('status command', () => {
     mockedFs.existsSync.mockImplementation((p: any) =>
       String(p) === configPath || String(p) === devicesPath
     );
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === configPath) return JSON.stringify(mockConfig);
-      if (String(p) === devicesPath) return JSON.stringify(devices);
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === configPath) return JSON.stringify(mockConfig);
+        if (String(p) === devicesPath) return JSON.stringify(devices);
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'status'], { from: 'user' });
+    await program.parseAsync(['status'], { from: 'user' });
 
     // devices.json should have been read
     expect(mockedFs.readFileSync).toHaveBeenCalledWith(devicesPath, 'utf-8');
@@ -101,12 +116,17 @@ describe('status command', () => {
 
   it('does not read devices.json when it does not exist', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === configPath) return JSON.stringify(mockConfig);
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === configPath) return JSON.stringify(mockConfig);
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['udp', 'status'], { from: 'user' });
+    await program.parseAsync(['status'], { from: 'user' });
 
     const readCalls = (mockedFs.readFileSync as jest.Mock).mock.calls as any[][];
     expect(readCalls.some((call) => String(call[0]) === devicesPath)).toBe(false);
@@ -115,7 +135,7 @@ describe('status command', () => {
   it('exits early without reading config when not initialized', async () => {
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['udp', 'status'], { from: 'user' });
+    await program.parseAsync(['status'], { from: 'user' });
 
     // config.json should NOT have been read
     const readCalls = (mockedFs.readFileSync as jest.Mock).mock.calls as any[][];
