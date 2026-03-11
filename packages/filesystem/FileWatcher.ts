@@ -174,6 +174,9 @@ export class FileWatcher extends EventEmitter {
           this.addToSyncQueue(operation);
         })
         .catch((error: Error) => {
+          // DEBUG: Log the error object and stack trace
+          // eslint-disable-next-line no-console
+          console.error('[FileWatcher.handleFileSystemEvent] Error reading file:', event.path, error, error?.stack);
           logger.error(
             `Failed to read file content for sync: ${event.path}`,
             error
@@ -214,10 +217,15 @@ export class FileWatcher extends EventEmitter {
     try {
       switch (type) {
         case 'file-change':
-        case 'file-create':
           if (content !== undefined) {
             await this.syncFileToCollaborativeDoc(path, content);
             this.emit('file:changed', path, content);
+          }
+          break;
+        case 'file-create':
+          if (content !== undefined) {
+            await this.syncFileToCollaborativeDoc(path, content);
+            this.emit('file:created', path, content);
           }
           break;
 

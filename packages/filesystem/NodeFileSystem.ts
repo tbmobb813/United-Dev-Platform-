@@ -1,4 +1,7 @@
+
+import logger from '@udp/logger';
 import * as chokidar from 'chokidar';
+import type { FSWatcher } from 'chokidar';
 import { Stats } from 'fs';
 import * as fs from 'fs/promises';
 import * as mime from 'mime-types';
@@ -16,7 +19,6 @@ import {
   MoveOptions,
   ReadFileOptions,
 } from './types';
-import logger from '@udp/logger';
 
 /**
  * Node.js file system implementation
@@ -28,6 +30,14 @@ export class NodeFileSystem implements FileSystemProvider {
 
   constructor(basePath = process.cwd()) {
     this.basePath = path.resolve(basePath);
+  }
+
+  /**
+   * Returns the internal chokidar watcher instance for a given path (for testing only).
+   */
+  getWatcher(path: string): FSWatcher | undefined {
+    const normalizedPath = this.resolvePath(path);
+    return this.watchers.get(normalizedPath);
   }
 
   private resolveFullPath(inputPath: string): string {
@@ -65,6 +75,9 @@ export class NodeFileSystem implements FileSystemProvider {
     options: ReadFileOptions = {}
   ): Promise<string | Uint8Array> {
     const fullPath = this.resolveFullPath(filePath);
+    // DEBUG: Log the input and resolved path
+    // eslint-disable-next-line no-console
+    console.log('[NodeFileSystem.readFile] filePath:', filePath, 'fullPath:', fullPath);
     const encoding = options.encoding || 'utf8';
 
     if (encoding === 'utf8') {
@@ -428,6 +441,7 @@ export class NodeFileSystem implements FileSystemProvider {
     callback: (event: FileSystemEvent) => void
   ): Promise<void> {
     const normalizedPath = this.resolvePath(targetPath);
+    const fullPath = this.resolveFullPath(targetPath);
 
     // Create FileSystemEvent adapter for chokidar events
     const adapter = (eventType: string, eventPath: string, stats?: Stats) => {
@@ -440,8 +454,8 @@ export class NodeFileSystem implements FileSystemProvider {
       callback(fsEvent);
     };
 
-    // Use chokidar to watch the path
-    const watcher = chokidar.watch(normalizedPath, {
+    // Use chokidar to watch the absolute path
+    const watcher = chokidar.watch(fullPath, {
       persistent: true,
       ignoreInitial: false,
       followSymlinks: false,

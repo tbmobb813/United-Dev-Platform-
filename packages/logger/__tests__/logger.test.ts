@@ -6,6 +6,7 @@ import {
   expect,
   jest,
 } from '@jest/globals';
+import logger from '../index';
 
 describe('logger', () => {
   const ORIGINAL_ENV = process.env.NODE_ENV;
@@ -36,6 +37,16 @@ describe('logger', () => {
     spy.mockRestore();
   });
 
+  it('should format strings and log info', () => {
+    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const oldEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    logger.info('hello', 'world');
+    expect(spy).toHaveBeenCalledWith('[info]', 'hello world');
+    process.env.NODE_ENV = oldEnv;
+    spy.mockRestore();
+  });
+
   it('always calls console.warn for warn', async () => {
     (
       process as unknown as { env: Record<string, string | undefined> }
@@ -50,6 +61,13 @@ describe('logger', () => {
     spy.mockRestore();
   });
 
+  it('should format and log warnings', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    logger.warn('warn', 123, { foo: 'bar' });
+    expect(spy).toHaveBeenCalledWith('[warn]', 'warn 123 {"foo":"bar"}');
+    spy.mockRestore();
+  });
+
   it('always calls console.error for error', async () => {
     (
       process as unknown as { env: Record<string, string | undefined> }
@@ -61,6 +79,23 @@ describe('logger', () => {
     logger.error(new Error('boom'));
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe('[error]');
+    spy.mockRestore();
+  });
+
+  it('should format and log errors', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    logger.error('fail', new Error('err')); // Only message is logged
+    expect(spy).toHaveBeenCalledWith('[error]', 'fail err');
+    spy.mockRestore();
+  });
+
+  it('should suppress info logs in test env', () => {
+    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const oldEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+    logger.info('should not log');
+    expect(spy).not.toHaveBeenCalled();
+    process.env.NODE_ENV = oldEnv;
     spy.mockRestore();
   });
 });

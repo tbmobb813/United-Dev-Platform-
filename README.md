@@ -1,94 +1,226 @@
-# United Dev Platform (UDP)
+# UDP — United Development Platform
 
-This starter implements the next iteration of the unified web + mobile + API
-workspace. It includes error handling, minimal authentication, AI stubs, and an
-Electron wrapper, on top of the original collaborative editing features.
+A cross-platform developer workflow tool that syncs your project across devices in real time. Work on your laptop, preview on your phone, analyze with AI — all connected through a single CLI.
 
-## Architecture Overview
+```
+udp init      → detect project, create .udp/config.json
+udp sync      → start Yjs sync server, show QR code for mobile pairing
+udp devices   → list, confirm, or remove paired devices
+udp status    → show project info and connected devices
+udp analyze   → AI-powered codebase analysis (Anthropic / OpenAI / Ollama)
+```
 
-- `apps/web` – Next.js app with Monaco editor, Yjs sync (rooms and presence),
-  simple login page, and QR deep‑link.
-- `apps/api` – Node server providing a Yjs WebSocket endpoint, AI stub endpoint,
-  and basic error handling middleware.
-- `apps/mobile` – Expo app that joins the Yjs room and syncs text in real time.
-- `apps/desktop` – Electron wrapper that loads the web client.
-- `packages/editor-core` – Yjs helpers and awareness utilities.
-- `packages/types` – Shared types.
-- `packages/ai` – Placeholder prompt definitions.
-- `packages/ui` – Shared UI components (e.g. Button).
+## How It Works
 
-- `apps/web`: Next.js app with Monaco editor, Yjs sync (rooms/presence), login,
-  QR deep-link.
-- `apps/api`: Node.js/Express server with Yjs WebSocket endpoint, AI stub, error
-  handling.
-- `apps/mobile`: Expo React Native app for real-time Yjs sync and collaborative
-  editing.
-- `apps/desktop`: Electron wrapper for the web client.
+UDP connects your development environments through a real-time sync layer built on Yjs and WebSockets.
 
-**Packages:**
+**CLI** (`apps/cli`) — The primary interface. `udp init` scaffolds a `.udp/` config directory. `udp sync` spawns the sync server, generates a QR code in your terminal, and begins watching for file changes via `ProjectSyncManager`. `udp analyze` runs AI analysis on your project or a single file.
 
-- `packages/editor-core`: Yjs helpers, awareness utilities, DocumentManager,
-  presence system.
-- `packages/types`: Shared TypeScript types.
-- `packages/ai`: AI prompt definitions and stubs.
-- `packages/ui`: Shared UI components (Button, Card, PresenceIndicator, etc.).
-- `packages/ui-native`: Native UI components for mobile.
-- `packages/db`: Prisma client and database helpers.
-- `packages/config`: Centralized configuration management.
-- `packages/git`: Git integration (planned).
-- `packages/filesystem`: File system backend and utilities.
-- `packages/logger`: Logging utilities.
+**Sync Server** (`apps/sync-server`) — A Fastify server with a Yjs WebSocket endpoint. Manages project rooms (one Y.Doc per room), device registration/confirmation, QR-based pairing, and a REST API for device management. Runs on port 3030 by default (configurable in `.udp/config.json`).
 
-## Setup Instructions
+**VS Code Extension** (`apps/vscode-extension`) — Status bar showing sync state (stopped/starting/running/error), a sidebar with device list and sync controls, and a QR panel for pairing. Spawns and manages the sync server lifecycle from within VS Code.
 
-1. **Install dependencies:**
-   ```bash
-   pnpm install
-   ```
-2. **Set up environment variables:**
-   - Copy `.env.example` to `.env` in the project root.
-   - Edit `.env` and set secure values for `NEXTAUTH_SECRET`, `DATABASE_URL`,
-     and provider keys.
-   - See [`docs/ENVIRONMENT.md`](docs/ENVIRONMENT.md) for details.
-3. **Run development servers:**
-   - Web: `pnpm dev --filter @udp/web`
-   - API: `pnpm dev --filter @udp/api`
-   - Mobile: `pnpm start --filter @udp/mobile`
-   - Desktop: See Electron docs in `apps/desktop`.
+**Mobile Companion** (`apps/mobile`) — Expo/React Native app with a QR scanner for pairing, a file browser that reads from Yjs, a syntax-highlighted file viewer, and a collaborative editor that syncs edits back in real time.
+
+**MCP Server** (`apps/mcp-server`) — Model Context Protocol server exposing three tools (`list_files`, `get_file_content`, `analyze_file`) over stdio. Integrates with Cursor and Claude Code so AI assistants can read and analyze your synced project. Config lives in `.claude/mcp.json` and `.cursorrules`.
+
+## Architecture
+
+```
+┌──────────┐     ┌──────────────┐     ┌──────────────────┐
+│  CLI     │────▸│ Sync Server  │◂────│ VS Code Extension│
+│ (udp)    │     │ (Fastify+Yjs)│     │ (status/sidebar) │
+└──────────┘     └──────┬───────┘     └──────────────────┘
+                        │ WebSocket
+                 ┌──────┴───────┐
+                 │ Mobile App   │
+                 │ (Expo + QR)  │
+                 └──────────────┘
+
+┌──────────────┐     ┌────────────┐
+│ MCP Server   │────▸│ Cursor /   │
+│ (stdio)      │     │ Claude Code│
+└──────────────┘     └────────────┘
+```
+
+**Monorepo layout:**
+
+```
+apps/
+  cli/                  Commander.js CLI (ESM, built with tsup)
+  sync-server/          Fastify + Yjs WebSocket + device pairing API
+  vscode-extension/     VS Code extension (CJS, built with tsup)
+  mobile/               Expo 54 / React Native companion app
+  mcp-server/           MCP server with 3 tools (CJS, built with tsup)
+
+packages/
+  ai/                   AIManager, AnthropicService, ContextAwareAssistant
+  editor-core/          ProjectSyncManager (Yjs file tree sync)
+  filesystem/           File system abstraction + file watcher
+  db/                   Prisma client (SQLite)
+  git/                  Git integration utilities
+  types/                Shared TypeScript types
+  config/               Configuration utilities
+  logger/               Pino-based logging
+  ui-native/            React Native UI components
+  eslint-config/        Shared ESLint config
+  prettier-config/      Shared Prettier config
+
+archive/                Preserved code from the original IDE architecture
+```
+
+## Quick Start
+
+**Prerequisites:** Node.js 18+, pnpm 9+
+
+```bash
+# Clone and install
+git clone https://github.com/tbmobb813/United-Dev-Platform-.git
+cd United-Dev-Platform-
+git checkout pivot/workflow-tool
+pnpm install
+
+# Set up environment
+cp .env.example .env
+# Edit .env — at minimum set DATABASE_URL=file:./dev.db
+
+# Build
+pnpm build
+
+# Initialize UDP in any project
+cd /path/to/your/project
+udp init
+
+# Start syncing
+udp sync
+```
 
 ## Environment Variables
 
-See [`docs/ENVIRONMENT.md`](docs/ENVIRONMENT.md) for setup and best practices.
-Do not commit `.env` files.
+Create a `.env` file in the repo root:
 
-## Testing & CI
+```
+DATABASE_URL=file:./dev.db
 
-- Lint/typecheck scripts are present in most packages.
-- Test coverage is minimal; add test folders and scripts as needed.
-- Recommended: Use Jest for web/editor-core/ui/types, and Detox/React Native
-  Testing Library for mobile.
-- CI should run lint, typecheck, and tests for all packages. See Turbo build
-  system docs for configuration.
+# AI (optional — needed for `udp analyze`)
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
 
-## Known Workarounds & Issues
+# Pairing auth
+UDP_PAIR_AUTH=your-auth-token
 
-- **Yjs Duplication in Production Bundles:**
-  - In some production builds, a second copy of Yjs may be inlined due to nested
-    dependencies. See build config and package aliasing strategies for
-    mitigation. Only one runtime instance should exist for correct collaborative
-    editing.
-- **Authentication:** Basic localStorage implementation; full auth system
-  planned.
-- **Git Integration:** Referenced in docs, not yet implemented.
+# Server
+PORT=3030
+NODE_ENV=development
+```
 
-## Strategic Docs & Roadmap
+## Key Commands
 
-- [Platform Development Strategy](docs/platform_development_strategy.md)
-- [Strategic Roadmap](docs/strategic-roadmap.md)
+```bash
+# Build everything
+pnpm build
 
-## Milestones & Next Steps
+# Build individual apps
+pnpm --filter @udp/cli build
+pnpm --filter @udp/mcp-server build
 
-- See [Strategic Roadmap](docs/strategic-roadmap.md) for priorities, KPIs, and
-  implementation plan.
-- Immediate focus: Stabilize core features, expand test coverage, and improve CI
-  pipeline.
+# Run the CLI (after build)
+node apps/cli/dist/index.js init
+node apps/cli/dist/index.js sync
+node apps/cli/dist/index.js devices
+node apps/cli/dist/index.js analyze
+node apps/cli/dist/index.js analyze --file src/index.ts
+
+# Run the sync server standalone
+cd apps/sync-server && pnpm dev
+
+# Test
+pnpm test                  # Unit tests
+pnpm test:integration      # Integration tests
+
+# Lint and typecheck
+pnpm lint
+pnpm typecheck
+pnpm format:check
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Monorepo | pnpm workspaces + Turborepo |
+| Language | TypeScript (strict mode) |
+| Real-time sync | Yjs + y-protocols + WebSocket |
+| CLI | Commander.js + chalk + ora |
+| Server | Fastify |
+| Database | SQLite via Prisma |
+| VS Code | @vscode/vsce extension API |
+| Mobile | Expo 54 + React Native |
+| AI | Anthropic / OpenAI / Ollama (raw fetch, no SDK) |
+| MCP | @modelcontextprotocol/sdk (stdio transport) |
+| Build | tsup (CLI: ESM, VS Code + MCP: CJS) |
+| Test | Jest + ts-jest |
+
+## MCP Integration (Cursor / Claude Code)
+
+The MCP server lets AI assistants browse and analyze your project. After building:
+
+```bash
+pnpm --filter @udp/mcp-server build
+```
+
+**Cursor** — The `.cursorrules` file at the repo root provides full project context automatically.
+
+**Claude Code** — The `.claude/mcp.json` config registers the MCP server:
+
+```json
+{
+  "mcpServers": {
+    "udp": {
+      "command": "node",
+      "args": ["apps/mcp-server/dist/index.js"],
+      "env": {
+        "UDP_PROJECT_ROOT": ".",
+        "ANTHROPIC_API_KEY": "${env:ANTHROPIC_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+Available MCP tools: `list_files` (browse project tree), `get_file_content` (read any file), `analyze_file` (AI-powered analysis).
+
+## Database
+
+UDP uses SQLite via Prisma. The schema lives at `apps/sync-server/prisma/schema.prisma` and defines four core models: **User**, **Project**, **ProjectFile**, and **Device** (with DeviceEvent for pairing audit trail).
+
+```bash
+# Generate Prisma client after schema changes
+pnpm --filter @udp/db generate
+
+# Create a migration
+pnpm --filter @udp/db prisma migrate dev --name <name>
+```
+
+## Testing
+
+Unit tests run with Jest across all packages. Integration tests (sync server connectivity, multi-client Yjs sync, file watcher propagation) are separated and run on demand.
+
+```bash
+pnpm test              # Unit tests only
+pnpm test:integration  # Integration tests
+pnpm test:core         # Core package tests
+pnpm test:full         # Everything
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. The short version: fork the repo, branch from `pivot/workflow-tool`, follow the existing patterns in `apps/cli/src/commands/` for new CLI commands and `apps/mcp-server/src/tools/` for new MCP tools, and run `pnpm check` before pushing.
+
+## Archive
+
+The `archive/` directory preserves code from UDP's original IDE architecture (web app, desktop Electron wrapper, NextAuth, server-utils). This code is excluded from the workspace and build pipeline but kept for reference. See [archive/README.md](archive/README.md) for details.
+
+## License
+
+See [SECURITY.md](SECURITY.md) for security policies.

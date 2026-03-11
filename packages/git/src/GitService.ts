@@ -1,6 +1,6 @@
 import * as git from 'isomorphic-git';
-import { getHttpClient } from './http.js';
-import type { GitHttpClient } from './http.js';
+import { getHttpClient } from './http.ts';
+import type { GitHttpClient } from './http.ts';
 
 import type {
   Branch,
