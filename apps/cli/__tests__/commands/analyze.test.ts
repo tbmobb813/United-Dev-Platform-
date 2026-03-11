@@ -120,12 +120,17 @@ describe('analyze command', () => {
 
   it('calls AIManager with the correct provider option (anthropic default)', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === configPath) return JSON.stringify(mockConfig);
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === configPath) return JSON.stringify(mockConfig);
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['node', 'udp', 'analyze'], { from: 'user' });
+    await program.parseAsync(['udp', 'analyze'], { from: 'user' });
 
     expect(MockedAIManager).toHaveBeenCalledWith(
       expect.objectContaining({ defaultProvider: 'anthropic' })
@@ -136,7 +141,7 @@ describe('analyze command', () => {
     process.env.OPENAI_API_KEY = 'test-openai-key';
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['node', 'udp', 'analyze', '--provider', 'openai'], { from: 'user' });
+    await program.parseAsync(['udp', 'analyze', '--provider', 'openai'], { from: 'user' });
 
     expect(MockedAIManager).toHaveBeenCalledWith(
       expect.objectContaining({ defaultProvider: 'openai' })
@@ -148,7 +153,7 @@ describe('analyze command', () => {
   it('calls manager.initialize() before analysis', async () => {
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['node', 'udp', 'analyze'], { from: 'user' });
+    await program.parseAsync(['udp', 'analyze'], { from: 'user' });
 
     expect(mockManagerInstance.initialize).toHaveBeenCalled();
   });
@@ -156,12 +161,17 @@ describe('analyze command', () => {
   it('analyzes specific file when --file is given', async () => {
     const targetFile = '/fake/project/src/index.ts';
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === targetFile);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === targetFile) return 'const x = 1;';
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === targetFile) return 'const x = 1;';
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['node', 'udp', 'analyze', '--file', targetFile], { from: 'user' });
+    await program.parseAsync(['udp', 'analyze', '--file', targetFile], { from: 'user' });
 
     expect(mockManagerInstance.explainCode).toHaveBeenCalledWith(
       'const x = 1;',
@@ -172,12 +182,17 @@ describe('analyze command', () => {
   it('outputs the AI result content when analyzing a specific file', async () => {
     const targetFile = '/fake/project/src/app.ts';
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === targetFile);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === targetFile) return 'export const foo = () => {};';
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === targetFile) return 'export const foo = () => {}';
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['node', 'udp', 'analyze', '--file', targetFile], { from: 'user' });
+    await program.parseAsync(['udp', 'analyze', '--file', targetFile], { from: 'user' });
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
       expect.stringContaining('This is an AI analysis result.')
@@ -187,7 +202,7 @@ describe('analyze command', () => {
   it('--quiet flag suppresses the spinner', async () => {
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['node', 'udp', 'analyze', '--quiet'], { from: 'user' });
+    await program.parseAsync(['udp', 'analyze', '--quiet'], { from: 'user' });
 
     const oraMock = (await import('ora')).default as jest.Mock;
     // ora should not be called with --quiet
@@ -200,7 +215,7 @@ describe('analyze command', () => {
 
     // Should not throw
     await expect(
-      program.parseAsync(['node', 'udp', 'analyze'], { from: 'user' })
+      program.parseAsync(['udp', 'analyze'], { from: 'user' })
     ).resolves.not.toThrow();
 
     expect(MockedAIManager).toHaveBeenCalled();
@@ -212,7 +227,7 @@ describe('analyze command', () => {
     mockedFs.existsSync.mockReturnValue(false);
 
     await expect(
-      program.parseAsync(['node', 'udp', 'analyze', '--file', missingFile], { from: 'user' })
+      program.parseAsync(['udp', 'analyze', '--file', missingFile], { from: 'user' })
     ).rejects.toThrow('process.exit(1)');
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -226,7 +241,7 @@ describe('analyze command', () => {
     mockedFs.existsSync.mockReturnValue(false);
 
     await expect(
-      program.parseAsync(['node', 'udp', 'analyze'], { from: 'user' })
+      program.parseAsync(['udp', 'analyze'], { from: 'user' })
     ).rejects.toThrow('process.exit(1)');
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -236,12 +251,17 @@ describe('analyze command', () => {
 
   it('runs full project analysis with ContextAwareAssistant when no --file given', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
-    mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p) === configPath) return JSON.stringify(mockConfig);
-      return '';
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === configPath) return JSON.stringify(mockConfig);
+        return '';
+      }
+      return Buffer.from('');
     });
 
-    await program.parseAsync(['node', 'udp', 'analyze'], { from: 'user' });
+    await program.parseAsync(['udp', 'analyze'], { from: 'user' });
 
     expect(mockAssistantInstance.setCodebaseContext).toHaveBeenCalled();
     expect(mockAssistantInstance.analyzeCodebase).toHaveBeenCalled();

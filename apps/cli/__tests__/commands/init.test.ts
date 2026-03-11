@@ -67,7 +67,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
       configPath,
@@ -91,7 +91,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -105,7 +105,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -119,7 +119,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -136,7 +136,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     expect(mockedFs.appendFileSync).toHaveBeenCalledWith(
       gitignorePath,
@@ -154,7 +154,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     expect(mockedFs.appendFileSync).not.toHaveBeenCalled();
   });
@@ -166,7 +166,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -180,7 +180,7 @@ describe('init command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'init', '--port', '3000'], { from: 'user' });
+    await program.parseAsync(['udp', 'init', '--port', '3000'], { from: 'user' });
 
     const writtenJson = (mockedFs.writeFileSync as jest.Mock).mock.calls[0][1] as string;
     const written = JSON.parse(writtenJson);
@@ -190,7 +190,7 @@ describe('init command', () => {
   it('does not overwrite config if already initialized', async () => {
     mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
 
-    await program.parseAsync(['node', 'udp', 'init'], { from: 'user' });
+    await program.parseAsync(['udp', 'init'], { from: 'user' });
 
     const writeCalls = (mockedFs.writeFileSync as jest.Mock).mock.calls as any[][];
     const wroteConfig = writeCalls.some((call) => String(call[0]) === configPath);

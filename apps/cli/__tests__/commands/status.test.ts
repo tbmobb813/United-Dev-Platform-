@@ -61,7 +61,7 @@ describe('status command', () => {
 
     // Should complete without throwing
     await expect(
-      program.parseAsync(['node', 'udp', 'status'], { from: 'user' })
+      program.parseAsync(['udp', 'status'], { from: 'user' })
     ).resolves.toBeDefined();
 
     // config.json should have been read
@@ -75,7 +75,7 @@ describe('status command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'status'], { from: 'user' });
+    await program.parseAsync(['udp', 'status'], { from: 'user' });
 
     // Verify config was parsed (readFileSync called with config path)
     const readCalls = (mockedFs.readFileSync as jest.Mock).mock.calls as any[][];
@@ -93,7 +93,7 @@ describe('status command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'status'], { from: 'user' });
+    await program.parseAsync(['udp', 'status'], { from: 'user' });
 
     // devices.json should have been read
     expect(mockedFs.readFileSync).toHaveBeenCalledWith(devicesPath, 'utf-8');
@@ -106,7 +106,7 @@ describe('status command', () => {
       return '';
     });
 
-    await program.parseAsync(['node', 'udp', 'status'], { from: 'user' });
+    await program.parseAsync(['udp', 'status'], { from: 'user' });
 
     const readCalls = (mockedFs.readFileSync as jest.Mock).mock.calls as any[][];
     expect(readCalls.some((call) => String(call[0]) === devicesPath)).toBe(false);
@@ -115,7 +115,7 @@ describe('status command', () => {
   it('exits early without reading config when not initialized', async () => {
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['node', 'udp', 'status'], { from: 'user' });
+    await program.parseAsync(['udp', 'status'], { from: 'user' });
 
     // config.json should NOT have been read
     const readCalls = (mockedFs.readFileSync as jest.Mock).mock.calls as any[][];
