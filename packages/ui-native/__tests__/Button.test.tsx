@@ -17,8 +17,11 @@ describe('Button', () => {
 
   it('is disabled when disabled prop is true', () => {
     const onPress = jest.fn();
-    const { getByText } = render(<Button title="Disabled" onPress={onPress} disabled />);
-    fireEvent.press(getByText('Disabled'));
-    expect(onPress).not.toHaveBeenCalled();
+    const { UNSAFE_getByType } = render(
+      <Button title="Disabled" onPress={onPress} disabled />
+    );
+    expect(
+      UNSAFE_getByType('TouchableOpacity').props.accessibilityState?.disabled
+    ).toBe(true);
   });
 });

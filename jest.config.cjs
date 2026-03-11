@@ -29,7 +29,7 @@ module.exports = {
     // Point to the CommonJS mock by default so tests running under Jest/CJS
     // don't fail parsing `export` in the ESM mock. Packages that run as ESM
     // can still mock via unstable_mockModule in their tests when needed.
-    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
+    '^y-websocket$': `${__dirname}/jest-mocks/y-websocket.cjs`,
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };

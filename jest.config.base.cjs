@@ -33,6 +33,6 @@ module.exports = {
   // base). This prevents parsing `export` from upstream ESM mocks and avoids
   // trying to establish real websocket connections during unit tests.
   moduleNameMapper: {
-    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
+    '^y-websocket$': `${__dirname}/jest-mocks/y-websocket.cjs`,
   },
 };

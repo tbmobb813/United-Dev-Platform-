@@ -10,9 +10,12 @@ module.exports = {
     '/node_modules/',
     '/__tests__/integration/',
   ],
+  transform: {
+    '^.+\\.[tj]sx?$': ['ts-jest', { useESM: true }],
+  },
   // Transform node-fetch (ESM-only) and other ESM packages
   transformIgnorePatterns: [
-    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb|node-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill|chalk|ora|qrcode-terminal|pino|commander)/)',
+    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb|node-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill|chalk|ora|qrcode-terminal|pino|commander|react-native|@react-native|expo|@expo)/)',
   ],
   moduleNameMapper: {
     // Resolve relative ESM .js imports to TypeScript sources in tests

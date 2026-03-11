@@ -9,6 +9,12 @@ const mockComponent = jest.requireActual(path.join(rnDir, 'jest/mockComponent'))
 
 
 Object.defineProperties(global, {
+  __fbBatchedBridgeConfig: {
+    configurable: true,
+    enumerable: true,
+    value: { remoteModuleConfig: [] },
+    writable: true,
+  },
   __DEV__: { configurable: true, enumerable: true, value: true, writable: true },
   cancelAnimationFrame: { configurable: true, enumerable: true, value: id => clearTimeout(id), writable: true },
   nativeFabricUIManager: { configurable: true, enumerable: true, value: {}, writable: true },
@@ -20,6 +26,26 @@ Object.defineProperties(global, {
 jest
   .mock(path.join(rnDir, 'Libraries/Core/InitializeCore'), () => {})
   .mock(path.join(rnDir, 'Libraries/Core/NativeExceptionsManager'))
+  .mock(path.join(rnDir, 'Libraries/TurboModule/TurboModuleRegistry'), () => ({
+    get: jest.fn(() => ({ getConstants: () => ({}) })),
+    getEnforcing: jest.fn(() => ({ getConstants: () => ({ forceTouchAvailable: false, interfaceIdiom: 'phone', isTesting: true, osVersion: '17.0', reactNativeVersion: { major: 0, minor: 74, patch: 0 } }) })),
+  }))
+  .mock(path.join(rnDir, 'src/private/specs/modules/NativePlatformConstantsIOS'), () => ({
+    __esModule: true,
+    default: { getConstants: () => ({ forceTouchAvailable: false, interfaceIdiom: 'phone', isTesting: true, osVersion: '17.0', reactNativeVersion: { major: 0, minor: 74, patch: 0 } }) },
+  }))
+  .mock(path.join(rnDir, 'Libraries/Utilities/NativePlatformConstantsIOS'), () => ({
+    __esModule: true,
+    default: { getConstants: () => ({ forceTouchAvailable: false, interfaceIdiom: 'phone', isTesting: true, osVersion: '17.0', reactNativeVersion: { major: 0, minor: 74, patch: 0 } }) },
+  }))
+  .mock(path.join(rnDir, 'Libraries/Utilities/Dimensions'), () => ({
+    __esModule: true,
+    default: {
+      addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+      get: jest.fn((key) => ({ fontScale: 2, height: 1334, scale: 2, width: 750, ...(key === 'screen' ? { width: 750, height: 1334 } : {}) })),
+      set: jest.fn(),
+    },
+  }))
   .mock(path.join(rnDir, 'Libraries/ReactNative/UIManager'), () => ({
     blur: jest.fn(),
     createView: jest.fn(),
