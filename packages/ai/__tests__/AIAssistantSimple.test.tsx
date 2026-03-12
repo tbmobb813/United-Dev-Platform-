@@ -8,7 +8,7 @@ import AIAssistantSimple from '../AIAssistantSimple';
 
 describe('AIAssistantSimple', () => {
   it('renders without crashing', () => {
-    const { container } = render(<AIAssistantSimple apiKey="test" />);
+    const { container } = render(<AIAssistantSimple apiKey='test' />);
     expect(container).toBeTruthy();
   });
 });
