@@ -1,5 +1,5 @@
 import { DocumentManager } from '@udp/editor-core';
-import * as Y from 'yjs';
+import * as Y from '@udp/editor-core/yjs-singleton';
 import React, { useEffect, useRef, useState } from 'react';
 
 export interface YjsFileEntry {
@@ -42,7 +42,7 @@ export function useYjsFiles(serverIp: string, port: number, roomId: string) {
         // Open the files document
         const doc = await docManagerRef.current.openDocument(roomId, 'files');
 
-        if (isUnmounted) return;
+        if (isUnmounted) {return;}
 
         // Get the files Y.Map from the document
         // The ProjectSyncManager stores files in a Y.Map at doc.getMap('files')

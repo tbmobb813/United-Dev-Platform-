@@ -1,3 +1,4 @@
+/* eslint-env jest */
 // Mock TurboModuleRegistry to provide PlatformConstants TurboModule
 jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
   const uiManager = {
@@ -34,8 +35,8 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
   };
   return {
     getEnforcing: (name) => {
-      if (name === 'UIManager') return uiManager;
-      if (name === 'PlatformConstants') return platformConstants;
+      if (name === 'UIManager') {return uiManager;}
+      if (name === 'PlatformConstants') {return platformConstants;}
       if (name === 'SourceCode') {
         return {
           getConstants: () => ({
@@ -46,8 +47,8 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
       return null;
     },
     get: (name) => {
-      if (name === 'UIManager') return uiManager;
-      if (name === 'PlatformConstants') return platformConstants;
+      if (name === 'UIManager') {return uiManager;}
+      if (name === 'PlatformConstants') {return platformConstants;}
       if (name === 'SourceCode') {
         return {
           getConstants: () => ({

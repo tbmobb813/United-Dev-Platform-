@@ -23,7 +23,7 @@ export const MobileHome: React.FC = () => {
     port: number;
   } | null>(null);
   const { state: pairingState } = useDevicePairing();
-  const yjsFiles = useYjsFiles(
+  const { isConnected } = useYjsFiles(
     pairingData?.serverIp || 'localhost',
     pairingData?.port || 3030,
     pairingData?.roomId || 'default-room'
