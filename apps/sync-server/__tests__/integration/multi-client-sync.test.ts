@@ -35,7 +35,6 @@ async function startTestServer(): Promise<void> {
       stdio: 'pipe',
     });
 
-    let ready = false;
     const timeout = setTimeout(() => {
       reject(new Error('Server failed to start within 5s'));
     }, 5000);
@@ -43,7 +42,6 @@ async function startTestServer(): Promise<void> {
     serverProc.stdout?.on('data', (data) => {
       const msg = data.toString();
       if (msg.includes('listening')) {
-        ready = true;
         clearTimeout(timeout);
         resolve();
       }

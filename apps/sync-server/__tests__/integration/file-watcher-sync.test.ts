@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, jest 
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { ProjectSyncManager } from '@udp/editor-core';
-import { NodeFileSystem } from '@udp/filesystem';
+import { NodeFileSystem } from '../../../../packages/filesystem/NodeFileSystem';
 import path from 'path';
 import fs from 'fs';
 import { spawn, ChildProcess } from 'child_process';
@@ -46,7 +46,6 @@ async function startTestServer(): Promise<void> {
       stdio: 'pipe',
     });
 
-    let ready = false;
     const timeout = setTimeout(() => {
       reject(new Error('Server failed to start within 5s'));
     }, 5000);
@@ -54,7 +53,6 @@ async function startTestServer(): Promise<void> {
     serverProc.stdout?.on('data', (data) => {
       const msg = data.toString();
       if (msg.includes('listening')) {
-        ready = true;
         clearTimeout(timeout);
         resolve();
       }

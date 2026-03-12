@@ -1,12 +1,5 @@
-// Import Yjs from singleton if available, otherwise fallback to direct import (for test/dev environments)
+import Y from './yjs-singleton';
 import type * as YTypes from './yjs-singleton';
-let Y: typeof import('yjs');
-try {
-  // @ts-ignore
-  Y = require('@udp/editor-core/yjs-singleton');
-} catch {
-  Y = require('yjs');
-}
 
 import { FileWatcher } from '@udp/filesystem/FileWatcher';
 import { NodeFileSystem } from '@udp/filesystem/NodeFileSystem';
