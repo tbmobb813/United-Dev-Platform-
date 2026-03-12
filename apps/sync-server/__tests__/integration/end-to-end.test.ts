@@ -13,6 +13,19 @@ const TEST_PROJECT_DIR = path.join(__dirname, '../.test-e2e-project');
 
 let serverProc: ChildProcess;
 
+function closeProvider(provider: WebsocketProvider): void {
+  try {
+    provider.disconnect();
+  } catch (_error) {
+    void _error;
+  }
+  try {
+    provider.destroy();
+  } catch (_error) {
+    void _error;
+  }
+}
+
 async function startTestServer(): Promise<void> {
   return new Promise((resolve, reject) => {
     const serverPath = path.resolve(__dirname, '../../server.js');
@@ -43,13 +56,17 @@ async function startTestServer(): Promise<void> {
 
 function stopTestServer(): Promise<void> {
   return new Promise((resolve) => {
-    if (serverProc) {
-      serverProc.kill();
-      serverProc.on('exit', () => resolve());
-      setTimeout(() => resolve(), 2000);
-    } else {
+    if (!serverProc || serverProc.killed) {
       resolve();
+      return;
     }
+
+    const fallback = setTimeout(() => resolve(), 2000);
+    serverProc.once('exit', () => {
+      clearTimeout(fallback);
+      resolve();
+    });
+    serverProc.kill();
   });
 }
 
@@ -92,6 +109,8 @@ describe('End-to-End Sync Flow', () => {
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
       });
+
+      try {
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -162,11 +181,12 @@ describe('End-to-End Sync Flow', () => {
       expect(files1.has('/package.json')).toBe(true);
       expect(files2.has('/README.md')).toBe(true);
       expect(files2.has('/package.json')).toBe(true);
-
-      provider1.disconnect();
-      provider2.disconnect();
-      doc1.destroy();
-      doc2.destroy();
+      } finally {
+        closeProvider(provider1);
+        closeProvider(provider2);
+        doc1.destroy();
+        doc2.destroy();
+      }
     });
 
     it('handles rapid concurrent edits from multiple clients', async () => {
@@ -180,6 +200,8 @@ describe('End-to-End Sync Flow', () => {
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
       });
+
+      try {
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -246,11 +268,12 @@ describe('End-to-End Sync Flow', () => {
       expect(finalCode1).toContain('client2');
       expect(finalCode2).toContain('client1');
       expect(finalCode2).toContain('client2');
-
-      provider1.disconnect();
-      provider2.disconnect();
-      doc1.destroy();
-      doc2.destroy();
+      } finally {
+        closeProvider(provider1);
+        closeProvider(provider2);
+        doc1.destroy();
+        doc2.destroy();
+      }
     });
 
     it('maintains consistency after multiple rounds of edits', async () => {
@@ -264,6 +287,8 @@ describe('End-to-End Sync Flow', () => {
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
       });
+
+      try {
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -335,11 +360,12 @@ describe('End-to-End Sync Flow', () => {
       // Both should converge to final version
       expect(data.toString()).toBe('version: 4');
       expect(dataClient2.toString()).toBe('version: 4');
-
-      provider1.disconnect();
-      provider2.disconnect();
-      doc1.destroy();
-      doc2.destroy();
+      } finally {
+        closeProvider(provider1);
+        closeProvider(provider2);
+        doc1.destroy();
+        doc2.destroy();
+      }
     });
   });
 });

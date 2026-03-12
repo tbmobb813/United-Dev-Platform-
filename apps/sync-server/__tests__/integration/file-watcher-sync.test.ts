@@ -16,6 +16,28 @@ jest.setTimeout(30000);
 
 let serverProc: ChildProcess;
 
+async function closeManager(manager: ProjectSyncManager): Promise<void> {
+  const candidate = manager as ProjectSyncManager & {
+    destroy?: () => Promise<void> | void;
+  };
+  if (typeof candidate.destroy === 'function') {
+    await candidate.destroy();
+  }
+}
+
+function closeProvider(provider: WebsocketProvider): void {
+  try {
+    provider.disconnect();
+  } catch (_error) {
+    void _error;
+  }
+  try {
+    provider.destroy();
+  } catch (_error) {
+    void _error;
+  }
+}
+
 async function startTestServer(): Promise<void> {
   return new Promise((resolve, reject) => {
     const serverPath = path.resolve(__dirname, '../../server.js');
@@ -47,13 +69,17 @@ async function startTestServer(): Promise<void> {
 
 function stopTestServer(): Promise<void> {
   return new Promise((resolve) => {
-    if (serverProc) {
-      serverProc.kill();
-      serverProc.on('exit', () => resolve());
-      setTimeout(() => resolve(), 2000);
-    } else {
+    if (!serverProc || serverProc.killed) {
       resolve();
+      return;
     }
+
+    const fallback = setTimeout(() => resolve(), 2000);
+    serverProc.once('exit', () => {
+      clearTimeout(fallback);
+      resolve();
+    });
+    serverProc.kill();
   });
 }
 
@@ -99,6 +125,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
       const fsInstance = new NodeFileSystem(TEST_DIR);
       const manager = new ProjectSyncManager(fsInstance);
 
+      try {
+
       const files = doc.getMap('files');
 
       // Wait for initial sync
@@ -132,8 +160,12 @@ describe('File Watcher → Yjs Sync Integration', () => {
         }, 3000);
       });
 
-      provider.disconnect();
-      doc.destroy();
+      expect(files).toBeDefined();
+      } finally {
+        await closeManager(manager);
+        closeProvider(provider);
+        doc.destroy();
+      }
     });
   });
 
@@ -151,6 +183,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       const fsInstance = new NodeFileSystem(TEST_DIR);
       const manager = new ProjectSyncManager(fsInstance);
+
+      try {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
@@ -181,9 +215,11 @@ describe('File Watcher → Yjs Sync Integration', () => {
           resolve();
         }, 3000);
       });
-
-      provider.disconnect();
-      doc.destroy();
+      } finally {
+        await closeManager(manager);
+        closeProvider(provider);
+        doc.destroy();
+      }
     });
   });
 
@@ -201,6 +237,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       const fsInstance = new NodeFileSystem(TEST_DIR);
       const manager = new ProjectSyncManager(fsInstance);
+
+      try {
 
       // Wait for initial sync
       await new Promise<void>((resolve, reject) => {
@@ -230,9 +268,11 @@ describe('File Watcher → Yjs Sync Integration', () => {
       });
 
       expect(fs.existsSync(testFile)).toBe(false);
-
-      provider.disconnect();
-      doc.destroy();
+      } finally {
+        await closeManager(manager);
+        closeProvider(provider);
+        doc.destroy();
+      }
     });
   });
 
@@ -240,6 +280,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
     it('emits file:synced when file is synced', async () => {
       const fsInstance = new NodeFileSystem(TEST_DIR);
       const manager = new ProjectSyncManager(fsInstance);
+
+      try {
 
       const syncedEvents: string[] = [];
       manager.on('file:synced', (...args: unknown[]) => {
@@ -263,11 +305,16 @@ describe('File Watcher → Yjs Sync Integration', () => {
         const content = fs.readFileSync(filePath, 'utf-8');
         expect(content).toBe('synced content');
       }
+      } finally {
+        await closeManager(manager);
+      }
     });
 
     it('emits file:created when file watcher detects creation', async () => {
       const fsInstance = new NodeFileSystem(TEST_DIR);
       const manager = new ProjectSyncManager(fsInstance);
+
+      try {
 
       const createdEvents: string[] = [];
       manager.on('file:created', (...args: unknown[]) => {
@@ -285,6 +332,9 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       // Note: This may not trigger if FileWatcher is not properly initialized
       // This test documents the expected behavior
+      } finally {
+        await closeManager(manager);
+      }
     });
 
     it('emits file:deleted when file watcher detects deletion', async () => {
@@ -293,6 +343,8 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       const fsInstance = new NodeFileSystem(TEST_DIR);
       const manager = new ProjectSyncManager(fsInstance);
+
+      try {
 
       const deletedEvents: string[] = [];
       manager.on('file:deleted', (...args: unknown[]) => {
@@ -309,6 +361,9 @@ describe('File Watcher → Yjs Sync Integration', () => {
 
       // Note: This may not trigger if FileWatcher is not properly initialized
       // This test documents the expected behavior
+      } finally {
+        await closeManager(manager);
+      }
     });
   });
 });

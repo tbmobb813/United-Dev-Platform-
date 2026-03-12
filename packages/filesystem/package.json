@@ -6,7 +6,7 @@
   "type": "module",
   "types": "index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && pnpm exec esbuild index.ts FileExplorer.tsx FileManager.tsx FileWatcher.ts NodeFileSystem.ts ProjectManager.ts ProjectNavigator.tsx SyncManager.ts VirtualFileSystem.ts WorkspaceManager.ts types.ts --format=esm --platform=node --target=node18 --outdir=dist --outbase=. --bundle=false",
     "typecheck": "tsc --noEmit",
     "test": "jest --config ../../jest.config.cjs --rootDir ."
   },

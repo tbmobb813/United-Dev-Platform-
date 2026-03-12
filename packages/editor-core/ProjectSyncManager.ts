@@ -36,6 +36,22 @@ export class ProjectSyncManager {
 
   private fileWatcher?: FileWatcher;
   private fs?: NodeFileSystem;
+  private readonly yjsObserver = async (event: YTypes.YMapEvent<YTypes.Text | YTypes.Map<unknown>>) => {
+    if (!this.fs) { return; }
+    for (const [path, change] of event.changes.keys) {
+      if (change.action === 'add' || change.action === 'update') {
+        const newValue = (this.files.get(path));
+        if (newValue instanceof Y.Text) {
+          const content = newValue.toString();
+          await this.fs.writeFile(path, content);
+          this.emit('file:synced', path, content);
+        }
+      } else if (change.action === 'delete') {
+        await this.fs.deleteFile(path);
+        this.emit('file:deleted', path);
+      }
+    }
+  };
 
   constructor(fs?: NodeFileSystem) {
     this.doc = new Y.Doc();
@@ -161,23 +177,7 @@ export class ProjectSyncManager {
    * Bi-directional sync: propagate Yjs changes to filesystem.
    */
   private setupYjsToFsSync() {
-    this.files.observe(async (event: YTypes.YMapEvent<YTypes.Text | YTypes.Map<unknown>>) => {
-      if (!this.fs) { return; }
-      for (const [path, change] of event.changes.keys) {
-        // change: { action: 'add' | 'update' | 'delete', oldValue?: T, newValue?: T }
-        if (change.action === 'add' || change.action === 'update') {
-          const newValue = (this.files.get(path));
-          if (newValue instanceof Y.Text) {
-            const content = newValue.toString();
-            await this.fs.writeFile(path, content);
-            this.emit('file:synced', path, content);
-          }
-        } else if (change.action === 'delete') {
-          await this.fs.deleteFile(path);
-          this.emit('file:deleted', path);
-        }
-      }
-    });
+    this.files.observe(this.yjsObserver);
   }
 
   /**
@@ -209,5 +209,15 @@ export class ProjectSyncManager {
    */
   setFileSystem(fs: NodeFileSystem) {
     this.fs = fs;
+  }
+
+  async destroy(): Promise<void> {
+    this.files.unobserve(this.yjsObserver);
+    this.listeners = {};
+    if (this.fileWatcher) {
+      await this.fileWatcher.destroy();
+      this.fileWatcher = undefined;
+    }
+    this.doc.destroy();
   }
 }

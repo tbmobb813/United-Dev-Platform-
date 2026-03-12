@@ -46,12 +46,12 @@
 - [x] Implement device pairing flow (end-to-end QR → register → confirm)
 
 ### Week 3: Integration Testing
-- [~] Multi-client sync test suite created (uses y-websocket provider for multi-client scenarios)
-- [~] File watcher → Yjs propagation test suite created (ProjectSyncManager + FileWatcher)
-- [~] End-to-end integration test suite created (full sync flow tests)
-- [~] Sync server connectivity and WebSocket tests created (server health, message handling, lifecycle)
-- [ ] Refine integration tests to work with built packages (currently need full build infrastructure)
-- [ ] Run full integration test suite after build optimization
+- [x] Multi-client sync test suite created (uses y-websocket provider for multi-client scenarios)
+- [x] File watcher → Yjs propagation test suite created (ProjectSyncManager + FileWatcher)
+- [x] End-to-end integration test suite created (full sync flow tests)
+- [x] Sync server connectivity and WebSocket tests created (server health, message handling, lifecycle)
+- [x] Refine integration tests to work with built packages (added package build pipeline + built-artifact Jest integration config)
+- [x] Run full integration test suite after build optimization (`pnpm test:integration:built` passed: 5 suites, 24 tests)
 
 ## Sprint 3: VS Code Extension (2 weeks) ✅
 - [x] Scaffold extension in `apps/vscode-extension/` (manual, no `yo code`)

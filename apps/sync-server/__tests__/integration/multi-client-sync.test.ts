@@ -14,6 +14,19 @@ const WS_URL = `ws://localhost:${PORT}`;
 
 let serverProc: ChildProcess;
 
+function closeProvider(provider: WebsocketProvider): void {
+  try {
+    provider.disconnect();
+  } catch (_error) {
+    void _error;
+  }
+  try {
+    provider.destroy();
+  } catch (_error) {
+    void _error;
+  }
+}
+
 async function startTestServer(): Promise<void> {
   return new Promise((resolve, reject) => {
     const serverPath = path.resolve(__dirname, '../../server.js');
@@ -45,13 +58,17 @@ async function startTestServer(): Promise<void> {
 
 function stopTestServer(): Promise<void> {
   return new Promise((resolve) => {
-    if (serverProc) {
-      serverProc.kill();
-      serverProc.on('exit', () => resolve());
-      setTimeout(() => resolve(), 2000);
-    } else {
+    if (!serverProc || serverProc.killed) {
       resolve();
+      return;
     }
+
+    const fallback = setTimeout(() => resolve(), 2000);
+    serverProc.once('exit', () => {
+      clearTimeout(fallback);
+      resolve();
+    });
+    serverProc.kill();
   });
 }
 
@@ -76,9 +93,11 @@ describe('Multi-Client Sync Integration Tests', () => {
       const ws = new WebSocket(`${WS_URL}/${TEST_ROOM}?sessionId=test-1&projectId=test`);
 
       await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Connection timeout')), 3000);
         ws.on('open', () => resolve());
         ws.on('error', reject);
-        setTimeout(() => reject(new Error('Connection timeout')), 3000);
+        ws.on('open', () => clearTimeout(timeout));
+        ws.on('error', () => clearTimeout(timeout));
       });
 
       expect(ws.readyState).toBe(WebSocket.OPEN);
@@ -89,15 +108,19 @@ describe('Multi-Client Sync Integration Tests', () => {
       const ws = new WebSocket(`${WS_URL}/${TEST_ROOM}?sessionId=test-2&projectId=test`);
 
       const message = await new Promise<Uint8Array>((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('No message received')), 3000);
         ws.on('open', () => {
           ws.on('message', (data) => {
             if (data instanceof Buffer) {
+              clearTimeout(timeout);
               resolve(new Uint8Array(data));
             }
           });
         });
-        ws.on('error', reject);
-        setTimeout(() => reject(new Error('No message received')), 3000);
+        ws.on('error', (error) => {
+          clearTimeout(timeout);
+          reject(error);
+        });
       });
 
       expect(message).toBeDefined();
@@ -117,6 +140,8 @@ describe('Multi-Client Sync Integration Tests', () => {
       const provider2 = new WebsocketProvider(WS_URL, TEST_ROOM, doc2, {
         awareness: undefined,
       }) as any;
+
+      try {
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -160,11 +185,12 @@ describe('Multi-Client Sync Integration Tests', () => {
 
       const ytext2 = files2.get('/test.txt') as Y.Text | undefined;
       expect(ytext2?.toString()).toBe('hello world');
-
-      provider1.disconnect();
-      provider2.disconnect();
-      doc1.destroy();
-      doc2.destroy();
+      } finally {
+        closeProvider(provider1);
+        closeProvider(provider2);
+        doc1.destroy();
+        doc2.destroy();
+      }
     });
 
     it('client2 sees edits made by client1', async () => {
@@ -178,6 +204,8 @@ describe('Multi-Client Sync Integration Tests', () => {
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
       }) as any;
+
+      try {
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -228,11 +256,12 @@ describe('Multi-Client Sync Integration Tests', () => {
 
       const ytext2 = files2.get('/editable.txt') as Y.Text | undefined;
       expect(ytext2?.toString()).toBe('updated');
-
-      provider1.disconnect();
-      provider2.disconnect();
-      doc1.destroy();
-      doc2.destroy();
+      } finally {
+        closeProvider(provider1);
+        closeProvider(provider2);
+        doc1.destroy();
+        doc2.destroy();
+      }
     });
   });
 
@@ -248,6 +277,8 @@ describe('Multi-Client Sync Integration Tests', () => {
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
       }) as any;
+
+      try {
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -295,11 +326,12 @@ describe('Multi-Client Sync Integration Tests', () => {
       });
 
       expect(files2.has('/temp.txt')).toBe(false);
-
-      provider1.disconnect();
-      provider2.disconnect();
-      doc1.destroy();
-      doc2.destroy();
+      } finally {
+        closeProvider(provider1);
+        closeProvider(provider2);
+        doc1.destroy();
+        doc2.destroy();
+      }
     });
   });
 
@@ -315,6 +347,8 @@ describe('Multi-Client Sync Integration Tests', () => {
       const provider2 = new WebsocketProvider(WS_URL, roomId, doc2, {
         awareness: undefined,
       }) as any;
+
+      try {
 
       const files1 = doc1.getMap('files');
       const files2 = doc2.getMap('files');
@@ -371,11 +405,12 @@ describe('Multi-Client Sync Integration Tests', () => {
 
       const ytext2 = files2.get('/offline.txt') as Y.Text | undefined;
       expect(ytext2?.toString()).toBe('offline update');
-
-      provider1.disconnect();
-      provider2.disconnect();
-      doc1.destroy();
-      doc2.destroy();
+      } finally {
+        closeProvider(provider1);
+        closeProvider(provider2);
+        doc1.destroy();
+        doc2.destroy();
+      }
     });
   });
 });

@@ -4,6 +4,7 @@
   "main": "index.ts",
   "private": true,
   "scripts": {
+    "build": "rm -rf dist && pnpm exec esbuild index.ts yjs-singleton.ts ProjectSyncManager.ts awareness.ts OfflinePersistence.ts types.ts --format=esm --platform=node --target=node18 --outdir=dist --outbase=. --bundle=false",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
