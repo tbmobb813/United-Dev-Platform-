@@ -142,6 +142,114 @@ describe('Sync Server Integration Tests', () => {
     });
   });
 
+  describe('Device API endpoints', () => {
+    it('creates a pairing QR token and returns expected shape', async () => {
+      const roomId = `api-room-${Date.now()}`;
+      const response = await fetch(`${API_URL}/api/devices/qr?roomId=${roomId}`);
+      const payload = await response.json();
+
+      expect(response.ok).toBe(true);
+      expect(payload.token).toBeDefined();
+      expect(payload.pairingUrl).toContain('udp://pair');
+      expect(payload.qr).toContain('data:image/');
+      expect(typeof payload.expiresAt).toBe('number');
+      expect(payload.expiresAt).toBeGreaterThan(Date.now());
+    });
+
+    it('rejects register requests with empty payload', async () => {
+      const response = await fetch(`${API_URL}/api/devices/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      const payload = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(payload.error).toContain('Missing token or deviceId');
+    });
+
+    it('rejects register requests with invalid token', async () => {
+      const response = await fetch(`${API_URL}/api/devices/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: 'invalid-token',
+          deviceId: `invalid-device-${Date.now()}`,
+        }),
+      });
+      const payload = await response.json();
+
+      expect(response.status).toBe(404);
+      expect(payload.error).toContain('Invalid or expired pairing token');
+    });
+
+    it('handles malformed JSON payload without crashing', async () => {
+      const response = await fetch(`${API_URL}/api/devices/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{"token": "broken-json",',
+      });
+
+      const healthAfterError = await fetch(`${API_URL}/api/devices/events`);
+
+      expect(response.status).toBeGreaterThanOrEqual(400);
+      expect(healthAfterError.status).toBe(200);
+    });
+
+    it('supports large device metadata payloads and full pairing flow', async () => {
+      const roomId = `room-large-${Date.now()}`;
+      const deviceId = `device-large-${Date.now()}`;
+
+      const qrRes = await fetch(`${API_URL}/api/devices/qr?roomId=${roomId}`);
+      const qrBody = await qrRes.json();
+
+      const largeInfo = {
+        name: 'Large Device',
+        payload: 'x'.repeat(256 * 1024),
+      };
+
+      const registerRes = await fetch(`${API_URL}/api/devices/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: qrBody.token,
+          deviceId,
+          info: largeInfo,
+        }),
+      });
+      const registerBody = await registerRes.json();
+      expect(registerRes.ok).toBe(true);
+      expect(registerBody.status).toBe('pending');
+
+      const discoverPendingRes = await fetch(`${API_URL}/api/devices/discover?roomId=${roomId}`);
+      const discoverPendingBody = await discoverPendingRes.json();
+      expect(discoverPendingBody.devices).toHaveLength(0);
+
+      const confirmRes = await fetch(`${API_URL}/api/devices/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deviceId }),
+      });
+      const confirmBody = await confirmRes.json();
+      expect(confirmRes.ok).toBe(true);
+      expect(confirmBody.status).toBe('confirmed');
+
+      const discoverConfirmedRes = await fetch(`${API_URL}/api/devices/discover?roomId=${roomId}`);
+      const discoverConfirmedBody = await discoverConfirmedRes.json();
+      expect(discoverConfirmedBody.devices.some((d: any) => d.deviceId === deviceId)).toBe(true);
+
+      const removeRes = await fetch(`${API_URL}/api/devices/${deviceId}`, {
+        method: 'DELETE',
+      });
+      expect(removeRes.ok).toBe(true);
+
+      const eventsRes = await fetch(`${API_URL}/api/devices/events`);
+      const eventsBody = await eventsRes.json();
+      expect(Array.isArray(eventsBody.events)).toBe(true);
+      expect(eventsBody.events.some((e: any) => e.deviceId === deviceId)).toBe(true);
+    });
+  });
+
   describe('WebSocket message handling', () => {
     it('receives binary frames from server on connect', async () => {
       const ws = new WebSocket(`${WS_URL}/test-room-msg?sessionId=test1&projectId=test`);

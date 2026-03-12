@@ -18,8 +18,12 @@ export function devicesCommand(program: Command): void {
       const configPath = path.join(udpDir, "config.json");
       let port = 21567;
       if (fs.existsSync(configPath)) {
-        const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-        port = config.syncPort || port;
+        try {
+          const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+          port = config.syncPort || port;
+        } catch {
+          logger.warn(chalk.yellow("Invalid .udp/config.json; using default sync port."));
+        }
       }
       if (!action || action === "list") {
         spinner.start("Fetching paired devices...");

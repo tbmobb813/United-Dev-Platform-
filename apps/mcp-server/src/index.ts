@@ -95,7 +95,19 @@ async function main() {
   await server.connect(transport);
 }
 
-main().catch(err => {
-  console.error('Server error:', err);
-  process.exit(1);
-});
+const isExecutedAsMain =
+  typeof require !== 'undefined' &&
+  typeof module !== 'undefined' &&
+  require.main === module;
+
+const isJestRuntime =
+  typeof process !== 'undefined' &&
+  typeof process.env !== 'undefined' &&
+  !!process.env.JEST_WORKER_ID;
+
+if (isExecutedAsMain && !isJestRuntime) {
+  main().catch(err => {
+    console.error('Server error:', err);
+    process.exit(1);
+  });
+}

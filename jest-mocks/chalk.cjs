@@ -1,4 +1,3 @@
-// Jest mock for chalk (ESM/CJS safe)
 const passthrough = (value) => value;
 const bold = Object.assign(passthrough, {
   blue: passthrough,

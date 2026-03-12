@@ -1313,11 +1313,10 @@ export class GitService implements GitServiceInterface {
   }
 
   private getBaseName(repositoryPath: string): string {
-    return (
-      repositoryPath.split('/').pop() ||
-      repositoryPath.split('\\').pop() ||
-      'repository'
-    );
+    const normalized = repositoryPath
+      .replace(/\\/g, '/')
+      .replace(/\/+$/, '');
+    return normalized.split('/').pop() || 'repository';
   }
 
   private generateRepositoryId(repositoryPath: string): string {

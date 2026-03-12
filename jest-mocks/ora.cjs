@@ -1,11 +1,27 @@
-// Jest mock for ora (ESM/CJS safe)
-const ora = () => ({
-  start: () => ora(),
-  succeed: () => ora(),
-  fail: () => ora(),
-  warn: () => ora(),
-  get text() { return ''; },
-  set text(_) {},
-});
-ora.default = ora;
+function createSpinner() {
+  return {
+    start() {
+      return this;
+    },
+    succeed() {
+      return this;
+    },
+    fail() {
+      return this;
+    },
+    warn() {
+      return this;
+    },
+    set text(_) {},
+    get text() {
+      return '';
+    },
+  };
+}
+
+function ora() {
+  return createSpinner();
+}
+
 module.exports = ora;
+module.exports.default = ora;

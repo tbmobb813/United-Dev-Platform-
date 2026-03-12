@@ -74,5 +74,8 @@ jobs:
       - name: Run tests
         run: pnpm test:core
 
+      - name: Enforce coverage threshold
+        run: pnpm test:coverage:ci
+
       - name: Build CLI
         run: pnpm --filter @udp/cli build

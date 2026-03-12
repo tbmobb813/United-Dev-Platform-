@@ -16,6 +16,40 @@ Goals:
   flows).
 - Provide repeatable test environments and automation for CI.
 
+## Coverage Baseline & Gaps (Current)
+
+### Commands
+
+```bash
+pnpm test:unit -- --coverage
+pnpm test:unit:coverage
+pnpm test:coverage:ci
+```
+
+Notes:
+
+- `test:unit` is routed through `scripts/run-jest-unit.cjs` so CLI passthrough
+  flags like `-- --coverage` are handled consistently.
+- `test:coverage:ci` uses the core Jest lane (`jest.config.core.cjs`) and
+  enforces minimum global thresholds.
+
+### Most recent measured coverage (core lane)
+
+- Statements: `44.81%`
+- Branches: `30.88%`
+- Functions: `39.66%`
+- Lines: `44.77%`
+
+### Highest-priority gaps identified
+
+- `packages/editor-core/ProjectSyncManager.ts`
+- `packages/filesystem/FileWatcher.ts`
+- `packages/filesystem/NodeFileSystem.ts`
+- `packages/filesystem/VirtualFileSystem.ts`
+
+These files are now the primary targets for incremental coverage improvement,
+with emphasis on edge conditions, error paths, and concurrency behavior.
+
 ## Test Audience & Scope
 
 - Developers: unit tests, component tests, local integration tests.
@@ -257,6 +291,14 @@ Tools: k6, Artillery, Locust (for Python-based teams).
      for duplicated runtime modules (Yjs)
    - Optionally run Playwright tests for web and Detox for mobile in dedicated
      job(s)
+
+### Coverage enforcement policy
+
+- The core Jest lane (`jest.config.core.cjs`) enforces global minimum coverage
+  thresholds.
+- CI runs `pnpm test:coverage:ci`; if coverage drops below threshold, the job
+  fails.
+- Keep threshold increases incremental and only after sustained coverage gains.
 
 2. Test caching: use Turbo cache or action cache for node_modules and build
    artifacts.
