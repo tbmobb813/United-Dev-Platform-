@@ -108,7 +108,7 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   };
 
   return (
-    <View style={styles.container} testID="collaborative-editor-root">
+    <View style={styles.container} testID='collaborative-editor-root'>
       {/* Header with connection status */}
       <View style={styles.header}>
         <Text style={styles.title}>Collaborative Editor</Text>

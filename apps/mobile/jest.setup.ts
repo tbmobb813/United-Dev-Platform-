@@ -1,76 +1,194 @@
-// --- CRITICAL: Mock Dimensions before any imports or other mocks ---
-jest.mock('react-native/Libraries/Utilities/Dimensions', () => {
-	const dims = {
-		window: { width: 375, height: 667, scale: 2, fontScale: 2 },
-		screen: { width: 375, height: 667, scale: 2, fontScale: 2 },
-	};
-	return {
-		get: jest.fn((dim) => dims[dim] || dims.window),
-		set: jest.fn((updates) => Object.assign(dims, updates)),
-		addEventListener: jest.fn(),
-		removeEventListener: jest.fn(),
-		_update: jest.fn(),
-		_dims: dims,
-	};
-});
-jest.mock('react-native', () => {
-	const RN = jest.requireActual('react-native');
-	const dims = {
-		window: { width: 375, height: 667, scale: 2, fontScale: 2 },
-		screen: { width: 375, height: 667, scale: 2, fontScale: 2 },
-	};
-	const dimensionsMock = {
-		get: jest.fn((dim) => dims[dim] || dims.window),
-		set: jest.fn((updates) => Object.assign(dims, updates)),
-		addEventListener: jest.fn(),
-		removeEventListener: jest.fn(),
-		_update: jest.fn(),
-		_dims: dims,
-	};
-	return {
-		...RN,
-		Dimensions: dimensionsMock,
-	};
-});
-// Mock global NativeModule to provide getConstants for CollaborativeEditor tests
-global.NativeModule = {
-	getConstants: () => ({
-		brand: 'test',
-		manufacturer: 'test',
-		model: 'test',
-		systemName: 'test',
-		systemVersion: 'test',
-		isTesting: true,
-	}),
-};
-// Mock NativeModules.DeviceInfo to provide getConstants for CollaborativeEditor tests
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { NativeModules } = require('react-native');
-NativeModules.DeviceInfo = {
-  getConstants: () => ({
-    brand: 'test',
-    manufacturer: 'test',
-    model: 'test',
-    systemName: 'test',
-    systemVersion: 'test',
-    isTesting: true,
-  }),
-};
-// Ensure jest is available in setup files
-// @ts-ignore
+// @ts-nocheck
 import { jest } from '@jest/globals';
-// Mock @rivascva/react-native-code-editor with CodeEditorSyntaxStyles
+
+global.__fbBatchedBridgeConfig = global.__fbBatchedBridgeConfig || {};
+
+if (typeof global.setImmediate !== 'function') {
+	global.setImmediate = (callback, ...args) => setTimeout(() => callback(...args), 0);
+}
+
+if (typeof global.clearImmediate !== 'function') {
+	global.clearImmediate = (id) => clearTimeout(id);
+}
+
+global.ErrorUtils =
+	global.ErrorUtils || {
+		setGlobalHandler: jest.fn(),
+		getGlobalHandler: jest.fn(() => () => {}),
+		reportError: jest.fn(),
+		reportFatalError: jest.fn(),
+	};
+
+if (!global.__turboModuleProxy) {
+	global.__turboModuleProxy = (name) => {
+		if (name === 'PlatformConstants') {
+			return {
+				forceTouchAvailable: false,
+				interfaceIdiom: 'phone',
+				isTesting: true,
+				osVersion: 'test',
+				reactNativeVersion: { major: 0, minor: 74, patch: 0 },
+				getConstants: () => ({
+					forceTouchAvailable: false,
+					interfaceIdiom: 'phone',
+					isTesting: true,
+					osVersion: 'test',
+					reactNativeVersion: { major: 0, minor: 74, patch: 0 },
+				}),
+			};
+		}
+
+		if (name === 'UIManager') {
+			return {
+				getConstants: () => ({}),
+				getConstantsForViewManager: () => ({}),
+				createView: () => {},
+				updateView: () => {},
+				dispatchViewManagerCommand: () => {},
+				measure: () => {},
+				measureInWindow: () => {},
+				measureLayout: () => {},
+				setChildren: () => {},
+				manageChildren: () => {},
+				setJSResponder: () => {},
+				clearJSResponder: () => {},
+				configureNextLayoutAnimation: () => {},
+			};
+		}
+
+		if (name === 'SourceCode') {
+			return {
+				getConstants: () => ({ scriptURL: 'http://localhost/index.bundle?platform=ios' }),
+			};
+		}
+
+		if (name === 'DeviceInfo') {
+			return {
+				getConstants: () => ({
+					Dimensions: {
+						window: { width: 375, height: 667, scale: 2, fontScale: 2 },
+						screen: { width: 375, height: 667, scale: 2, fontScale: 2 },
+					},
+				}),
+			};
+		}
+
+		return null;
+	};
+}
+
+jest.mock('react-native/Libraries/Utilities/Dimensions', () => {
+	const dimensionState = {
+		window: { width: 375, height: 667, scale: 2, fontScale: 2 },
+		screen: { width: 375, height: 667, scale: 2, fontScale: 2 },
+	};
+
+	const dimensions = {
+		get: jest.fn((name) => dimensionState[name] || dimensionState.window),
+		set: jest.fn((next) => Object.assign(dimensionState, next)),
+		addEventListener: jest.fn(),
+		removeEventListener: jest.fn(),
+	};
+
+	return {
+		__esModule: true,
+		default: dimensions,
+		...dimensions,
+	};
+});
+
+jest.mock('react-native/src/private/specs/modules/NativeDeviceInfo', () => ({
+	getConstants: jest.fn(() => ({
+		Dimensions: {
+			window: { width: 375, height: 667, scale: 2, fontScale: 2 },
+			screen: { width: 375, height: 667, scale: 2, fontScale: 2 },
+		},
+		isIPhoneX_deprecated: false,
+	})),
+}));
+
+jest.mock('react-native/src/private/specs/modules/NativeDeviceInfo.js', () => ({
+	getConstants: jest.fn(() => ({
+		Dimensions: {
+			window: { width: 375, height: 667, scale: 2, fontScale: 2 },
+			screen: { width: 375, height: 667, scale: 2, fontScale: 2 },
+		},
+		isIPhoneX_deprecated: false,
+	})),
+}));
+
+jest.mock('react-native/src/private/specs/modules/NativePlatformConstantsIOS', () => ({
+	getConstants: jest.fn(() => ({
+		forceTouchAvailable: false,
+		interfaceIdiom: 'phone',
+		isTesting: true,
+		osVersion: 'test',
+		reactNativeVersion: { major: 0, minor: 74, patch: 0 },
+	})),
+}));
+
+jest.mock('react-native/src/private/specs/modules/NativePlatformConstantsIOS.js', () => ({
+	getConstants: jest.fn(() => ({
+		forceTouchAvailable: false,
+		interfaceIdiom: 'phone',
+		isTesting: true,
+		osVersion: 'test',
+		reactNativeVersion: { major: 0, minor: 74, patch: 0 },
+	})),
+}));
+
+jest.mock('react-native/Libraries/Components/Keyboard/NativeKeyboardObserver', () => ({
+	addListener: jest.fn(),
+	removeListeners: jest.fn(),
+}));
+
+jest.mock('react-native/Libraries/Components/Keyboard/NativeKeyboardObserver.js', () => ({
+	addListener: jest.fn(),
+	removeListeners: jest.fn(),
+}));
+
+jest.mock('react-native/Libraries/Core/setUpDeveloperTools', () => ({}));
+
+jest.mock('react-native/Libraries/Core/setUpDeveloperTools.js', () => ({}));
+
+jest.mock('react-native/Libraries/Core/Timers/NativeTiming', () => ({
+	createTimer: jest.fn(),
+	deleteTimer: jest.fn(),
+	setSendIdleEvents: jest.fn(),
+}));
+
+jest.mock('react-native/Libraries/Core/Timers/NativeTiming.js', () => ({
+	createTimer: jest.fn(),
+	deleteTimer: jest.fn(),
+	setSendIdleEvents: jest.fn(),
+}));
+
+jest.mock('react-native/Libraries/WebSocket/WebSocket', () => {
+	return class MockWebSocket {
+		close() {}
+		send() {}
+		addEventListener() {}
+		removeEventListener() {}
+	};
+});
+
+jest.mock('react-native/Libraries/WebSocket/WebSocket.js', () => {
+	return class MockWebSocket {
+		close() {}
+		send() {}
+		addEventListener() {}
+		removeEventListener() {}
+	};
+});
+
 jest.mock('@rivascva/react-native-code-editor', () => ({
 	__esModule: true,
 	default: () => null,
 	CodeEditorSyntaxStyles: {
 		atomOneDark: {},
-		// Add more styles if needed
 	},
 }));
 
-// Polyfill __fbBatchedBridgeConfig for React Native
-global.__fbBatchedBridgeConfig = global.__fbBatchedBridgeConfig || {};
 jest.mock('@react-native-async-storage/async-storage', () => ({
 	__esModule: true,
 	default: {
@@ -82,9 +200,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 }));
 
 jest.mock('expo-camera', () => {
-	// Create a mock function component
 	const CameraView = jest.fn(() => null);
-	// Attach the static method
 	CameraView.requestCameraPermissionsAsync = jest.fn(() => Promise.resolve({ status: 'granted' }));
 	return {
 		__esModule: true,
@@ -110,19 +226,6 @@ jest.mock('expo-secure-store', () => ({
 	setItemAsync: jest.fn(async () => undefined),
 }));
 
-// Mock react-native Alert
-jest.mock('react-native', () => {
-	const RN = jest.requireActual('react-native');
-	return {
-		...RN,
-		Alert: {
-			alert: jest.fn(),
-		},
-	};
-});
-
-
-// Mock NativeSettingsManager to prevent TurboModuleRegistry errors
 jest.mock('react-native/Libraries/Settings/NativeSettingsManager', () => ({
 	__esModule: true,
 	default: {
@@ -132,56 +235,30 @@ jest.mock('react-native/Libraries/Settings/NativeSettingsManager', () => ({
 	},
 }));
 
-
-
-// --- Ensure PlatformConstants is available globally for TurboModuleRegistry ---
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { NativeModules } = require('react-native');
-	// @ts-ignore
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	if (!(globalThis as any).__turboModuleProxy) {
-		// Mock as a function for TurboModuleRegistry
-		const platformConstants = {
-			forceTouchAvailable: false,
-			osVersion: 'test',
-			interfaceIdiom: 'phone',
-			isTesting: true,
-			reactNativeVersion: { major: 0, minor: 74, patch: 0 },
-			getConstants: () => ({
-				forceTouchAvailable: false,
-				osVersion: 'test',
-				interfaceIdiom: 'phone',
-				isTesting: true,
-				reactNativeVersion: { major: 0, minor: 74, patch: 0 },
-			}),
-		};
-		(globalThis as any).__turboModuleProxy = (name) => {
-			if (name === 'PlatformConstants') {
-				return platformConstants;
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const RN = require('react-native');
+	if (RN?.StyleSheet && typeof RN.StyleSheet.flatten !== 'function') {
+		RN.StyleSheet.flatten = (style) => {
+			if (Array.isArray(style)) {
+				return style.filter(Boolean).reduce((acc, entry) => ({ ...acc, ...entry }), {});
 			}
-			if (name === 'DeviceInfo') {
-				return {
-					getConstants: () => ({
-						brand: 'test',
-						manufacturer: 'test',
-						model: 'test',
-						systemName: 'test',
-						systemVersion: 'test',
-						isTesting: true,
-					}),
-				};
-			}
-			return {};
+			return style || {};
 		};
-		NativeModules.PlatformConstants = platformConstants;
-		// @ts-ignore
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(globalThis as any).PlatformConstants = platformConstants;
 	}
-} catch (e) {
-	// ignore if react-native is not available
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+	if (!RN?.RefreshControl && RN?.View) {
+		RN.RefreshControl = RN.View;
+	}
+
+	if (RN?.View) {
+		RN.FlatList = RN.View;
+		RN.SectionList = RN.View;
+		RN.VirtualizedList = RN.View;
+		RN.ScrollView = RN.View;
+	}
+} catch {
+	// ignore in non-RN test contexts
 }
 
 // Silence act warnings for state updates

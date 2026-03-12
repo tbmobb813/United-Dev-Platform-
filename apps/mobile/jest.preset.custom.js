@@ -1,6 +1,6 @@
+// Minimal custom Jest preset for React Native/Expo
 module.exports = {
-  // testEnvironment: 'react-native/jest/react-native-env.js',
-  setupFiles: ['<rootDir>/jest.setup.ts', '<rootDir>/jest.setup.global.js'],
+  setupFiles: ['<rootDir>/jest.setup.global.js', '<rootDir>/jest.setup.ts'],
   setupFilesAfterEnv: ['<rootDir>/jest.env-setup.ts'],
   transform: {
     '^.+\\.[jt]sx?$': 'babel-jest',
@@ -21,5 +21,4 @@ module.exports = {
     defaultPlatform: 'ios',
     platforms: ['ios', 'android'],
   },
-  };
-module.exports = require('./jest.preset.custom');
+};
