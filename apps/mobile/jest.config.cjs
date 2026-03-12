@@ -1,7 +1,8 @@
 module.exports = {
   preset: 'react-native',
   testEnvironment: 'react-native/jest/react-native-env.js',
-  setupFiles: ['<rootDir>/jest.setup.ts'],
+  setupFiles: ['<rootDir>/jest.setup.dimensions.js', '<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.env-setup.ts'],
   transform: {
     '^.+\\.[jt]sx?$': 'babel-jest',
   },
@@ -13,16 +14,10 @@ module.exports = {
     '^@udp/editor-core$': '<rootDir>/../../jest-mocks/editor-core-mobile.cjs',
     '^yjs$': '<rootDir>/../../jest-mocks/yjs.cjs',
     '^y-websocket$': '<rootDir>/../../jest-mocks/y-websocket.cjs',
+    '^.*/app/\\(tabs\\)/collaborate$': '<rootDir>/app/(tabs)/collaborate.tsx',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   testPathIgnorePatterns: ['/node_modules/', 'jest\\.setup\\.[jt]s$'],
-  moduleNameMapper: {
-    '^@rivascva/react-native-code-editor$': '<rootDir>/../../jest-mocks/react-native-code-editor.cjs',
-    '^@udp/editor-core$': '<rootDir>/../../jest-mocks/editor-core-mobile.cjs',
-    '^yjs$': '<rootDir>/../../jest-mocks/yjs.cjs',
-    '^y-websocket$': '<rootDir>/../../jest-mocks/y-websocket.cjs',
-    '^.*/app/\\(tabs\\)/collaborate$': '<rootDir>/app/(tabs)/collaborate.tsx',
-  },
   haste: {
     defaultPlatform: 'ios',
     platforms: ['ios', 'android'],

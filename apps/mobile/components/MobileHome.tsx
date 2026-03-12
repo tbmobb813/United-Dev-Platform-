@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { FileNavigator } from '../components/FileNavigator';
-import { ConnectScreen } from '../components/ConnectScreen';
+import ConnectScreen from '../components/ConnectScreen';
 import { CollaborativeEditor } from '../components/CollaborativeEditor';
 import { useDevicePairing } from '../hooks/useDevicePairing';
 import { useYjsFiles } from '../hooks/useYjsFiles';

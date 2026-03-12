@@ -1,4 +1,4 @@
-import * as types from '../types';
+import types from '../types';
 
 describe('types', () => {
   it('should export all expected types', () => {

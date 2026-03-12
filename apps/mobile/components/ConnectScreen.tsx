@@ -166,7 +166,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} testID="connect-screen-root">
       {!showManualEntry ? (
         <>
           <CameraView
