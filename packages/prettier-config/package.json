@@ -7,8 +7,11 @@
     "index.js"
   ],
   "private": true,
-  "dependencies": {},
   "peerDependencies": {
     "prettier": "^3.6.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "babel-jest": "^30.3.0"
   }
 }

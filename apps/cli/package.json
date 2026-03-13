@@ -11,7 +11,7 @@
     "build": "tsup src/index.ts --format esm --platform node --dts --clean",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
-    "test": "jest --config ../../jest.config.cjs"
+    "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
     "@udp/ai": "workspace:*",
@@ -29,8 +29,11 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^24.10.0",
     "@types/ws": "^8.18.1",
+    "babel-jest": "^30.3.0",
     "tsup": "^8.0.0",
     "typescript": "^5.9.3"
   },

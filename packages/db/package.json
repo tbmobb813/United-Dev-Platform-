@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "generate": "prisma generate --schema ../../apps/sync-server/prisma/schema.prisma",
     "prepare": "pnpm run generate && pnpm build",
-    "test": "jest --config ../../jest.config.cjs"
+    "test": "jest --config ../../jest.config.cjs --rootDir ."
   },
   "dependencies": {
     "@prisma/client": "^6.0.0"

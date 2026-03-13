@@ -108,7 +108,7 @@ export const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID='collaborative-editor-root'>
       {/* Header with connection status */}
       <View style={styles.header}>
         <Text style={styles.title}>Collaborative Editor</Text>
@@ -241,3 +241,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default CollaborativeEditor;

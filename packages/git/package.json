@@ -16,16 +16,18 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "clean": "rm -rf dist",
-    "test": "jest --config ../../jest.config.cjs"
+    "test": "jest --config ../../jest.config.cjs --rootDir ."
   },
   "dependencies": {
     "isomorphic-git": "^1.34.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
     "@types/node": "^24.10.0",
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "@udp/types": "workspace:*",
+    "babel-jest": "^30.3.0",
     "tsup": "^8.0.0",
     "typescript": "^5.9.3"
   },

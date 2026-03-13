@@ -1,7 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 
-const IGNORE = ['node_modules', '.git', 'dist', '.turbo', '.next', 'coverage', '.udp', 'build', 'out'];
+const IGNORE = [
+  'node_modules',
+  '.git',
+  'dist',
+  '.turbo',
+  '.next',
+  'coverage',
+  '.udp',
+  'build',
+  'out',
+];
 
 interface Tool {
   name: string;
@@ -12,21 +22,30 @@ interface Tool {
 
 export const listFilesTool: Tool = {
   name: 'list_files',
-  description: 'List files in the UDP project directory. Returns relative paths of all code files.',
+  description:
+    'List files in the UDP project directory. Returns relative paths of all code files.',
   inputSchema: {
     type: 'object',
     properties: {
       directory: {
         type: 'string',
-        description: 'Project root directory path (default: current working directory)',
+        description:
+          'Project root directory path (default: current working directory)',
       },
       pattern: {
         type: 'string',
-        description: 'Optional file extension filter, e.g. ".ts" to only show TypeScript files',
+        description:
+          'Optional file extension filter, e.g. ".ts" to only show TypeScript files',
       },
     },
   },
-  async execute({ directory, pattern }: { directory?: string; pattern?: string }) {
+  async execute({
+    directory,
+    pattern,
+  }: {
+    directory?: string;
+    pattern?: string;
+  }) {
     const root = directory || process.env.UDP_PROJECT_ROOT || process.cwd();
 
     if (!fs.existsSync(root)) {
@@ -35,7 +54,9 @@ export const listFilesTool: Tool = {
 
     const files = walkDir(root);
     const filtered = pattern
-      ? files.filter(f => f.endsWith(pattern.startsWith('.') ? pattern : `.${pattern}`))
+      ? files.filter(f =>
+          f.endsWith(pattern.startsWith('.') ? pattern : `.${pattern}`)
+        )
       : files;
 
     return {

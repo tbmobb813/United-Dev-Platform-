@@ -6,8 +6,14 @@ export class AnthropicService extends AIService {
   private baseUrl: string;
 
   constructor(config: AIServiceConfig) {
+    if (!config.apiKey) {
+      throw new Error('Anthropic API key is required');
+    }
     super(config);
     this.baseUrl = config.baseUrl || 'https://api.anthropic.com/v1';
+  }
+  async generate(prompt: string): Promise<string> {
+    return `Anthropic: ${prompt}`;
   }
 
   async generateResponse(
@@ -44,7 +50,9 @@ export class AnthropicService extends AIService {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null) as { error?: { message?: string } } | null;
+        const errorData = (await response.json().catch(() => null)) as {
+          error?: { message?: string };
+        } | null;
         throw new Error(
           `Anthropic API error: ${response.status} ${response.statusText}${
             errorData ? ` - ${errorData.error?.message}` : ''
@@ -106,7 +114,9 @@ export class AnthropicService extends AIService {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null) as { error?: { message?: string } } | null;
+        const errorData = (await response.json().catch(() => null)) as {
+          error?: { message?: string };
+        } | null;
         throw new Error(
           `Anthropic API error: ${response.status} ${response.statusText}${
             errorData ? ` - ${errorData.error?.message}` : ''

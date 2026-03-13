@@ -8,11 +8,10 @@ module.exports = {
   coverageDirectory: '<rootDir>/artifacts/coverage/core',
   coverageThreshold: {
     global: {
-      // Temporarily relaxed to match current coverage while focused tests are added
-      branches: 13,
-      functions: 14,
-      lines: 15,
-      statements: 15,
+      branches: 30,
+      functions: 38,
+      lines: 44,
+      statements: 44,
     },
   },
 };

@@ -25,7 +25,7 @@ module.exports = {
   // Some dependencies (yjs, y-websocket, y-monaco, y-protocols, y-indexeddb) ship ESM and
   // must be transformed so Jest can run them in this monorepo setup.
   transformIgnorePatterns: [
-    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)',
+    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb|chalk|ora|qrcode-terminal|pino|commander)/)',
   ],
   // ts-jest options provided inline in `transform` to avoid deprecated globals usage.
   // Prefer the CommonJS mock for y-websocket in environments that execute
@@ -33,6 +33,6 @@ module.exports = {
   // base). This prevents parsing `export` from upstream ESM mocks and avoids
   // trying to establish real websocket connections during unit tests.
   moduleNameMapper: {
-    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
+    '^y-websocket$': `${__dirname}/jest-mocks/y-websocket.cjs`,
   },
 };

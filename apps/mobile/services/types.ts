@@ -58,6 +58,14 @@ export interface ApiResponse<T> {
   error?: string;
   message?: string;
 }
+// For compatibility with tests expecting a default export object
+const types = {
+  Project: {} as Project,
+  ProjectFile: {} as ProjectFile,
+  FileActivity: {} as FileActivity,
+  ApiResponse: {} as ApiResponse<unknown>,
+};
+export default types;
 
 export interface PaginatedResponse<T> {
   data: T[];

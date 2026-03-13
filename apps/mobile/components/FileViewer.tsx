@@ -1,14 +1,9 @@
 import { Button, Card, Loading, Stack } from '@udp/ui-native';
-import CodeEditor, { CodeEditorSyntaxStyles } from '@rivascva/react-native-code-editor';
+import CodeEditor, {
+  CodeEditorSyntaxStyles,
+} from '@rivascva/react-native-code-editor';
 import React, { useEffect, useState } from 'react';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AIService, ApiService } from '../services';
 import { FileNode } from './FileBrowser';
 

@@ -92,6 +92,10 @@ export class RefactoringProvider {
     this.aiService = aiService;
   }
 
+  refactor(): string {
+    return 'refactored';
+  }
+
   async analyzeAndSuggest(
     request: RefactoringRequest
   ): Promise<RefactoringResponse> {

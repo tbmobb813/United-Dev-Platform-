@@ -3,6 +3,7 @@
 ## 1. Database Setup
 
 Ensure your `DATABASE_URL` is set in `.env` (SQLite example below)
+
 - Example:
   ```env
   DATABASE_URL=file:./dev.db

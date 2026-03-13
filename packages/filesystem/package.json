@@ -6,9 +6,9 @@
   "type": "module",
   "types": "index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && pnpm exec esbuild index.ts FileExplorer.tsx FileManager.tsx FileWatcher.ts NodeFileSystem.ts ProjectManager.ts ProjectNavigator.tsx SyncManager.ts VirtualFileSystem.ts WorkspaceManager.ts types.ts --format=esm --platform=node --target=node18 --outdir=dist --outbase=. --bundle=false",
     "typecheck": "tsc --noEmit",
-    "test": "jest --config ../../jest.config.cjs"
+    "test": "jest --config ../../jest.config.cjs --rootDir ."
   },
   "dependencies": {
     "@types/node": "^24.10.0",
@@ -16,7 +16,9 @@
     "mime-types": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
     "@types/mime-types": "^3.0.1",
+    "babel-jest": "^30.3.0",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {

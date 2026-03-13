@@ -113,6 +113,10 @@ export class ContextAwareAssistant {
     this.aiService = aiService;
   }
 
+  provideContext(): string {
+    return 'context';
+  }
+
   // Initialize with codebase context
   setCodebaseContext(context: CodebaseContext): void {
     this.codebaseContext = context;

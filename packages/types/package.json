@@ -8,5 +8,9 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "test": "jest --passWithNoTests"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "babel-jest": "^30.3.0"
   }
 }

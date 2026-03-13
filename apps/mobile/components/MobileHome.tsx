@@ -1,4 +1,3 @@
-import { Stack } from '@udp/ui-native';
 import React, { useState } from 'react';
 import {
   SafeAreaView,
@@ -8,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { FileNavigator } from '../components/FileNavigator';
-import { ConnectScreen } from '../components/ConnectScreen';
+import ConnectScreen from '../components/ConnectScreen';
 import { CollaborativeEditor } from '../components/CollaborativeEditor';
 import { useDevicePairing } from '../hooks/useDevicePairing';
 import { useYjsFiles } from '../hooks/useYjsFiles';
@@ -22,8 +21,8 @@ export const MobileHome: React.FC = () => {
     serverIp: string;
     port: number;
   } | null>(null);
-  const { state: pairingState } = useDevicePairing();
-  const yjsFiles = useYjsFiles(
+  useDevicePairing();
+  const { isConnected } = useYjsFiles(
     pairingData?.serverIp || 'localhost',
     pairingData?.port || 3030,
     pairingData?.roomId || 'default-room'
@@ -109,29 +108,27 @@ export const MobileHome: React.FC = () => {
               </TouchableOpacity>
             </View>
           )
+        ) : isConnected && pairingData ? (
+          <CollaborativeEditor
+            roomId={pairingData.roomId}
+            documentId='main-document'
+            userId={`mobile-user-${Math.random().toString(36).substr(2, 9)}`}
+            userName='Mobile User'
+          />
         ) : (
-          isConnected ? (
-            <CollaborativeEditor
-              roomId={pairingData.roomId}
-              documentId='main-document'
-              userId={`mobile-user-${Math.random().toString(36).substr(2, 9)}`}
-              userName='Mobile User'
-            />
-          ) : (
-            <View style={styles.disconnected}>
-              <Text style={styles.disconnectedIcon}>🔌</Text>
-              <Text style={styles.disconnectedTitle}>Not Connected</Text>
-              <Text style={styles.disconnectedText}>
-                Please connect to a host device first
-              </Text>
-              <TouchableOpacity
-                style={styles.connectButton}
-                onPress={() => setActiveTab('connect')}
-              >
-                <Text style={styles.connectButtonText}>Go to Connect</Text>
-              </TouchableOpacity>
-            </View>
-          )
+          <View style={styles.disconnected}>
+            <Text style={styles.disconnectedIcon}>🔌</Text>
+            <Text style={styles.disconnectedTitle}>Not Connected</Text>
+            <Text style={styles.disconnectedText}>
+              Please connect to a host device first
+            </Text>
+            <TouchableOpacity
+              style={styles.connectButton}
+              onPress={() => setActiveTab('connect')}
+            >
+              <Text style={styles.connectButtonText}>Go to Connect</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </SafeAreaView>

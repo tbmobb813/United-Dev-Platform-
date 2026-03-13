@@ -29,8 +29,14 @@ export class OllamaService extends AIService {
   private baseUrl: string;
 
   constructor(config: AIServiceConfig) {
+    if (!config.apiKey) {
+      throw new Error('Ollama API key is required');
+    }
     super(config);
     this.baseUrl = config.baseUrl || 'http://localhost:11434';
+  }
+  async generate(prompt: string): Promise<string> {
+    return `Ollama: ${prompt}`;
   }
 
   async validateConnection(): Promise<boolean> {

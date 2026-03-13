@@ -45,49 +45,54 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 // Handle CallTool request
-server.setRequestHandler(CallToolRequestSchema, async (request): Promise<{ content: TextContent[]; isError?: boolean }> => {
-  const tool = tools.find(t => t.name === request.params.name);
+server.setRequestHandler(
+  CallToolRequestSchema,
+  async (request): Promise<{ content: TextContent[]; isError?: boolean }> => {
+    const tool = tools.find(t => t.name === request.params.name);
 
-  if (!tool) {
-    return {
-      content: [
-        {
-          type: 'text',
-          text: `Unknown tool: ${request.params.name}`,
-        },
-      ],
-      isError: true,
-    };
+    if (!tool) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `Unknown tool: ${request.params.name}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    try {
+      const result = await tool.execute(request.params.arguments || {});
+
+      // Convert result to JSON string
+      const resultText =
+        typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: resultText,
+          },
+        ],
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `Tool error: ${errorMessage}`,
+          },
+        ],
+        isError: true,
+      };
+    }
   }
-
-  try {
-    const result = await tool.execute(request.params.arguments || {});
-
-    // Convert result to JSON string
-    const resultText = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
-
-    return {
-      content: [
-        {
-          type: 'text',
-          text: resultText,
-        },
-      ],
-    };
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-
-    return {
-      content: [
-        {
-          type: 'text',
-          text: `Tool error: ${errorMessage}`,
-        },
-      ],
-      isError: true,
-    };
-  }
-});
+);
 
 // Connect transport and run server
 async function main() {
@@ -95,7 +100,19 @@ async function main() {
   await server.connect(transport);
 }
 
-main().catch(err => {
-  console.error('Server error:', err);
-  process.exit(1);
-});
+const isExecutedAsMain =
+  typeof require !== 'undefined' &&
+  typeof module !== 'undefined' &&
+  require.main === module;
+
+const isJestRuntime =
+  typeof process !== 'undefined' &&
+  typeof process.env !== 'undefined' &&
+  !!process.env.JEST_WORKER_ID;
+
+if (isExecutedAsMain && !isJestRuntime) {
+  main().catch(err => {
+    console.error('Server error:', err);
+    process.exit(1);
+  });
+}

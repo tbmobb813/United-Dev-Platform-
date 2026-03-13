@@ -43,7 +43,8 @@ export const analyzeFileTool: Tool = {
       },
       project_root: {
         type: 'string',
-        description: 'Project root directory (default: UDP_PROJECT_ROOT or current working directory)',
+        description:
+          'Project root directory (default: UDP_PROJECT_ROOT or current working directory)',
       },
     },
     required: ['file_path'],
@@ -60,7 +61,9 @@ export const analyzeFileTool: Tool = {
     const root = project_root || process.env.UDP_PROJECT_ROOT || process.cwd();
 
     // Resolve the file path
-    const absPath = path.isAbsolute(file_path) ? file_path : path.resolve(root, file_path);
+    const absPath = path.isAbsolute(file_path)
+      ? file_path
+      : path.resolve(root, file_path);
 
     // Security check
     if (!absPath.startsWith(path.resolve(root))) {
@@ -78,7 +81,9 @@ export const analyzeFileTool: Tool = {
 
     if (stats.size > 1024 * 1024) {
       // 1MB limit
-      throw new Error(`File too large: ${(stats.size / 1024 / 1024).toFixed(1)}MB (max 1MB)`);
+      throw new Error(
+        `File too large: ${(stats.size / 1024 / 1024).toFixed(1)}MB (max 1MB)`
+      );
     }
 
     const content = fs.readFileSync(absPath, 'utf-8');
@@ -91,7 +96,9 @@ export const analyzeFileTool: Tool = {
     try {
       await manager.initialize();
     } catch (err) {
-      throw new Error(`Failed to initialize AI: ${err instanceof Error ? err.message : String(err)}`);
+      throw new Error(
+        `Failed to initialize AI: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
 
     // Use provided prompt or default
@@ -117,7 +124,9 @@ Keep the response concise and actionable.`;
         lineCount: content.split('\n').length,
       };
     } catch (err) {
-      throw new Error(`AI analysis failed: ${err instanceof Error ? err.message : String(err)}`);
+      throw new Error(
+        `AI analysis failed: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
   },
 };

@@ -1,12 +1,5 @@
-// Import Yjs from singleton if available, otherwise fallback to direct import (for test/dev environments)
+import Y from './yjs-singleton';
 import type * as YTypes from './yjs-singleton';
-let Y: typeof import('yjs');
-try {
-  // @ts-ignore
-  Y = require('@udp/editor-core/yjs-singleton');
-} catch {
-  Y = require('yjs');
-}
 
 import { FileWatcher } from '@udp/filesystem/FileWatcher';
 import { NodeFileSystem } from '@udp/filesystem/NodeFileSystem';
@@ -36,6 +29,26 @@ export class ProjectSyncManager {
 
   private fileWatcher?: FileWatcher;
   private fs?: NodeFileSystem;
+  private readonly yjsObserver = async (
+    event: YTypes.YMapEvent<YTypes.Text | YTypes.Map<unknown>>
+  ) => {
+    if (!this.fs) {
+      return;
+    }
+    for (const [path, change] of event.changes.keys) {
+      if (change.action === 'add' || change.action === 'update') {
+        const newValue = this.files.get(path);
+        if (newValue instanceof Y.Text) {
+          const content = newValue.toString();
+          await this.fs.writeFile(path, content);
+          this.emit('file:synced', path, content);
+        }
+      } else if (change.action === 'delete') {
+        await this.fs.deleteFile(path);
+        this.emit('file:deleted', path);
+      }
+    }
+  };
 
   constructor(fs?: NodeFileSystem) {
     this.doc = new Y.Doc();
@@ -124,17 +137,22 @@ export class ProjectSyncManager {
    * Set up file watcher integration to sync file system changes to Yjs.
    */
   private setupFileWatcher() {
-    if (!this.fileWatcher) { return; }
-    this.fileWatcher.on('file:changed', async (path: string, content: string) => {
-      let ytext = this.files.get(path) as YTypes.Text | undefined;
-      if (!ytext) {
-        ytext = new Y.Text();
-        this.files.set(path, ytext);
+    if (!this.fileWatcher) {
+      return;
+    }
+    this.fileWatcher.on(
+      'file:changed',
+      async (path: string, content: string) => {
+        let ytext = this.files.get(path) as YTypes.Text | undefined;
+        if (!ytext) {
+          ytext = new Y.Text();
+          this.files.set(path, ytext);
+        }
+        ytext.delete(0, ytext.length);
+        ytext.insert(0, content);
+        this.emit('file:updated', path, content);
       }
-      ytext.delete(0, ytext.length);
-      ytext.insert(0, content);
-      this.emit('file:updated', path, content);
-    });
+    );
     this.fileWatcher.on('file:deleted', (path: string) => {
       this.files.delete(path);
       this.metadata.delete(path);
@@ -161,23 +179,7 @@ export class ProjectSyncManager {
    * Bi-directional sync: propagate Yjs changes to filesystem.
    */
   private setupYjsToFsSync() {
-    this.files.observe(async (event: YTypes.YMapEvent<YTypes.Text | YTypes.Map<unknown>>) => {
-      if (!this.fs) { return; }
-      for (const [path, change] of event.changes.keys) {
-        // change: { action: 'add' | 'update' | 'delete', oldValue?: T, newValue?: T }
-        if (change.action === 'add' || change.action === 'update') {
-          const newValue = (this.files.get(path));
-          if (newValue instanceof Y.Text) {
-            const content = newValue.toString();
-            await this.fs.writeFile(path, content);
-            this.emit('file:synced', path, content);
-          }
-        } else if (change.action === 'delete') {
-          await this.fs.deleteFile(path);
-          this.emit('file:deleted', path);
-        }
-      }
-    });
+    this.files.observe(this.yjsObserver);
   }
 
   /**
@@ -186,13 +188,17 @@ export class ProjectSyncManager {
   private listeners: Record<string, ((...args: unknown[]) => void)[]> = {};
 
   on(event: string, handler: (...args: unknown[]) => void) {
-    if (!this.listeners[event]) { this.listeners[event] = []; }
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
     this.listeners[event].push(handler);
   }
 
   emit(event: string, ...args: unknown[]) {
     if (this.listeners[event]) {
-      for (const fn of this.listeners[event]) { fn(...args); }
+      for (const fn of this.listeners[event]) {
+        fn(...args);
+      }
     }
   }
 
@@ -209,5 +215,15 @@ export class ProjectSyncManager {
    */
   setFileSystem(fs: NodeFileSystem) {
     this.fs = fs;
+  }
+
+  async destroy(): Promise<void> {
+    this.files.unobserve(this.yjsObserver);
+    this.listeners = {};
+    if (this.fileWatcher) {
+      await this.fileWatcher.destroy();
+      this.fileWatcher = undefined;
+    }
+    this.doc.destroy();
   }
 }

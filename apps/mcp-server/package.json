@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs --platform node --clean --dts",
     "watch": "tsup src/index.ts --format cjs --platform node --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
@@ -18,7 +19,11 @@
     "@udp/filesystem": "workspace:*"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.0",
     "@types/node": "^24.10.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.6",
     "tsup": "^8.0.0",
     "typescript": "^5.9.3"
   }

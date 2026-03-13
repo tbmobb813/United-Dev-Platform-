@@ -10,7 +10,8 @@ interface Tool {
 
 export const getFileContentTool: Tool = {
   name: 'get_file_content',
-  description: 'Get the full content of a file from the synced project. Returns the complete file text.',
+  description:
+    'Get the full content of a file from the synced project. Returns the complete file text.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -20,16 +21,25 @@ export const getFileContentTool: Tool = {
       },
       project_root: {
         type: 'string',
-        description: 'Project root directory (default: UDP_PROJECT_ROOT or current working directory)',
+        description:
+          'Project root directory (default: UDP_PROJECT_ROOT or current working directory)',
       },
     },
     required: ['file_path'],
   },
-  async execute({ file_path, project_root }: { file_path: string; project_root?: string }) {
+  async execute({
+    file_path,
+    project_root,
+  }: {
+    file_path: string;
+    project_root?: string;
+  }) {
     const root = project_root || process.env.UDP_PROJECT_ROOT || process.cwd();
 
     // Resolve the file path
-    const absPath = path.isAbsolute(file_path) ? file_path : path.resolve(root, file_path);
+    const absPath = path.isAbsolute(file_path)
+      ? file_path
+      : path.resolve(root, file_path);
 
     // Security check: ensure path is within root
     if (!absPath.startsWith(path.resolve(root))) {
@@ -47,7 +57,9 @@ export const getFileContentTool: Tool = {
 
     if (stats.size > 1024 * 1024) {
       // 1MB limit
-      throw new Error(`File too large: ${(stats.size / 1024 / 1024).toFixed(1)}MB (max 1MB)`);
+      throw new Error(
+        `File too large: ${(stats.size / 1024 / 1024).toFixed(1)}MB (max 1MB)`
+      );
     }
 
     const content = fs.readFileSync(absPath, 'utf-8');

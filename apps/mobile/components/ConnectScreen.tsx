@@ -45,12 +45,19 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
 
   // Auto-start pairing if token and room provided
   useEffect(() => {
-    if (autoStartToken && autoStartRoom && isFocused && state.status === 'idle') {
+    if (
+      autoStartToken &&
+      autoStartRoom &&
+      isFocused &&
+      state.status === 'idle'
+    ) {
       handleQRParsed(autoStartToken, autoStartRoom);
     }
   }, [autoStartToken, autoStartRoom, isFocused, state.status]);
 
-  const parseQRCode = (data: string): { token: string; room: string } | null => {
+  const parseQRCode = (
+    data: string
+  ): { token: string; room: string } | null => {
     try {
       const url = new URL(data);
       const token = url.searchParams.get('token');
@@ -79,7 +86,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
     }
   };
 
-  const handleBarcodeScan = (result: any) => {
+  const handleBarcodeScan = (result: { data: string }) => {
     if (!isFocused || state.status !== 'idle') {
       return; // Ignore scans if not focused or already pairing
     }
@@ -105,7 +112,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color="#007bff" />
+          <ActivityIndicator size='large' color='#007bff' />
           <Text style={styles.loadingText}>Requesting camera access...</Text>
         </View>
       </SafeAreaView>
@@ -120,7 +127,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
           <Text style={styles.errorText}>
             UDP Mobile needs camera access to scan QR codes for pairing.
           </Text>
-          <TouchableOpacity style={styles.button} onPress={() => setShowManualEntry(true)}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setShowManualEntry(true)}
+          >
             <Text style={styles.buttonText}>Use Manual Entry</Text>
           </TouchableOpacity>
         </View>
@@ -132,9 +142,11 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color="#007bff" />
+          <ActivityIndicator size='large' color='#007bff' />
           <Text style={styles.statusTitle}>
-            {state.status === 'registering' ? 'Registering device...' : 'Waiting for confirmation...'}
+            {state.status === 'registering'
+              ? 'Registering device...'
+              : 'Waiting for confirmation...'}
           </Text>
           <Text style={styles.statusText}>
             {state.status === 'registering'
@@ -151,7 +163,9 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
       <SafeAreaView style={styles.container}>
         <View style={styles.centerContent}>
           <Text style={styles.errorTitle}>Pairing Failed</Text>
-          <Text style={styles.errorText}>{state.error || 'Unknown error occurred'}</Text>
+          <Text style={styles.errorText}>
+            {state.error || 'Unknown error occurred'}
+          </Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => setShowManualEntry(!showManualEntry)}
@@ -166,7 +180,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} testID='connect-screen-root'>
       {!showManualEntry ? (
         <>
           <CameraView
@@ -187,7 +201,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
           </View>
 
           <View style={styles.footer}>
-            <TouchableOpacity style={styles.footerButton} onPress={() => setShowManualEntry(true)}>
+            <TouchableOpacity
+              style={styles.footerButton}
+              onPress={() => setShowManualEntry(true)}
+            >
               <Text style={styles.footerButtonText}>Manual Entry</Text>
             </TouchableOpacity>
           </View>
@@ -201,10 +218,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
               <Text style={styles.inputLabel}>Server IP Address</Text>
               <TextInput
                 style={styles.input}
-                placeholder="e.g., 192.168.1.1"
+                placeholder='e.g., 192.168.1.1'
                 value={manualServerIp}
                 onChangeText={setManualServerIp}
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor='#9ca3af'
               />
             </View>
 
@@ -212,11 +229,11 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
               <Text style={styles.inputLabel}>Port</Text>
               <TextInput
                 style={styles.input}
-                placeholder="e.g., 3030"
+                placeholder='e.g., 3030'
                 value={manualPort}
                 onChangeText={setManualPort}
-                keyboardType="number-pad"
-                placeholderTextColor="#9ca3af"
+                keyboardType='number-pad'
+                placeholderTextColor='#9ca3af'
               />
             </View>
 
@@ -224,15 +241,18 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
               <Text style={styles.inputLabel}>Pairing Token</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Paste the pairing token"
+                placeholder='Paste the pairing token'
                 value={manualToken}
                 onChangeText={setManualToken}
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor='#9ca3af'
                 secureTextEntry={false}
               />
             </View>
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleManualSubmit}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleManualSubmit}
+            >
               <Text style={styles.submitButtonText}>Connect</Text>
             </TouchableOpacity>
 

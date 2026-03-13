@@ -103,7 +103,6 @@ const setupWSConnection = (
   conn.send(encoding.toUint8Array(encoder));
 };
 
-
 // --- Device Pairing State (will be registered on main app) ---
 const pairedDevices = new Map(); // deviceId -> { roomId, confirmed, info, token, pairedAt, lastSeen }
 const pendingPairings = new Map(); // token -> { deviceId, roomId, info, expiresAt }
@@ -127,14 +126,19 @@ app.get('/api/devices/qr', async (request, reply) => {
   const pairingUrl = `udp://pair?room=${encodeURIComponent(roomId)}&token=${token}`;
   try {
     // Store pending pairing with expiry
-    pendingPairings.set(token, { deviceId: null, roomId, info: null, expiresAt });
+    pendingPairings.set(token, {
+      deviceId: null,
+      roomId,
+      info: null,
+      expiresAt,
+    });
     const qrDataUrl = await QRCode.toDataURL(pairingUrl);
     // Return JSON with token and QR data URL (CLI needs the token to register device)
     reply.send({
       token,
       pairingUrl,
       qr: qrDataUrl,
-      expiresAt
+      expiresAt,
     });
   } catch (e) {
     reply.code(500).send({ error: 'Failed to generate QR code' });
@@ -164,7 +168,12 @@ app.post('/api/devices/register', async (request, reply) => {
     pairedAt: new Date().toISOString(),
     lastSeen: new Date().toISOString(),
   });
-  pairingEvents.push({ type: 'register', deviceId, time: new Date().toISOString(), info });
+  pairingEvents.push({
+    type: 'register',
+    deviceId,
+    time: new Date().toISOString(),
+    info,
+  });
   reply.send({ status: 'pending', deviceId });
 });
 
@@ -172,7 +181,10 @@ app.post('/api/devices/register', async (request, reply) => {
 app.post('/api/devices/confirm', async (request, reply) => {
   const { deviceId, authToken } = request.body;
   // For demo: require a static authToken (in production, use real user auth)
-  if (process.env.UDP_PAIR_AUTH && request.body.authToken !== process.env.UDP_PAIR_AUTH) {
+  if (
+    process.env.UDP_PAIR_AUTH &&
+    request.body.authToken !== process.env.UDP_PAIR_AUTH
+  ) {
     return reply.code(401).send({ error: 'Unauthorized confirmation' });
   }
   const device = pairedDevices.get(deviceId);
@@ -183,7 +195,11 @@ app.post('/api/devices/confirm', async (request, reply) => {
   device.lastSeen = new Date().toISOString();
   // Remove from pendingPairings
   if (device.token) pendingPairings.delete(device.token);
-  pairingEvents.push({ type: 'confirm', deviceId, time: new Date().toISOString() });
+  pairingEvents.push({
+    type: 'confirm',
+    deviceId,
+    time: new Date().toISOString(),
+  });
   reply.send({ status: 'confirmed', deviceId });
 });
 
@@ -203,7 +219,11 @@ app.delete('/api/devices/:deviceId', async (request, reply) => {
     return reply.code(404).send({ error: 'Device not found' });
   }
   pairedDevices.delete(deviceId);
-  pairingEvents.push({ type: 'remove', deviceId, time: new Date().toISOString() });
+  pairingEvents.push({
+    type: 'remove',
+    deviceId,
+    time: new Date().toISOString(),
+  });
   reply.send({ status: 'removed', deviceId });
 });
 // Pairing event log endpoint (for audit)
@@ -546,9 +566,7 @@ function broadcastToSession(sessionId, message, _excludeUserId) {
 
 app.register(fastifyCors, {
   origin:
-    process.env.NODE_ENV === 'production'
-      ? ['https://your-domain.com']
-      : true,   // reflect origin in dev — allows mobile devices on local network
+    process.env.NODE_ENV === 'production' ? ['https://your-domain.com'] : true, // reflect origin in dev — allows mobile devices on local network
   credentials: true,
 });
 
@@ -609,8 +627,9 @@ app.get('/api/sessions/:sessionId', async (request, reply) => {
 app.post('/ai/run', async (request, reply) => {
   try {
     const { tool, filePath, prompt, projectId, userId } = request.body || {};
-    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${prompt || ''
-      }`;
+    const result = `AI tool '${tool}' executed on ${filePath || 'project'}: ${
+      prompt || ''
+    }`;
     if (projectId && userId) {
       logger.info(`AI interaction: ${userId} in project ${projectId}`);
     }
@@ -622,173 +641,191 @@ app.post('/ai/run', async (request, reply) => {
 });
 
 // Project Management Endpoints
-app.post('/api/projects', { preHandler: [authenticateToken] }, async (req, reply) => {
-  try {
-    const { name, description, visibility } = req.body;
-    const userId = req.userId; // From authenticateToken middleware
+app.post(
+  '/api/projects',
+  { preHandler: [authenticateToken] },
+  async (req, reply) => {
+    try {
+      const { name, description, visibility } = req.body;
+      const userId = req.userId; // From authenticateToken middleware
 
-    if (!name) {
-      return reply.code(400).send({ error: 'Project name is required' });
+      if (!name) {
+        return reply.code(400).send({ error: 'Project name is required' });
+      }
+
+      const project = await prisma.project.create({
+        data: {
+          name,
+          description,
+          visibility: visibility || 'PRIVATE',
+          owner: {
+            connect: { id: userId },
+          },
+          members: {
+            create: { userId, role: 'OWNER' },
+          },
+        },
+      });
+
+      reply.code(201).send({ project });
+    } catch (error) {
+      logger.error('Error creating project:', error);
+      reply.code(500).send({ error: 'Failed to create project' });
     }
-
-    const project = await prisma.project.create({
-      data: {
-        name,
-        description,
-        visibility: visibility || 'PRIVATE',
-        owner: {
-          connect: { id: userId },
-        },
-        members: {
-          create: { userId, role: 'OWNER' },
-        },
-      },
-    });
-
-    reply.code(201).send({ project });
-  } catch (error) {
-    logger.error('Error creating project:', error);
-    reply.code(500).send({ error: 'Failed to create project' });
   }
-});
+);
 
 // File Management Endpoints
-app.post('/api/files', { preHandler: [authenticateToken] }, async (req, reply) => {
-  try {
-    const { projectId, path, name, content, type, mimeType } = req.body;
-    const userId = req.userId; // From authenticateToken middleware
+app.post(
+  '/api/files',
+  { preHandler: [authenticateToken] },
+  async (req, reply) => {
+    try {
+      const { projectId, path, name, content, type, mimeType } = req.body;
+      const userId = req.userId; // From authenticateToken middleware
 
-    if (!projectId || !path || !name) {
-      return reply.code(400).send({ error: 'Project ID, path, and name are required' });
+      if (!projectId || !path || !name) {
+        return reply
+          .code(400)
+          .send({ error: 'Project ID, path, and name are required' });
+      }
+
+      // Verify user has access to the project
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        include: { members: true },
+      });
+
+      if (
+        !project ||
+        (!project.members.some(m => m.userId === userId) &&
+          project.ownerId !== userId)
+      ) {
+        return reply.code(403).send({ error: 'Access denied to project' });
+      }
+
+      const file = await prisma.projectFile.create({
+        data: {
+          projectId,
+          path,
+          name,
+          content: content || '',
+          type: type || 'FILE',
+          mimeType: mimeType || 'text/plain',
+          size: content ? Buffer.byteLength(content, 'utf8') : 0,
+        },
+      });
+
+      // Log file activity
+      await prisma.fileActivity.create({
+        data: {
+          action: 'CREATE',
+          fileId: file.id,
+          userId,
+        },
+      });
+
+      reply.code(201).send({ file });
+    } catch (error) {
+      logger.error('Error creating file:', error);
+      reply.code(500).send({ error: 'Failed to create file' });
     }
-
-    // Verify user has access to the project
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: { members: true },
-    });
-
-    if (
-      !project ||
-      (!project.members.some(m => m.userId === userId) &&
-        project.ownerId !== userId)
-    ) {
-      return reply.code(403).send({ error: 'Access denied to project' });
-    }
-
-    const file = await prisma.projectFile.create({
-      data: {
-        projectId,
-        path,
-        name,
-        content: content || '',
-        type: type || 'FILE',
-        mimeType: mimeType || 'text/plain',
-        size: content ? Buffer.byteLength(content, 'utf8') : 0,
-      },
-    });
-
-    // Log file activity
-    await prisma.fileActivity.create({
-      data: {
-        action: 'CREATE',
-        fileId: file.id,
-        userId,
-      },
-    });
-
-    reply.code(201).send({ file });
-  } catch (error) {
-    logger.error('Error creating file:', error);
-    reply.code(500).send({ error: 'Failed to create file' });
   }
-});
+);
 
-app.put('/api/files/:fileId', { preHandler: [authenticateToken] }, async (req, reply) => {
-  try {
-    const { fileId } = req.params;
-    const { content } = req.body;
-    const userId = req.userId; // From authenticateToken middleware
+app.put(
+  '/api/files/:fileId',
+  { preHandler: [authenticateToken] },
+  async (req, reply) => {
+    try {
+      const { fileId } = req.params;
+      const { content } = req.body;
+      const userId = req.userId; // From authenticateToken middleware
 
-    if (!content) {
-      return reply.code(400).send({ error: 'File content is required' });
+      if (!content) {
+        return reply.code(400).send({ error: 'File content is required' });
+      }
+
+      const existingFile = await prisma.projectFile.findUnique({
+        where: { id: fileId },
+        include: { project: { include: { members: true } } },
+      });
+
+      if (!existingFile) {
+        return reply.code(404).send({ error: 'File not found' });
+      }
+
+      // Verify user has access to the project
+      const project = existingFile.project;
+      if (
+        !project ||
+        (!project.members.some(m => m.userId === userId) &&
+          project.ownerId !== userId)
+      ) {
+        return reply.code(403).send({ error: 'Access denied to project' });
+      }
+
+      const updatedFile = await prisma.projectFile.update({
+        where: { id: fileId },
+        data: {
+          content,
+          size: Buffer.byteLength(content, 'utf8'),
+          updatedAt: new Date(),
+        },
+      });
+
+      // Log file activity
+      await prisma.fileActivity.create({
+        data: {
+          action: 'UPDATE',
+          fileId,
+          userId,
+          changes: { contentChanged: true, size: updatedFile.size },
+        },
+      });
+
+      reply.send({ file: updatedFile });
+    } catch (error) {
+      logger.error('Error updating file:', error);
+      reply.code(500).send({ error: 'Failed to update file' });
     }
-
-    const existingFile = await prisma.projectFile.findUnique({
-      where: { id: fileId },
-      include: { project: { include: { members: true } } },
-    });
-
-    if (!existingFile) {
-      return reply.code(404).send({ error: 'File not found' });
-    }
-
-    // Verify user has access to the project
-    const project = existingFile.project;
-    if (
-      !project ||
-      (!project.members.some(m => m.userId === userId) &&
-        project.ownerId !== userId)
-    ) {
-      return reply.code(403).send({ error: 'Access denied to project' });
-    }
-
-    const updatedFile = await prisma.projectFile.update({
-      where: { id: fileId },
-      data: {
-        content,
-        size: Buffer.byteLength(content, 'utf8'),
-        updatedAt: new Date(),
-      },
-    });
-
-    // Log file activity
-    await prisma.fileActivity.create({
-      data: {
-        action: 'UPDATE',
-        fileId,
-        userId,
-        changes: { contentChanged: true, size: updatedFile.size },
-      },
-    });
-
-    reply.send({ file: updatedFile });
-  } catch (error) {
-    logger.error('Error updating file:', error);
-    reply.code(500).send({ error: 'Failed to update file' });
   }
-});
+);
 
-app.get('/api/files/:fileId', { preHandler: [authenticateToken] }, async (req, reply) => {
-  try {
-    const { fileId } = req.params;
-    const userId = req.userId; // From authenticateToken middleware
+app.get(
+  '/api/files/:fileId',
+  { preHandler: [authenticateToken] },
+  async (req, reply) => {
+    try {
+      const { fileId } = req.params;
+      const userId = req.userId; // From authenticateToken middleware
 
-    const file = await prisma.projectFile.findUnique({
-      where: { id: fileId },
-      include: { project: { include: { members: true } } },
-    });
+      const file = await prisma.projectFile.findUnique({
+        where: { id: fileId },
+        include: { project: { include: { members: true } } },
+      });
 
-    if (!file) {
-      return reply.code(404).send({ error: 'File not found' });
+      if (!file) {
+        return reply.code(404).send({ error: 'File not found' });
+      }
+
+      // Verify user has access to the project
+      const project = file.project;
+      if (
+        !project ||
+        (!project.members.some(m => m.userId === userId) &&
+          project.ownerId !== userId)
+      ) {
+        return reply.code(403).send({ error: 'Access denied to project' });
+      }
+
+      reply.send({ file });
+    } catch (error) {
+      logger.error('Error fetching file:', error);
+      reply.code(500).send({ error: 'Failed to fetch file' });
     }
-
-    // Verify user has access to the project
-    const project = file.project;
-    if (
-      !project ||
-      (!project.members.some(m => m.userId === userId) &&
-        project.ownerId !== userId)
-    ) {
-      return reply.code(403).send({ error: 'Access denied to project' });
-    }
-
-    reply.send({ file });
-  } catch (error) {
-    logger.error('Error fetching file:', error);
-    reply.code(500).send({ error: 'Failed to fetch file' });
   }
-});
+);
 
 // Set up WebSocket server with Yjs support
 const wss = new WebSocketServer({ noServer: true });
@@ -823,10 +860,10 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 
-
 // Start Fastify server
 console.log('[Server] calling app.listen...');
-app.listen({ port: PORT, host: '0.0.0.0' })
+app
+  .listen({ port: PORT, host: '0.0.0.0' })
   .then(address => {
     logger.info(`[api] Fastify server listening on ${address}`);
     logger.info(`[api] Environment: ${process.env.NODE_ENV || 'development'}`);

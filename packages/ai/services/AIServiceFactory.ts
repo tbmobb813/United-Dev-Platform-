@@ -4,6 +4,12 @@ import { OllamaService } from './OllamaService';
 import { OpenAIService } from './OpenAIService';
 
 export class AIServiceFactory {
+  // Add a static create method for test compatibility
+  static create(provider: string, config: any): AIService {
+    // Map string provider to config
+    const fullConfig = { ...config, provider };
+    return AIServiceFactory.createService(fullConfig);
+  }
   private static services: Map<string, AIService> = new Map();
 
   static createService(config: AIServiceConfig): AIService {

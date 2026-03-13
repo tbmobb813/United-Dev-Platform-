@@ -1,6 +1,6 @@
 import * as git from 'isomorphic-git';
-import { getHttpClient } from './http.js';
-import type { GitHttpClient } from './http.js';
+import { getHttpClient } from './http.ts';
+import type { GitHttpClient } from './http.ts';
 
 import type {
   Branch,
@@ -1313,11 +1313,8 @@ export class GitService implements GitServiceInterface {
   }
 
   private getBaseName(repositoryPath: string): string {
-    return (
-      repositoryPath.split('/').pop() ||
-      repositoryPath.split('\\').pop() ||
-      'repository'
-    );
+    const normalized = repositoryPath.replace(/\\/g, '/').replace(/\/+$/, '');
+    return normalized.split('/').pop() || 'repository';
   }
 
   private generateRepositoryId(repositoryPath: string): string {

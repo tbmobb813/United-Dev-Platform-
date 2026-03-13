@@ -1,6 +1,6 @@
 import { DocumentManager } from '@udp/editor-core';
-import * as Y from 'yjs';
-import React, { useEffect, useRef, useState } from 'react';
+import * as Y from '@udp/editor-core/yjs-singleton';
+import { useEffect, useRef, useState } from 'react';
 
 export interface YjsFileEntry {
   path: string;
@@ -20,7 +20,7 @@ export function useYjsFiles(serverIp: string, port: number, roomId: string) {
   const [error, setError] = useState<string | null>(null);
 
   const docManagerRef = useRef<DocumentManager | null>(null);
-  const filesMapRef = useRef<Y.Map<any> | null>(null);
+  const filesMapRef = useRef<Y.Map<unknown> | null>(null);
 
   useEffect(() => {
     let isUnmounted = false;
@@ -42,7 +42,9 @@ export function useYjsFiles(serverIp: string, port: number, roomId: string) {
         // Open the files document
         const doc = await docManagerRef.current.openDocument(roomId, 'files');
 
-        if (isUnmounted) return;
+        if (isUnmounted) {
+          return;
+        }
 
         // Get the files Y.Map from the document
         // The ProjectSyncManager stores files in a Y.Map at doc.getMap('files')
@@ -85,19 +87,23 @@ export function useYjsFiles(serverIp: string, port: number, roomId: string) {
     };
   }, [serverIp, port, roomId]);
 
-  const convertYMapToFileTree = (ymap: Y.Map<any>): YjsFileEntry[] => {
+  const convertYMapToFileTree = (ymap: Y.Map<unknown>): YjsFileEntry[] => {
     const entries: YjsFileEntry[] = [];
 
-    ymap.forEach((value, key) => {
-      if (typeof value === 'object' && value.type && value.path) {
+    ymap.forEach(value => {
+      const v = value as Record<string, unknown> | undefined;
+      if (v && typeof v === 'object' && 'type' in v && 'path' in v) {
         entries.push({
-          path: value.path as string,
-          type: value.type as 'file' | 'directory',
-          children: value.children
-            ? (value.children as any[]).map(child => ({
-                path: child.path as string,
-                type: child.type as 'file' | 'directory',
-              }))
+          path: String(v.path),
+          type: (v.type as 'file' | 'directory') || 'file',
+          children: v.children
+            ? (v.children as unknown[]).map(child => {
+                const c = child as Record<string, unknown>;
+                return {
+                  path: String(c.path),
+                  type: (c.type as 'file' | 'directory') || 'file',
+                };
+              })
             : undefined,
         });
       }

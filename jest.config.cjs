@@ -11,6 +11,8 @@ module.exports = {
     '/node_modules/',
     '__tests__/jest.setup.ts',
     '/__tests__/integration/',
+    '/apps/mobile/',
+    '/packages/ui-native/',
   ],
   setupFilesAfterEnv: [],
   // Treat TypeScript files as ESM modules.
@@ -21,15 +23,19 @@ module.exports = {
   },
   // Transform some ESM-only node_modules so Jest can run them in this monorepo.
   transformIgnorePatterns: [
-    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb)/)',
+    'node_modules/(?!(yjs|y-websocket|y-monaco|y-protocols|y-indexeddb|node-fetch)/)',
   ],
   // For some ESM packages used at runtime (y-websocket), prefer the published
   // CJS bundle in tests to avoid transforming upstream ESM source files.
   moduleNameMapper: {
+    '^chalk$': `${__dirname}/jest-mocks/chalk.cjs`,
+    '^node-fetch$': `${__dirname}/jest-mocks/node-fetch.cjs`,
+    '^ora$': `${__dirname}/jest-mocks/ora.cjs`,
+    '^(\\.{1,2}/.*)\\.js$': '$1',
     // Point to the CommonJS mock by default so tests running under Jest/CJS
     // don't fail parsing `export` in the ESM mock. Packages that run as ESM
     // can still mock via unstable_mockModule in their tests when needed.
-    '^y-websocket$': '<rootDir>/jest-mocks/y-websocket.cjs',
+    '^y-websocket$': `${__dirname}/jest-mocks/y-websocket.cjs`,
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };

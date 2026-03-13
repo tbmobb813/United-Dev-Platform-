@@ -13,6 +13,7 @@ export const Stack = ({
 
   return (
     <View
+      testID='StackView'
       style={[
         styles.stack,
         {
@@ -37,6 +38,7 @@ export const Container = ({
 }) => {
   return (
     <View
+      testID='ContainerView'
       style={[
         styles.container,
         { maxWidth },

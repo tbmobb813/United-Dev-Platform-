@@ -12,6 +12,15 @@
     "react-native": "^0.74.0"
   },
   "scripts": {
-    "test": "jest --config ../../jest.config.cjs"
+    "test": "jest --config ./jest.config.cjs"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@babel/preset-react": "^7.28.5",
+    "@react-native-async-storage/async-storage": "^3.0.1",
+    "@types/react": "18.2.6",
+    "babel-jest": "^30.3.0",
+    "babel-plugin-module-resolver": "^5.0.2"
   }
 }

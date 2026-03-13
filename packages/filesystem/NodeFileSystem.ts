@@ -1,4 +1,6 @@
+import logger from '@udp/logger';
 import * as chokidar from 'chokidar';
+import type { FSWatcher } from 'chokidar';
 import { Stats } from 'fs';
 import * as fs from 'fs/promises';
 import * as mime from 'mime-types';
@@ -16,7 +18,6 @@ import {
   MoveOptions,
   ReadFileOptions,
 } from './types';
-import logger from '@udp/logger';
 
 /**
  * Node.js file system implementation
@@ -28,6 +29,14 @@ export class NodeFileSystem implements FileSystemProvider {
 
   constructor(basePath = process.cwd()) {
     this.basePath = path.resolve(basePath);
+  }
+
+  /**
+   * Returns the internal chokidar watcher instance for a given path (for testing only).
+   */
+  getWatcher(path: string): FSWatcher | undefined {
+    const normalizedPath = this.resolvePath(path);
+    return this.watchers.get(normalizedPath);
   }
 
   private resolveFullPath(inputPath: string): string {
@@ -65,6 +74,14 @@ export class NodeFileSystem implements FileSystemProvider {
     options: ReadFileOptions = {}
   ): Promise<string | Uint8Array> {
     const fullPath = this.resolveFullPath(filePath);
+    // DEBUG: Log the input and resolved path
+    // eslint-disable-next-line no-console
+    console.log(
+      '[NodeFileSystem.readFile] filePath:',
+      filePath,
+      'fullPath:',
+      fullPath
+    );
     const encoding = options.encoding || 'utf8';
 
     if (encoding === 'utf8') {
@@ -93,12 +110,17 @@ export class NodeFileSystem implements FileSystemProvider {
     }
 
     // Check if file exists and overwrite is disabled
-    if (!options.overwrite) {
+    if (options.overwrite === false) {
       try {
         await fs.access(fullPath);
+        // File exists, do not overwrite
         throw new Error(`File already exists: ${filePath}`);
-      } catch {
-        // File doesn't exist, proceed
+      } catch (err: any) {
+        if (err && err.code === 'ENOENT') {
+          // File doesn't exist, proceed
+        } else {
+          throw err;
+        }
       }
     }
 
@@ -114,13 +136,19 @@ export class NodeFileSystem implements FileSystemProvider {
 
   async deleteFile(filePath: string): Promise<void> {
     const fullPath = this.resolveFullPath(filePath);
-    const stats = await fs.stat(fullPath);
-
-    if (stats.isDirectory()) {
-      throw new Error(`Path is not a file: ${filePath}`);
+    try {
+      const stats = await fs.stat(fullPath);
+      if (stats.isDirectory()) {
+        throw new Error(`Path is not a file: ${filePath}`);
+      }
+      await fs.unlink(fullPath);
+    } catch (err: any) {
+      if (err && err.code === 'ENOENT') {
+        // File does not exist, treat as success
+        return;
+      }
+      throw err;
     }
-
-    await fs.unlink(fullPath);
   }
 
   async copyFile(
@@ -166,11 +194,18 @@ export class NodeFileSystem implements FileSystemProvider {
 
   async deleteDirectory(dirPath: string, recursive = false): Promise<void> {
     const fullPath = this.resolveFullPath(dirPath);
-
-    if (recursive) {
-      await fs.rm(fullPath, { recursive: true, force: true });
-    } else {
-      await fs.rmdir(fullPath);
+    try {
+      if (recursive) {
+        await fs.rm(fullPath, { recursive: true, force: true });
+      } else {
+        await fs.rmdir(fullPath);
+      }
+    } catch (err: any) {
+      if (err && err.code === 'ENOENT') {
+        // Directory does not exist, treat as success
+        return;
+      }
+      throw err;
     }
   }
 
@@ -341,7 +376,13 @@ export class NodeFileSystem implements FileSystemProvider {
           type: this.mapChokidarEvent(eventType),
           path:
             '/' + path.relative(this.basePath, eventPath).replace(/\\/g, '/'),
-          ...(oldPath ? { oldPath: '/' + path.relative(this.basePath, oldPath).replace(/\\/g, '/') } : {}),
+          ...(oldPath
+            ? {
+                oldPath:
+                  '/' +
+                  path.relative(this.basePath, oldPath).replace(/\\/g, '/'),
+              }
+            : {}),
           ...(entry !== undefined ? { entry } : {}),
           timestamp: new Date(),
         };
@@ -428,6 +469,7 @@ export class NodeFileSystem implements FileSystemProvider {
     callback: (event: FileSystemEvent) => void
   ): Promise<void> {
     const normalizedPath = this.resolvePath(targetPath);
+    const fullPath = this.resolveFullPath(targetPath);
 
     // Create FileSystemEvent adapter for chokidar events
     const adapter = (eventType: string, eventPath: string, stats?: Stats) => {
@@ -440,8 +482,8 @@ export class NodeFileSystem implements FileSystemProvider {
       callback(fsEvent);
     };
 
-    // Use chokidar to watch the path
-    const watcher = chokidar.watch(normalizedPath, {
+    // Use chokidar to watch the absolute path
+    const watcher = chokidar.watch(fullPath, {
       persistent: true,
       ignoreInitial: false,
       followSymlinks: false,
