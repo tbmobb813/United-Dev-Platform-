@@ -109,7 +109,7 @@ export const MobileHome: React.FC = () => {
             </View>
           )
         ) : (
-          isConnected ? (
+          isConnected && pairingData ? (
             <CollaborativeEditor
               roomId={pairingData.roomId}
               documentId='main-document'
