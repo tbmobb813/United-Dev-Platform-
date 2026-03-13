@@ -1,7 +1,4 @@
 import NextAuth from 'next-auth';
-<<<<<<< HEAD
-import { authOptions } from 'lib/authOptions';
-=======
 import type { NextAuthOptions } from 'next-auth';
 
 // Inline a minimal authOptions here so the production build doesn't
@@ -13,6 +10,5 @@ const authOptions: NextAuthOptions = {
   providers: [],
   session: { strategy: 'jwt' },
 };
->>>>>>> origin/main
 
 export default NextAuth(authOptions);
