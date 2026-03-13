@@ -1,0 +1,17 @@
+{
+  "name": "@udp/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --config ./jest.config.cjs --runInBand --passWithNoTests"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@udp/logger": "workspace:*"
+  }
+}
