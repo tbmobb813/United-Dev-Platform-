@@ -4,8 +4,14 @@ import type { UdpSyncManager, SyncStatus } from './syncManager';
 export class UdpStatusBar implements vscode.Disposable {
   private item: vscode.StatusBarItem;
 
-  constructor(context: vscode.ExtensionContext, private manager: UdpSyncManager) {
-    this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+  constructor(
+    context: vscode.ExtensionContext,
+    private manager: UdpSyncManager
+  ) {
+    this.item = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      100
+    );
     context.subscriptions.push(this.item);
   }
 
@@ -16,7 +22,10 @@ export class UdpStatusBar implements vscode.Disposable {
   }
 
   private update(status: SyncStatus) {
-    const map: Record<SyncStatus, { text: string; cmd: string; tooltip: string }> = {
+    const map: Record<
+      SyncStatus,
+      { text: string; cmd: string; tooltip: string }
+    > = {
       stopped: {
         text: '$(circle-slash) UDP: Stopped',
         cmd: 'udp.startSync',

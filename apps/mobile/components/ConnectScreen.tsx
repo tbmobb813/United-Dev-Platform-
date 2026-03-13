@@ -45,12 +45,19 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
 
   // Auto-start pairing if token and room provided
   useEffect(() => {
-    if (autoStartToken && autoStartRoom && isFocused && state.status === 'idle') {
+    if (
+      autoStartToken &&
+      autoStartRoom &&
+      isFocused &&
+      state.status === 'idle'
+    ) {
       handleQRParsed(autoStartToken, autoStartRoom);
     }
   }, [autoStartToken, autoStartRoom, isFocused, state.status]);
 
-  const parseQRCode = (data: string): { token: string; room: string } | null => {
+  const parseQRCode = (
+    data: string
+  ): { token: string; room: string } | null => {
     try {
       const url = new URL(data);
       const token = url.searchParams.get('token');
@@ -120,7 +127,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
           <Text style={styles.errorText}>
             UDP Mobile needs camera access to scan QR codes for pairing.
           </Text>
-          <TouchableOpacity style={styles.button} onPress={() => setShowManualEntry(true)}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setShowManualEntry(true)}
+          >
             <Text style={styles.buttonText}>Use Manual Entry</Text>
           </TouchableOpacity>
         </View>
@@ -134,7 +144,9 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
         <View style={styles.centerContent}>
           <ActivityIndicator size='large' color='#007bff' />
           <Text style={styles.statusTitle}>
-            {state.status === 'registering' ? 'Registering device...' : 'Waiting for confirmation...'}
+            {state.status === 'registering'
+              ? 'Registering device...'
+              : 'Waiting for confirmation...'}
           </Text>
           <Text style={styles.statusText}>
             {state.status === 'registering'
@@ -151,7 +163,9 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
       <SafeAreaView style={styles.container}>
         <View style={styles.centerContent}>
           <Text style={styles.errorTitle}>Pairing Failed</Text>
-          <Text style={styles.errorText}>{state.error || 'Unknown error occurred'}</Text>
+          <Text style={styles.errorText}>
+            {state.error || 'Unknown error occurred'}
+          </Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => setShowManualEntry(!showManualEntry)}
@@ -187,7 +201,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
           </View>
 
           <View style={styles.footer}>
-            <TouchableOpacity style={styles.footerButton} onPress={() => setShowManualEntry(true)}>
+            <TouchableOpacity
+              style={styles.footerButton}
+              onPress={() => setShowManualEntry(true)}
+            >
               <Text style={styles.footerButtonText}>Manual Entry</Text>
             </TouchableOpacity>
           </View>
@@ -232,7 +249,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
               />
             </View>
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleManualSubmit}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleManualSubmit}
+            >
               <Text style={styles.submitButtonText}>Connect</Text>
             </TouchableOpacity>
 

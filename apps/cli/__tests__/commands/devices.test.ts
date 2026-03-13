@@ -1,4 +1,11 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 import { Command } from 'commander';
 
 const mockPinoLogger = {
@@ -29,7 +36,9 @@ jest.mock('ora', () => ({
     succeed: jest.fn().mockReturnThis(),
     fail: jest.fn().mockReturnThis(),
     warn: jest.fn().mockReturnThis(),
-    get text() { return ''; },
+    get text() {
+      return '';
+    },
     set text(_: string) {},
   })),
 }));
@@ -70,7 +79,9 @@ describe('devices command', () => {
   });
 
   it('list action: calls GET /api/devices and displays device names', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === configPath
+    );
     mockedFs.readFileSync.mockImplementation((p: any) => {
       if (String(p) === configPath) return JSON.stringify(mockConfig);
       return '';
@@ -137,7 +148,9 @@ describe('devices command', () => {
   });
 
   it('remove action: calls DELETE /api/devices/:id', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === configPath
+    );
     mockedFs.readFileSync.mockImplementation((p: any) => {
       if (String(p) === configPath) return JSON.stringify(mockConfig);
       return '';
@@ -148,7 +161,9 @@ describe('devices command', () => {
       json: async () => ({}),
     } as any);
 
-    await program.parseAsync(['devices', 'remove', 'dev-abc'], { from: 'user' });
+    await program.parseAsync(['devices', 'remove', 'dev-abc'], {
+      from: 'user',
+    });
 
     expect(mockedFetch).toHaveBeenCalledWith(
       expect.stringContaining('/api/devices/dev-abc'),
@@ -188,7 +203,9 @@ describe('devices command', () => {
 
   it('uses port from config.json if available', async () => {
     const customConfig = { syncPort: 9999 };
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === configPath
+    );
     mockedFs.readFileSync.mockImplementation((p: any) => {
       if (String(p) === configPath) return JSON.stringify(customConfig);
       return '';
@@ -201,9 +218,7 @@ describe('devices command', () => {
 
     await program.parseAsync(['devices', 'list'], { from: 'user' });
 
-    expect(mockedFetch).toHaveBeenCalledWith(
-      expect.stringContaining('9999')
-    );
+    expect(mockedFetch).toHaveBeenCalledWith(expect.stringContaining('9999'));
   });
 
   it('logs error for unknown action', async () => {
@@ -235,9 +250,12 @@ describe('devices command', () => {
 
   it('handles devices file JSON parse error gracefully', async () => {
     const configPath = path.join(fakeProjectRoot, '.udp', 'config.json');
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath || String(p).endsWith('devices.json'));
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === configPath || String(p).endsWith('devices.json')
+    );
     mockedFs.readFileSync.mockImplementation((p: any) => {
-      if (String(p).endsWith('config.json')) return JSON.stringify({ syncPort: 21567 });
+      if (String(p).endsWith('config.json'))
+        return JSON.stringify({ syncPort: 21567 });
       if (String(p).endsWith('devices.json')) return '{bad json';
       return '';
     });

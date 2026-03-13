@@ -18,7 +18,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider('udp.sidebarView', sidebar),
     vscode.commands.registerCommand('udp.startSync', () => manager.start()),
     vscode.commands.registerCommand('udp.stopSync', () => manager.stop()),
-    vscode.commands.registerCommand('udp.showQR', () => showQrPanel(context, manager)),
+    vscode.commands.registerCommand('udp.showQR', () =>
+      showQrPanel(context, manager)
+    ),
     manager,
     statusBar
   );

@@ -8,7 +8,9 @@ jest.mock('react-native/Libraries/Utilities/Dimensions', () => {
   };
   return {
     get: jest.fn((dim: keyof typeof dims) => dims[dim] || dims.window),
-    set: jest.fn((updates: Partial<typeof dims>) => Object.assign(dims, updates)),
+    set: jest.fn((updates: Partial<typeof dims>) =>
+      Object.assign(dims, updates)
+    ),
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     _update: jest.fn(),
@@ -23,7 +25,9 @@ jest.mock('react-native', () => {
   };
   const dimensionsMock = {
     get: jest.fn((dim: keyof typeof dims) => dims[dim] || dims.window),
-    set: jest.fn((updates: Partial<typeof dims>) => Object.assign(dims, updates)),
+    set: jest.fn((updates: Partial<typeof dims>) =>
+      Object.assign(dims, updates)
+    ),
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     _update: jest.fn(),

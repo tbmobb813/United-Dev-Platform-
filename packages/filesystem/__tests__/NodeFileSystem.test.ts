@@ -74,7 +74,11 @@ describe('NodeFileSystem (focused)', () => {
 
     const listing = await nfs.listDirectory('d1', { recursive: true });
     expect(listing.totalCount).toBeGreaterThanOrEqual(3);
-    const paged = await nfs.listDirectory('d1', { recursive: true, limit: 1, offset: 0 });
+    const paged = await nfs.listDirectory('d1', {
+      recursive: true,
+      limit: 1,
+      offset: 0,
+    });
     expect(paged.entries.length).toBe(1);
     expect(paged.hasMore).toBe(true);
   });

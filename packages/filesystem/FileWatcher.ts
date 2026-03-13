@@ -176,7 +176,12 @@ export class FileWatcher extends EventEmitter {
         .catch((error: Error) => {
           // DEBUG: Log the error object and stack trace
           // eslint-disable-next-line no-console
-          console.error('[FileWatcher.handleFileSystemEvent] Error reading file:', event.path, error, error?.stack);
+          console.error(
+            '[FileWatcher.handleFileSystemEvent] Error reading file:',
+            event.path,
+            error,
+            error?.stack
+          );
           logger.error(
             `Failed to read file content for sync: ${event.path}`,
             error

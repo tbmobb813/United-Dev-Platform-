@@ -5,7 +5,7 @@ import { Input } from '../Input';
 describe('Input', () => {
   it('renders with placeholder', () => {
     const { getByPlaceholderText } = render(
-      <Input value="" onChangeText={() => {}} placeholder="Type here" />
+      <Input value='' onChangeText={() => {}} placeholder='Type here' />
     );
     expect(getByPlaceholderText('Type here')).toBeTruthy();
   });
@@ -13,7 +13,7 @@ describe('Input', () => {
   it('calls onChangeText when text changes', () => {
     const onChangeText = jest.fn();
     const { getByPlaceholderText } = render(
-      <Input value="" onChangeText={onChangeText} placeholder="Type here" />
+      <Input value='' onChangeText={onChangeText} placeholder='Type here' />
     );
     fireEvent.changeText(getByPlaceholderText('Type here'), 'abc');
     expect(onChangeText).toHaveBeenCalledWith('abc');
@@ -21,7 +21,7 @@ describe('Input', () => {
 
   it('is not editable when disabled', () => {
     const { getByPlaceholderText } = render(
-      <Input value="" onChangeText={() => {}} placeholder="Disabled" disabled />
+      <Input value='' onChangeText={() => {}} placeholder='Disabled' disabled />
     );
     expect(getByPlaceholderText('Disabled').props.editable).toBe(false);
   });

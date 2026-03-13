@@ -1,4 +1,11 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 
 jest.mock('fs');
 
@@ -7,12 +14,18 @@ import { getFileContentTool } from '../../src/tools/get_file_content.js';
 
 const mockFs = fs as jest.Mocked<typeof fs>;
 
-function makeStats(overrides: Partial<{
-  isFile: boolean;
-  size: number;
-  mtime: Date;
-}> = {}) {
-  const { isFile = true, size = 100, mtime = new Date('2024-01-01T00:00:00Z') } = overrides;
+function makeStats(
+  overrides: Partial<{
+    isFile: boolean;
+    size: number;
+    mtime: Date;
+  }> = {}
+) {
+  const {
+    isFile = true,
+    size = 100,
+    mtime = new Date('2024-01-01T00:00:00Z'),
+  } = overrides;
   return {
     isFile: () => isFile,
     size,
@@ -53,7 +66,9 @@ describe('get_file_content tool', () => {
   it('returns metadata including size, lineCount, and lastModified', async () => {
     const mtime = new Date('2024-06-15T10:30:00Z');
     mockFs.existsSync.mockReturnValue(true);
-    mockFs.statSync.mockReturnValue(makeStats({ size: fakeContent.length, mtime }));
+    mockFs.statSync.mockReturnValue(
+      makeStats({ size: fakeContent.length, mtime })
+    );
     mockFs.readFileSync.mockReturnValue(fakeContent as unknown as Buffer);
 
     const result = await getFileContentTool.execute({

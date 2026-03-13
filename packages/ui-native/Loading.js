@@ -8,7 +8,7 @@ export const Loading = ({
 }) => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator testID="ActivityIndicator" size={size} color={color} />
+      <ActivityIndicator testID='ActivityIndicator' size={size} color={color} />
       {text && <Text style={styles.text}>{text}</Text>}
     </View>
   );

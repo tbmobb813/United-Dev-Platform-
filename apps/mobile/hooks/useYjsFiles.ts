@@ -42,7 +42,9 @@ export function useYjsFiles(serverIp: string, port: number, roomId: string) {
         // Open the files document
         const doc = await docManagerRef.current.openDocument(roomId, 'files');
 
-        if (isUnmounted) {return;}
+        if (isUnmounted) {
+          return;
+        }
 
         // Get the files Y.Map from the document
         // The ProjectSyncManager stores files in a Y.Map at doc.getMap('files')
@@ -88,14 +90,14 @@ export function useYjsFiles(serverIp: string, port: number, roomId: string) {
   const convertYMapToFileTree = (ymap: Y.Map<unknown>): YjsFileEntry[] => {
     const entries: YjsFileEntry[] = [];
 
-    ymap.forEach((value) => {
+    ymap.forEach(value => {
       const v = value as Record<string, unknown> | undefined;
       if (v && typeof v === 'object' && 'type' in v && 'path' in v) {
         entries.push({
           path: String(v.path),
           type: (v.type as 'file' | 'directory') || 'file',
           children: v.children
-            ? (v.children as unknown[]).map((child) => {
+            ? (v.children as unknown[]).map(child => {
                 const c = child as Record<string, unknown>;
                 return {
                   path: String(c.path),

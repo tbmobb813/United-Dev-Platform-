@@ -7,7 +7,11 @@ describe('AIService', () => {
   });
 
   it('returns a stream for generateTests', async () => {
-    const gen = await AIService.generateTests('function foo(){}', 'foo.js', 'js');
+    const gen = await AIService.generateTests(
+      'function foo(){}',
+      'foo.js',
+      'js'
+    );
     expect(typeof gen.next).toBe('function');
   });
 

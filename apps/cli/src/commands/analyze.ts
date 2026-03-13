@@ -9,10 +9,47 @@ import { AIManager, ContextAwareAssistant } from '@udp/ai';
 
 const logger = pino();
 
-const IGNORE_DIRS = ['node_modules', '.git', 'dist', '.turbo', '.next', 'coverage', '.udp', 'build', 'out'];
+const IGNORE_DIRS = [
+  'node_modules',
+  '.git',
+  'dist',
+  '.turbo',
+  '.next',
+  'coverage',
+  '.udp',
+  'build',
+  'out',
+];
 const CODE_EXTENSIONS = [
-  'ts', 'tsx', 'js', 'jsx', 'py', 'java', 'go', 'rs', 'c', 'cpp', 'h', 'hpp',
-  'cs', 'rb', 'php', 'swift', 'kt', 'scala', 'sh', 'bash', 'sql', 'html', 'css', 'scss', 'json', 'yaml', 'yml', 'md', 'mdx',
+  'ts',
+  'tsx',
+  'js',
+  'jsx',
+  'py',
+  'java',
+  'go',
+  'rs',
+  'c',
+  'cpp',
+  'h',
+  'hpp',
+  'cs',
+  'rb',
+  'php',
+  'swift',
+  'kt',
+  'scala',
+  'sh',
+  'bash',
+  'sql',
+  'html',
+  'css',
+  'scss',
+  'json',
+  'yaml',
+  'yml',
+  'md',
+  'mdx',
 ];
 
 interface FileNode {
@@ -28,10 +65,19 @@ interface FileNode {
 export function analyzeCommand(program: Command): void {
   program
     .command('analyze [target]')
-    .description('AI-powered analysis of the current project or a specific file')
-    .option('--provider <provider>', 'AI provider: anthropic | openai | local', 'anthropic')
+    .description(
+      'AI-powered analysis of the current project or a specific file'
+    )
+    .option(
+      '--provider <provider>',
+      'AI provider: anthropic | openai | local',
+      'anthropic'
+    )
     .option('--model <model>', 'Model override (e.g., gpt-4, claude-3-opus)')
-    .option('--file <path>', 'Analyze a specific file instead of the whole project')
+    .option(
+      '--file <path>',
+      'Analyze a specific file instead of the whole project'
+    )
     .option('--quiet', 'Suppress spinner output')
     .action(async (target, options) => {
       const spin = !options.quiet;
@@ -48,15 +94,24 @@ export function analyzeCommand(program: Command): void {
         }
 
         // Check API keys
-        const apiKey = process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY;
+        const apiKey =
+          process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY;
         if (!apiKey && options.provider !== 'local') {
-          if (spinner) {spinner.fail();}
+          if (spinner) {
+            spinner.fail();
+          }
           console.error(chalk.red('❌ No API key found for provider'));
-          console.error(chalk.dim('Set ANTHROPIC_API_KEY or OPENAI_API_KEY environment variable'));
+          console.error(
+            chalk.dim(
+              'Set ANTHROPIC_API_KEY or OPENAI_API_KEY environment variable'
+            )
+          );
           process.exit(1);
         }
 
-        if (spinner) {spinner.text = 'Initializing AI manager...';}
+        if (spinner) {
+          spinner.text = 'Initializing AI manager...';
+        }
 
         // Initialize AI manager
         const manager = new AIManager({
@@ -72,11 +127,15 @@ export function analyzeCommand(program: Command): void {
 
         if (options.file) {
           // Single file analysis
-          if (spinner) {spinner.text = `Analyzing ${path.basename(options.file)}...`;}
+          if (spinner) {
+            spinner.text = `Analyzing ${path.basename(options.file)}...`;
+          }
 
           const filePath = path.resolve(options.file);
           if (!fs.existsSync(filePath)) {
-            if (spinner) {spinner.fail();}
+            if (spinner) {
+              spinner.fail();
+            }
             console.error(chalk.red(`❌ File not found: ${filePath}`));
             process.exit(1);
           }
@@ -89,7 +148,9 @@ export function analyzeCommand(program: Command): void {
             language: extension,
           });
 
-          if (spinner) {spinner.succeed('Analysis complete');}
+          if (spinner) {
+            spinner.succeed('Analysis complete');
+          }
           console.log();
           console.log(chalk.bold.cyan(`📄 ${path.basename(filePath)}`));
           console.log(chalk.dim(`   Language: ${extension}`));
@@ -98,11 +159,15 @@ export function analyzeCommand(program: Command): void {
           console.log();
         } else {
           // Full project analysis
-          if (spinner) {spinner.text = 'Scanning project structure...';}
+          if (spinner) {
+            spinner.text = 'Scanning project structure...';
+          }
 
           const fileStructure = walkDirectory(projectRoot, IGNORE_DIRS);
 
-          if (spinner) {spinner.text = 'Building codebase context...';}
+          if (spinner) {
+            spinner.text = 'Building codebase context...';
+          }
 
           const assistant = new ContextAwareAssistant(manager.getService());
           const primaryLanguage = inferPrimaryLanguage(fileStructure);
@@ -114,16 +179,22 @@ export function analyzeCommand(program: Command): void {
             fileStructure,
           });
 
-          if (spinner) {spinner.text = 'Running AI analysis...';}
+          if (spinner) {
+            spinner.text = 'Running AI analysis...';
+          }
           const result = await assistant.analyzeCodebase();
 
-          if (spinner) {spinner.succeed('Analysis complete');}
+          if (spinner) {
+            spinner.succeed('Analysis complete');
+          }
 
           // Pretty-print results
           printProjectAnalysis(result);
         }
       } catch (error) {
-        if (spinner) {spinner.fail();}
+        if (spinner) {
+          spinner.fail();
+        }
         const msg = error instanceof Error ? error.message : String(error);
         logger.error(msg);
         console.error(chalk.red(`❌ Analysis failed: ${msg}`));
@@ -139,7 +210,9 @@ function walkDirectory(root: string, ignore: string[]): FileNode[] {
     const entries = fs.readdirSync(root, { withFileTypes: true });
 
     for (const entry of entries) {
-      if (ignore.includes(entry.name)) {continue;}
+      if (ignore.includes(entry.name)) {
+        continue;
+      }
 
       const fullPath = path.join(root, entry.name);
       const relativePath = path.relative(process.cwd(), fullPath);
@@ -192,7 +265,9 @@ function inferPrimaryLanguage(files: FileNode[]): string {
   // Prefer languages in this order
   const preferred = ['ts', 'tsx', 'js', 'jsx', 'py', 'go', 'rs', 'java'];
   for (const ext of preferred) {
-    if (extCount[ext]) {return ext;}
+    if (extCount[ext]) {
+      return ext;
+    }
   }
 
   // Return most common
@@ -250,7 +325,12 @@ function printProjectAnalysis(result: any) {
     const emptyLen = 20 - filledLen;
     const bar = '█'.repeat(filledLen) + '░'.repeat(emptyLen);
 
-    const scoreColor = percentage >= 70 ? chalk.green : percentage >= 50 ? chalk.yellow : chalk.red;
+    const scoreColor =
+      percentage >= 70
+        ? chalk.green
+        : percentage >= 50
+          ? chalk.yellow
+          : chalk.red;
     console.log(`Health Score: ${scoreColor(bar)} ${percentage.toFixed(0)}%`);
     console.log();
   }
@@ -259,14 +339,19 @@ function printProjectAnalysis(result: any) {
   if (insights && Array.isArray(insights) && insights.length > 0) {
     console.log(chalk.bold('💡 Insights:'));
     for (const insight of insights) {
-      const text = typeof insight === 'string' ? insight : insight.text || insight;
+      const text =
+        typeof insight === 'string' ? insight : insight.text || insight;
       console.log(`  • ${text}`);
     }
     console.log();
   }
 
   // Recommendations
-  if (recommendations && Array.isArray(recommendations) && recommendations.length > 0) {
+  if (
+    recommendations &&
+    Array.isArray(recommendations) &&
+    recommendations.length > 0
+  ) {
     console.log(chalk.bold('🎯 Recommendations:'));
     for (const rec of recommendations) {
       const text = typeof rec === 'string' ? rec : rec.text || rec;

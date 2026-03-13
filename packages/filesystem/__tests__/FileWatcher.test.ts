@@ -34,14 +34,14 @@ describe('FileWatcher', () => {
     expect(watcher).toBeDefined();
   });
 
-  it('should emit file:created when a file is created', (done) => {
+  it('should emit file:created when a file is created', done => {
     watcher = new FileWatcher(fsProvider);
     watcher.watch(TEST_DIR).then(() => {
       const testFile = path.join(TEST_DIR, 'created.txt');
       const failTimeout = setTimeout(() => {
         done(new Error('Timeout: file:created event not received'));
       }, 5000);
-      watcher.on('file:created', (filePath) => {
+      watcher.on('file:created', filePath => {
         clearTimeout(failTimeout);
         expect(filePath.endsWith('created.txt')).toBe(true);
         done();
@@ -65,14 +65,14 @@ describe('FileWatcher', () => {
     });
   }, 15000);
 
-  it('should emit file:deleted when a file is deleted', (done) => {
+  it('should emit file:deleted when a file is deleted', done => {
     watcher = new FileWatcher(fsProvider);
     watcher.watch(TEST_DIR).then(() => {
       const testFile = path.join(TEST_DIR, 'deleted.txt');
       const failTimeout = setTimeout(() => {
         done(new Error('Timeout: file:deleted event not received'));
       }, 5000);
-      watcher.on('file:deleted', (filePath) => {
+      watcher.on('file:deleted', filePath => {
         clearTimeout(failTimeout);
         expect(filePath.endsWith('deleted.txt')).toBe(true);
         done();
@@ -91,7 +91,9 @@ describe('FileWatcher', () => {
         });
       } else {
         setTimeout(() => {
-          console.log('[TEST] Fallback: creating and deleting file after delay');
+          console.log(
+            '[TEST] Fallback: creating and deleting file after delay'
+          );
           fs.writeFileSync(testFile, 'bye');
           setTimeout(() => fs.unlinkSync(testFile), 100);
         }, 500);
@@ -99,14 +101,14 @@ describe('FileWatcher', () => {
     });
   }, 15000);
 
-  it('should emit file:changed when a file is changed', (done) => {
+  it('should emit file:changed when a file is changed', done => {
     watcher = new FileWatcher(fsProvider);
     watcher.watch(TEST_DIR).then(() => {
       const testFile = path.join(TEST_DIR, 'modified.txt');
       const failTimeout = setTimeout(() => {
         done(new Error('Timeout: file:changed event not received'));
       }, 5000);
-      watcher.on('file:changed', (filePath) => {
+      watcher.on('file:changed', filePath => {
         clearTimeout(failTimeout);
         expect(filePath.endsWith('modified.txt')).toBe(true);
         done();
@@ -125,7 +127,9 @@ describe('FileWatcher', () => {
         });
       } else {
         setTimeout(() => {
-          console.log('[TEST] Fallback: creating and changing file after delay');
+          console.log(
+            '[TEST] Fallback: creating and changing file after delay'
+          );
           fs.writeFileSync(testFile, 'old');
           setTimeout(() => fs.writeFileSync(testFile, 'new'), 100);
         }, 500);

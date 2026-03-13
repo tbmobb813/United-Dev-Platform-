@@ -6,7 +6,9 @@ function createMockFs(overrides: Record<string, unknown> = {}) {
     readFile: jest.fn().mockResolvedValue(''),
     writeFile: jest.fn().mockResolvedValue(undefined),
     deleteFile: jest.fn().mockResolvedValue(undefined),
-    listDirectory: jest.fn().mockResolvedValue({ entries: [], totalCount: 0, hasMore: false }),
+    listDirectory: jest
+      .fn()
+      .mockResolvedValue({ entries: [], totalCount: 0, hasMore: false }),
     watch: jest.fn().mockResolvedValue(undefined),
     unwatch: jest.fn().mockResolvedValue(undefined),
     ...overrides,
@@ -21,12 +23,12 @@ function createMockWatcher() {
       handlers[event].push(handler);
     },
     async destroy() {
-      Object.keys(handlers).forEach((key) => {
+      Object.keys(handlers).forEach(key => {
         handlers[key] = [];
       });
     },
     emit(event: string, ...args: unknown[]) {
-      (handlers[event] ?? []).forEach((handler) => handler(...args));
+      (handlers[event] ?? []).forEach(handler => handler(...args));
     },
   };
 }
@@ -58,9 +60,12 @@ describe('ProjectSyncManager core behavior', () => {
     });
 
     await manager.getFileText('/large-file.txt');
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
-    expect(mockFs.writeFile).toHaveBeenCalledWith('/large-file.txt', largePayload);
+    expect(mockFs.writeFile).toHaveBeenCalledWith(
+      '/large-file.txt',
+      largePayload
+    );
     expect(events).toContain('/large-file.txt');
     await manager.destroy();
   });
@@ -75,7 +80,7 @@ describe('ProjectSyncManager core behavior', () => {
     mockWatcher.emit('file:changed', '/race.txt', 'v1');
     mockWatcher.emit('file:changed', '/race.txt', 'v2');
     mockWatcher.emit('file:changed', '/race.txt', 'v3');
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(text.toString()).toBe('v3');
     await manager.destroy();

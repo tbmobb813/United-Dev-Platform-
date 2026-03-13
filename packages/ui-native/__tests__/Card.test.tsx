@@ -7,14 +7,18 @@ import { Text } from 'react-native';
 describe('Card', () => {
   it('renders children', () => {
     const { getByText } = render(
-      <Card><Text>Content</Text></Card>
+      <Card>
+        <Text>Content</Text>
+      </Card>
     );
     expect(getByText('Content')).toBeTruthy();
   });
 
   it('renders with title', () => {
     const { getByText } = render(
-      <Card title="My Title"><Text>Content</Text></Card>
+      <Card title='My Title'>
+        <Text>Content</Text>
+      </Card>
     );
     expect(getByText('My Title')).toBeTruthy();
     expect(getByText('Content')).toBeTruthy();
@@ -22,16 +26,24 @@ describe('Card', () => {
 
   it('applies padding variants', () => {
     const { getByText, rerender } = render(
-      <Card padding="small"><Text>Small</Text></Card>
+      <Card padding='small'>
+        <Text>Small</Text>
+      </Card>
     );
     expect(getByText('Small')).toBeTruthy();
-    rerender(<Card padding="large"><Text>Large</Text></Card>);
+    rerender(
+      <Card padding='large'>
+        <Text>Large</Text>
+      </Card>
+    );
     expect(getByText('Large')).toBeTruthy();
   });
 
   it('renders without shadow', () => {
     const { getByText } = render(
-      <Card shadow={false}><Text>No Shadow</Text></Card>
+      <Card shadow={false}>
+        <Text>No Shadow</Text>
+      </Card>
     );
     expect(getByText('No Shadow')).toBeTruthy();
   });

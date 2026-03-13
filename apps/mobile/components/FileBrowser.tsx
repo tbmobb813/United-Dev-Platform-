@@ -35,9 +35,7 @@ function convertYjsFilesToFileNodes(yjsFiles: YjsFileEntry[]): FileNode[] {
     children: entry.children
       ? convertYjsFilesToFileNodes(entry.children)
       : undefined,
-    extension: entry.type === 'file'
-      ? entry.path.split('.').pop()
-      : undefined,
+    extension: entry.type === 'file' ? entry.path.split('.').pop() : undefined,
     size: undefined,
   }));
 }

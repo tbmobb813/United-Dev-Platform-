@@ -30,7 +30,9 @@ export abstract class AIService {
 
   constructor(config: AIServiceConfig) {
     if (new.target === AIService) {
-      throw new Error('AIService is abstract and cannot be instantiated directly');
+      throw new Error(
+        'AIService is abstract and cannot be instantiated directly'
+      );
     }
     this.config = config;
   }

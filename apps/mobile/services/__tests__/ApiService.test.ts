@@ -23,7 +23,9 @@ describe('ApiService', () => {
       ok: false,
       status: 404,
       statusText: 'Not Found',
-      json: async () => { throw new Error('fail'); },
+      json: async () => {
+        throw new Error('fail');
+      },
     });
     const result = await ApiService.getProjects();
     expect(result.error).toMatch(/HTTP 404/);

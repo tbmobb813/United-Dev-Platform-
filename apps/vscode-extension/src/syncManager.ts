@@ -41,7 +41,10 @@ export class UdpSyncManager extends EventEmitter implements vscode.Disposable {
     if (this._status === 'running' || this._status === 'starting') return;
     this.setStatus('starting');
 
-    const serverPath = path.resolve(__dirname, '../../../sync-server/server.js');
+    const serverPath = path.resolve(
+      __dirname,
+      '../../../sync-server/server.js'
+    );
     const dbPath = path.join(this.workspacePath, '.udp', 'sync.db');
 
     this.serverProc = spawn('node', [serverPath], {

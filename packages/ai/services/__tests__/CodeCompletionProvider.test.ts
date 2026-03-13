@@ -1,4 +1,7 @@
-import { CodeCompletionProvider, CodeCompletionRequest } from '../CodeCompletionProvider';
+import {
+  CodeCompletionProvider,
+  CodeCompletionRequest,
+} from '../CodeCompletionProvider';
 
 const makeFakeService = () => ({
   generateResponse: jest.fn(),
@@ -19,8 +22,14 @@ describe('CodeCompletionProvider', () => {
     };
 
     const aiContent = JSON.stringify([
-      { text: 'suggest1', description: 'd1', type: 'completion', priority: 5, insertText: 'suggest1' },
-      { text: 'suggest2', insertText: 'suggest2' }
+      {
+        text: 'suggest1',
+        description: 'd1',
+        type: 'completion',
+        priority: 5,
+        insertText: 'suggest1',
+      },
+      { text: 'suggest2', insertText: 'suggest2' },
     ]);
 
     fakeService.generateResponse.mockResolvedValue({ content: aiContent });
@@ -50,6 +59,8 @@ describe('CodeCompletionProvider', () => {
     const res = await provider.getCompletions(req);
     expect(res.suggestions.length).toBeGreaterThan(0);
     // python fallback should include 'append()'
-    expect(res.suggestions.some(s => s.insertText.includes('append'))).toBe(true);
+    expect(res.suggestions.some(s => s.insertText.includes('append'))).toBe(
+      true
+    );
   });
 });

@@ -51,7 +51,7 @@ async function startTestServer(): Promise<void> {
     serverProc.stdout?.on('data', handleData);
     serverProc.stderr?.on('data', handleData);
 
-    serverProc.on('error', (err) => {
+    serverProc.on('error', err => {
       cleanup();
       reject(err);
     });
@@ -59,7 +59,7 @@ async function startTestServer(): Promise<void> {
 }
 
 function stopTestServer(): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (serverProc) {
       serverProc.kill('SIGTERM');
       const timeout = setTimeout(() => {
@@ -86,7 +86,7 @@ describe('Sync Server Integration Tests', () => {
     console.log('Starting test server on port', PORT);
     await startTestServer();
     // Give server extra time to fully initialize
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 1000));
   }, 30000);
 
   afterAll(async () => {
@@ -96,9 +96,11 @@ describe('Sync Server Integration Tests', () => {
 
   describe('Server health checks', () => {
     it('server is running and accessible', async () => {
-      const ws = new WebSocket(`${WS_URL}/test-room?sessionId=health-check&projectId=test`);
+      const ws = new WebSocket(
+        `${WS_URL}/test-room?sessionId=health-check&projectId=test`
+      );
 
-      const result = await new Promise<boolean>((resolve) => {
+      const result = await new Promise<boolean>(resolve => {
         const timeout = setTimeout(() => {
           resolve(false);
         }, 3000);
@@ -121,7 +123,7 @@ describe('Sync Server Integration Tests', () => {
     it('server rejects invalid room names gracefully', async () => {
       const ws = new WebSocket(`${WS_URL}/?sessionId=invalid&projectId=test`);
 
-      const result = await new Promise<boolean>((resolve) => {
+      const result = await new Promise<boolean>(resolve => {
         const timeout = setTimeout(() => {
           resolve(true); // timeout means server didn't crash
         }, 2000);
@@ -145,7 +147,9 @@ describe('Sync Server Integration Tests', () => {
   describe('Device API endpoints', () => {
     it('creates a pairing QR token and returns expected shape', async () => {
       const roomId = `api-room-${Date.now()}`;
-      const response = await fetch(`${API_URL}/api/devices/qr?roomId=${roomId}`);
+      const response = await fetch(
+        `${API_URL}/api/devices/qr?roomId=${roomId}`
+      );
       const payload = await response.json();
 
       expect(response.ok).toBe(true);
@@ -221,7 +225,9 @@ describe('Sync Server Integration Tests', () => {
       expect(registerRes.ok).toBe(true);
       expect(registerBody.status).toBe('pending');
 
-      const discoverPendingRes = await fetch(`${API_URL}/api/devices/discover?roomId=${roomId}`);
+      const discoverPendingRes = await fetch(
+        `${API_URL}/api/devices/discover?roomId=${roomId}`
+      );
       const discoverPendingBody = await discoverPendingRes.json();
       expect(discoverPendingBody.devices).toHaveLength(0);
 
@@ -234,9 +240,13 @@ describe('Sync Server Integration Tests', () => {
       expect(confirmRes.ok).toBe(true);
       expect(confirmBody.status).toBe('confirmed');
 
-      const discoverConfirmedRes = await fetch(`${API_URL}/api/devices/discover?roomId=${roomId}`);
+      const discoverConfirmedRes = await fetch(
+        `${API_URL}/api/devices/discover?roomId=${roomId}`
+      );
       const discoverConfirmedBody = await discoverConfirmedRes.json();
-      expect(discoverConfirmedBody.devices.some((d: any) => d.deviceId === deviceId)).toBe(true);
+      expect(
+        discoverConfirmedBody.devices.some((d: any) => d.deviceId === deviceId)
+      ).toBe(true);
 
       const removeRes = await fetch(`${API_URL}/api/devices/${deviceId}`, {
         method: 'DELETE',
@@ -246,15 +256,19 @@ describe('Sync Server Integration Tests', () => {
       const eventsRes = await fetch(`${API_URL}/api/devices/events`);
       const eventsBody = await eventsRes.json();
       expect(Array.isArray(eventsBody.events)).toBe(true);
-      expect(eventsBody.events.some((e: any) => e.deviceId === deviceId)).toBe(true);
+      expect(eventsBody.events.some((e: any) => e.deviceId === deviceId)).toBe(
+        true
+      );
     });
   });
 
   describe('WebSocket message handling', () => {
     it('receives binary frames from server on connect', async () => {
-      const ws = new WebSocket(`${WS_URL}/test-room-msg?sessionId=test1&projectId=test`);
+      const ws = new WebSocket(
+        `${WS_URL}/test-room-msg?sessionId=test1&projectId=test`
+      );
 
-      const result = await new Promise<boolean>((resolve) => {
+      const result = await new Promise<boolean>(resolve => {
         const timeout = setTimeout(() => {
           resolve(false);
         }, 5000);
@@ -265,7 +279,7 @@ describe('Sync Server Integration Tests', () => {
           console.log('Connected, waiting for message...');
         });
 
-        ws.on('message', (data) => {
+        ws.on('message', data => {
           if (data instanceof Buffer && data.length > 0) {
             console.log('Received message, length:', data.length);
             receivedMessage = true;
@@ -275,7 +289,7 @@ describe('Sync Server Integration Tests', () => {
           }
         });
 
-        ws.on('error', (err) => {
+        ws.on('error', err => {
           console.log('WebSocket error:', err.message);
           clearTimeout(timeout);
           resolve(false);
@@ -295,13 +309,15 @@ describe('Sync Server Integration Tests', () => {
       const connections: WebSocket[] = [];
       let allConnected = 0;
 
-      await new Promise<void>((resolve) => {
+      await new Promise<void>(resolve => {
         const timeout = setTimeout(() => {
           resolve();
         }, 5000);
 
         for (let i = 0; i < 3; i++) {
-          const ws = new WebSocket(`${WS_URL}/${roomId}?sessionId=client-${i}&projectId=test`);
+          const ws = new WebSocket(
+            `${WS_URL}/${roomId}?sessionId=client-${i}&projectId=test`
+          );
 
           ws.on('open', () => {
             allConnected++;
@@ -324,13 +340,13 @@ describe('Sync Server Integration Tests', () => {
       expect(allConnected).toBe(3);
 
       // Cleanup
-      connections.forEach((ws) => {
+      connections.forEach(ws => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.close();
         }
       });
 
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 500));
     });
   });
 
@@ -341,9 +357,11 @@ describe('Sync Server Integration Tests', () => {
       let reconnected = false;
 
       // First connection
-      const ws1 = new WebSocket(`${WS_URL}/${roomId}?sessionId=session1&projectId=test`);
+      const ws1 = new WebSocket(
+        `${WS_URL}/${roomId}?sessionId=session1&projectId=test`
+      );
 
-      await new Promise<void>((resolve) => {
+      await new Promise<void>(resolve => {
         const timeout = setTimeout(() => resolve(), 3000);
 
         ws1.on('open', () => {
@@ -362,15 +380,17 @@ describe('Sync Server Integration Tests', () => {
 
       // Disconnect
       ws1.close();
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 500));
       disconnected = true;
 
       expect(disconnected).toBe(true);
 
       // Reconnect with same session
-      const ws2 = new WebSocket(`${WS_URL}/${roomId}?sessionId=session1&projectId=test`);
+      const ws2 = new WebSocket(
+        `${WS_URL}/${roomId}?sessionId=session1&projectId=test`
+      );
 
-      await new Promise<void>((resolve) => {
+      await new Promise<void>(resolve => {
         const timeout = setTimeout(() => resolve(), 3000);
 
         ws2.on('open', () => {
@@ -398,9 +418,11 @@ describe('Sync Server Integration Tests', () => {
       let successCount = 0;
 
       for (let i = 0; i < 5; i++) {
-        const ws = new WebSocket(`${WS_URL}/${roomId}?sessionId=rapid-${i}&projectId=test`);
+        const ws = new WebSocket(
+          `${WS_URL}/${roomId}?sessionId=rapid-${i}&projectId=test`
+        );
 
-        await new Promise<void>((resolve) => {
+        await new Promise<void>(resolve => {
           const timeout = setTimeout(() => resolve(), 2000);
 
           ws.on('open', () => {
@@ -417,7 +439,7 @@ describe('Sync Server Integration Tests', () => {
         });
 
         // Small delay between cycles
-        await new Promise((r) => setTimeout(r, 100));
+        await new Promise(r => setTimeout(r, 100));
       }
 
       expect(successCount).toBeGreaterThanOrEqual(4);
@@ -430,9 +452,11 @@ describe('Sync Server Integration Tests', () => {
       const receivedEvents: Buffer[] = [];
 
       // Client 2 listens for messages
-      const ws2 = new WebSocket(`${WS_URL}/${roomId}?sessionId=listener&projectId=test`);
+      const ws2 = new WebSocket(
+        `${WS_URL}/${roomId}?sessionId=listener&projectId=test`
+      );
 
-      await new Promise<void>((resolve) => {
+      await new Promise<void>(resolve => {
         const timeout = setTimeout(() => resolve(), 3000);
 
         ws2.on('open', () => {
@@ -446,19 +470,21 @@ describe('Sync Server Integration Tests', () => {
         });
       });
 
-      ws2.on('message', (data) => {
+      ws2.on('message', data => {
         if (data instanceof Buffer) {
           receivedEvents.push(data);
         }
       });
 
       // Small delay to ensure listener is ready
-      await new Promise((r) => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 200));
 
       // Client 1 sends a message
-      const ws1 = new WebSocket(`${WS_URL}/${roomId}?sessionId=sender&projectId=test`);
+      const ws1 = new WebSocket(
+        `${WS_URL}/${roomId}?sessionId=sender&projectId=test`
+      );
 
-      await new Promise<void>((resolve) => {
+      await new Promise<void>(resolve => {
         const timeout = setTimeout(() => resolve(), 3000);
 
         ws1.on('open', () => {
@@ -477,7 +503,7 @@ describe('Sync Server Integration Tests', () => {
       });
 
       // Wait for message propagation
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 500));
 
       if (ws1.readyState === WebSocket.OPEN) {
         ws1.close();

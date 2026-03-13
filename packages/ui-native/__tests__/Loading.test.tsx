@@ -10,17 +10,17 @@ describe('Loading', () => {
   });
 
   it('renders with custom text', () => {
-    const { getByText } = render(<Loading text="Please wait" />);
+    const { getByText } = render(<Loading text='Please wait' />);
     expect(getByText('Please wait')).toBeTruthy();
   });
 
   it('does not render text if text is empty', () => {
-    const { queryByText } = render(<Loading text="" />);
+    const { queryByText } = render(<Loading text='' />);
     expect(queryByText('Loading...')).toBeNull();
   });
 
   it('renders with custom size and color', () => {
-    const { getByTestId } = render(<Loading size="large" color="#123456" />);
+    const { getByTestId } = render(<Loading size='large' color='#123456' />);
     const indicator = getByTestId('ActivityIndicator');
     expect(indicator.props.size).toBe('large');
     expect(indicator.props.color).toBe('#123456');

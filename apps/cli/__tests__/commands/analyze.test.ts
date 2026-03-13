@@ -1,4 +1,11 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 import { Command } from 'commander';
 
 jest.mock('fs');
@@ -24,7 +31,9 @@ jest.mock('ora', () => ({
     succeed: jest.fn().mockReturnThis(),
     fail: jest.fn().mockReturnThis(),
     warn: jest.fn().mockReturnThis(),
-    get text() { return ''; },
+    get text() {
+      return '';
+    },
     set text(_: string) {},
   })),
 }));
@@ -44,75 +53,95 @@ import { analyzeCommand } from '../../src/commands/analyze';
 
 const mockedFs = fs as jest.Mocked<typeof fs>;
 const MockedAIManager = AIManager as jest.MockedClass<typeof AIManager>;
-const MockedContextAwareAssistant = ContextAwareAssistant as jest.MockedClass<typeof ContextAwareAssistant>;
+const MockedContextAwareAssistant = ContextAwareAssistant as jest.MockedClass<
+  typeof ContextAwareAssistant
+>;
 
 describe('analyze command', () => {
-    it('logs and exits if manager.initialize throws', async () => {
-      mockManagerInstance.initialize.mockRejectedValueOnce(new Error('init fail'));
-      mockedFs.existsSync.mockReturnValue(false);
-      await expect(program.parseAsync(['analyze'], { from: 'user' }))
-        .rejects.toThrow('process.exit(1)');
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Analysis failed: init fail')
-      );
-    });
+  it('logs and exits if manager.initialize throws', async () => {
+    mockManagerInstance.initialize.mockRejectedValueOnce(
+      new Error('init fail')
+    );
+    mockedFs.existsSync.mockReturnValue(false);
+    await expect(
+      program.parseAsync(['analyze'], { from: 'user' })
+    ).rejects.toThrow('process.exit(1)');
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Analysis failed: init fail')
+    );
+  });
 
-    it('logs and exits if explainCode throws', async () => {
-      const targetFile = '/fake/project/src/index.ts';
-      mockedFs.existsSync.mockImplementation((p: any) => String(p) === targetFile);
-      // @ts-expect-error: mockImplementation signature does not match all overloads
-      mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
-        const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
-        if (encoding) {
-          if (String(p) === targetFile) return 'const x = 1;';
-          return '';
-        }
-        return Buffer.from('');
-      });
-      mockManagerInstance.explainCode.mockRejectedValueOnce(new Error('explain fail'));
-      await expect(program.parseAsync(['analyze', '--file', targetFile], { from: 'user' }))
-        .rejects.toThrow('process.exit(1)');
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Analysis failed: explain fail')
-      );
+  it('logs and exits if explainCode throws', async () => {
+    const targetFile = '/fake/project/src/index.ts';
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === targetFile
+    );
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      const encoding =
+        typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      if (encoding) {
+        if (String(p) === targetFile) return 'const x = 1;';
+        return '';
+      }
+      return Buffer.from('');
     });
+    mockManagerInstance.explainCode.mockRejectedValueOnce(
+      new Error('explain fail')
+    );
+    await expect(
+      program.parseAsync(['analyze', '--file', targetFile], { from: 'user' })
+    ).rejects.toThrow('process.exit(1)');
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Analysis failed: explain fail')
+    );
+  });
 
-    it('logs and exits if analyzeCodebase throws', async () => {
-      mockedFs.existsSync.mockReturnValue(false);
-      mockAssistantInstance.analyzeCodebase.mockRejectedValueOnce(new Error('ai fail'));
-      await expect(program.parseAsync(['analyze'], { from: 'user' }))
-        .rejects.toThrow('process.exit(1)');
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Analysis failed: ai fail')
-      );
-    });
+  it('logs and exits if analyzeCodebase throws', async () => {
+    mockedFs.existsSync.mockReturnValue(false);
+    mockAssistantInstance.analyzeCodebase.mockRejectedValueOnce(
+      new Error('ai fail')
+    );
+    await expect(
+      program.parseAsync(['analyze'], { from: 'user' })
+    ).rejects.toThrow('process.exit(1)');
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Analysis failed: ai fail')
+    );
+  });
 
-    it('logs and exits if fs.readFileSync throws', async () => {
-      const targetFile = '/fake/project/src/index.ts';
-      mockedFs.existsSync.mockImplementation((p: any) => String(p) === targetFile);
-      // @ts-expect-error: mockImplementation signature does not match all overloads
-      mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
-        throw new Error('permission denied');
-      });
-      await expect(program.parseAsync(['analyze', '--file', targetFile], { from: 'user' }))
-        .rejects.toThrow('process.exit(1)');
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Analysis failed: permission denied')
-      );
+  it('logs and exits if fs.readFileSync throws', async () => {
+    const targetFile = '/fake/project/src/index.ts';
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === targetFile
+    );
+    // @ts-expect-error: mockImplementation signature does not match all overloads
+    mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
+      throw new Error('permission denied');
     });
+    await expect(
+      program.parseAsync(['analyze', '--file', targetFile], { from: 'user' })
+    ).rejects.toThrow('process.exit(1)');
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Analysis failed: permission denied')
+    );
+  });
 
-    it('logs and exits on unexpected error', async () => {
-      // Simulate a non-Error thrown value
-      mockedFs.existsSync.mockReturnValue(false);
-      const orig = MockedAIManager.mockImplementation;
-      MockedAIManager.mockImplementation(() => { throw 'unexpected'; });
-      await expect(program.parseAsync(['analyze'], { from: 'user' }))
-        .rejects.toThrow('process.exit(1)');
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Analysis failed: unexpected')
-      );
-      MockedAIManager.mockImplementation = orig;
+  it('logs and exits on unexpected error', async () => {
+    // Simulate a non-Error thrown value
+    mockedFs.existsSync.mockReturnValue(false);
+    const orig = MockedAIManager.mockImplementation;
+    MockedAIManager.mockImplementation(() => {
+      throw 'unexpected';
     });
+    await expect(
+      program.parseAsync(['analyze'], { from: 'user' })
+    ).rejects.toThrow('process.exit(1)');
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Analysis failed: unexpected')
+    );
+    MockedAIManager.mockImplementation = orig;
+  });
   let program: Command;
   const fakeProjectRoot = '/fake/project';
   const configPath = path.join(fakeProjectRoot, '.udp', 'config.json');
@@ -152,9 +181,11 @@ describe('analyze command', () => {
 
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    processExitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-      throw new Error(`process.exit(${_code})`);
-    });
+    processExitSpy = jest
+      .spyOn(process, 'exit')
+      .mockImplementation((_code?: any) => {
+        throw new Error(`process.exit(${_code})`);
+      });
 
     // Set up AIManager mock
     mockManagerInstance = {
@@ -169,7 +200,9 @@ describe('analyze command', () => {
       setCodebaseContext: jest.fn(),
       analyzeCodebase: jest.fn().mockResolvedValue(mockAnalysisResult),
     };
-    MockedContextAwareAssistant.mockImplementation(() => mockAssistantInstance as any);
+    MockedContextAwareAssistant.mockImplementation(
+      () => mockAssistantInstance as any
+    );
 
     // Default fs: nothing exists
     mockedFs.existsSync.mockReturnValue(false);
@@ -188,10 +221,13 @@ describe('analyze command', () => {
   });
 
   it('calls AIManager with the correct provider option (anthropic default)', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === configPath
+    );
     // @ts-expect-error: mockImplementation signature does not match all overloads
     mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
-      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      const encoding =
+        typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
       if (encoding) {
         if (String(p) === configPath) return JSON.stringify(mockConfig);
         return '';
@@ -210,7 +246,9 @@ describe('analyze command', () => {
     process.env.OPENAI_API_KEY = 'test-openai-key';
     mockedFs.existsSync.mockReturnValue(false);
 
-    await program.parseAsync(['analyze', '--provider', 'openai'], { from: 'user' });
+    await program.parseAsync(['analyze', '--provider', 'openai'], {
+      from: 'user',
+    });
 
     expect(MockedAIManager).toHaveBeenCalledWith(
       expect.objectContaining({ defaultProvider: 'openai' })
@@ -229,10 +267,13 @@ describe('analyze command', () => {
 
   it('analyzes specific file when --file is given', async () => {
     const targetFile = '/fake/project/src/index.ts';
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === targetFile);
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === targetFile
+    );
     // @ts-expect-error: mockImplementation signature does not match all overloads
     mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
-      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      const encoding =
+        typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
       if (encoding) {
         if (String(p) === targetFile) return 'const x = 1;';
         return '';
@@ -240,7 +281,9 @@ describe('analyze command', () => {
       return Buffer.from('');
     });
 
-    await program.parseAsync(['analyze', '--file', targetFile], { from: 'user' });
+    await program.parseAsync(['analyze', '--file', targetFile], {
+      from: 'user',
+    });
 
     expect(mockManagerInstance.explainCode).toHaveBeenCalledWith(
       'const x = 1;',
@@ -250,10 +293,13 @@ describe('analyze command', () => {
 
   it('outputs the AI result content when analyzing a specific file', async () => {
     const targetFile = '/fake/project/src/app.ts';
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === targetFile);
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === targetFile
+    );
     // @ts-expect-error: mockImplementation signature does not match all overloads
     mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
-      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      const encoding =
+        typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
       if (encoding) {
         if (String(p) === targetFile) return 'export const foo = () => {}';
         return '';
@@ -261,7 +307,9 @@ describe('analyze command', () => {
       return Buffer.from('');
     });
 
-    await program.parseAsync(['analyze', '--file', targetFile], { from: 'user' });
+    await program.parseAsync(['analyze', '--file', targetFile], {
+      from: 'user',
+    });
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
       expect.stringContaining('This is an AI analysis result.')
@@ -319,10 +367,13 @@ describe('analyze command', () => {
   });
 
   it('runs full project analysis with ContextAwareAssistant when no --file given', async () => {
-    mockedFs.existsSync.mockImplementation((p: any) => String(p) === configPath);
+    mockedFs.existsSync.mockImplementation(
+      (p: any) => String(p) === configPath
+    );
     // @ts-expect-error: mockImplementation signature does not match all overloads
     mockedFs.readFileSync.mockImplementation((p: any, opts?: any) => {
-      const encoding = typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
+      const encoding =
+        typeof opts === 'string' || (opts && typeof opts.encoding === 'string');
       if (encoding) {
         if (String(p) === configPath) return JSON.stringify(mockConfig);
         return '';

@@ -1,5 +1,3 @@
-
-
 // Set up test database URL before importing Prisma
 import fs from 'fs';
 import path from 'path';

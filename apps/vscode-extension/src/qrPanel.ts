@@ -1,9 +1,14 @@
 import * as vscode from 'vscode';
 import type { UdpSyncManager } from './syncManager';
 
-export async function showQrPanel(context: vscode.ExtensionContext, manager: UdpSyncManager) {
+export async function showQrPanel(
+  context: vscode.ExtensionContext,
+  manager: UdpSyncManager
+) {
   if (manager.status !== 'running') {
-    vscode.window.showWarningMessage('Start UDP sync first using "UDP: Start Sync" command.');
+    vscode.window.showWarningMessage(
+      'Start UDP sync first using "UDP: Start Sync" command.'
+    );
     return;
   }
 

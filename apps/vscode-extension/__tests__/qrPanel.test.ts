@@ -29,7 +29,11 @@ describe('qrPanel', () => {
   });
 
   test('creates webview panel with QR html when running', async () => {
-    const fakeData = { qr: 'data:image/png;base64,AAA', pairingUrl: 'https://pair', expiresAt: Date.now() + 60000 };
+    const fakeData = {
+      qr: 'data:image/png;base64,AAA',
+      pairingUrl: 'https://pair',
+      expiresAt: Date.now() + 60000,
+    };
     const fakeManager: any = {
       status: 'running',
       fetchJson: jest.fn(async () => fakeData),
@@ -41,7 +45,8 @@ describe('qrPanel', () => {
 
     expect(fakeManager.fetchJson).toHaveBeenCalledWith('/api/devices/qr');
     expect(vscode.window.createWebviewPanel).toHaveBeenCalled();
-    const panel = (vscode.window.createWebviewPanel as jest.Mock).mock.results[0].value;
+    const panel = (vscode.window.createWebviewPanel as jest.Mock).mock
+      .results[0].value;
     expect(panel.webview.html).toContain(fakeData.qr);
     expect(panel.webview.html).toContain(fakeData.pairingUrl);
   });
@@ -49,14 +54,18 @@ describe('qrPanel', () => {
   test('shows error message when fetch fails', async () => {
     const fakeManager: any = {
       status: 'running',
-      fetchJson: jest.fn(async () => { throw new Error('boom'); }),
+      fetchJson: jest.fn(async () => {
+        throw new Error('boom');
+      }),
     };
 
     const context: any = {};
 
     await showQrPanel(context, fakeManager);
 
-    expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(expect.stringContaining('Failed to fetch QR code'));
+    expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to fetch QR code')
+    );
   });
 });
 // Minimal smoke test for VSCode Extension qrPanel

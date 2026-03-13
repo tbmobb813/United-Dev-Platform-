@@ -2,10 +2,10 @@ import { OpenAIService } from '../OpenAIService';
 import { TextEncoder, TextDecoder } from 'util';
 
 if (!(global as any).TextEncoder) {
-  ;(global as any).TextEncoder = TextEncoder;
+  (global as any).TextEncoder = TextEncoder;
 }
 if (!(global as any).TextDecoder) {
-  ;(global as any).TextDecoder = TextDecoder;
+  (global as any).TextDecoder = TextDecoder;
 }
 
 describe('OpenAIService', () => {
@@ -18,7 +18,8 @@ describe('OpenAIService', () => {
   test('generateStreamResponse parses streamed chunks and calls onChunk', async () => {
     const encoder = new TextEncoder();
     const chunk1 = 'data: {"choices":[{"delta":{"content":"Hello "}}] }\n';
-    const chunk2 = 'data: {"choices":[{"delta":{"content":"world"}}],"model":"gpt-4","usage":{"prompt_tokens":1,"completion_tokens":2}}\n';
+    const chunk2 =
+      'data: {"choices":[{"delta":{"content":"world"}}],"model":"gpt-4","usage":{"prompt_tokens":1,"completion_tokens":2}}\n';
 
     let callIndex = 0;
     const reader = {
@@ -36,12 +37,18 @@ describe('OpenAIService', () => {
     } as any;
 
     // @ts-ignore
-    (global as any).fetch = jest.fn().mockResolvedValue({ ok: true, body: { getReader: () => reader } });
+    (global as any).fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, body: { getReader: () => reader } });
 
     const svc = new OpenAIService({ apiKey: 'test-key' });
     const chunks: string[] = [];
 
-    const res = await svc.generateStreamResponse([{ role: 'user', content: 'hi' }], undefined, c => chunks.push(c));
+    const res = await svc.generateStreamResponse(
+      [{ role: 'user', content: 'hi' }],
+      undefined,
+      c => chunks.push(c)
+    );
 
     expect(chunks.join('')).toBe('Hello world');
     expect(res.content).toBe('Hello world');
@@ -51,7 +58,12 @@ describe('OpenAIService', () => {
 
   test('getAvailableModels returns list from API when available', async () => {
     // @ts-ignore
-    (global as any).fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ data: [{ id: 'gpt-3.5-turbo' }, { id: 'other-model' }] }) });
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [{ id: 'gpt-3.5-turbo' }, { id: 'other-model' }],
+      }),
+    });
 
     const svc = new OpenAIService({ apiKey: 'test-key' });
     const models = await svc.getAvailableModels();
@@ -68,8 +80,13 @@ describe('OpenAIService', () => {
 
   test('generateStreamResponse throws generic error on non-ok response', async () => {
     // @ts-ignore
-    (global as any).fetch = jest.fn().mockResolvedValue({ ok: false, json: async () => ({ error: { message: 'bad' } }) });
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({ error: { message: 'bad' } }),
+    });
     const svc = new OpenAIService({ apiKey: 'test' });
-    await expect(svc.generateStreamResponse([{ role: 'user', content: 'hi' }])).rejects.toThrow('OpenAI Streaming API error');
+    await expect(
+      svc.generateStreamResponse([{ role: 'user', content: 'hi' }])
+    ).rejects.toThrow('OpenAI Streaming API error');
   });
 });

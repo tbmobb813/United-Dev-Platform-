@@ -35,9 +35,13 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
     },
   };
   return {
-    getEnforcing: (name) => {
-      if (name === 'UIManager') {return uiManager;}
-      if (name === 'PlatformConstants') {return platformConstants;}
+    getEnforcing: name => {
+      if (name === 'UIManager') {
+        return uiManager;
+      }
+      if (name === 'PlatformConstants') {
+        return platformConstants;
+      }
       if (name === 'SourceCode') {
         return {
           getConstants: () => ({
@@ -47,9 +51,13 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
       }
       return null;
     },
-    get: (name) => {
-      if (name === 'UIManager') {return uiManager;}
-      if (name === 'PlatformConstants') {return platformConstants;}
+    get: name => {
+      if (name === 'UIManager') {
+        return uiManager;
+      }
+      if (name === 'PlatformConstants') {
+        return platformConstants;
+      }
       if (name === 'SourceCode') {
         return {
           getConstants: () => ({
@@ -64,8 +72,11 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
 // Mock TurboModuleRegistry.getEnforcing for PlatformConstants
 try {
   const TurboModuleRegistry = require('react-native/Libraries/TurboModule/TurboModuleRegistry');
-  if (TurboModuleRegistry && typeof TurboModuleRegistry.getEnforcing === 'function') {
-    jest.spyOn(TurboModuleRegistry, 'getEnforcing').mockImplementation((name) => {
+  if (
+    TurboModuleRegistry &&
+    typeof TurboModuleRegistry.getEnforcing === 'function'
+  ) {
+    jest.spyOn(TurboModuleRegistry, 'getEnforcing').mockImplementation(name => {
       if (name === 'UIManager') {
         return {
           getConstants: () => ({}),
@@ -122,9 +133,10 @@ if (!global.__fbBatchedBridgeConfig) {
 // Provide React Native global __DEV__
 global.__DEV__ = false;
 
-
 // Mock AsyncStorage if used
-jest.mock('@react-native-async-storage/async-storage', () => require('@react-native-async-storage/async-storage/jest/async-storage-mock'));
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
 
 // Mock expo-modules-core if used
 jest.mock('expo-modules-core', () => ({
@@ -134,12 +146,14 @@ jest.mock('expo-modules-core', () => ({
 
 // Polyfill requestAnimationFrame
 if (!global.requestAnimationFrame) {
-  global.requestAnimationFrame = (cb) => setTimeout(cb, 0);
+  global.requestAnimationFrame = cb => setTimeout(cb, 0);
 }
 
 // Polyfill crypto if needed
 if (!global.crypto) {
-  global.crypto = { getRandomValues: (arr) => require('crypto').randomFillSync(arr) };
+  global.crypto = {
+    getRandomValues: arr => require('crypto').randomFillSync(arr),
+  };
 }
 
 // Add more global mocks as needed

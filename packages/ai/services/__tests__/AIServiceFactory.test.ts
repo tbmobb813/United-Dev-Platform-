@@ -4,7 +4,6 @@ import { OpenAIService } from '../OpenAIService';
 import { AnthropicService } from '../AnthropicService';
 import { OllamaService } from '../OllamaService';
 
-
 describe('AIServiceFactory', () => {
   it('should create OpenAIService when type is openai', () => {
     const service = AIServiceFactory.create('openai', { apiKey: 'test' });

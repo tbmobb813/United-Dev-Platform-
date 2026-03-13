@@ -3,7 +3,9 @@
 import fs from 'node:fs';
 
 function usage() {
-  console.log('Usage: node scripts/evaluate-sprint0-gate.js <responses.csv> [--column="Q3"] [--yes="yes"] [--threshold=0.6]');
+  console.log(
+    'Usage: node scripts/evaluate-sprint0-gate.js <responses.csv> [--column="Q3"] [--yes="yes"] [--threshold=0.6]'
+  );
 }
 
 const args = process.argv.slice(2);
@@ -19,8 +21,10 @@ let threshold = 0.6;
 
 for (const arg of args.slice(1)) {
   if (arg.startsWith('--column=')) column = arg.slice('--column='.length);
-  if (arg.startsWith('--yes=')) yesValue = arg.slice('--yes='.length).toLowerCase();
-  if (arg.startsWith('--threshold=')) threshold = Number(arg.slice('--threshold='.length));
+  if (arg.startsWith('--yes='))
+    yesValue = arg.slice('--yes='.length).toLowerCase();
+  if (arg.startsWith('--threshold='))
+    threshold = Number(arg.slice('--threshold='.length));
 }
 
 if (!fs.existsSync(csvPath)) {
@@ -35,8 +39,8 @@ if (!raw) {
 }
 
 const lines = raw.split(/\r?\n/);
-const headers = lines[0].split(',').map((h) => h.replace(/^"|"$/g, '').trim());
-const idx = headers.findIndex((h) => h.toLowerCase() === column.toLowerCase());
+const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+const idx = headers.findIndex(h => h.toLowerCase() === column.toLowerCase());
 
 if (idx === -1) {
   console.error(`Column not found: ${column}`);
@@ -49,7 +53,7 @@ let no = 0;
 
 for (const row of lines.slice(1)) {
   if (!row.trim()) continue;
-  const cols = row.split(',').map((c) => c.replace(/^"|"$/g, '').trim());
+  const cols = row.split(',').map(c => c.replace(/^"|"$/g, '').trim());
   const value = (cols[idx] || '').toLowerCase();
   if (!value) continue;
   if (value === yesValue) yes += 1;

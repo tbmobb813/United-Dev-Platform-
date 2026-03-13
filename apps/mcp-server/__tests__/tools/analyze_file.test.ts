@@ -1,4 +1,11 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 
 // Top-level mocks — stable across the whole suite (no resetModules)
 jest.mock('fs');
@@ -23,7 +30,8 @@ function makeStats(overrides: Partial<{ isFile: boolean; size: number }> = {}) {
 describe('analyze_file tool', () => {
   const fakeRoot = '/fake/project';
   const fakeFile = 'src/app.ts';
-  const fakeContent = 'export function greet(name: string) {\n  return `Hello ${name}`;\n}\n';
+  const fakeContent =
+    'export function greet(name: string) {\n  return `Hello ${name}`;\n}\n';
 
   // Untyped so mockResolvedValue / mockRejectedValue are unconstrained
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,7 +89,9 @@ describe('analyze_file tool', () => {
 
     expect(mockInitialize).toHaveBeenCalled();
     expect(mockChat).toHaveBeenCalled();
-    expect(result.analysis).toBe('This file exports a greet function. No issues found.');
+    expect(result.analysis).toBe(
+      'This file exports a greet function. No issues found.'
+    );
     expect(result.file).toBe(fakeFile);
   });
 
@@ -195,7 +205,9 @@ describe('analyze_file tool', () => {
     mockFs.statSync.mockReturnValue(makeStats({ size: fakeContent.length }));
     mockFs.readFileSync.mockReturnValue(fakeContent as unknown as Buffer);
 
-    mockInitialize.mockRejectedValue(new Error('API key for anthropic is required'));
+    mockInitialize.mockRejectedValue(
+      new Error('API key for anthropic is required')
+    );
 
     const tool = await getToolFresh();
     await expect(

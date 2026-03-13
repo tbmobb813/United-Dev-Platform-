@@ -12,7 +12,9 @@ function makeMockFs(overrides: Record<string, unknown> = {}) {
     readFile: jest.fn().mockResolvedValue(''),
     writeFile: jest.fn().mockResolvedValue(undefined),
     deleteFile: jest.fn().mockResolvedValue(undefined),
-    listDirectory: jest.fn().mockResolvedValue({ entries: [], totalCount: 0, hasMore: false }),
+    listDirectory: jest
+      .fn()
+      .mockResolvedValue({ entries: [], totalCount: 0, hasMore: false }),
     // IFileSystem extras
     watch: jest.fn().mockResolvedValue(undefined),
     unwatch: jest.fn().mockResolvedValue(undefined),
@@ -39,7 +41,6 @@ function makeMockWatcher() {
 // ── Test suite ────────────────────────────────────────────────────────────────
 
 describe('ProjectSyncManager', () => {
-
   // -- Pre-existing tests (keep and verify) ----------------------------------
 
   it('creates and retrieves Y.Text for a file', async () => {
@@ -58,7 +59,6 @@ describe('ProjectSyncManager', () => {
 
   // -- Test Group 1: Lazy file content loading from FS -----------------------
   describe('getFileText — lazy loading', () => {
-
     it('reads from fs on first call and inserts content into Y.Text', async () => {
       const mockFs = makeMockFs({
         readFile: jest.fn().mockResolvedValue('hello world'),
@@ -97,11 +97,20 @@ describe('ProjectSyncManager', () => {
 
   // -- Test Group 2: Lazy directory loading (covers listDirectory fix) -------
   describe('getDirectoryMap — lazy loading', () => {
-
     it('calls listDirectory and populates metadata for each entry', async () => {
       const fakeEntries = [
-        { name: 'index.ts', path: '/src/index.ts', type: 'file' as const, lastModified: new Date() },
-        { name: 'utils.ts', path: '/src/utils.ts', type: 'file' as const, lastModified: new Date() },
+        {
+          name: 'index.ts',
+          path: '/src/index.ts',
+          type: 'file' as const,
+          lastModified: new Date(),
+        },
+        {
+          name: 'utils.ts',
+          path: '/src/utils.ts',
+          type: 'file' as const,
+          lastModified: new Date(),
+        },
       ];
       const mockFs = makeMockFs({
         listDirectory: jest.fn().mockResolvedValue({
@@ -116,13 +125,21 @@ describe('ProjectSyncManager', () => {
       await manager.getDirectoryMap('/src');
 
       expect((mockFs as any).listDirectory).toHaveBeenCalledWith('/src');
-      expect(manager.getMetadata('/src/index.ts')).toMatchObject({ path: '/src/index.ts', type: 'file' });
-      expect(manager.getMetadata('/src/utils.ts')).toMatchObject({ path: '/src/utils.ts', type: 'file' });
+      expect(manager.getMetadata('/src/index.ts')).toMatchObject({
+        path: '/src/index.ts',
+        type: 'file',
+      });
+      expect(manager.getMetadata('/src/utils.ts')).toMatchObject({
+        path: '/src/utils.ts',
+        type: 'file',
+      });
     });
 
     it('returns the same Y.Map on second call without re-listing', async () => {
       const mockFs = makeMockFs({
-        listDirectory: jest.fn().mockResolvedValue({ entries: [], totalCount: 0, hasMore: false }),
+        listDirectory: jest
+          .fn()
+          .mockResolvedValue({ entries: [], totalCount: 0, hasMore: false }),
       });
       const manager = new ProjectSyncManager(mockFs as any);
 
@@ -151,7 +168,11 @@ describe('ProjectSyncManager', () => {
     it('updates Y.Text when watcher emits file:changed', async () => {
       const ytext = await manager.getFileText('/src/main.ts');
 
-      mockWatcher.triggerEvent('file:changed', '/src/main.ts', 'updated content');
+      mockWatcher.triggerEvent(
+        'file:changed',
+        '/src/main.ts',
+        'updated content'
+      );
       await Promise.resolve();
 
       expect(ytext.toString()).toBe('updated content');
@@ -175,7 +196,9 @@ describe('ProjectSyncManager', () => {
     });
 
     it('creates a Y.Map when watcher emits directory:created', async () => {
-      (mockFs as any).listDirectory = jest.fn().mockResolvedValue({ entries: [], totalCount: 0, hasMore: false });
+      (mockFs as any).listDirectory = jest
+        .fn()
+        .mockResolvedValue({ entries: [], totalCount: 0, hasMore: false });
       mockWatcher.triggerEvent('directory:created', '/src/newdir');
       await new Promise(r => setTimeout(r, 0));
 
@@ -195,9 +218,10 @@ describe('ProjectSyncManager', () => {
 
   // -- Test Group 4: Yjs-to-FS sync (Y.Text change → writeFile) -----------
   describe('Yjs-to-FS sync', () => {
-
     it('calls fs.writeFile when a new Y.Text is added to the files map', async () => {
-      const mockFs = makeMockFs({ readFile: jest.fn().mockResolvedValue('test content') });
+      const mockFs = makeMockFs({
+        readFile: jest.fn().mockResolvedValue('test content'),
+      });
       const manager = new ProjectSyncManager(mockFs as any);
 
       // When getFileText is called, it inserts content into the Y.Text,
@@ -207,7 +231,10 @@ describe('ProjectSyncManager', () => {
       await new Promise(r => setTimeout(r, 10)); // Give async observer time to run
 
       // Verify writeFile was called with the file content
-      expect((mockFs as any).writeFile).toHaveBeenCalledWith('/output.ts', 'test content');
+      expect((mockFs as any).writeFile).toHaveBeenCalledWith(
+        '/output.ts',
+        'test content'
+      );
     });
 
     it('calls fs.deleteFile when a file entry is deleted from the Y.Map', async () => {
@@ -227,5 +254,4 @@ describe('ProjectSyncManager', () => {
       expect((mockFs as any).deleteFile).toHaveBeenCalledWith('/gone.ts');
     });
   });
-
 });

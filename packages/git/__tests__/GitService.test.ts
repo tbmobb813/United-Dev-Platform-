@@ -17,13 +17,17 @@ const gitMock: jest.Mocked<typeof git> = git as jest.Mocked<typeof git>;
 
 // ─── Mock FileSystem ─────────────────────────────────────────────────────────
 const createMockFS = () => ({
-  readFile: jest.fn<() => Promise<Uint8Array>>().mockResolvedValue(new Uint8Array()),
+  readFile: jest
+    .fn<() => Promise<Uint8Array>>()
+    .mockResolvedValue(new Uint8Array()),
   writeFile: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
   readdir: jest.fn<() => Promise<string[]>>().mockResolvedValue([]),
-  stat: jest.fn<() => Promise<{ isDirectory(): boolean; isFile(): boolean }>>().mockResolvedValue({
-    isDirectory: () => false,
-    isFile: () => true,
-  }),
+  stat: jest
+    .fn<() => Promise<{ isDirectory(): boolean; isFile(): boolean }>>()
+    .mockResolvedValue({
+      isDirectory: () => false,
+      isFile: () => true,
+    }),
   exists: jest.fn<() => Promise<boolean>>().mockResolvedValue(true),
 });
 
@@ -35,8 +39,16 @@ const makeRawCommit = (oid = 'abc1234def5678') => ({
   oid,
   commit: {
     message: 'Test commit message',
-    author: { name: 'Alice', email: 'alice@example.com', timestamp: 1700000000 },
-    committer: { name: 'Alice', email: 'alice@example.com', timestamp: 1700000000 },
+    author: {
+      name: 'Alice',
+      email: 'alice@example.com',
+      timestamp: 1700000000,
+    },
+    committer: {
+      name: 'Alice',
+      email: 'alice@example.com',
+      timestamp: 1700000000,
+    },
     parent: [],
   },
 });
@@ -45,7 +57,9 @@ const makeRawCommit = (oid = 'abc1234def5678') => ({
 const setupOpenRepositoryMocks = () => {
   gitMock['findRoot'].mockResolvedValue('/test/repo');
   gitMock['currentBranch'].mockResolvedValue('main');
-  gitMock['listRemotes'].mockResolvedValue([{ remote: 'origin', url: 'https://github.com/test/repo' }]);
+  gitMock['listRemotes'].mockResolvedValue([
+    { remote: 'origin', url: 'https://github.com/test/repo' },
+  ]);
   gitMock['statusMatrix'].mockResolvedValue([]);
   gitMock['log'].mockResolvedValue([makeRawCommit()]);
 };
@@ -142,7 +156,9 @@ describe('GitService', () => {
 
     it('throws GitError with NOT_A_REPOSITORY when findRoot rejects', async () => {
       gitMock['findRoot'].mockRejectedValue(new Error('Not a git repo'));
-      await expect(service.openRepository('/not/a/repo')).rejects.toThrow(GitError);
+      await expect(service.openRepository('/not/a/repo')).rejects.toThrow(
+        GitError
+      );
     });
 
     it('throws GitError with code NOT_A_REPOSITORY', async () => {
@@ -181,7 +197,10 @@ describe('GitService', () => {
         auth: { token: 'ghp_token123' },
       });
       // onAuth should be set (not undefined) when auth is provided
-      const callArgs = gitMock['clone'].mock.calls[0][0] as Record<string, unknown>;
+      const callArgs = gitMock['clone'].mock.calls[0][0] as Record<
+        string,
+        unknown
+      >;
       expect(callArgs['onAuth']).toBeDefined();
     });
 
@@ -306,7 +325,9 @@ describe('GitService', () => {
       gitMock['commit'].mockResolvedValue('deadbeef1234567');
       gitMock['readCommit'].mockResolvedValue(raw);
 
-      const info = await service.commit(REPO_PATH, { message: 'chore: cleanup' });
+      const info = await service.commit(REPO_PATH, {
+        message: 'chore: cleanup',
+      });
       expect(info.hash).toBe('deadbeef1234567');
       expect(info.message).toBe('Test commit message');
       expect(info.author.name).toBe('Alice');
@@ -402,7 +423,9 @@ describe('GitService', () => {
 
     it('throws GitError when git.branch rejects', async () => {
       gitMock['branch'].mockRejectedValue(new Error('ref already exists'));
-      await expect(service.createBranch(REPO_PATH, 'existing-branch')).rejects.toThrow(GitError);
+      await expect(
+        service.createBranch(REPO_PATH, 'existing-branch')
+      ).rejects.toThrow(GitError);
     });
   });
 
@@ -439,7 +462,9 @@ describe('GitService', () => {
 
     it('throws GitError when deleteBranch fails', async () => {
       gitMock['deleteBranch'].mockRejectedValue(new Error('no such branch'));
-      await expect(service.deleteBranch(REPO_PATH, 'missing')).rejects.toThrow(GitError);
+      await expect(service.deleteBranch(REPO_PATH, 'missing')).rejects.toThrow(
+        GitError
+      );
     });
   });
 
@@ -464,7 +489,10 @@ describe('GitService', () => {
     it('sets onAuth when auth is provided', async () => {
       gitMock['currentBranch'].mockResolvedValue('main');
       await service.push(REPO_PATH, { auth: { token: 'tok' } });
-      const callArgs = gitMock['push'].mock.calls[0][0] as Record<string, unknown>;
+      const callArgs = gitMock['push'].mock.calls[0][0] as Record<
+        string,
+        unknown
+      >;
       expect(callArgs['onAuth']).toBeDefined();
     });
 
@@ -492,7 +520,10 @@ describe('GitService', () => {
     });
 
     it('calls git.pull with the specified remote and branch', async () => {
-      await service.pull(REPO_PATH, { remote: 'upstream', branch: 'feature/x' });
+      await service.pull(REPO_PATH, {
+        remote: 'upstream',
+        branch: 'feature/x',
+      });
       expect(gitMock['pull']).toHaveBeenCalledWith(
         expect.objectContaining({ remote: 'upstream', ref: 'feature/x' })
       );
@@ -610,35 +641,60 @@ describe('GitService', () => {
   describe('mergeBranch()', () => {
     it('returns conflict result and emits event if conflicts detected before merge', async () => {
       const conflictPath = 'conflicted-file.ts';
-      jest.spyOn(Object.getPrototypeOf(service), 'checkForConflicts').mockResolvedValue([conflictPath]);
+      jest
+        .spyOn(Object.getPrototypeOf(service), 'checkForConflicts')
+        .mockResolvedValue([conflictPath]);
       const emitSpy = jest.spyOn(service, 'emit');
-      const result = await service.mergeBranch(REPO_PATH, { branch: 'feature', message: 'merge' });
+      const result = await service.mergeBranch(REPO_PATH, {
+        branch: 'feature',
+        message: 'merge',
+      });
       expect(result.success).toBe(false);
       expect(result.conflicts[0].path).toBe(conflictPath);
       expect(result.message).toMatch(/conflict/i);
-      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:detected' }));
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'conflict:detected' })
+      );
     });
 
     it('returns success result and emits event if no conflicts', async () => {
-      jest.spyOn(Object.getPrototypeOf(service), 'checkForConflicts').mockResolvedValue([]);
+      jest
+        .spyOn(Object.getPrototypeOf(service), 'checkForConflicts')
+        .mockResolvedValue([]);
       const emitSpy = jest.spyOn(service, 'emit');
-      const result = await service.mergeBranch(REPO_PATH, { branch: 'feature', message: 'merge' });
+      const result = await service.mergeBranch(REPO_PATH, {
+        branch: 'feature',
+        message: 'merge',
+      });
       expect(result.success).toBe(true);
       expect(result.conflicts).toEqual([]);
       expect(typeof result.message).toBe('string'); // Accept any string
-      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'merge:completed' }));
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'merge:completed' })
+      );
     });
 
     it('handles merge conflicts thrown by git.merge and emits conflict event', async () => {
-      jest.spyOn(Object.getPrototypeOf(service), 'checkForConflicts').mockResolvedValue([]);
-      gitMock['merge'].mockRejectedValue({ message: 'conflict', code: 'MergeNotSupportedError' });
-      jest.spyOn(Object.getPrototypeOf(service), 'detectMergeConflicts').mockResolvedValue(['fileA.ts']);
+      jest
+        .spyOn(Object.getPrototypeOf(service), 'checkForConflicts')
+        .mockResolvedValue([]);
+      gitMock['merge'].mockRejectedValue({
+        message: 'conflict',
+        code: 'MergeNotSupportedError',
+      });
+      jest
+        .spyOn(Object.getPrototypeOf(service), 'detectMergeConflicts')
+        .mockResolvedValue(['fileA.ts']);
       const emitSpy = jest.spyOn(service, 'emit');
-      const result = await service.mergeBranch(REPO_PATH, { branch: 'feature' });
+      const result = await service.mergeBranch(REPO_PATH, {
+        branch: 'feature',
+      });
       expect(result.success).toBe(false);
       expect(result.conflicts[0].path).toBe('fileA.ts');
       expect(result.message).toMatch(/conflict/i);
-      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:detected' }));
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'conflict:detected' })
+      );
     });
   });
 
@@ -649,7 +705,9 @@ describe('GitService', () => {
       const emitSpy = jest.spyOn(service, 'emit');
       await service.resolveConflict(REPO_PATH, 'foo.ts', 'manual');
       expect(stageSpy).toHaveBeenCalledWith(REPO_PATH, ['foo.ts']);
-      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:resolved' }));
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'conflict:resolved' })
+      );
     });
 
     it('resolves conflict by choosing ours', async () => {
@@ -657,9 +715,13 @@ describe('GitService', () => {
       const stageSpy = jest.spyOn(service, 'stageFiles').mockResolvedValue();
       const emitSpy = jest.spyOn(service, 'emit');
       await service.resolveConflict(REPO_PATH, 'bar.ts', 'ours');
-      expect(gitMock['checkout']).toHaveBeenCalledWith(expect.objectContaining({ ref: 'HEAD', filepaths: ['bar.ts'] }));
+      expect(gitMock['checkout']).toHaveBeenCalledWith(
+        expect.objectContaining({ ref: 'HEAD', filepaths: ['bar.ts'] })
+      );
       expect(stageSpy).toHaveBeenCalledWith(REPO_PATH, ['bar.ts']);
-      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:resolved' }));
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'conflict:resolved' })
+      );
     });
 
     it('resolves conflict by choosing theirs', async () => {
@@ -667,14 +729,20 @@ describe('GitService', () => {
       const stageSpy = jest.spyOn(service, 'stageFiles').mockResolvedValue();
       const emitSpy = jest.spyOn(service, 'emit');
       await service.resolveConflict(REPO_PATH, 'baz.ts', 'theirs');
-      expect(gitMock['checkout']).toHaveBeenCalledWith(expect.objectContaining({ ref: 'MERGE_HEAD', filepaths: ['baz.ts'] }));
+      expect(gitMock['checkout']).toHaveBeenCalledWith(
+        expect.objectContaining({ ref: 'MERGE_HEAD', filepaths: ['baz.ts'] })
+      );
       expect(stageSpy).toHaveBeenCalledWith(REPO_PATH, ['baz.ts']);
-      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'conflict:resolved' }));
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'conflict:resolved' })
+      );
     });
 
     it('throws GitError if stageFiles fails', async () => {
       jest.spyOn(service, 'stageFiles').mockRejectedValue(new Error('fail'));
-      await expect(service.resolveConflict(REPO_PATH, 'fail.ts', 'manual')).rejects.toThrow(GitError);
+      await expect(
+        service.resolveConflict(REPO_PATH, 'fail.ts', 'manual')
+      ).rejects.toThrow(GitError);
     });
   });
 
@@ -684,8 +752,12 @@ describe('GitService', () => {
       gitMock['checkout'].mockResolvedValue(undefined);
       const emitSpy = jest.spyOn(service, 'emit');
       await service.abortMerge(REPO_PATH);
-      expect(gitMock['checkout']).toHaveBeenCalledWith(expect.objectContaining({ ref: 'HEAD', force: true }));
-      expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'merge:completed' }));
+      expect(gitMock['checkout']).toHaveBeenCalledWith(
+        expect.objectContaining({ ref: 'HEAD', force: true })
+      );
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'merge:completed' })
+      );
     });
 
     it('throws GitError if git.checkout fails', async () => {
@@ -713,9 +785,15 @@ describe('GitService', () => {
     it('formatAuth covers all auth types', () => {
       const proto = Object.getPrototypeOf(service) as any;
       // token
-      expect(proto.formatAuth({ token: 'abc' })).toEqual({ username: 'abc', password: 'x-oauth-basic' });
+      expect(proto.formatAuth({ token: 'abc' })).toEqual({
+        username: 'abc',
+        password: 'x-oauth-basic',
+      });
       // username/password
-      expect(proto.formatAuth({ username: 'u', password: 'p' })).toEqual({ username: 'u', password: 'p' });
+      expect(proto.formatAuth({ username: 'u', password: 'p' })).toEqual({
+        username: 'u',
+        password: 'p',
+      });
       // undefined
       expect(proto.formatAuth({})).toBeUndefined();
     });

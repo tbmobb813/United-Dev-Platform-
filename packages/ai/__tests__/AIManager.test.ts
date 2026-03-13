@@ -13,15 +13,27 @@ describe('AIManager', () => {
   afterEach(() => jest.restoreAllMocks());
 
   test('initialize throws without api key', async () => {
-    const mgr = new AIManager({ defaultProvider: 'openai', apiKeys: {}, enableStreaming: false });
+    const mgr = new AIManager({
+      defaultProvider: 'openai',
+      apiKeys: {},
+      enableStreaming: false,
+    });
     await expect(mgr.initialize()).rejects.toThrow(/API key/);
   });
 
   test('initialize sets up service when validateConnection is true', async () => {
-    const fakeService: any = { validateConnection: jest.fn().mockResolvedValue(true), validate: jest.fn(), generateResponse: jest.fn() };
+    const fakeService: any = {
+      validateConnection: jest.fn().mockResolvedValue(true),
+      validate: jest.fn(),
+      generateResponse: jest.fn(),
+    };
     (AIServiceFactory as any).createService.mockReturnValue(fakeService);
 
-    const mgr = new AIManager({ defaultProvider: 'openai', apiKeys: { openai: 'k' }, enableStreaming: false });
+    const mgr = new AIManager({
+      defaultProvider: 'openai',
+      apiKeys: { openai: 'k' },
+      enableStreaming: false,
+    });
     await expect(mgr.initialize()).resolves.toBeUndefined();
     expect(mgr.isReady()).toBe(true);
   });
@@ -30,12 +42,18 @@ describe('AIManager', () => {
     const fakeService: any = {
       validateConnection: jest.fn().mockResolvedValue(true),
       generateResponse: jest.fn().mockResolvedValue({ content: 'ok' }),
-      generateStreamResponse: jest.fn().mockResolvedValue({ content: 'streamed' }),
-      getAvailableModels: jest.fn().mockResolvedValue(['m1'])
+      generateStreamResponse: jest
+        .fn()
+        .mockResolvedValue({ content: 'streamed' }),
+      getAvailableModels: jest.fn().mockResolvedValue(['m1']),
     };
     (AIServiceFactory as any).createService.mockReturnValue(fakeService);
 
-    const mgr = new AIManager({ defaultProvider: 'openai', apiKeys: { openai: 'k' }, enableStreaming: true });
+    const mgr = new AIManager({
+      defaultProvider: 'openai',
+      apiKeys: { openai: 'k' },
+      enableStreaming: true,
+    });
     await mgr.initialize();
 
     const chunks: string[] = [];
@@ -45,10 +63,17 @@ describe('AIManager', () => {
   });
 
   test('getAvailableModels delegates to service', async () => {
-    const fakeService: any = { validateConnection: jest.fn().mockResolvedValue(true), getAvailableModels: jest.fn().mockResolvedValue(['m1']) };
+    const fakeService: any = {
+      validateConnection: jest.fn().mockResolvedValue(true),
+      getAvailableModels: jest.fn().mockResolvedValue(['m1']),
+    };
     (AIServiceFactory as any).createService.mockReturnValue(fakeService);
 
-    const mgr = new AIManager({ defaultProvider: 'openai', apiKeys: { openai: 'k' }, enableStreaming: false });
+    const mgr = new AIManager({
+      defaultProvider: 'openai',
+      apiKeys: { openai: 'k' },
+      enableStreaming: false,
+    });
     await mgr.initialize();
     const models = await mgr.getAvailableModels();
     expect(models).toEqual(['m1']);

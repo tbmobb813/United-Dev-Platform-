@@ -18,21 +18,39 @@ describe('AnthropicService', () => {
 
   test('generateResponse maps API response to AIResponse', async () => {
     // @ts-ignore
-    (global as any).fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ content: [{ text: 'Hi there' }], usage: { input_tokens: 1, output_tokens: 2 }, model: 'claude-3', stop_reason: 'stop' }) });
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        content: [{ text: 'Hi there' }],
+        usage: { input_tokens: 1, output_tokens: 2 },
+        model: 'claude-3',
+        stop_reason: 'stop',
+      }),
+    });
 
     const svc = new AnthropicService({ apiKey: 'key' });
-    const res = await svc.generateResponse([{ role: 'user', content: 'hello' }]);
+    const res = await svc.generateResponse([
+      { role: 'user', content: 'hello' },
+    ]);
     expect(res.content).toBe('Hi there');
     expect(res.model).toBe('claude-3');
-    expect(res.usage).toEqual({ prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 });
+    expect(res.usage).toEqual({
+      prompt_tokens: 1,
+      completion_tokens: 2,
+      total_tokens: 3,
+    });
   });
 
   test('generateStreamResponse accumulates streamed deltas and calls onChunk', async () => {
     const encoder = new TextEncoder();
-    const chunk1 = 'data: {"type":"content_block_delta","delta":{"text":"Part1 "}}\n';
-    const chunk2 = 'data: {"type":"content_block_delta","delta":{"text":"Part2"}}\n';
-    const chunk3 = 'data: {"type":"message_start","message":{"model":"claude-3","usage":{"input_tokens":1,"output_tokens":2}}}\n';
-    const chunk4 = 'data: {"type":"message_delta","delta":{"stop_reason":"stop"}}\n';
+    const chunk1 =
+      'data: {"type":"content_block_delta","delta":{"text":"Part1 "}}\n';
+    const chunk2 =
+      'data: {"type":"content_block_delta","delta":{"text":"Part2"}}\n';
+    const chunk3 =
+      'data: {"type":"message_start","message":{"model":"claude-3","usage":{"input_tokens":1,"output_tokens":2}}}\n';
+    const chunk4 =
+      'data: {"type":"message_delta","delta":{"stop_reason":"stop"}}\n';
 
     let idx = 0;
     const reader = {
@@ -46,11 +64,17 @@ describe('AnthropicService', () => {
     } as any;
 
     // @ts-ignore
-    (global as any).fetch = jest.fn().mockResolvedValue({ ok: true, body: { getReader: () => reader } });
+    (global as any).fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, body: { getReader: () => reader } });
 
     const svc = new AnthropicService({ apiKey: 'k' });
     const seen: string[] = [];
-    const res = await svc.generateStreamResponse([{ role: 'user', content: 'x' }], undefined, c => seen.push(c));
+    const res = await svc.generateStreamResponse(
+      [{ role: 'user', content: 'x' }],
+      undefined,
+      c => seen.push(c)
+    );
 
     expect(seen.join('')).toBe('Part1 Part2');
     expect(res.content).toBe('Part1 Part2');
@@ -62,8 +86,13 @@ describe('AnthropicService', () => {
 
   test('generateResponse throws on non-ok', async () => {
     // @ts-ignore
-    (global as any).fetch = jest.fn().mockResolvedValue({ ok: false, json: async () => ({ error: { message: 'nope' } }) });
+    (global as any).fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({ error: { message: 'nope' } }),
+    });
     const svc = new AnthropicService({ apiKey: 'k' });
-    await expect(svc.generateResponse([{ role: 'user', content: 'x' }])).rejects.toThrow('Anthropic API error');
+    await expect(
+      svc.generateResponse([{ role: 'user', content: 'x' }])
+    ).rejects.toThrow('Anthropic API error');
   });
 });

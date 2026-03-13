@@ -1,4 +1,3 @@
-
 import logger from '@udp/logger';
 import * as chokidar from 'chokidar';
 import type { FSWatcher } from 'chokidar';
@@ -77,7 +76,12 @@ export class NodeFileSystem implements FileSystemProvider {
     const fullPath = this.resolveFullPath(filePath);
     // DEBUG: Log the input and resolved path
     // eslint-disable-next-line no-console
-    console.log('[NodeFileSystem.readFile] filePath:', filePath, 'fullPath:', fullPath);
+    console.log(
+      '[NodeFileSystem.readFile] filePath:',
+      filePath,
+      'fullPath:',
+      fullPath
+    );
     const encoding = options.encoding || 'utf8';
 
     if (encoding === 'utf8') {
@@ -105,19 +109,19 @@ export class NodeFileSystem implements FileSystemProvider {
       await fs.mkdir(path.dirname(fullPath), { recursive: true });
     }
 
-        // Check if file exists and overwrite is disabled
-        if (options.overwrite === false) {
-          try {
-            await fs.access(fullPath);
-            // File exists, do not overwrite
-            throw new Error(`File already exists: ${filePath}`);
-          } catch (err: any) {
-            if (err && err.code === 'ENOENT') {
-              // File doesn't exist, proceed
-            } else {
-              throw err;
-            }
-          }
+    // Check if file exists and overwrite is disabled
+    if (options.overwrite === false) {
+      try {
+        await fs.access(fullPath);
+        // File exists, do not overwrite
+        throw new Error(`File already exists: ${filePath}`);
+      } catch (err: any) {
+        if (err && err.code === 'ENOENT') {
+          // File doesn't exist, proceed
+        } else {
+          throw err;
+        }
+      }
     }
 
     if (content instanceof Uint8Array) {
@@ -372,7 +376,13 @@ export class NodeFileSystem implements FileSystemProvider {
           type: this.mapChokidarEvent(eventType),
           path:
             '/' + path.relative(this.basePath, eventPath).replace(/\\/g, '/'),
-          ...(oldPath ? { oldPath: '/' + path.relative(this.basePath, oldPath).replace(/\\/g, '/') } : {}),
+          ...(oldPath
+            ? {
+                oldPath:
+                  '/' +
+                  path.relative(this.basePath, oldPath).replace(/\\/g, '/'),
+              }
+            : {}),
           ...(entry !== undefined ? { entry } : {}),
           timestamp: new Date(),
         };

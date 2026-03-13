@@ -1,6 +1,8 @@
 # UDP — United Development Platform
 
-A cross-platform developer workflow tool that syncs your project across devices in real time. Work on your laptop, preview on your phone, analyze with AI — all connected through a single CLI.
+A cross-platform developer workflow tool that syncs your project across devices
+in real time. Work on your laptop, preview on your phone, analyze with AI — all
+connected through a single CLI.
 
 ```
 udp init      → detect project, create .udp/config.json
@@ -12,17 +14,32 @@ udp analyze   → AI-powered codebase analysis (Anthropic / OpenAI / Ollama)
 
 ## How It Works
 
-UDP connects your development environments through a real-time sync layer built on Yjs and WebSockets.
+UDP connects your development environments through a real-time sync layer built
+on Yjs and WebSockets.
 
-**CLI** (`apps/cli`) — The primary interface. `udp init` scaffolds a `.udp/` config directory. `udp sync` spawns the sync server, generates a QR code in your terminal, and begins watching for file changes via `ProjectSyncManager`. `udp analyze` runs AI analysis on your project or a single file.
+**CLI** (`apps/cli`) — The primary interface. `udp init` scaffolds a `.udp/`
+config directory. `udp sync` spawns the sync server, generates a QR code in your
+terminal, and begins watching for file changes via `ProjectSyncManager`.
+`udp analyze` runs AI analysis on your project or a single file.
 
-**Sync Server** (`apps/sync-server`) — A Fastify server with a Yjs WebSocket endpoint. Manages project rooms (one Y.Doc per room), device registration/confirmation, QR-based pairing, and a REST API for device management. Runs on port 3030 by default (configurable in `.udp/config.json`).
+**Sync Server** (`apps/sync-server`) — A Fastify server with a Yjs WebSocket
+endpoint. Manages project rooms (one Y.Doc per room), device
+registration/confirmation, QR-based pairing, and a REST API for device
+management. Runs on port 3030 by default (configurable in `.udp/config.json`).
 
-**VS Code Extension** (`apps/vscode-extension`) — Status bar showing sync state (stopped/starting/running/error), a sidebar with device list and sync controls, and a QR panel for pairing. Spawns and manages the sync server lifecycle from within VS Code.
+**VS Code Extension** (`apps/vscode-extension`) — Status bar showing sync state
+(stopped/starting/running/error), a sidebar with device list and sync controls,
+and a QR panel for pairing. Spawns and manages the sync server lifecycle from
+within VS Code.
 
-**Mobile Companion** (`apps/mobile`) — Expo/React Native app with a QR scanner for pairing, a file browser that reads from Yjs, a syntax-highlighted file viewer, and a collaborative editor that syncs edits back in real time.
+**Mobile Companion** (`apps/mobile`) — Expo/React Native app with a QR scanner
+for pairing, a file browser that reads from Yjs, a syntax-highlighted file
+viewer, and a collaborative editor that syncs edits back in real time.
 
-**MCP Server** (`apps/mcp-server`) — Model Context Protocol server exposing three tools (`list_files`, `get_file_content`, `analyze_file`) over stdio. Integrates with Cursor and Claude Code so AI assistants can read and analyze your synced project. Config lives in `.claude/mcp.json` and `.cursorrules`.
+**MCP Server** (`apps/mcp-server`) — Model Context Protocol server exposing
+three tools (`list_files`, `get_file_content`, `analyze_file`) over stdio.
+Integrates with Cursor and Claude Code so AI assistants can read and analyze
+your synced project. Config lives in `.claude/mcp.json` and `.cursorrules`.
 
 ## Architecture
 
@@ -146,30 +163,32 @@ pnpm format:check
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Monorepo | pnpm workspaces + Turborepo |
-| Language | TypeScript (strict mode) |
-| Real-time sync | Yjs + y-protocols + WebSocket |
-| CLI | Commander.js + chalk + ora |
-| Server | Fastify |
-| Database | SQLite via Prisma |
-| VS Code | @vscode/vsce extension API |
-| Mobile | Expo 54 + React Native |
-| AI | Anthropic / OpenAI / Ollama (raw fetch, no SDK) |
-| MCP | @modelcontextprotocol/sdk (stdio transport) |
-| Build | tsup (CLI: ESM, VS Code + MCP: CJS) |
-| Test | Jest + ts-jest |
+| Layer          | Technology                                      |
+| -------------- | ----------------------------------------------- |
+| Monorepo       | pnpm workspaces + Turborepo                     |
+| Language       | TypeScript (strict mode)                        |
+| Real-time sync | Yjs + y-protocols + WebSocket                   |
+| CLI            | Commander.js + chalk + ora                      |
+| Server         | Fastify                                         |
+| Database       | SQLite via Prisma                               |
+| VS Code        | @vscode/vsce extension API                      |
+| Mobile         | Expo 54 + React Native                          |
+| AI             | Anthropic / OpenAI / Ollama (raw fetch, no SDK) |
+| MCP            | @modelcontextprotocol/sdk (stdio transport)     |
+| Build          | tsup (CLI: ESM, VS Code + MCP: CJS)             |
+| Test           | Jest + ts-jest                                  |
 
 ## MCP Integration (Cursor / Claude Code)
 
-The MCP server lets AI assistants browse and analyze your project. After building:
+The MCP server lets AI assistants browse and analyze your project. After
+building:
 
 ```bash
 pnpm --filter @udp/mcp-server build
 ```
 
-**Cursor** — The `.cursorrules` file at the repo root provides full project context automatically.
+**Cursor** — The `.cursorrules` file at the repo root provides full project
+context automatically.
 
 **Claude Code** — The `.claude/mcp.json` config registers the MCP server:
 
@@ -188,11 +207,15 @@ pnpm --filter @udp/mcp-server build
 }
 ```
 
-Available MCP tools: `list_files` (browse project tree), `get_file_content` (read any file), `analyze_file` (AI-powered analysis).
+Available MCP tools: `list_files` (browse project tree), `get_file_content`
+(read any file), `analyze_file` (AI-powered analysis).
 
 ## Database
 
-UDP uses SQLite via Prisma. The schema lives at `apps/sync-server/prisma/schema.prisma` and defines four core models: **User**, **Project**, **ProjectFile**, and **Device** (with DeviceEvent for pairing audit trail).
+UDP uses SQLite via Prisma. The schema lives at
+`apps/sync-server/prisma/schema.prisma` and defines four core models: **User**,
+**Project**, **ProjectFile**, and **Device** (with DeviceEvent for pairing audit
+trail).
 
 ```bash
 # Generate Prisma client after schema changes
@@ -204,7 +227,9 @@ pnpm --filter @udp/db prisma migrate dev --name <name>
 
 ## Testing
 
-Unit tests run with Jest across all packages. Integration tests (sync server connectivity, multi-client Yjs sync, file watcher propagation) are separated and run on demand.
+Unit tests run with Jest across all packages. Integration tests (sync server
+connectivity, multi-client Yjs sync, file watcher propagation) are separated and
+run on demand.
 
 ```bash
 pnpm test              # Unit tests only
@@ -215,11 +240,17 @@ pnpm test:full         # Everything
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. The short version: fork the repo, branch from `pivot/workflow-tool`, follow the existing patterns in `apps/cli/src/commands/` for new CLI commands and `apps/mcp-server/src/tools/` for new MCP tools, and run `pnpm check` before pushing.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. The short version: fork
+the repo, branch from `pivot/workflow-tool`, follow the existing patterns in
+`apps/cli/src/commands/` for new CLI commands and `apps/mcp-server/src/tools/`
+for new MCP tools, and run `pnpm check` before pushing.
 
 ## Archive
 
-The `archive/` directory preserves code from UDP's original IDE architecture (web app, desktop Electron wrapper, NextAuth, server-utils). This code is excluded from the workspace and build pipeline but kept for reference. See [archive/README.md](archive/README.md) for details.
+The `archive/` directory preserves code from UDP's original IDE architecture
+(web app, desktop Electron wrapper, NextAuth, server-utils). This code is
+excluded from the workspace and build pipeline but kept for reference. See
+[archive/README.md](archive/README.md) for details.
 
 ## License
 

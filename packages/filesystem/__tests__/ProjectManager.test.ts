@@ -1,4 +1,8 @@
-import { ProjectManager, ProjectTemplate, ProjectFile } from '../ProjectManager';
+import {
+  ProjectManager,
+  ProjectTemplate,
+  ProjectFile,
+} from '../ProjectManager';
 import { NodeFileSystem } from '../NodeFileSystem';
 import * as os from 'os';
 import * as path from 'path';

@@ -13,9 +13,7 @@ export class OpenAIService extends AIService {
     this.baseUrl = config.baseUrl || 'https://api.openai.com/v1';
   }
 
-  async generate(
-    prompt: string
-  ): Promise<string> {
+  async generate(prompt: string): Promise<string> {
     // Minimal implementation for test
     return `OpenAI: ${prompt}`;
   }

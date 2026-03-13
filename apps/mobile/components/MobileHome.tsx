@@ -108,29 +108,27 @@ export const MobileHome: React.FC = () => {
               </TouchableOpacity>
             </View>
           )
+        ) : isConnected && pairingData ? (
+          <CollaborativeEditor
+            roomId={pairingData.roomId}
+            documentId='main-document'
+            userId={`mobile-user-${Math.random().toString(36).substr(2, 9)}`}
+            userName='Mobile User'
+          />
         ) : (
-          isConnected && pairingData ? (
-            <CollaborativeEditor
-              roomId={pairingData.roomId}
-              documentId='main-document'
-              userId={`mobile-user-${Math.random().toString(36).substr(2, 9)}`}
-              userName='Mobile User'
-            />
-          ) : (
-            <View style={styles.disconnected}>
-              <Text style={styles.disconnectedIcon}>🔌</Text>
-              <Text style={styles.disconnectedTitle}>Not Connected</Text>
-              <Text style={styles.disconnectedText}>
-                Please connect to a host device first
-              </Text>
-              <TouchableOpacity
-                style={styles.connectButton}
-                onPress={() => setActiveTab('connect')}
-              >
-                <Text style={styles.connectButtonText}>Go to Connect</Text>
-              </TouchableOpacity>
-            </View>
-          )
+          <View style={styles.disconnected}>
+            <Text style={styles.disconnectedIcon}>🔌</Text>
+            <Text style={styles.disconnectedTitle}>Not Connected</Text>
+            <Text style={styles.disconnectedText}>
+              Please connect to a host device first
+            </Text>
+            <TouchableOpacity
+              style={styles.connectButton}
+              onPress={() => setActiveTab('connect')}
+            >
+              <Text style={styles.connectButtonText}>Go to Connect</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </SafeAreaView>

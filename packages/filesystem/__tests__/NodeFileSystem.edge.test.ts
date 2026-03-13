@@ -24,19 +24,29 @@ describe('NodeFileSystem edge and error cases', () => {
 
   it('throws when writing a file that exists and overwrite is false', async () => {
     await nfs.writeFile('file.txt', 'abc', { overwrite: true });
-    await expect(nfs.writeFile('file.txt', 'def', { overwrite: false })).rejects.toThrow();
+    await expect(
+      nfs.writeFile('file.txt', 'def', { overwrite: false })
+    ).rejects.toThrow();
   });
 
   it('writes and reads with base64 encoding', async () => {
     const data = Buffer.from('hello world');
-    await nfs.writeFile('b64.txt', data.toString('base64'), { encoding: 'base64', overwrite: true });
+    await nfs.writeFile('b64.txt', data.toString('base64'), {
+      encoding: 'base64',
+      overwrite: true,
+    });
     const read = await nfs.readFile('b64.txt', { encoding: 'base64' });
     expect(typeof read).toBe('string');
-    expect(Buffer.from(read as string, 'base64').toString()).toBe('hello world');
+    expect(Buffer.from(read as string, 'base64').toString()).toBe(
+      'hello world'
+    );
   });
 
   it('creates directories recursively', async () => {
-    await nfs.writeFile('a/b/c/file.txt', 'hi', { overwrite: true, createDirectories: true });
+    await nfs.writeFile('a/b/c/file.txt', 'hi', {
+      overwrite: true,
+      createDirectories: true,
+    });
     const content = await nfs.readFile('a/b/c/file.txt');
     expect(content).toBe('hi');
   });

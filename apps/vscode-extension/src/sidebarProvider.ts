@@ -14,7 +14,10 @@ export class UdpSidebarProvider implements vscode.WebviewViewProvider {
   private view?: vscode.WebviewView;
   private pollTimer?: NodeJS.Timeout;
 
-  constructor(private extensionUri: vscode.Uri, private manager: UdpSyncManager) {}
+  constructor(
+    private extensionUri: vscode.Uri,
+    private manager: UdpSyncManager
+  ) {}
 
   resolveWebviewView(webviewView: vscode.WebviewView) {
     this.view = webviewView;
@@ -26,7 +29,7 @@ export class UdpSidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this.getWebviewContent();
 
-    webviewView.webview.onDidReceiveMessage(async (message) => {
+    webviewView.webview.onDidReceiveMessage(async message => {
       switch (message.type) {
         case 'startSync':
           this.manager.start();
@@ -294,8 +297,10 @@ export class UdpSidebarProvider implements vscode.WebviewViewProvider {
 
       if (status === 'running') {
         try {
-          const response = await this.manager.fetchJson<{ devices: Device[] }>('/api/devices');
-          devices = response.devices.filter((d) => d.confirmed) || [];
+          const response = await this.manager.fetchJson<{ devices: Device[] }>(
+            '/api/devices'
+          );
+          devices = response.devices.filter(d => d.confirmed) || [];
         } catch (e) {
           // Ignore fetch errors
         }
@@ -328,9 +333,12 @@ export class UdpSidebarProvider implements vscode.WebviewViewProvider {
     try {
       await this.manager.fetchJson(`/api/devices/${deviceId}`);
       // Use DELETE method by making a raw fetch
-      await fetch(`http://localhost:${this.manager.getPort()}/api/devices/${deviceId}`, {
-        method: 'DELETE',
-      });
+      await fetch(
+        `http://localhost:${this.manager.getPort()}/api/devices/${deviceId}`,
+        {
+          method: 'DELETE',
+        }
+      );
       this.updateView();
     } catch (e) {
       vscode.window.showErrorMessage(`Failed to remove device: ${e}`);

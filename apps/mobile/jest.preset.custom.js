@@ -9,7 +9,8 @@ module.exports = {
     'node_modules/(?!(?:\\.pnpm/)?(?:react-native|@react-native(?:\\+|/)|@react-native-async-storage(?:\\+|/)|expo(?:$|/|-)|@expo(?:\\+|/)|expo-camera|expo-crypto|expo-linking|expo-secure-store|@testing-library\\+react-native|@testing-library/react-native|@udp\\+ui-native|@udp/ui-native|yjs|y-websocket|y-monaco|y-protocols|y-indexeddb))',
   ],
   moduleNameMapper: {
-    '^@rivascva/react-native-code-editor$': '<rootDir>/../../jest-mocks/react-native-code-editor.cjs',
+    '^@rivascva/react-native-code-editor$':
+      '<rootDir>/../../jest-mocks/react-native-code-editor.cjs',
     '^@udp/editor-core$': '<rootDir>/../../jest-mocks/editor-core-mobile.cjs',
     '^yjs$': '<rootDir>/../../jest-mocks/yjs.cjs',
     '^y-websocket$': '<rootDir>/../../jest-mocks/y-websocket.cjs',

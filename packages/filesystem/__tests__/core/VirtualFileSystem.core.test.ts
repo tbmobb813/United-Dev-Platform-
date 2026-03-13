@@ -13,7 +13,9 @@ type Cursor = {
   continue: () => void;
 };
 
-function createAsyncRequest<T>(executor: (request: Request<T>) => void): Request<T> {
+function createAsyncRequest<T>(
+  executor: (request: Request<T>) => void
+): Request<T> {
   const request: Request<T> = {
     result: undefined,
     onsuccess: null,
@@ -94,16 +96,22 @@ describe('VirtualFileSystem - core operations', () => {
   it('writes, reads and lists files with recursive directory creation', async () => {
     const { vfs } = createTestVfs();
 
-    await vfs.writeFile('/projects/app/src/index.ts', 'export const ok = true;', {
-      createDirectories: true,
-      overwrite: true,
-    });
+    await vfs.writeFile(
+      '/projects/app/src/index.ts',
+      'export const ok = true;',
+      {
+        createDirectories: true,
+        overwrite: true,
+      }
+    );
 
     const content = await vfs.readFile('/projects/app/src/index.ts');
     expect(content).toBe('export const ok = true;');
 
     const direct = await vfs.listDirectory('/projects/app/src');
-    expect(direct.entries.map(entry => entry.path)).toContain('/projects/app/src/index.ts');
+    expect(direct.entries.map(entry => entry.path)).toContain(
+      '/projects/app/src/index.ts'
+    );
 
     const recursive = await vfs.listDirectory('/projects', { recursive: true });
     expect(recursive.totalCount).toBe(3);
@@ -114,9 +122,9 @@ describe('VirtualFileSystem - core operations', () => {
 
     await vfs.writeFile('/a.txt', 'first', { overwrite: true });
 
-    await expect(vfs.writeFile('/a.txt', 'second', { overwrite: false })).rejects.toThrow(
-      'File already exists: /a.txt'
-    );
+    await expect(
+      vfs.writeFile('/a.txt', 'second', { overwrite: false })
+    ).rejects.toThrow('File already exists: /a.txt');
   });
 
   it('moves files and deletes source', async () => {
@@ -132,7 +140,9 @@ describe('VirtualFileSystem - core operations', () => {
       overwrite: true,
     });
 
-    await expect(vfs.readFile('/from/data.json')).rejects.toThrow('File not found: /from/data.json');
+    await expect(vfs.readFile('/from/data.json')).rejects.toThrow(
+      'File not found: /from/data.json'
+    );
     await expect(vfs.readFile('/to/data.json')).resolves.toBe('{"v":1}');
   });
 

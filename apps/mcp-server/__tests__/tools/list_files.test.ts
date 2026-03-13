@@ -1,4 +1,11 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 
 // Mock fs before importing the module under test
 jest.mock('fs');
@@ -63,7 +70,10 @@ describe('list_files tool', () => {
       makeDirent('README.md', false, true),
     ] as unknown as fs.Dirent[]);
 
-    const result = await listFilesTool.execute({ directory: fakeRoot, pattern: '.ts' });
+    const result = await listFilesTool.execute({
+      directory: fakeRoot,
+      pattern: '.ts',
+    });
 
     expect(result.files).toHaveLength(1);
     expect(result.count).toBe(1);
@@ -80,7 +90,10 @@ describe('list_files tool', () => {
     ] as unknown as fs.Dirent[]);
 
     // Pattern without leading dot — source normalises it to .tsx
-    const result = await listFilesTool.execute({ directory: fakeRoot, pattern: 'tsx' });
+    const result = await listFilesTool.execute({
+      directory: fakeRoot,
+      pattern: 'tsx',
+    });
 
     expect(result.files).toHaveLength(1);
     expect(result.files[0]).toContain('app.tsx');
@@ -90,28 +103,31 @@ describe('list_files tool', () => {
     mockFs.existsSync.mockReturnValue(true);
 
     // First call returns top-level entries; subsequent calls for real dirs
-    (mockFs.readdirSync as jest.MockedFunction<typeof fs.readdirSync>)
-      .mockImplementation((dirPath: fs.PathLike | number, _opts?: any) => {
-        const p = String(dirPath);
-        if (p === fakeRoot) {
-          return [
-            makeDirent('node_modules', true, false),
-            makeDirent('.git', true, false),
-            makeDirent('dist', true, false),
-            makeDirent('src', true, false),
-            makeDirent('index.ts', false, true),
-          ] as unknown as fs.Dirent[];
-        }
-        if (p === `${fakeRoot}/src`) {
-          return [makeDirent('app.ts', false, true)] as unknown as fs.Dirent[];
-        }
-        return [] as unknown as fs.Dirent[];
-      });
+    (
+      mockFs.readdirSync as jest.MockedFunction<typeof fs.readdirSync>
+    ).mockImplementation((dirPath: fs.PathLike | number, _opts?: any) => {
+      const p = String(dirPath);
+      if (p === fakeRoot) {
+        return [
+          makeDirent('node_modules', true, false),
+          makeDirent('.git', true, false),
+          makeDirent('dist', true, false),
+          makeDirent('src', true, false),
+          makeDirent('index.ts', false, true),
+        ] as unknown as fs.Dirent[];
+      }
+      if (p === `${fakeRoot}/src`) {
+        return [makeDirent('app.ts', false, true)] as unknown as fs.Dirent[];
+      }
+      return [] as unknown as fs.Dirent[];
+    });
 
     const result = await listFilesTool.execute({ directory: fakeRoot });
 
     // Only src/app.ts and index.ts should appear — ignored dirs must be absent
-    expect(result.files.some((f: string) => f.includes('node_modules'))).toBe(false);
+    expect(result.files.some((f: string) => f.includes('node_modules'))).toBe(
+      false
+    );
     expect(result.files.some((f: string) => f.includes('.git'))).toBe(false);
     expect(result.files.some((f: string) => f.includes('dist'))).toBe(false);
     expect(result.files.some((f: string) => f.includes('app.ts'))).toBe(true);

@@ -77,6 +77,9 @@ describe('FileWatcher (unit)', () => {
     // give async handlers a tick
     await new Promise(r => setTimeout(r, 10));
 
-    expect(fakeFs.writeFile).toHaveBeenCalledWith('/some/doc.txt', 'new-content');
+    expect(fakeFs.writeFile).toHaveBeenCalledWith(
+      '/some/doc.txt',
+      'new-content'
+    );
   });
 });

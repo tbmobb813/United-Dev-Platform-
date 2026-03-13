@@ -29,11 +29,15 @@ export class ProjectSyncManager {
 
   private fileWatcher?: FileWatcher;
   private fs?: NodeFileSystem;
-  private readonly yjsObserver = async (event: YTypes.YMapEvent<YTypes.Text | YTypes.Map<unknown>>) => {
-    if (!this.fs) { return; }
+  private readonly yjsObserver = async (
+    event: YTypes.YMapEvent<YTypes.Text | YTypes.Map<unknown>>
+  ) => {
+    if (!this.fs) {
+      return;
+    }
     for (const [path, change] of event.changes.keys) {
       if (change.action === 'add' || change.action === 'update') {
-        const newValue = (this.files.get(path));
+        const newValue = this.files.get(path);
         if (newValue instanceof Y.Text) {
           const content = newValue.toString();
           await this.fs.writeFile(path, content);
@@ -133,17 +137,22 @@ export class ProjectSyncManager {
    * Set up file watcher integration to sync file system changes to Yjs.
    */
   private setupFileWatcher() {
-    if (!this.fileWatcher) { return; }
-    this.fileWatcher.on('file:changed', async (path: string, content: string) => {
-      let ytext = this.files.get(path) as YTypes.Text | undefined;
-      if (!ytext) {
-        ytext = new Y.Text();
-        this.files.set(path, ytext);
+    if (!this.fileWatcher) {
+      return;
+    }
+    this.fileWatcher.on(
+      'file:changed',
+      async (path: string, content: string) => {
+        let ytext = this.files.get(path) as YTypes.Text | undefined;
+        if (!ytext) {
+          ytext = new Y.Text();
+          this.files.set(path, ytext);
+        }
+        ytext.delete(0, ytext.length);
+        ytext.insert(0, content);
+        this.emit('file:updated', path, content);
       }
-      ytext.delete(0, ytext.length);
-      ytext.insert(0, content);
-      this.emit('file:updated', path, content);
-    });
+    );
     this.fileWatcher.on('file:deleted', (path: string) => {
       this.files.delete(path);
       this.metadata.delete(path);
@@ -179,13 +188,17 @@ export class ProjectSyncManager {
   private listeners: Record<string, ((...args: unknown[]) => void)[]> = {};
 
   on(event: string, handler: (...args: unknown[]) => void) {
-    if (!this.listeners[event]) { this.listeners[event] = []; }
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
     this.listeners[event].push(handler);
   }
 
   emit(event: string, ...args: unknown[]) {
     if (this.listeners[event]) {
-      for (const fn of this.listeners[event]) { fn(...args); }
+      for (const fn of this.listeners[event]) {
+        fn(...args);
+      }
     }
   }
 

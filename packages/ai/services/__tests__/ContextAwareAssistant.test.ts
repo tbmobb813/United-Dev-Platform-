@@ -17,7 +17,11 @@ describe('ContextAwareAssistant', () => {
       scope: 'current-file' as any,
     };
 
-    const payload = JSON.stringify({ answer: 'All good', confidence: 90, sources: [] });
+    const payload = JSON.stringify({
+      answer: 'All good',
+      confidence: 90,
+      sources: [],
+    });
     fakeService.generateResponse.mockResolvedValue({ content: payload });
 
     const res1 = await assistant.query(contextualQuery as any);
@@ -31,6 +35,8 @@ describe('ContextAwareAssistant', () => {
   test('analyzeCodebase throws when context not set', async () => {
     const fakeService: any = makeFakeService();
     const assistant = new ContextAwareAssistant(fakeService);
-    await expect(assistant.analyzeCodebase()).rejects.toThrow(/context not initialized/i);
+    await expect(assistant.analyzeCodebase()).rejects.toThrow(
+      /context not initialized/i
+    );
   });
 });
