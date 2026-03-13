@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import MobileHome from '../MobileHome';
+import * as YjsFilesHook from '../../hooks/useYjsFiles';
 
 jest.mock('../../hooks/useYjsFiles', () => ({
   useYjsFiles: jest.fn(() => ({
@@ -24,13 +25,11 @@ jest.mock('../CollaborativeEditor', () => ({
   CollaborativeEditor: () => null,
 }));
 
-const { useYjsFiles } = require('../../hooks/useYjsFiles');
-
 describe('MobileHome', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Default: not connected, no pairingData
-    (useYjsFiles as jest.Mock).mockReturnValue({
+    (YjsFilesHook.useYjsFiles as jest.Mock).mockReturnValue({
       files: [],
       isConnected: false,
       error: null,
@@ -46,7 +45,7 @@ describe('MobileHome', () => {
   it('shows "Not Connected" fallback on the Edit tab when isConnected is true but pairingData is null', () => {
     // Simulate the race condition: WebSocket connected to default localhost
     // before the user completes the pairing flow (pairingData remains null).
-    (useYjsFiles as jest.Mock).mockReturnValue({
+    (YjsFilesHook.useYjsFiles as jest.Mock).mockReturnValue({
       files: [],
       isConnected: true,
       error: null,
