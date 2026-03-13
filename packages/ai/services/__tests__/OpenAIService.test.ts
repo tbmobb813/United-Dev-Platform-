@@ -1,8 +1,12 @@
 import { OpenAIService } from '../OpenAIService';
 import { TextEncoder, TextDecoder } from 'util';
 
-;(global as any).TextEncoder = TextEncoder;
-;(global as any).TextDecoder = TextDecoder;
+if (!(global as any).TextEncoder) {
+  ;(global as any).TextEncoder = TextEncoder;
+}
+if (!(global as any).TextDecoder) {
+  ;(global as any).TextDecoder = TextDecoder;
+}
 
 describe('OpenAIService', () => {
   afterEach(() => {
