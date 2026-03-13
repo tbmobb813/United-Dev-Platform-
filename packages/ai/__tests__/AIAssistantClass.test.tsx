@@ -8,7 +8,7 @@ import AIAssistantClass from '../AIAssistantClass';
 
 describe('AIAssistantClass', () => {
   it('renders without crashing', () => {
-    const { container } = render(<AIAssistantClass apiKey="test" />);
+    const { container } = render(<AIAssistantClass apiKey='test' />);
     expect(container).toBeTruthy();
   });
 });

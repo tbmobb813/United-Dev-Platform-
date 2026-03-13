@@ -1,3 +1,30 @@
+export interface AIMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp?: Date;
+}
+
+export interface AIResponse {
+  content: string;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens?: number;
+  };
+  model?: string;
+  finish_reason?: string;
+}
+
+export interface AIServiceConfig {
+  provider: 'openai' | 'anthropic' | 'local' | 'ollama';
+  apiKey?: string;
+  baseUrl?: string;
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+  stream?: boolean;
+}
+
 export abstract class AIService {
   protected config: AIServiceConfig;
 

@@ -1,3 +1,5 @@
+/* global jest */
+/* eslint-disable @typescript-eslint/no-var-requires */
 // Mock TurboModuleRegistry to provide PlatformConstants TurboModule
 jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
   const uiManager = {
@@ -34,8 +36,8 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
   };
   return {
     getEnforcing: (name) => {
-      if (name === 'UIManager') return uiManager;
-      if (name === 'PlatformConstants') return platformConstants;
+      if (name === 'UIManager') {return uiManager;}
+      if (name === 'PlatformConstants') {return platformConstants;}
       if (name === 'SourceCode') {
         return {
           getConstants: () => ({
@@ -46,8 +48,8 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
       return null;
     },
     get: (name) => {
-      if (name === 'UIManager') return uiManager;
-      if (name === 'PlatformConstants') return platformConstants;
+      if (name === 'UIManager') {return uiManager;}
+      if (name === 'PlatformConstants') {return platformConstants;}
       if (name === 'SourceCode') {
         return {
           getConstants: () => ({
@@ -108,7 +110,7 @@ try {
       return null;
     });
   }
-} catch (e) {
+} catch {
   // ignore if TurboModuleRegistry is not available
 }
 // Mock React Native bridge config

@@ -64,10 +64,8 @@ describe('status command', () => {
       return Buffer.from('');
     });
 
-    // Should complete without throwing
-    await expect(
-      program.parseAsync(['status'], { from: 'user' })
-    ).resolves.toBeDefined();
+    // Should complete without throwing (command returns undefined)
+    await program.parseAsync(['status'], { from: 'user' });
 
     // config.json should have been read
     expect(mockedFs.readFileSync).toHaveBeenCalledWith(configPath, 'utf-8');

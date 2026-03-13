@@ -79,7 +79,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
     }
   };
 
-  const handleBarcodeScan = (result: any) => {
+  const handleBarcodeScan = (result: { data: string }) => {
     if (!isFocused || state.status !== 'idle') {
       return; // Ignore scans if not focused or already pairing
     }
@@ -105,7 +105,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color="#007bff" />
+          <ActivityIndicator size='large' color='#007bff' />
           <Text style={styles.loadingText}>Requesting camera access...</Text>
         </View>
       </SafeAreaView>
@@ -132,7 +132,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color="#007bff" />
+          <ActivityIndicator size='large' color='#007bff' />
           <Text style={styles.statusTitle}>
             {state.status === 'registering' ? 'Registering device...' : 'Waiting for confirmation...'}
           </Text>
@@ -166,7 +166,7 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
   }
 
   return (
-    <SafeAreaView style={styles.container} testID="connect-screen-root">
+    <SafeAreaView style={styles.container} testID='connect-screen-root'>
       {!showManualEntry ? (
         <>
           <CameraView
@@ -201,10 +201,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
               <Text style={styles.inputLabel}>Server IP Address</Text>
               <TextInput
                 style={styles.input}
-                placeholder="e.g., 192.168.1.1"
+                placeholder='e.g., 192.168.1.1'
                 value={manualServerIp}
                 onChangeText={setManualServerIp}
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor='#9ca3af'
               />
             </View>
 
@@ -212,11 +212,11 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
               <Text style={styles.inputLabel}>Port</Text>
               <TextInput
                 style={styles.input}
-                placeholder="e.g., 3030"
+                placeholder='e.g., 3030'
                 value={manualPort}
                 onChangeText={setManualPort}
-                keyboardType="number-pad"
-                placeholderTextColor="#9ca3af"
+                keyboardType='number-pad'
+                placeholderTextColor='#9ca3af'
               />
             </View>
 
@@ -224,10 +224,10 @@ export const ConnectScreen: React.FC<ConnectScreenProps> = ({
               <Text style={styles.inputLabel}>Pairing Token</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Paste the pairing token"
+                placeholder='Paste the pairing token'
                 value={manualToken}
                 onChangeText={setManualToken}
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor='#9ca3af'
                 secureTextEntry={false}
               />
             </View>

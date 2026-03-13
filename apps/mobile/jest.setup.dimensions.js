@@ -1,3 +1,4 @@
+/* global jest */
 // Setup file to mock Dimensions before any other code runs
 
 jest.mock('react-native/Libraries/Utilities/Dimensions', () => {

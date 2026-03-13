@@ -63,7 +63,7 @@ const types = {
   Project: {} as Project,
   ProjectFile: {} as ProjectFile,
   FileActivity: {} as FileActivity,
-  ApiResponse: {} as ApiResponse<any>,
+  ApiResponse: {} as ApiResponse<unknown>,
 };
 export default types;
 

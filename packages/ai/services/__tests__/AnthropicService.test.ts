@@ -1,4 +1,13 @@
 import { AnthropicService } from '../AnthropicService';
+import { TextEncoder, TextDecoder } from 'util';
+
+const globalAny = globalThis as any;
+if (!globalAny.TextEncoder) {
+  globalAny.TextEncoder = TextEncoder;
+}
+if (!globalAny.TextDecoder) {
+  globalAny.TextDecoder = TextDecoder;
+}
 
 describe('AnthropicService', () => {
   afterEach(() => {
@@ -56,24 +65,5 @@ describe('AnthropicService', () => {
     (global as any).fetch = jest.fn().mockResolvedValue({ ok: false, json: async () => ({ error: { message: 'nope' } }) });
     const svc = new AnthropicService({ apiKey: 'k' });
     await expect(svc.generateResponse([{ role: 'user', content: 'x' }])).rejects.toThrow('Anthropic API error');
-  });
-});
-import { describe, it, expect } from '@jest/globals';
-import { AnthropicService } from '../AnthropicService';
-
-describe('AnthropicService', () => {
-  it('should instantiate with config', () => {
-    const service = new AnthropicService({ apiKey: 'test' });
-    expect(service).toBeInstanceOf(AnthropicService);
-  });
-
-  it('should throw if no apiKey provided', () => {
-    // @ts-expect-error
-    expect(() => new AnthropicService({})).toThrow();
-  });
-
-  it('should have a generate method', () => {
-    const service = new AnthropicService({ apiKey: 'test' });
-    expect(typeof service.generate).toBe('function');
   });
 });

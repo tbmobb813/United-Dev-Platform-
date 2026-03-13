@@ -1,4 +1,3 @@
-import React from 'react';
 import { FileNavigator } from '../FileNavigator';
 
 describe('FileNavigator', () => {

@@ -1,4 +1,3 @@
-import { Stack } from '@udp/ui-native';
 import React, { useState } from 'react';
 import {
   SafeAreaView,
@@ -22,8 +21,8 @@ export const MobileHome: React.FC = () => {
     serverIp: string;
     port: number;
   } | null>(null);
-  const { state: pairingState } = useDevicePairing();
-  const yjsFiles = useYjsFiles(
+  useDevicePairing();
+  const { isConnected } = useYjsFiles(
     pairingData?.serverIp || 'localhost',
     pairingData?.port || 3030,
     pairingData?.roomId || 'default-room'
@@ -110,7 +109,7 @@ export const MobileHome: React.FC = () => {
             </View>
           )
         ) : (
-          isConnected ? (
+          isConnected && pairingData ? (
             <CollaborativeEditor
               roomId={pairingData.roomId}
               documentId='main-document'

@@ -1,5 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { OllamaService } from '../OllamaService';
+import { TextEncoder, TextDecoder } from 'util';
+
+if (typeof (globalThis as any).TextEncoder === 'undefined') {
+  (globalThis as any).TextEncoder = TextEncoder;
+}
+
+if (typeof (globalThis as any).TextDecoder === 'undefined') {
+  (globalThis as any).TextDecoder = TextDecoder;
+}
 
 describe('OllamaService', () => {
   const originalFetch = global.fetch;
