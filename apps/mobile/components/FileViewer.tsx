@@ -3,7 +3,6 @@ import CodeEditor, { CodeEditorSyntaxStyles } from '@rivascva/react-native-code-
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,

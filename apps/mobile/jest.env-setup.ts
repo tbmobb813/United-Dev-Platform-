@@ -1,4 +1,4 @@
-/* eslint-env jest */
+/* global beforeAll, afterAll, jest */
 /* eslint-disable no-console */
 // Silence act warnings for state updates in tests
 const originalError = console.error;

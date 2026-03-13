@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import { useEffect, useState } from 'react';
@@ -131,10 +132,10 @@ export function useDevicePairing() {
           throw new Error(`Discover failed: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const data: { confirmed?: Array<{ deviceId?: string }> } = await response.json();
         const confirmedDevices = data.confirmed || [];
 
-        if (confirmedDevices.some((d: any) => d.deviceId === deviceId)) {
+        if (confirmedDevices.some((d) => d.deviceId === deviceId)) {
           return; // Device is confirmed!
         }
 

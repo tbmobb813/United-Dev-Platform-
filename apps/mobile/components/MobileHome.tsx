@@ -1,4 +1,3 @@
-import { Stack } from '@udp/ui-native';
 import React, { useState } from 'react';
 import {
   SafeAreaView,
@@ -22,7 +21,7 @@ export const MobileHome: React.FC = () => {
     serverIp: string;
     port: number;
   } | null>(null);
-  const { state: pairingState } = useDevicePairing();
+  useDevicePairing();
   const { isConnected } = useYjsFiles(
     pairingData?.serverIp || 'localhost',
     pairingData?.port || 3030,

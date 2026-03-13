@@ -1,4 +1,5 @@
-/* eslint-env jest */
+/* global jest */
+/* eslint-disable @typescript-eslint/no-var-requires */
 // Mock TurboModuleRegistry to provide PlatformConstants TurboModule
 jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
   const uiManager = {
@@ -109,7 +110,7 @@ try {
       return null;
     });
   }
-} catch (e) {
+} catch {
   // ignore if TurboModuleRegistry is not available
 }
 // Mock React Native bridge config
