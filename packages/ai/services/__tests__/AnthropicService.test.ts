@@ -1,8 +1,13 @@
 import { AnthropicService } from '../AnthropicService';
 import { TextEncoder, TextDecoder } from 'util';
 
-;(global as any).TextEncoder = TextEncoder;
-;(global as any).TextDecoder = TextDecoder;
+const globalAny = globalThis as any;
+if (!globalAny.TextEncoder) {
+  globalAny.TextEncoder = TextEncoder;
+}
+if (!globalAny.TextDecoder) {
+  globalAny.TextDecoder = TextDecoder;
+}
 
 describe('AnthropicService', () => {
   afterEach(() => {

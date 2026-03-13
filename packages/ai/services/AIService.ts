@@ -9,7 +9,7 @@ export interface AIResponse {
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
-    total_tokens: number;
+    total_tokens?: number;
   };
   model?: string;
   finish_reason?: string;

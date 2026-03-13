@@ -1,8 +1,12 @@
 import { OpenAIService } from '../OpenAIService';
 import { TextEncoder, TextDecoder } from 'util';
 
-;(global as any).TextEncoder = TextEncoder;
-;(global as any).TextDecoder = TextDecoder;
+if (!(global as any).TextEncoder) {
+  ;(global as any).TextEncoder = TextEncoder;
+}
+if (!(global as any).TextDecoder) {
+  ;(global as any).TextDecoder = TextDecoder;
+}
 
 describe('OpenAIService', () => {
   afterEach(() => {
@@ -13,8 +17,8 @@ describe('OpenAIService', () => {
 
   test('generateStreamResponse parses streamed chunks and calls onChunk', async () => {
     const encoder = new TextEncoder();
-    const chunk1 = 'data: {"choices":[{"delta":{"content":"Hello "}}] }\\n';
-    const chunk2 = 'data: {"choices":[{"delta":{"content":"world"}}],"model":"gpt-4","usage":{"prompt_tokens":1,"completion_tokens":2}}\\n';
+    const chunk1 = 'data: {"choices":[{"delta":{"content":"Hello "}}] }\n';
+    const chunk2 = 'data: {"choices":[{"delta":{"content":"world"}}],"model":"gpt-4","usage":{"prompt_tokens":1,"completion_tokens":2}}\n';
 
     let callIndex = 0;
     const reader = {
