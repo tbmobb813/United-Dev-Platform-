@@ -13,8 +13,8 @@ describe('OpenAIService', () => {
 
   test('generateStreamResponse parses streamed chunks and calls onChunk', async () => {
     const encoder = new TextEncoder();
-    const chunk1 = 'data: {"choices":[{"delta":{"content":"Hello "}}] }\\n';
-    const chunk2 = 'data: {"choices":[{"delta":{"content":"world"}}],"model":"gpt-4","usage":{"prompt_tokens":1,"completion_tokens":2}}\\n';
+    const chunk1 = 'data: {"choices":[{"delta":{"content":"Hello "}}] }\n';
+    const chunk2 = 'data: {"choices":[{"delta":{"content":"world"}}],"model":"gpt-4","usage":{"prompt_tokens":1,"completion_tokens":2}}\n';
 
     let callIndex = 0;
     const reader = {
