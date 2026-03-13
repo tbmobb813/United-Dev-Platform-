@@ -1,4 +1,4 @@
-import { describe, it, expect, jest, beforeEach } from "@jest/globals";
+import { describe, it, expect, jest, beforeEach, afterEach } from "@jest/globals";
 import { Command } from "commander";
 import path from "path";
 import fs from "node:fs";
@@ -48,6 +48,10 @@ describe("status command", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.spyOn(process, "cwd").mockReturnValue(fakeProjectRoot);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("reads config.json and displays project information when initialized", async () => {
