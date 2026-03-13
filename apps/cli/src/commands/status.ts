@@ -17,7 +17,21 @@ export function statusCommand(program: Command): void {
         return;
       }
 
-      const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+      let config: any;
+      try {
+        const rawConfig = fs.readFileSync(configPath, "utf-8");
+        config = JSON.parse(rawConfig);
+      } catch (error) {
+        logger.error(chalk.red("Failed to read UDP project configuration."));
+        logger.warn(
+          chalk.yellow(
+            "Your .udp/config.json file appears to be missing or corrupted. Please re-run "
+          ) +
+            chalk.cyan("udp init") +
+            chalk.yellow(" to recreate it.")
+        );
+        process.exit(1);
+      }
 
       logger.info(
         "\n" +
@@ -45,8 +59,18 @@ export function statusCommand(program: Command): void {
       // Check devices
       const devicesPath = path.join(process.cwd(), ".udp", "devices.json");
       if (fs.existsSync(devicesPath)) {
-        const devices = JSON.parse(fs.readFileSync(devicesPath, "utf-8"));
-        logger.info(chalk.bold("  Devices:    ") + devices.length + " paired");
+        try {
+          const rawDevices = fs.readFileSync(devicesPath, "utf-8");
+          const devices = JSON.parse(rawDevices);
+          logger.info(chalk.bold("  Devices:    ") + devices.length + " paired");
+        } catch (error) {
+          logger.warn(
+            chalk.yellow(
+              "Your .udp/devices.json file appears to be corrupted. Ignoring devices for this command."
+            )
+          );
+          logger.info(chalk.bold("  Devices:    ") + chalk.dim("none paired"));
+        }
       } else {
         logger.info(chalk.bold("  Devices:    ") + chalk.dim("none paired"));
       }
