@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
-    "commander": "^11.1.0"
+    "commander": "^11.1.0",
+    "@udp/logger": "workspace:*"
   },
   "devDependencies": {
-    "@udp/logger": "workspace:*"
   }
 }
