@@ -5,11 +5,11 @@
   "types": "index.d.ts",
   "dependencies": {
     "react": "^19.2.0",
-    "react-native": "^0.74.0"
+    "react-native": "^0.84.1"
   },
   "peerDependencies": {
     "react": "^19.2.0",
-    "react-native": "^0.74.0"
+    "react-native": "^0.84.1"
   },
   "scripts": {
     "test": "jest --config ../../jest.config.cjs"
