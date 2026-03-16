@@ -23,7 +23,7 @@
     "expo-linking": "~8.0.8",
     "expo-secure-store": "~14.0.0",
     "react": "^19.2.0",
-    "react-native": "0.74.0",
+    "react-native": "0.84.1",
     "uuid": "^10.0.0",
     "y-websocket": "^3.0.0",
     "yjs": "^13.6.27"
