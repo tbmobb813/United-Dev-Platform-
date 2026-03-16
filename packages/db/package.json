@@ -12,11 +12,11 @@
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.0"
+    "@prisma/client": "^7.5.0"
   },
   "devDependencies": {
-    "@types/node": "^24.10.0",
-    "prisma": "^6.0.0",
+    "@types/node": "^25.5.0",
+    "prisma": "^7.5.0",
     "typescript": "^5.9.3"
   }
 }
