@@ -24,9 +24,9 @@
     "next-auth": "^4.24.12",
     "qrcode": "^1.5.3",
     "ws": "^8.18.0",
-    "y-protocols": "^1.0.6",
+    "y-protocols": "^1.0.7",
     "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.30"
   },
   "description": "Yjs WebSocket sync relay server for UDP",
   "devDependencies": {
