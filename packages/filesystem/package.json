@@ -11,13 +11,13 @@
     "test": "jest --config ../../jest.config.cjs"
   },
   "dependencies": {
-    "@types/node": "^24.10.0",
-    "chokidar": "^4.0.3",
+    "@types/node": "^25.5.0",
+    "chokidar": "^5.0.0",
     "mime-types": "^3.0.1"
   },
   "devDependencies": {
     "@types/mime-types": "^3.0.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "peerDependencies": {
     "react": "^19.2.0"
