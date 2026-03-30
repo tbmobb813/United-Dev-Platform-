@@ -24,10 +24,10 @@
     "@udp/eslint-config": "workspace:*",
     "@udp/prettier-config": "workspace:*",
     "@types/jest": "^30.0.0",
-    "eslint": "^9.39.1",
-    "jest": "^30.2.0",
+    "eslint": "^10.1.0",
+    "jest": "^30.3.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "y-protocols": "^1.0.6",
     "y-websocket": "^3.0.0",
     "yjs": "^13.6.27"
