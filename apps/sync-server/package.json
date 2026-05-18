@@ -18,15 +18,15 @@
     "@udp/logger": "workspace:*",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "fastify": "^5.0.0",
+    "fastify": "^5.8.5",
     "lib0": "^0.2.114",
     "morgan": "^1.10.0",
-    "next-auth": "^4.24.12",
+    "next-auth": "^4.24.14",
     "qrcode": "^1.5.3",
     "ws": "^8.18.0",
-    "y-protocols": "^1.0.6",
+    "y-protocols": "^1.0.7",
     "y-websocket": "^3.0.0",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.30"
   },
   "description": "Yjs WebSocket sync relay server for UDP",
   "devDependencies": {
